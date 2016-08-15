@@ -1,0 +1,262 @@
+// Color variables
+$aubergine: #470A14;
+$merlot: #881327;
+$cod-gray: #141414;
+$bright-sun: #FFDA37;
+$heath: #520F1A;
+
+$lightgray-background: #F5F5F5;
+$gray-background: #F8F8F8;
+$width: 1400px;
+
+$size-title: 30pt;
+$size-smartphone-title: 22pt;
+$size-smaller-title: 24pt;
+$size-smaller-smartphone-title: 18pt;
+
+$size-text: 11pt;
+$size-smartphone-text: 10pt;
+
+$size-subtitle: 15pt;
+$size-smartphone-subtitle: 10pt;
+
+$size-button: 12pt;
+$size-button-big: 15pt;
+
+$width-stop-splitted: 1000px;
+
+$width-reduce-padding: 500px;
+$smartphone-padding: 25px;
+
+body, html {
+    color: gray;
+    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    font-size: $size-text;
+}
+
+@mixin bg-gradient-t2b($start-colour, $end-colour) {
+    background-image: -webkit-gradient(linear, left top, left bottom, from($start-colour), to($end-colour));
+    background-image: -webkit-linear-gradient(top, $start-colour, $end-colour);
+    background-image:    -moz-linear-gradient(top, $start-colour, $end-colour);
+    background-image:     -ms-linear-gradient(top, $start-colour, $end-colour);
+    background-image:      -o-linear-gradient(top, $start-colour, $end-colour);
+    background-image:         linear-gradient(top, $start-colour, $end-colour);
+    $ie-color: ie-hex-str($start-colour);
+    $ie-color2: ie-hex-str($end-colour);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#{$ie-color}", EndColorStr="#{$ie-color2}");
+    zoom: 1;
+}
+@mixin bg-gradient-l2r($start-colour, $end-colour) {
+    background-image: -webkit-gradient(linear, left top, right top, from($start-colour), to($end-colour));
+    background-image: -webkit-linear-gradient(left, $start-colour, $end-colour);
+    background-image:    -moz-linear-gradient(left, $start-colour, $end-colour);
+    background-image:     -ms-linear-gradient(left, $start-colour, $end-colour);
+    background-image:      -o-linear-gradient(left, $start-colour, $end-colour);
+    background-image:         linear-gradient(left, $start-colour, $end-colour);
+    // Geen IE7-8 support atm
+}
+
+h1 {
+    font-weight: bold;
+    font-size: $size-title;
+    margin: 20px 0;
+}
+
+h2 {
+    font-weight: normal;
+    font-size: $size-subtitle;
+    margin: 20px 0;
+}
+
+p {
+    margin: 10px 0;
+    font-weight: normal;
+    font-size: $size-text;
+    line-height: 170%;
+}
+
+.smaller {
+    h1 {
+        font-size: $size-smaller-title;
+    }
+}
+
+figcaption {
+    font-size: $size-subtitle;
+}
+
+a {
+    &, &:hover, &:visited, &:active, &:link {
+        color: inherit;
+        text-decoration: none;
+    }
+}
+
+button, input {
+    border: 0;
+    outline: 0;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    font-variant: inherit;
+    text-transform: inherit;
+    text-decoration: inherit;
+    cursor: pointer;
+}
+
+button {
+    text-transform: uppercase;
+}
+
+a.button {
+    padding: 10px 30px;
+    border: 2px solid white;
+    border-radius: 40px;
+    text-transform: uppercase;
+    font-size: $size-button;
+
+    margin: 20px 0;
+    display: inline-block;
+
+    &.merlot {
+        color: $merlot;
+        border-color: $merlot;
+
+        &.fill {
+            color: white;
+            background: $merlot;
+        }
+    }
+
+    
+    &.aubergine {
+        color: $aubergine;
+
+        &.search {
+            background: url(../images/hourglass-aubergine.png) no-repeat left center;
+        }
+    }
+
+    &.white {
+        color: white;
+
+        &.search {
+            background: url(../images/hourglass-white.png) no-repeat left center;
+        }
+    }
+
+    &.noborder {
+        border: 0;
+        padding: 0;
+        margin: 15px;
+    }
+
+    &.search {
+        padding: 10px 0 10px 40px;
+    }
+
+    &.big {
+        font-size: $size-button-big;
+    }
+}
+
+input.search {
+    padding: 10px 10px 10px 40px;
+    margin-bottom: 12px;
+    width: 80px;
+
+    -webkit-transition: width 0.5s; /* Safari */
+    transition: width 0.5s;
+
+    &::-webkit-input-placeholder {
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;
+    }
+
+    &:-moz-placeholder { /* Firefox 18- */
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;  
+    }
+
+    &::-moz-placeholder {  /* Firefox 19+ */
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;  
+    }
+
+    &:-ms-input-placeholder {  
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;  
+    }
+
+    &.aubergine {
+        color: $aubergine;
+        background: url(../images/hourglass-aubergine.png) no-repeat left center;
+    }
+
+    &.white {
+        color: white;
+        background: url(../images/hourglass-white.png) no-repeat left center;
+        border-color: white;
+    }
+
+    background: none;
+    border: 0;
+    outline: none;
+    font-size: $size-button;
+
+    &:focus {
+        width: 300px;
+        border-bottom: 2px solid;
+        margin-bottom: 10px;
+    }
+}
+
+// Resize font sizes on small screens
+@media screen and (max-width: 480px) {
+
+    body, html, p {
+        font-size: $size-smartphone-text;
+    }
+
+    h1 {
+        font-size: $size-smartphone-title;
+        margin: 15px 0;
+    }
+
+    h2 {
+        font-size: $size-smartphone-subtitle;
+    }
+
+    .smaller {
+        h1 {
+            font-size: $size-smaller-smartphone-title;
+        }
+    }
+
+    a.button {
+        padding: 8px 25px;
+        margin: 15px 0;
+        font-size: 12pt;
+    }
+}
+
+
+
+@import "menu";
+@import "header";
+@import "structure";
+@import "footer";
+
+@import "blog";
+@import "calendar";
+@import "cta";

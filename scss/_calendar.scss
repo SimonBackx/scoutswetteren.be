@@ -1,0 +1,155 @@
+
+.splitted .part {
+    &.activities {
+        padding: 40px 0 80px 0;
+
+        h1 {
+            margin: 40px 40px 15px 40px;
+            color: $aubergine;
+
+            time {
+                font-size: $size-subtitle;
+                color: $merlot;
+                font-weight: normal;
+                padding-left: 20px;
+            }
+        }
+
+        article {
+            padding: 25px 40px;
+            background: $gray-background;
+
+            .column {
+                float: left;
+
+                &.group {
+                    color: $merlot;
+                    width: 130px;
+                }
+
+                &.time {
+                    color: $aubergine;
+                    width: 150px;
+                }
+
+                &.description {
+                    color: $aubergine;
+
+                    overflow: hidden;
+                    width: auto;
+                    float: none;
+                }
+
+                @media screen and (max-width: $width-reduce-padding + 100px) {
+                    float: none;
+                    padding: 5px 0;
+
+                    &.group {
+                        font-weight: bold;
+                        width: auto;
+                        display: inline-block;
+                        padding-right: 15px;
+                    }
+                     &.time {
+                        width: auto;
+                        display: inline-block;
+                     }
+                }
+            }
+        }
+
+        @media screen and (max-width: $width-reduce-padding + 100px) {
+            padding: 20px 0;
+
+            h1 {
+                margin: 30px 30px 15px $smartphone-padding;
+            }
+
+            article {
+                padding: 10px $smartphone-padding;
+            }
+        }
+    }
+
+    &.calendar {
+        width: 320px;
+        padding: 40px 50px;
+        @include bg-gradient-t2b(#530F1A, #7D1628);
+        color: white;
+        position: relative;
+
+        @media screen and (max-width: 1000px) {
+            display: none;
+        }
+
+        header {
+            position: relative;
+            text-align: center;
+            padding: 30px 0;
+
+            .previous {
+                width: 20px;
+                background: url(../images/back-white.png) no-repeat center center;
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+            }
+
+            .next {
+                width: 20px;
+                background: url(../images/next-white.png) no-repeat center center;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
+
+            time {
+                font-size: $size-subtitle;
+            }
+        }
+
+        .row {
+            clear: both;
+            padding: 15px 50px;
+            margin: -5px -50px;
+            font-size: $size-subtitle;
+
+            &.weekdays {
+                color: $bright-sun;
+                padding-top: 5px;
+                font-size: $size-text;
+            }
+
+            &.selected {
+                background: $heath url(../images/calendar-arrow.png) no-repeat left center;
+            }
+
+            .column {
+                float: left;
+                width: 1/7*100%;
+                text-align: center;
+                cursor: pointer;
+
+                &.today {
+                    color: $bright-sun;
+                }
+
+                &.other {
+                    opacity: 0.5;
+                }
+            }
+            .clear {
+                clear: both;
+            }
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            right: 20px;
+        }
+        
+    }
+}

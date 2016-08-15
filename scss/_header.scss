@@ -1,0 +1,97 @@
+#header {
+    // Fallback
+    height: 800px;
+
+    height: 80vh;
+    min-height: 300px;
+    max-height: 800px;
+
+    background: url(../images/background.jpg) center center;
+    background-size: cover;
+    overflow: hidden;
+    color: white;
+    position: relative;
+
+    .gradient {
+        height: 100%;
+        width: 100%;
+
+        &.horizontal {
+            @include bg-gradient-l2r(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+            display: table;
+        }
+
+        &.vertical {
+            margin: 40px 0;
+            @include bg-gradient-t2b(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.15));
+            display: table-cell;
+            vertical-align: middle;
+            position: relative;
+        }
+    }
+
+    .center {
+        max-width: $width - 40 * 2;
+        padding: 80px 40px 60px 40px;
+        margin: 0 auto;
+
+        overflow: hidden;
+
+        // Regelrechte kopie van #header!!
+        max-height: 80vh;
+
+        // Padding erin rekenen
+        box-sizing: border-box;
+
+        article {
+            max-width: 600px;
+        }
+    }
+
+    .navigation {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+
+        @media screen and (max-width: $width-reduce-padding) {
+            display: none;
+        }
+
+        .item {
+            display: inline-block;
+            cursor: pointer;
+            margin: 5px;
+            width: 8px;
+            height: 8px;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.37);
+
+            &.selected {
+                background-color: white;
+            }
+
+            article {
+                display: none;
+            }
+        }
+    }
+
+    button {
+        position: absolute;
+        bottom: 10px;
+    }
+
+    .back {
+        left: $smartphone-padding;
+        padding-left: 30px;
+        background: url(../images/back-white.png) no-repeat left center;
+    }
+    .next {
+        right: $smartphone-padding;
+        padding-right: 30px;
+        background: url(../images/next-white.png) no-repeat right center;
+    }
+
+}

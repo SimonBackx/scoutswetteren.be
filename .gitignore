@@ -1,0 +1,5 @@
+/pirate/composer.phar
+/pirate/vendor/
+/pirate/tmp/
+/public/css/style.css
+.sass-cache

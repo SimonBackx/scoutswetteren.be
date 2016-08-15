@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}Scouts Prins Boudewijn Wetteren</title>
+    <meta charset="UTF-8">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='{{ http }}/css/style.css' rel='stylesheet' type='text/css'>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="{{ description }}">
+
+    <meta property="og:title" content="{{ title }}"> 
+
+    <meta property="og:description" content="{{ description }}">
+
+    <meta property="og:image" content="{{ http }}/images/background.jpg">      
+    <meta property="og:type" content="website">
+
+    <link rel="shortcut icon" href="{{ http }}/favicon.ico">
+
+    <!--[if lt IE 9]>
+     <script type="text/javascript" src="{{http}}/js/html5shiv.min"></script>
+    <![endif]-->
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav id="menu">
+        <div class="logo">
+            <a href="/"><img src="images/menu-logo.png" alt="Prins Boudewijn"></a>
+        </div>
+        <div class="items">
+            <div class="space">
+                <a href="">Info</a>
+                <a href="">Foto's</a>
+                <a href="">Verhuur</a>
+                <a href="">Contact</a>
+                <a href="" class="call-to-action">Lid worden</a>
+            </div>
+            <div class="visible">
+                <a href="">Info</a>
+                <a href="">Foto's</a>
+                <a href="">Verhuur</a>
+                <a href="">Contact</a>
+                <a href="" class="call-to-action">Inschrijven</a>
+            </div>
+            <div class="floater">
+                <div class="smartphone-menu">
+                    <div id="smartphone-menu-button"><img src="images/hamburger.png" alt="Menu"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% block main %}{% endblock %}
+
+    <footer id="footer">
+        <div class="center">
+            <div class="contact">
+                <a href="">
+                    <figure><img src="images/footer-pin.png" alt=""></figure>
+                    <div>Groene Wegel <br>
+                    9230 Wetteren</div>
+                </a>
+                <a href="https://www.facebook.com/scoutsprinsboudewijn">
+                    <figure><img src="images/footer-fb.png" alt=""></figure>
+                    <div>Like ons op Facebook</div>
+                </a>
+            </div>
+            <nav class="sitemap">
+                <div class="bundle">
+                    <div class="column">
+                        <h1>Informatie</h1>
+                        <a href="">Locatie</a>
+                        <a href="">Inschrijven</a>
+                        <a href="">Takken</a>
+                        <a href="">Leiding</a>
+                        <a href="">Oudercomité</a>
+                        <a href="">Kamp en weekend</a>
+                    </div>
+                    <div class="column">
+                        <h1>Verhuur</h1>
+                        <a href="">Praktisch</a>
+                        <a href="">Foto's</a>
+                        <a href="">Beschikbaarheid</a>
+                    </div>
+                </div>
+                <div class="bundle">
+                    <div class="column">
+                        <h1>Foto's</h1>
+                        <a href="">Kapoenen</a>
+                        <a href="">Wouters</a>
+                        <a href="">Jonggivers</a>
+                        <a href="">Givers</a>
+                        <a href="">Jin</a>
+                        <a href="">Algemeen</a>
+                    </div>
+                    <div class="column">
+                        <h1>Contact</h1>
+                        <a href="">Groepsleiding</a>
+                        <a href="">Leiding</a>
+                        <a href="">Oudercomité</a>
+                        <a href="">Verhuur</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,122 @@
+main {
+    background: $lightgray-background;
+    padding: 10px 20px;
+
+    @media screen and (max-width: $width-reduce-padding) {
+        padding: 10px 0;
+    }
+
+    .block {
+        max-width: $width;
+        margin: 40px auto;
+
+        @media screen and (max-width: $width-reduce-padding) {
+            margin: 20px auto;
+        }
+
+        &.white {
+            background: white;
+        }
+
+        
+    }
+}
+
+.splitted {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+
+    @media screen and (max-width: $width-stop-splitted) {
+      display: block;
+    }
+
+    .part {
+        display: table-cell;
+
+        @media screen and (max-width: $width-stop-splitted) {
+          display: block;
+        }
+
+        vertical-align: top;
+
+        &.image {
+            width: 50%;
+
+            @media screen and (max-width: $width-stop-splitted) {
+              width: 100%;
+              height: 400px;
+              margin: 0;
+              padding: 0;
+            }
+
+            position: relative;
+            overflow: hidden;
+
+            img {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                overflow: hidden;
+            }
+            
+            figcaption {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                max-width: 100%;
+                background: $merlot;
+                color: white;
+                padding: 15px 25px;
+            }
+        }
+
+        &.text {
+            padding: 120px 60px;
+            color: $cod-gray;
+
+            @media screen and (max-width: $width-stop-splitted) {
+              padding: 80px 60px;
+            }
+
+            header {
+                h1 {
+                    color: $aubergine;
+                    padding: 0;
+                    margin: 0;
+                }
+                h2 {
+                    color: $merlot;
+                     padding: 0;
+                    margin: 0;
+                }
+                padding-bottom: 40px;
+            }
+            footer {
+                padding-top: 60px;
+
+                a {
+                    margin: 7px;
+                }
+            }
+        }
+
+
+        // Small height screens: make boxes less long
+        @media screen and (max-width: $width-reduce-padding) {
+            &.text {
+                padding: 40px $smartphone-padding;
+
+                header {
+                    padding-bottom: 20px;
+                }
+
+                footer {
+                    padding-top: 30px;
+                }
+            }
+
+        }
+    }
+}

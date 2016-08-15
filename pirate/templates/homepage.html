@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <header id="header">
+        <div class="horizontal gradient">
+            <div class="vertical gradient">
+                <div class="center">
+                    <article>
+                        <h1>{{ slideshows[0].title }}</h1>
+                        <p>{{ slideshows[0].text }}</p>
+                        {% if slideshows[0].button is defined %}
+                            <a href="{{ slide.button.url }}" class="button">{{ slideshows[0].button.text }}</a>
+                            {% if slideshows[0].extra_button is defined %}
+                                <a href="{{ slide.extra_button.url }}" class="button noborder">{{ slideshows[0].extra_button.text }}</a>
+                            {% endif %}
+                        {% endif %}
+                    </article>
+                </div>
+            </div>
+        </div>
+        <button class="back" type="button">
+            Vorige
+        </button>
+        <div class="navigation">
+            {% for slide in slideshows %}
+                <div class="{% if loop.first %}selected {% endif %}item">
+                    <article>
+                        <h1>{{ slide.title }}</h1>
+                        <p>{{ slide.text }}</p>
+                        {% if slide.button is defined %}
+                            <a href="{{ slide.button.url }}" class="button">{{ slide.button.text }}</a>
+                            {% if slide.extra_button is defined %}
+                                <a href="{{ slide.extra_button.url }}" class="button noborder">{{ slide.extra_button.text }}</a>
+                            {% endif %}
+                        {% endif %}
+                    </article>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="next" type="button">
+            Volgende
+        </button>
+    </header>
+    <main>
+        {{ content|raw }}
+        {{ include('call_to_action.html') }}
+    </main>
+{% endblock %}

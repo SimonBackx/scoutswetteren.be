@@ -1,0 +1,95 @@
+.articles{
+    display: block;
+    margin: 0 -10px;
+
+    @media screen and (max-width: $width-stop-splitted) {
+        margin: 0;
+    }
+}
+
+.article-container {
+    width: 50%;
+    height: 450px;
+    float: left;
+    position: relative;
+
+    article {
+        color: $cod-gray;
+
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        top: 10px;
+        bottom: 10px;
+        background: white;
+
+        padding: 60px 60px 0 60px;
+        overflow: hidden;
+
+        header {
+            h1 {
+                color: $aubergine;
+                padding: 0 0 5px 0;
+                margin: 0;
+            }
+            h2 {
+                color: $merlot;
+                padding: 0;
+                margin: 0;
+            }
+            padding-bottom: 20px;
+        }
+
+        .gradient {
+            position: absolute;
+            bottom: 130px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            @include bg-gradient-t2b(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 130px;
+            padding: 0 60px;
+            background: white;
+        }
+    }
+     @media screen and (max-width: $width-stop-splitted) {
+      float: none;
+      display: block;
+      width: auto;
+      height: auto;
+
+      article {
+        position: static;
+        margin-bottom: 20px;
+        padding: 60px;
+
+        .gradient {
+            display: none;
+        }
+        .overlay {
+            position: static;
+            height: auto;
+            padding: 0;
+        }
+      }
+    }
+    @media screen and (max-width: $width-reduce-padding) {
+        article {
+            padding: 40px $smartphone-padding;
+        }
+    }
+    
+}
+
+.button-bar {
+    clear: both;
+    text-align: right;
+    margin: 0 10px;
+}

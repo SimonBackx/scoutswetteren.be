@@ -1,0 +1,108 @@
+#footer {
+    color: white;
+    @include bg-gradient-t2b(#530F1A, #7D1628);
+    text-align: center;
+
+    .center {
+        padding: 60px 20px;
+        max-width: $width;
+        margin: 0 auto;
+        text-align: left;
+
+        @media screen and (max-width: 1000px) {
+            padding: 60px 40px;
+        }
+
+        @media screen and (max-width: $width-reduce-padding) {
+            padding: 60px $smartphone-padding;
+        }
+
+        .sitemap {
+            overflow: hidden;
+            max-width: 1000px;
+
+            @media screen and (max-width: 1000px) {
+                max-width: 500px;
+            }
+
+            .bundle {
+                width: 50%;
+                margin-right: -4px;
+                display: inline-block;
+
+                @media screen and (max-width: 1000px) {
+                    display: block;
+                    width: auto;
+                    margin: 0;
+                }
+                
+                .column {
+                    vertical-align: top;
+                    display: inline-block;
+                    width: 50%;
+                    margin-right: -4px;
+                    padding: 0 50px 40px 0;
+                    box-sizing: border-box;
+
+                    @media screen and (max-width: 700px) {
+                        display: block;
+                        width: auto;
+                        margin: 0;
+                    }
+
+                    h1 {
+                        font-weight: normal;
+                        font-size: $size-subtitle;
+                        margin: 0 0 15px 0;
+                    }
+
+                    a {
+                        text-transform: uppercase;
+                        color: white;
+                        display: block;
+                        margin: 5px 0;
+                        opacity: 0.7;
+
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
+                }
+            }
+        }
+
+        .contact {
+            white-space: normal;
+            float: right;
+
+            @media screen and (max-width: 500px) {
+                float: none;
+                margin-bottom: 60px;
+            }
+
+            a {
+                margin: 20px 0;
+                display: table;
+                max-width: 250px;
+                table-layout: fixed;
+                text-transform: uppercase;
+
+                div, figure {
+                    display: table-cell;
+                    vertical-align: middle;
+
+                    
+                }
+                figure {
+                    width: 40px;
+                    padding-right: 20px;
+                    text-align: center;
+                }
+            }
+
+
+        }
+    }
+
+    
+}
