@@ -23,7 +23,7 @@ function bindMaandplanning() {
 
         console.log('Van '+first_date+' tot '+last_date);
 
-        $('#maandplanning-events').children('div').css('visibility', 'hidden');
+        $('#maandplanning-events').children('div').css({'opacity': 0});
         $height = $('#maandplanning-events').outerHeight();
 
         // Kijken of de maand is veranderd en die eventueel updaten
@@ -52,13 +52,13 @@ function goToWeek(start, end) {
         divOud.remove();
 
         var divNieuw = $('#maandplanning-events').children('div');
-        divNieuw.css('visibility', 'hidden');
+        divNieuw.css({'opacity': 0});
         heightTo = $('#maandplanning-events').height();
         divNieuw.css('height', $height+'px');
         
-        divNieuw.animate({ height: heightTo }, 'fast' , function() {
-            divNieuw.css('visibility', '');
+        divNieuw.animate({ height: heightTo}, 300 , function() {
             divNieuw.css('height', '');
+            divNieuw.animate({ opacity: 1}, 200);
         });
 
     }).fail(function() {
