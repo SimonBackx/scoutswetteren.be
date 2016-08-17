@@ -13,12 +13,12 @@ class Homepage extends Page {
     function getContent() {
         // Block ophalen van maandplanning sail
         
-        //return Block::getBlock('Maandplanning', 'Kalender')->getContent() . '<br />Homepage';
+        $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
 
         return Template::render('homepage', array(
             'title' => 'Titel',
             'description' => 'Beschrijving',
-            'content' => '<p>test</p>',
+            'content' => $maandplanning.'<p>test</p>',
             'slideshows' => array(
                 array(
                     'title' => 'Een nieuwe huisstijl!',
