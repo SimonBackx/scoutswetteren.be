@@ -1,0 +1,21 @@
+<!-- JSON-LD hier toevoegen -->
+
+{% for day in days %}
+    <h1>{{ day.weekday }}<time datetime="{{ day.date_raw }}">{{ day.date }}</time></h1>
+    {% for activity in day.activities %}
+        <article>
+            <div class="group column">
+                {{ activity.group }}
+            </div>
+            <time class="time column" datetime="{{ activity.time_raw }}">
+                {{ activity.time }}
+            </time>
+            <div class="description column">
+                {{ activity.description }}
+            </div>
+            <div class="clear"></div>
+        </article>
+    {% endfor %}
+{% else %}
+    <p>Geen activiteiten deze week</p>
+{% endfor %}

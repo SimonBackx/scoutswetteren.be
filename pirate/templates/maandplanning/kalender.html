@@ -1,32 +1,13 @@
 <section class="white block">
     <div class="splitted">
         <div class="part activities smaller">
-            <!-- JSON-LD hier toevoegen -->
 
-            {% for day in days %}
-                <h1>{{ day.weekday }}<time datetime="{{ day.date_raw }}">{{ day.date }}</time></h1>
-                {% for activity in day.activities %}
-                    <article>
-                        <div class="group column">
-                            {{ activity.group }}
-                        </div>
-                        <time class="time column" datetime="{{ activity.time_raw }}">
-                            {{ activity.time }}
-                        </time>
-                        <div class="description column">
-                            {{ activity.description }}
-                        </div>
-                        <div class="clear"></div>
-                    </article>
-                {% endfor %}
-            {% else %}
-                <p>Geen activiteiten deze week</p>
-            {% endfor %}
+            {% include 'maandplanning/events.html' %}
         </div>
         <div class="part calendar">
             <header>
                 <a class="previous"></a>
-                <time class="month">Maart</time>
+                <time class="month" datetime="{{ calendar.datetime }}">{{ calendar.month }}</time>
                 <a class="next"></a>
             </header>
             <div class="weekdays row">
@@ -39,56 +20,18 @@
                 <div class="column">Zo</div>
                 <div class="clear"></div>
             </div>
-            <div class="row">
-                <time class="column other">31</time>
-                <time class="column">1</time>
-                <time class="column">2</time>
-                <time class="column">3</time>
-                <time class="column">4</time>
-                <time class="column">5</time>
-                <time class="column">6</time>
-                <div class="clear"></div>
-            </div>
-            <div class="selected row">
-                <time class="column">7</time>
-                <time class="column">8</time>
-                <time class="column today">9</time>
-                <time class="column">10</time>
-                <time class="column">11</time>
-                <time class="column">12</time>
-                <time class="column">13</time>
-                <div class="clear"></div>
-            </div>
-            <div class="row">
-                <time class="column">14</time>
-                <time class="column">15</time>
-                <time class="column">16</time>
-                <time class="column">17</time>
-                <time class="column">18</time>
-                <time class="column">19</time>
-                <time class="column">20</time>
-                <div class="clear"></div>
-            </div>
-            <div class="row">
-                <time class="column">21</time>
-                <time class="column">22</time>
-                <time class="column">23</time>
-                <time class="column">24</time>
-                <time class="column">25</time>
-                <time class="column">26</time>
-                <time class="column">27</time>
-                <div class="clear"></div>
-            </div>
-            <div class="row">
-                <time class="column">28</time>
-                <time class="column">29</time>
-                <time class="column">30</time>
-                <time class="column">31</time>
-                <time class="column other">1</time>
-                <time class="column other">2</time>
-                <time class="column other">3</time>
-                <div class="clear"></div>
-            </div>
+
+            {% for week in calendar.weeks %}
+                <div class="row{% if week.is_selected == true %} selected{% endif %}">
+                    {% for day in week.days %}
+                        <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} other{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
+                    {% endfor %}
+                    <div class="clear"></div>
+                </div>
+            {% else %}
+                <p>We konden de kalender niet laden. Contacteer ons als dit probleem zich blijft voordoen.</p>
+            {% endfor %}
+
             <footer>
                 <input type="text" name="" class="white search" placeholder="Zoeken">
             </footer>

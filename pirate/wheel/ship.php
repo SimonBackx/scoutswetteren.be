@@ -5,7 +5,7 @@ use \Pirate\Database\Database;
 class Ship {
     function sail() {
         global $config;
-        
+
         date_default_timezone_set('Europe/Brussels');
 
         // Catch all errors and warnings
@@ -26,7 +26,7 @@ class Ship {
         // Load router
         require(__DIR__.'/router.php');
         $router = new Route\Router();
-        $page = $router->route('/test');
+        $page = $router->route($_GET['route']);
 
         // Return the page, set the status code etc.
         // 

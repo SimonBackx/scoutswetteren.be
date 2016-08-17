@@ -6,20 +6,21 @@ use Pirate\Model\Model;
 use Pirate\Model\Event;
 
 class Kalender extends Block {
-    function getHead() {
-        return '';
-    }
 
-    function getContent() {
-        global $config;
-
+    // start = inclusive Y-m-d
+    // end = exclusive Y-m-d
+    // empty array on fail
+    function getRawEvents($start, $end) {
         //Begin en einde van de huidige week berekenen
-        $day = date('N')-1;
-        $week_start = date('Y-m-d 00:00', strtotime('-'.$day.' days'));
-        $week_end = date('Y-m-d 00:00', strtotime('+'.(7-$day).' days'));
+        $week_start = $start.' 00:00';
+        $week_end = $end.' 00:00';
 
-        $week_start_datetime = new \DateTime($week_start);
-        $week_end_datetime = new \DateTime($week_end);
+        try {
+            $week_start_datetime = new \DateTime($week_start);
+            $week_end_datetime = new \DateTime($week_end);
+        } catch (Exception $e) {
+            return array();
+        }
 
         // Evenementen ophalen
         Model::loadModel('maandplanning', 'event');
@@ -102,8 +103,79 @@ class Kalender extends Block {
             );
         }
 
+        return array_values($data);
+    }
 
-        return Template::render('maandplanning/kalender', array('days' => array_values($data)));
+    // Geeft enkel de activities (ideaal voor ajax request)
+    // start = inclusive Y-m-d
+    // end = exclusive Y-m-d
+    function getEvents($start, $end) {
+        return Template::render('maandplanning/events', array('days' => $this->getRawEvents($start, $end)));
+    }
+
+    // Geeft volledige block
+    function getContent() {
+        global $config;
+        $day = date('N')-1;
+
+        // Maand bepalen
+        $day = date('N')-1;
+        $month = date('m', strtotime('+'.(7-$day).' days'));
+        $year = date('Y', strtotime('+'.(7-$day).' days'));
+
+        $week_start = date('Y-m-d', strtotime('-'.$day.' days'));
+        $week_end = date('Y-m-d', strtotime('+'.(7-$day).' days'));
+
+        // Jump naar eerste dag vd maand
+        $day = new \DateTime($year.'-'.$month.'-01');
+        $first_datetime_string = $day->format('c');
+        
+        // keep running back until we reach a monday
+        while ($day->format('N') != 1) {
+            $day = $day->modify('-1 day');
+        }
+
+        // Start adding to our array
+        $data = array();
+
+        // 0 = maandag, 6 = zondag
+        // i.p.v. elke keer te berekenen
+        $weekday = 0;
+
+        $week = -1;
+
+        $today = date('Ymd');
+         
+        // Blijf herhalen tot we aan een dag komen in een week zonder dagen in deze maand
+        while ($week < 4 || $day->format('m') == $month || $weekday != 0) {
+            if ($weekday == 0) {
+                $week++;
+                $data[] = array('is_selected' => false, 'days' => array());
+            }
+
+            $data[count($data)-1]['days'][] = array(
+                'day' => $day->format('j'),
+                'is_today' => ($today == $day->format('Ymd')),
+                'is_current_month' => ($day->format('m') == $month),
+                'datetime' => $day->format('c')
+            );
+
+            // Volgende klaar zetten
+            $day = $day->modify('+1 day');
+            $weekday = ($weekday + 1)%7;
+
+        }
+
+        return Template::render('maandplanning/kalender', 
+                array(
+                    'days' => $this->getRawEvents($week_start, $week_end),
+                    'calendar' => array(
+                        'weeks' => $data,
+                        'month' => ucfirst($config['months'][$month-1]),
+                        'datetime' => $day->format('c')
+                    )
+                )
+            );
     }
 
 }
