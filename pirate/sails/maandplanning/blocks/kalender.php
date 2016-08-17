@@ -32,14 +32,6 @@ class Kalender extends Block {
         // Alle evenementen overlopen en data toevoegen aan de array
         foreach ($events as $event) {
             $date = intval($event->startdate->format('Ymd'));
-            if (!isset($data[$date])) {
-                $data[$date] = array(
-                    'weekday' => ucfirst(datetimeToWeekday($event->startdate)),
-                    'date' => datetimeToDateString($event->startdate),
-                    'date_raw' => $date,
-                    'activities' => array()
-                );
-            }
 
             $time = $event->startdate->format('H:i');
 
@@ -93,6 +85,15 @@ class Kalender extends Block {
 
             if (!empty($event->location)) {
                 $time .= ', '.$event->location;
+            }
+
+            if (!isset($data[$date])) {
+                $data[$date] = array(
+                    'weekday' => ucfirst(datetimeToWeekday($event->startdate)),
+                    'date' => datetimeToDateString($event->startdate),
+                    'date_raw' => $date,
+                    'activities' => array()
+                );
             }
 
             $data[$date]['activities'][] = array(
@@ -152,13 +153,18 @@ class Kalender extends Block {
                 $week++;
                 $data[] = array('is_selected' => false, 'days' => array());
             }
+            $is_today = ($today == $day->format('Ymd'));
 
             $data[count($data)-1]['days'][] = array(
                 'day' => $day->format('j'),
-                'is_today' => ($today == $day->format('Ymd')),
+                'is_today' => $is_today,
                 'is_current_month' => ($day->format('m') == $month),
                 'datetime' => $day->format('c')
             );
+
+            if ($is_today) {
+                $data[count($data)-1]['is_selected'] = true;
+            }
 
             // Volgende klaar zetten
             $day = $day->modify('+1 day');

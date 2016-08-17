@@ -15,14 +15,16 @@ class Router {
         
         // Route 'website' available in Website sail
         // check api used
-        $parts = explode($url, '/');
+        $parts = explode('/', $url);
         if ($parts[0] == 'api') {
             include(__DIR__.'/../sails/_bindings/api.php');
             if (!isset($api_routes)) {
                 echo 'Api Route bindings not found';
                 exit;
             }
-            $module = strtolower($parts[1]);
+            array_shift($parts);
+            $module = array_shift($parts);
+            $url = implode('/', $parts);
 
             if (in_array($module, $api_routes)) {
                 $ucfirst_module = ucfirst($module);
@@ -30,6 +32,9 @@ class Router {
                 $classname = "\\Pirate\\Sail\\$ucfirst_module\\{$ucfirst_module}ApiRouter";
 
                 $router = new $classname();
+
+                
+
                 if ($router->doMatch($url)) {
                     return $router->getPage($url);
                 }

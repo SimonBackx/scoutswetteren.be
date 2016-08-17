@@ -1,5 +1,5 @@
 <!-- JSON-LD hier toevoegen -->
-
+<div>
 {% for day in days %}
     <h1>{{ day.weekday }}<time datetime="{{ day.date_raw }}">{{ day.date }}</time></h1>
     {% for activity in day.activities %}
@@ -19,3 +19,4 @@
 {% else %}
     <p>Geen activiteiten deze week</p>
 {% endfor %}
+</div>

@@ -22,9 +22,10 @@ class Event extends Model {
         $this->group = $row['group'];
     }
 
+    // Maximaal 30 events! Rest wordt weg geknipt
     static function getEvents($startdate, $enddate) {
         $events = array();
-        $query = 'SELECT * FROM events WHERE (startdate >= "'.$startdate.'" AND startdate < "'.$enddate.'") OR (enddate >= "'.$startdate.'" AND enddate < "'.$enddate.'") ORDER BY startdate, group_order';
+        $query = 'SELECT * FROM events WHERE (startdate >= "'.$startdate.'" AND startdate < "'.$enddate.'") OR (enddate >= "'.$startdate.'" AND enddate < "'.$enddate.'") ORDER BY startdate, group_order LIMIT 30';
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
                 while ($row = $result->fetch_assoc()) {

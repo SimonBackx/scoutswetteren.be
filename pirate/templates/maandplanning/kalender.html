@@ -1,7 +1,6 @@
 <section class="white block">
     <div class="splitted">
-        <div class="part activities smaller">
-
+        <div class="part activities smaller" id="maandplanning-events">
             {% include 'maandplanning/events.html' %}
         </div>
         <div class="part calendar">
@@ -31,6 +30,8 @@
             {% else %}
                 <p>We konden de kalender niet laden. Contacteer ons als dit probleem zich blijft voordoen.</p>
             {% endfor %}
+
+            <div class="spacer"></div>
 
             <footer>
                 <input type="text" name="" class="white search" placeholder="Zoeken">

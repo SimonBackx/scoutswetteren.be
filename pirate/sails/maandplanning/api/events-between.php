@@ -22,6 +22,6 @@ class EventsBetween extends Page {
     function getContent() {
         // Block ophalen van maandplanning sail
         
-        return Block::getBlock('Maandplanning', 'Kalender')->getEvents();
+        return Block::getBlock('Maandplanning', 'Kalender')->getEvents($this->start, $this->end);
     }
 }
