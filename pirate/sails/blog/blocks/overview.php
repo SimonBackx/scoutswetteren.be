@@ -19,7 +19,7 @@ class Overview extends Block {
                 'title' => $article->title,
                 'date' => datetimeToDateString($article->published),
                 'short' => snippetFromHtml($article->html),
-                'url' => '/blog/'.datetimeToUrl($article->published).'/'.$article->slug,
+                'url' => $article->getUrl(),
             );
         }
         return array(

@@ -28,7 +28,7 @@ class Search extends Page {
             $data['results'][] = array(
                 'title' => $article->title,
                 'date' => $time_str,
-                'snippet' => ''
+                'url' => $article->getUrl()
             );
         }
 

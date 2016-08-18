@@ -34,6 +34,10 @@ class Article extends Model {
         $this->editor = $row['editor'];
     }
 
+    function getUrl() {
+        return '/blog/'.datetimeToUrl($this->published).'/'.$this->slug;
+    }
+
     // Maximaal 5 artikels, pagina grootte = 4 
     // Detectie of volgende pagina bestaat is dus gewoon nagaan of er 5 zijn meegegeven
     static function getArticles($page = 1) {
