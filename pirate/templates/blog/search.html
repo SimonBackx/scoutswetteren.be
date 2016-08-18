@@ -1,0 +1,12 @@
+{% for result in results %}
+    <article class="result{% if loop.last %} last{% endif %}">
+        <h1>{{ result.title }}</h1>
+        <p>{{ result.date }}</p>
+        <p>{{ result.snippet }}</p>
+        <p><a href="{{ result.url }}" class="button aubergine noborder">Meer lezen</a></p>
+    </article>
+{% else %}
+    <article class="result last">
+        <h1>Geen resultaten</h1>
+    </article>
+{% endfor %}

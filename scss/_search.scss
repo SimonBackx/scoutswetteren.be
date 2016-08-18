@@ -1,0 +1,127 @@
+.search-box {
+    text-align: right;
+    position: relative;
+
+    &.inline {
+        display: inline-block;
+        width: 350px;
+
+        @media screen and (max-width: $width-stop-splitted) {
+            display: block;
+            width: auto;
+            max-width: 350px;
+            margin: 0 0 0 auto;
+        }
+    }
+
+    .results-anchor {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        left: 5px;
+        right: 5px;
+
+        .results {
+            text-align: left;
+            position: absolute;
+            padding: 10px 0;
+            left: 0;
+            right: 0;
+            top: 10px;
+            background: #FFFFFF;
+            box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.50);
+            border-radius: 4px;
+
+            max-height: 400px;
+            overflow: scroll;
+
+            .result {
+                padding: 20px 30px;
+                border-bottom: 1px solid $line-gray;
+                color: $merlot;
+
+                h1 {
+                    font-size: 20pt;
+                    font-weight: normal;
+                    padding-bottom: 5px;
+                    margin: 0;
+                    color: $aubergine;
+                }
+
+                p {
+                    padding: 0;
+                    margin: 0;
+                }
+
+                .button {
+                    margin: 5px 0 0 0;
+                }
+
+                &.last {
+                    border: 0;
+                }
+
+                &.outdated {
+                    opacity: 0.5;
+                }
+            }
+        }
+    }
+}
+
+input.search {
+    padding: 10px 10px 10px 40px;
+    margin-bottom: 12px;
+    width: 120px;
+    box-sizing: border-box;
+
+    -webkit-transition: width 0.5s; /* Safari */
+    transition: width 0.5s;
+
+    background: none;
+    border: 0;
+    outline: none;
+    font-size: $size-button;
+
+    &::-webkit-input-placeholder {
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;
+    }
+
+    &:-moz-placeholder { /* Firefox 18- */
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;  
+    }
+
+    &::-moz-placeholder {  /* Firefox 19+ */
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;  
+    }
+
+    &:-ms-input-placeholder {  
+        text-transform: uppercase;
+        text-align: right;
+        color: inherit;  
+    }
+
+    &.aubergine {
+        color: $aubergine;
+        background: url(../images/hourglass-aubergine.png) no-repeat left center;
+        border-color: $aubergine;
+    }
+
+    &.white {
+        color: white;
+        background: url(../images/hourglass-white.png) no-repeat left center;
+        border-color: white;
+    }
+
+    &:focus {
+        width: 100%;
+        border-bottom: 2px solid;
+        margin-bottom: 10px;
+    }
+}

@@ -24,9 +24,6 @@ class Search extends Page {
 
         $data = array('results' => array());
 
-
-
-
         foreach ($events as $event) {
             $multiple_days = ($event->startdate->format('Ymd') != $event->enddate->format('Ymd'));
 

@@ -50,4 +50,21 @@ class Article extends Model {
         }
         return $articles;
     }
+
+    // Maximaal 5 artikels, pagina grootte = 4 
+    // Detectie of volgende pagina bestaat is dus gewoon nagaan of er 5 zijn meegegeven
+    static function searchArticles($needle) {
+        $needle = self::getDb()->escape_string($needle);
+
+        $articles = array();
+        $query = 'SELECT * from articles  WHERE MATCH (title,`text`) AGAINST ("'.$needle.'" IN NATURAL LANGUAGE MODE);';
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $articles[] = new Article($row);
+                }
+            }
+        }
+        return $articles;
+    }
 }

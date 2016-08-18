@@ -2,7 +2,13 @@
     <div class="articles smaller">
         {% include 'blog/articles.html' %}
         <div class="button-bar">
-            <input type="text" name="" class="aubergine search" placeholder="Zoeken">
+            <div class="inline search-box">
+                <input type="text" name="" class="aubergine search" placeholder="Zoeken" data-sail="blog">
+                <div class="results-anchor">
+                    <div class="results"></div>
+                </div>
+            </div>
+
 
             {% if has_more %}<button class="button aubergine noborder">Meer nieuws</button>{% endif %}
         </div>
