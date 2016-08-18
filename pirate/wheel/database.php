@@ -12,6 +12,7 @@ class Database {
                 header('Location: /oops/database.html');
                 
             }
+            self::$mysqli->set_charset("utf8mb4");
         }
         catch (Exception $e) {
             header('Location: /oops/database.html');

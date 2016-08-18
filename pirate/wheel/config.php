@@ -7,7 +7,7 @@ $config = array(
 
 function datetimeToDateString($datetime) {
     global $config;
-    return $datetime->format('d').' '.$config['months'][$datetime->format('n')-1];
+    return $datetime->format('j').' '.$config['months'][$datetime->format('n')-1];
 }
 function datetimeToWeekday($datetime) {
     global $config;
