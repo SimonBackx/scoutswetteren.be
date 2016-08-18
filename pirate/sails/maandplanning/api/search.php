@@ -31,11 +31,11 @@ class Search extends Page {
             $multiple_days = ($event->startdate->format('Ymd') != $event->enddate->format('Ymd'));
 
             $time = $event->startdate->format('H:i');
-            $time_str = ucfirst(datetimeToWeekday($event->startdate)).' '.datetimeToDateString($event->startdate).' om '.$time;
+            $time_str = ucfirst(datetimeToWeekday($event->startdate)).' '.datetimeToDateString($event->startdate);
             if ($multiple_days) {
-                $time_str .= ' tot '. datetimeToDateString($event->enddate).' '.$event->enddate->format('H:i');
+                $time_str .= ', '.$time.' tot '. datetimeToDateString($event->enddate).', '.$event->enddate->format('H:i');
             } else {
-                $time_str .= ' tot '.$event->enddate->format('H:i');;
+                $time_str .= ' van '.$time.' tot '.$event->enddate->format('H:i');;
             }
 
             if (!empty($event->location)) {

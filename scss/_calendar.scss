@@ -24,12 +24,14 @@
 
                 &.group {
                     color: $merlot;
-                    width: 130px;
+                    width: 110px;
+                    padding-right: 20px;
                 }
 
                 &.time {
                     color: $aubergine;
-                    width: 150px;
+                    width: 130px;
+                    padding-right: 20px;
                 }
 
                 &.description {
