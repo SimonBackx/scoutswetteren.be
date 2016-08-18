@@ -130,7 +130,6 @@
                 float: left;
                 width: 1/7*100%;
                 text-align: center;
-                cursor: pointer;
 
                 &.today {
                     color: $bright-sun;
@@ -145,6 +144,12 @@
             }
         }
 
+        #calendar-weeks {
+            .row {
+                cursor: pointer;
+            }
+        }
+
         .spacer {
             height: 150px;
             display: block;
@@ -154,6 +159,7 @@
             position: absolute;
             bottom: 0;
             right: 20px;
+            left: 20px;
         }
         
     }

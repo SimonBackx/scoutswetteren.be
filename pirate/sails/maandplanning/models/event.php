@@ -24,8 +24,27 @@ class Event extends Model {
 
     // Maximaal 30 events! Rest wordt weg geknipt
     static function getEvents($startdate, $enddate) {
+        $startdate = self::getDb()->escape_string($startdate);
+        $enddate = self::getDb()->escape_string($enddate);
+
         $events = array();
         $query = 'SELECT * FROM events WHERE (startdate >= "'.$startdate.'" AND startdate < "'.$enddate.'") OR (enddate >= "'.$startdate.'" AND enddate < "'.$enddate.'") ORDER BY startdate, group_order LIMIT 30';
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $events[] = new Event($row);
+                }
+            }
+        }
+        return $events;
+    }
+
+    static function searchEvents($needle) {
+        $needle = self::getDb()->escape_string($needle);
+        
+        $events = array();
+        $query = 'SELECT * FROM events WHERE `name` like "%'.$needle.'%" OR `group` like "%'.$needle.'%" ORDER BY startdate < NOW(), startdate, group_order LIMIT 30';
+        
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
                 while ($row = $result->fetch_assoc()) {

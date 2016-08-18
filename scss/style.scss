@@ -7,6 +7,7 @@ $heath: #520F1A;
 
 $lightgray-background: #F5F5F5;
 $gray-background: #F8F8F8;
+$line-gray: #EAEAEA;
 $width: 1400px;
 
 $size-title: 30pt;
@@ -163,6 +164,61 @@ a.button {
 
     &.big {
         font-size: $size-button-big;
+    }
+}
+
+.search-box {
+    text-align: right;
+    position: relative;
+
+    .results-anchor {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        left: 10px;
+        right: -10px;
+
+        .results {
+            text-align: left;
+            position: absolute;
+            padding: 10px 0;
+            left: 0;
+            right: 0;
+            top: 10px;
+            background: #FFFFFF;
+            box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.50);
+            border-radius: 4px;
+
+            max-height: 400px;
+            overflow: scroll;
+
+            .result {
+                padding: 20px 30px;
+                border-bottom: 1px solid $line-gray;
+                color: $merlot;
+
+                h1 {
+                    font-size: 20pt;
+                    font-weight: normal;
+                    padding-bottom: 5px;
+                    margin: 0;
+                    color: $aubergine;
+                }
+
+                p {
+                    padding: 0;
+                    margin: 0;
+                }
+
+                .button {
+                    margin: 5px 0 0 0;
+                }
+
+                &.last {
+                    border: 0;
+                }
+            }
+        }
     }
 }
 

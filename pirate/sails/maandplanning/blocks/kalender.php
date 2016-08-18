@@ -132,9 +132,8 @@ class Kalender extends Block {
         $first_datetime_string = $day->format('c');
         
         // keep running back until we reach a monday
-        while ($day->format('N') != 1) {
-            $day = $day->modify('-1 day');
-        }
+        $wkday = $day->format('N')-1;
+        $day = $day->modify('-'.$wkday.' days' );
 
         // Start adding to our array
         $data = array();
@@ -178,7 +177,7 @@ class Kalender extends Block {
                     'calendar' => array(
                         'weeks' => $data,
                         'month' => ucfirst($config['months'][$month-1]),
-                        'datetime' => $day->format('c')
+                        'datetime' => $first_datetime_string
                     )
                 )
             );

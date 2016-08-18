@@ -5,9 +5,9 @@
         </div>
         <div class="part calendar">
             <header>
-                <a class="previous"></a>
+                <button class="previous"></button>
                 <time class="month" datetime="{{ calendar.datetime }}">{{ calendar.month }}</time>
-                <a class="next"></a>
+                <button class="next"></button>
             </header>
             <div class="weekdays row">
                 <div class="column">Ma</div>
@@ -20,22 +20,51 @@
                 <div class="clear"></div>
             </div>
 
-            {% for week in calendar.weeks %}
-                <div class="row{% if week.is_selected == true %} selected{% endif %}">
-                    {% for day in week.days %}
-                        <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} other{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
-                    {% endfor %}
-                    <div class="clear"></div>
-                </div>
-            {% else %}
-                <p>We konden de kalender niet laden. Contacteer ons als dit probleem zich blijft voordoen.</p>
-            {% endfor %}
+            <div id="calendar-weeks">
+                {% for week in calendar.weeks %}
+                    <div class="row{% if week.is_selected == true %} selected{% endif %}">
+                        {% for day in week.days %}
+                            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} other{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
+                        {% endfor %}
+                        <div class="clear"></div>
+                    </div>
+                {% else %}
+                    <p>We konden de kalender niet laden. Contacteer ons als dit probleem zich blijft voordoen.</p>
+                {% endfor %}
+            </div>
 
             <div class="spacer"></div>
 
             <footer>
-                <input type="text" name="" class="white search" placeholder="Zoeken">
+                <div class="search-box">
+                    <input type="text" name="" class="white search" placeholder="Zoeken">
+                    <div class="results-anchor">
+                        <div class="results">
+                            <article class="result">
+                                <h1>Winterfeest</h1>
+                                <p>12 oktober van 12:00 tot 16:00</p>
+                                <p>Kapoenen</p>
+                                <p><a href="" class="button aubergine noborder">Meer lezen</a></p>
+                            </article>
+                           
+                        </div>
+                    </div>
+                </div>
             </footer>
+            {% verbatim %}
+            <script id="template-calendar" type="text/html">
+                {% for week in calendar.weeks %}
+                    <div class="row{% if week.is_selected == true %} selected{% endif %}">
+                        {% for day in week.days %}
+                            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} other{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
+                        {% endfor %}
+                        <div class="clear"></div>
+                    </div>
+                {% else %}
+                    <p>We konden de kalender niet laden. Contacteer ons als dit probleem zich blijft voordoen.</p>
+                {% endfor %}
+            </script>
+            {% endverbatim %}
         </div>
     </div>
 </section>

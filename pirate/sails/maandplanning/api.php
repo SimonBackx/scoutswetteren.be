@@ -12,11 +12,20 @@ class MaandplanningApiRouter extends Route {
             // Formaat nog verifieren!!
             return true;
         }
+        if ($parts[0] == 'search') {
+            // Formaat nog verifieren!!
+            return true;
+        }
         return false;
     }
 
     function getPage($url) {
         $parts = explode('/', $url);
+
+        if ($parts[0] == 'search') {
+            require(__DIR__.'/api/search.php');
+            return new Api\Search($_GET['q']);
+        }
 
         require(__DIR__.'/api/events-between.php');
         return new Api\EventsBetween($parts[1], $parts[2]);
