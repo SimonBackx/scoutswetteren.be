@@ -194,7 +194,19 @@ function searchEvents(needle) {
       url: "/api/maandplanning/search?q="+encodeURIComponent(needle),
       dataType: 'html',
     }).done(function(data, textStatus, jqXHR) {
-        $('.calendar .search-box .results').html(data);
+        var results = $('.calendar .search-box .results');
+        results.html(data);
+        // Kijken of het onderste deel van de resultaten in beeld is, en bijscrollen indien nodig
+        var scrollPosition = $(window).scrollTop();
+        var viewHeight = $(window).height();
+
+        var resultsHeight = $(results).outerHeight() + 20;
+        var resultsOffset = results.offset().top;
+
+        // Als meer dan de helft onzichtbaar is
+        if (scrollPosition + viewHeight < resultsHeight + resultsOffset) {
+            $('body, html').animate({scrollTop: Math.min($('.calendar .search-box').offset().top, resultsOffset + resultsHeight - viewHeight)}, 'fast');
+        }
     }).fail(function() {
         $('.calendar .search-box .results').html('<h1>Er ging iets fout</h1>');
     });
