@@ -19,7 +19,7 @@ $( document ).ready(function() {
         goToMonth(current);
     });
 
-    $('.calendar input.search').keyup(function() {
+    $('.calendar input.search').bind("propertychange change click keyup input paste", function(event){
         var needle = $(this).val();
 
         if (needle.length == 0) {
@@ -84,9 +84,6 @@ function bindMaandplanning() {
         var last_date = new Date(last.attr('datetime')).addDays(1);
 
         console.log('Van '+first_date+' tot '+last_date);
-
-        $('#maandplanning-events').children('div').css({'opacity': 0});
-        $height = $('#maandplanning-events').outerHeight();
 
         goToWeek(first_date, last_date);
     });
@@ -161,22 +158,24 @@ function goToMonth(firstday) {
 
 
 function goToWeek(start, end) {
+    $('#maandplanning-events').children('div').animate({'opacity': 0}, 200);
+    $height = $('#maandplanning-events').outerHeight();
+
     // Start download
     $.ajax({
       url: "/api/maandplanning/events-between/"+dateToString(start)+"/"+dateToString(end)+"/",
       dataType: 'html',
     }).done(function(data, textStatus, jqXHR) {
-
         var divOud = $('#maandplanning-events').children('div');
-        $height = divOud.height();
+        height = divOud.outerHeight();
         // Hoogte berekenen van toe te voegen deel door snel toevoegen en verwijderen
         $('#maandplanning-events').append(data);
         divOud.remove();
 
         var divNieuw = $('#maandplanning-events').children('div');
         divNieuw.css({'opacity': 0});
-        heightTo = $('#maandplanning-events').height();
-        divNieuw.css('height', $height+'px');
+        heightTo = divNieuw.outerHeight();
+        divNieuw.css({'height': height});
         
         divNieuw.animate({ height: heightTo}, 300 , function() {
             divNieuw.css('height', '');

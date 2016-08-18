@@ -1,6 +1,10 @@
 
 .splitted .part {
     &.activities {
+        div {
+            overflow: visible !important;
+        }
+        
         padding: 40px 0 80px 0;
 
         h1 {

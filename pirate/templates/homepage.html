@@ -42,7 +42,35 @@
         </button>
     </header>
     <main>
-        {{ content|raw }}
+        {{ maandplanning | raw }}
+
+        <article class="white block">
+            <div class="splitted">
+                <figure class="part image">
+                    <img src="images/over-flat.jpg" alt="">
+                    <figcaption>Groepskamp 2015</figcaption>
+                </figure>
+                <div class="part text">
+                    <header>
+                        <h1>Over onze scouts</h1>
+                    </header>
+
+                    <p>Op de scouts maak je plezier, maar leer je ook op je eigen benen staan, samenwerken en je in te zetten voor de groep en anderen. Bovendien leer je vrienden voor het leven kennen.</p>
+
+                    <p>Elke zondag staat onze leiding paraat om activiteiten te organiseren voor onze leden. Welke dat zijn hangt af van de tak (leeftijdsgroep): spelletjes, een tocht, wafels verkopen, leren sjorren... Alles over de takverdeling vind je op onze info pagina.</p>
+
+                    <p>Alle kinderen vanaf 6 jaar (eerste leerjaar) tot 18 jaar zijn welkom op de scouts. Nieuwe leden ontvangen we met open armen op één van onze activiteiten, zij kunnen gratis 2 keer langs komen zonder zich te moeten inschrijven. Op de maandplanning hierboven kan je zien wanneer de volgende activiteiten plaatsvinden.</p>
+                    
+                    <footer>
+                        <a href="" class="button fill merlot">Meer info</a>
+                        <a href="" class="button merlot">Inschrijven</a>
+                    </footer>
+                </div>
+            </div>
+        </article>
+
+        {{ blog | raw }}
+
         {{ include('call_to_action.html') }}
     </main>
 {% endblock %}
