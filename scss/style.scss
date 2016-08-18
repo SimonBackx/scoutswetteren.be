@@ -217,6 +217,10 @@ a.button {
                 &.last {
                     border: 0;
                 }
+
+                &.outdated {
+                    opacity: 0.5;
+                }
             }
         }
     }

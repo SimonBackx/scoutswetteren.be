@@ -7,7 +7,14 @@ $config = array(
 
 function datetimeToDateString($datetime) {
     global $config;
-    return $datetime->format('j').' '.$config['months'][$datetime->format('n')-1];
+    $jaar = $datetime->format('Y') ;
+    $now = new DateTime();
+    if ($jaar ==  date("Y") && $now <= $datetime) {
+        $jaar = '';
+    } else {
+        $jaar = ' '.$jaar;
+    }
+    return $datetime->format('j').' '.$config['months'][$datetime->format('n')-1].$jaar;
 }
 function datetimeToWeekday($datetime) {
     global $config;

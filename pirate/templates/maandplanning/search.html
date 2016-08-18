@@ -1,5 +1,5 @@
 {% for result in results %}
-    <article class="result{% if loop.last %} last{% endif %}">
+    <article class="result{% if loop.last %} last{% endif %}{% if result.in_past %} outdated{% endif %}">
         <h1>{{ result.name }}</h1>
         <p>{{ result.time }}</p>
         <p>{{ result.group }}</p>

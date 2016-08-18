@@ -45,7 +45,8 @@ class Search extends Page {
             $data['results'][] = array(
                 'name' => $event->name,
                 'time' => $time_str,
-                'group' => $event->group
+                'group' => $event->group,
+                'in_past' => $event->in_past
             );
         }
 
