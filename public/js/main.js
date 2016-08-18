@@ -19,6 +19,10 @@ $( document ).ready(function() {
         goToMonth(current);
     });
 
+    $('.articles button').click(function() {
+        nextPage();
+    });
+
     $('.calendar input.search').bind("propertychange change click keyup input paste", function(event){
         var needle = $(this).val();
 
@@ -230,3 +234,64 @@ function pad(str){
     }
     return str;
 }
+
+function nextPage() {
+    // Huidige pagina bepalen
+    var last = $('.article-bundle:last');
+    var page = parseInt(last.attr('data-page')) + 1;
+    var button = $('.articles button');
+
+    var message = $('<div class="article-message"><h1>Bezig met laden...</h1></div>');
+
+    last.after(message);
+    message.hide();
+
+    var remove_if_done = false;
+    var finished = false;
+    
+    message.slideDown(500, function() {
+        finished = true;
+        if (remove_if_done) {
+            message.slideUp(500, function() {
+                $(this).remove();
+            });
+        }
+    });
+
+    button.prop("disabled", true);
+
+    // Start download
+    $.ajax({
+      url: "/api/blog/get-page/"+page+"/",
+      dataType: 'html',
+    }).done(function(data, textStatus, jqXHR) {       
+        message.after(data);
+        var added = $('.article-bundle:last');
+        added.hide();
+        var has_more = (parseInt(added.attr('data-has-more')) === 1);
+
+        if (!has_more) {
+            button.remove();
+        }
+
+        added.slideDown(700);
+
+    }).fail(function() {
+        last.after('<div class="article-message"><h1>Er ging iets fout</h1></div>');
+    }).always(function() {
+        if (finished) {
+            message.slideUp(500, function() {
+                $(this).remove();
+            });
+        } else {
+            remove_if_done = true;
+        }
+
+        button.prop("disabled", false);
+    });
+}
+
+
+
+
+

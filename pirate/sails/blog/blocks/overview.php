@@ -5,14 +5,11 @@ use Pirate\Template\Template;
 use Pirate\Model\Model;
 use Pirate\Model\Article;
 
-class BlogOverview extends Block {
+class Overview extends Block {
 
-    // Geeft volledige block
-    function getContent() {
-
-         // Evenementen ophalen
+    function getArticlesRaw($page = 1) {
         Model::loadModel('blog', 'article');
-        $articles = Article::getArticles(1);
+        $articles = Article::getArticles($page);
 
         $data = array();
 
@@ -25,15 +22,20 @@ class BlogOverview extends Block {
                 'url' => '/blog/'.datetimeToUrl($article->published).'/'.$article->slug,
             );
         }
-        
-
-
-        return Template::render('blog/blog-overview', 
-                array(
+        return array(
                     'articles' => $data,
+                    'page' => $page,
                     'has_more' => (count($articles) == 5)
-                )
-            );
+                );
+    }
+    // Geeft volledige block
+    function getArticles($page = 1) {
+        return Template::render('blog/articles', $this->getArticlesRaw($page));
+    }
+
+    // Geeft volledige block
+    function getContent() {
+        return Template::render('blog/overview', $this->getArticlesRaw(1));
     }
 
 }

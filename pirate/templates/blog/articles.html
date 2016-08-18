@@ -1,0 +1,27 @@
+{% if articles %}
+    <div class="article-bundle" data-has-more="{{ has_more |e('html_attr') }}" data-page="{{ page |e('html_attr') }}">
+    {% for article in articles %}
+        <div class="article-container">
+            <article>
+                <header>
+                    <h1>{{ article.title }}</h1>
+                    <h2>{{ article.date }}</h2>
+                </header>
+                <blockquote cite="{{ article.url |e('html_attr') }}">
+                    <p>{{ article.short }}</p>
+                </blockquote>
+                
+                <div class="gradient"></div>
+                <div class="overlay">
+                    <a href="{{ article.url |e('html_attr') }}" class="button merlot">Verder lezen</a>
+                </div>
+            </article>
+        </div>
+    {% endfor %}
+    <div class="clear"></div>
+    </div>
+{% else %}
+    <div class="article-bundle article-message" data-has-more="0">
+        <h1>Geen artikels gevonden</h1>
+    </div>
+{% endif %}

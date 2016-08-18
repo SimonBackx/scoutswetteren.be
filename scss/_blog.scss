@@ -7,6 +7,15 @@
     }
 }
 
+.article-message {
+    h1 {
+        text-align: center;
+        color: $aubergine;
+        padding: 10px 0;
+        margin: 0;
+    }
+}
+
 .article-container {
     width: 50%;
     height: 450px;
