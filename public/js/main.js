@@ -20,7 +20,8 @@ $( document ).ready(function() {
         goToMonth(current);
     });
 
-    $('.articles button').click(function() {
+    $('.articles a.button').click(function(event) {
+        event.preventDefault();
         nextPage();
     });
 
@@ -264,7 +265,7 @@ function nextPage() {
     // Huidige pagina bepalen
     var last = $('.article-bundle:last');
     var page = parseInt(last.attr('data-page')) + 1;
-    var button = $('.articles button');
+    var button = $('.articles a.button');
 
     var message = $('<div class="article-message"><h1>Bezig met laden...</h1></div>');
 

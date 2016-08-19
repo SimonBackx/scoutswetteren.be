@@ -13,7 +13,12 @@ class Overview extends Block {
 
         $data = array();
 
-        for ($i=0; $i < count($articles) && $i < 4; $i++) { 
+        $max = 4;
+        if ($page == 0) {
+            $max = 150;
+        }
+
+        for ($i=0; $i < count($articles) && $i < $max; $i++) { 
             $article = $articles[$i];
             $data[] = array(
                 'title' => $article->title,
@@ -25,7 +30,7 @@ class Overview extends Block {
         return array(
                     'articles' => $data,
                     'page' => $page,
-                    'has_more' => (count($articles) == 5)
+                    'has_more' => (count($articles) == $max+1)
                 );
     }
     // Geeft volledige block

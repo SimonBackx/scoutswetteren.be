@@ -35,8 +35,8 @@ class Router {
 
                 
 
-                if ($router->doMatch($url)) {
-                    return $router->getPage($url);
+                if ($router->doMatch($url, $parts)) {
+                    return $router->getPage($url, $parts);
                 }
             }
         } else {
@@ -52,8 +52,8 @@ class Router {
                 $classname = "\\Pirate\\Sail\\$ucfirst_module\\{$ucfirst_module}Router";
 
                 $router = new $classname();
-                if ($router->doMatch($url)) {
-                    return $router->getPage($url);
+                if ($router->doMatch($url, $parts)) {
+                    return $router->getPage($url, $parts);
                 }
             }
         }

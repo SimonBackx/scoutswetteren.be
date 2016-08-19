@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ title }}Scouts Prins Boudewijn Wetteren</title>
+    <title>{% if title %}{{ title }} - {% endif %}Scouts Prins Boudewijn Wetteren</title>
     <meta charset="UTF-8">
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/style.css' rel='stylesheet' type='text/css'>
@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="{{ description }}">
 
-    <meta property="og:title" content="{{ title }}"> 
+    <meta property="og:title" content="{% if title %}{{ title }} - {% endif %}Scouts Prins Boudewijn Wetteren"> 
 
     <meta property="og:description" content="{{ description }}">
 
@@ -25,7 +25,7 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-    <nav id="menu">
+    <nav id="menu"{% if fixed_menu %} class="fixed"{% endif %}>
         <div class="logo">
             <a href="/"><img src="{{ http }}/images/menu-logo.png" alt="Prins Boudewijn"></a>
         </div>

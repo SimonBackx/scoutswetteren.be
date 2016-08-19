@@ -2,6 +2,10 @@ main {
     background: $lightgray-background;
     padding: 10px 20px;
 
+    &.fixed {
+        padding-top: 70px;
+    }
+
     @media screen and (max-width: $width-reduce-padding) {
         padding: 10px 0;
     }
@@ -19,6 +23,54 @@ main {
         }
 
         
+    }
+}
+
+.block {
+    .text {
+        padding: 120px 60px;
+        color: $cod-gray;
+
+        @media screen and (max-width: $width-stop-splitted) {
+          padding: 80px 60px;
+        }
+
+        header {
+            h1 {
+                color: $aubergine;
+                padding: 0;
+                margin: 0;
+            }
+            h2 {
+                color: $merlot;
+                 padding: 0;
+                margin: 0;
+            }
+            padding-bottom: 40px;
+        }
+        footer {
+            padding-top: 60px;
+
+            a {
+                margin: 7px;
+            }
+        }
+    }
+
+    // Small height screens: make boxes less long
+    @media screen and (max-width: $width-reduce-padding) {
+        .text {
+            padding: 40px $smartphone-padding;
+
+            header {
+                padding-bottom: 20px;
+            }
+
+            footer {
+                padding-top: 30px;
+            }
+        }
+
     }
 }
 
@@ -70,53 +122,6 @@ main {
                 color: white;
                 padding: 15px 25px;
             }
-        }
-
-        &.text {
-            padding: 120px 60px;
-            color: $cod-gray;
-
-            @media screen and (max-width: $width-stop-splitted) {
-              padding: 80px 60px;
-            }
-
-            header {
-                h1 {
-                    color: $aubergine;
-                    padding: 0;
-                    margin: 0;
-                }
-                h2 {
-                    color: $merlot;
-                     padding: 0;
-                    margin: 0;
-                }
-                padding-bottom: 40px;
-            }
-            footer {
-                padding-top: 60px;
-
-                a {
-                    margin: 7px;
-                }
-            }
-        }
-
-
-        // Small height screens: make boxes less long
-        @media screen and (max-width: $width-reduce-padding) {
-            &.text {
-                padding: 40px $smartphone-padding;
-
-                header {
-                    padding-bottom: 20px;
-                }
-
-                footer {
-                    padding-top: 30px;
-                }
-            }
-
         }
     }
 }
