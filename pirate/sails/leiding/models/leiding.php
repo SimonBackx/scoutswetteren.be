@@ -161,22 +161,22 @@ class Leiding extends Model {
 
                 $date = new \DateTime($row['time']);
                 $now = new \DateTime();
-                $interval = $date->diff($now);
-
+                $interval = $now->diff($date);
 
                 // Als het vervallen is: verwijderen
-                if ($interval->d > 30) {
-                    deleteToken($token, true);
+                if ($interval->days > 60) {
+                    self::deleteToken($token, true);
                     return null;
                 }
 
                 self::$currentToken = $token;
                 self::$user = new Leiding($row);
 
-                if ($interval->d > 7) {
-
-                    // Token vernieuwen als hij al een week oud is
-                    
+                if ($interval->days >= 1 || $interval->h >= 1) {
+                    // Token vernieuwen als hij al een uur oud is
+                    // Zodat het moeilijk wordt voor mensen om de token 
+                    // fysiek op de computer te stelen als de gebruiker
+                    // na een uur opnieuw op de website komt.
                     self::createToken();
                 }
                 
