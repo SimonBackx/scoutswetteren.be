@@ -1,0 +1,23 @@
+.login {
+
+    header {
+        text-align: center;
+        h1 {
+            color: $aubergine;
+        }
+        h2 {
+            color: $merlot;
+        }
+        padding-bottom: 40px;
+    }
+
+    footer {
+        text-align: center;
+        padding-top: 20px;
+
+        .button {
+            padding-top: 0;
+            margin-top: 0;
+        }
+    }
+}

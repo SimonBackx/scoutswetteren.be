@@ -1,42 +1,48 @@
 <?php
-namespace Pirate\Model\Blog;
+namespace Pirate\Model\Leiding;
 use Pirate\Model\Model;
 
-class Article extends Model {
+class Leiding extends Model {
     public $id;
-    public $title;
-    public $published;
-    public $edited = null;
-    public $html;
-    private $text;
-
-    public $slug;
-
-    public $author;
-    public $editor;
+    public $firstname;
+    public $lastname;
+    public $mail;
+    private $password;
+    public $phone;
+    public $totem;
+    public $tak;
+    private $permissions;
 
     function __construct($row) {
         $this->id = $row['id'];
-        $this->title = $row['title'];
-        $this->published = new \DateTime($row['published']);
-
-        if (!empty($row['edited'])) {
-            $this->edited = new \DateTime($row['edited']);
-        }
-
-        $this->html = $row['html'];
-        $this->text = $row['text'];
-
-        $this->slug = $row['slug'];
-
-        // Todo: aanpassen en hier referentie naar ander Model van maken
-        $this->author = $row['author'];
-        $this->editor = $row['editor'];
+        $this->firstname = $row['firstname'];
+        $this->lastname = $row['lastname'];
+        $this->mail = $row['mail'];
+        $this->password = $row['password'];
+        $this->phone = $row['phone'];
+        $this->totem = $row['totem'];
+        $this->tak = $row['tak'];
     }
 
-    function getUrl() {
-        return '/blog/'.datetimeToUrl($this->published).'/'.$this->slug;
+    static function isLoggedIn() {
+        return false;
     }
+
+    static function getPermissions() {
+
+    }
+
+    // Returns true on success
+    static function login($mail, $password) {
+
+    }
+
+    private function passwordEncrypt($password){
+        // Voor de eerste keer password hash maken
+        $salt = '$2y$10$' . strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.'). '$';
+        return crypt($password, $salt);
+    }
+
 
     static function getArticle($date, $slug) {
         $date = self::getDb()->escape_string($date);

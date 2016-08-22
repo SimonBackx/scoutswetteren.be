@@ -2,13 +2,11 @@
 namespace Pirate\Sail\Blog\Blocks;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
-use Pirate\Model\Model;
-use Pirate\Model\Article;
+use Pirate\Model\Blog\Article;
 
 class Overview extends Block {
 
     function getArticlesRaw($page = 1) {
-        Model::loadModel('blog', 'article');
         $articles = Article::getArticles($page);
 
         $data = array();

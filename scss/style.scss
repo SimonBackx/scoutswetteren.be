@@ -4,6 +4,7 @@ $merlot: #881327;
 $cod-gray: #141414;
 $bright-sun: #FFDA37;
 $heath: #520F1A;
+$gray: #D5D5D5;
 
 $lightgray-background: #F5F5F5;
 $gray-background: #F8F8F8;
@@ -17,6 +18,8 @@ $size-smaller-smartphone-title: 18pt;
 
 $size-text: 11pt;
 $size-smartphone-text: 10pt;
+
+$size-text-bigger: 14pt;
 
 $size-subtitle: 15pt;
 $size-smartphone-subtitle: 10pt;
@@ -108,11 +111,11 @@ button, input {
     font-variant: inherit;
     text-transform: inherit;
     text-decoration: inherit;
-    cursor: pointer;
 }
 
 button {
     text-transform: uppercase;
+    cursor: pointer;
 }
 
 blockquote {
@@ -120,7 +123,7 @@ blockquote {
     margin: 0;
 }
 
-a.button, button.button {
+a.button, button.button, input[type=submit] {
     padding: 10px 30px;
     border: 2px solid white;
     border-radius: 40px;
@@ -206,6 +209,7 @@ a.button, button.button {
 }
 
 @import "search";
+@import "forms";
 
 @import "menu";
 @import "header";
@@ -215,3 +219,4 @@ a.button, button.button {
 @import "blog";
 @import "calendar";
 @import "cta";
+@import "leiding";

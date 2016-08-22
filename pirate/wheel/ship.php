@@ -1,6 +1,7 @@
 <?php
 namespace Pirate;
 use \Pirate\Database\Database;
+use Pirate\Model\Model;
 
 class Ship {
     function sail() {
@@ -26,6 +27,10 @@ class Ship {
         // Load router
         require(__DIR__.'/router.php');
         $router = new Route\Router();
+
+        // autoloader voor models laden:
+        Model::setupAutoload();
+
         $page = $router->route($_GET['route']);
 
         // Return the page, set the status code etc.

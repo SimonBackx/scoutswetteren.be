@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block main %}
+    <main class="fixed">
+        <section class="white login block">
+            <header>
+                <h1>Inloggen</h1>
+                <h2>Enkel voor medewerkers.</h2>
+            </header>
+            <form method="post" action="/login">
+                <label>E-mailadres</label>
+                <input type="email" name="email" placeholder="Vul hier uw e-mailadres in" required="required">
+
+                <label>Wachtwoord</label>
+                <input type="password" name="password" placeholder="Vul hier uw wachtwoord in" required="required">
+
+                <footer>
+                    <input type="submit" value="Inloggen" class="merlot">
+                    <a href="/wachtwoord-vergeten" class="noborder aubergine button">Wachtwoord vergeten?</a>
+                </footer>
+            </form>
+        </section>
+
+    </main>
+{% endblock %}

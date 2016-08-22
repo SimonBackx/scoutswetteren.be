@@ -2,8 +2,7 @@
 namespace Pirate\Sail\Maandplanning\Blocks;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
-use Pirate\Model\Model;
-use Pirate\Model\Event;
+use Pirate\Model\Maandplanning\Event;
 
 class Kalender extends Block {
 
@@ -23,7 +22,6 @@ class Kalender extends Block {
         }
 
         // Evenementen ophalen
-        Model::loadModel('maandplanning', 'event');
         $events = Event::getEvents($week_start,$week_end);
 
         // Array die we doorgeven aan onze templates

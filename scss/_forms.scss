@@ -1,0 +1,46 @@
+form {
+    font-size: $size-text-bigger;
+
+    label {
+        color: $aubergine;
+    }
+
+    input[type=text], input[type=password], input[type=email] {
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        background: none;
+        border: 0;
+        overflow: none;
+        border-bottom: 2px solid $gray;
+        padding: 10px 0;
+        margin-bottom: 20px;
+        color: $gray;
+
+        &::-webkit-input-placeholder {
+            color: $gray;
+        }
+
+        &:-moz-placeholder { /* Firefox 18- */
+            color: $gray;
+        }
+
+        &::-moz-placeholder {  /* Firefox 19+ */
+            color: $gray;
+        }
+
+        &:-ms-input-placeholder {  
+            color: $gray;
+        }
+
+        &:focus, &:valid{
+            border-color: $merlot;
+            color: $merlot;
+        }
+    }
+
+    input[type=submit] {
+        font-size: $size-text-bigger;
+        cursor: pointer;
+    }
+}

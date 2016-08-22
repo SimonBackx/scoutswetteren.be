@@ -2,8 +2,7 @@
 namespace Pirate\Sail\Maandplanning\Api;
 use Pirate\Page\Page;
 use Pirate\Template\Template;
-use Pirate\Model\Model;
-use Pirate\Model\Event;
+use Pirate\Model\Maandplanning\Event;
 
 // start = inclusive Y-m-d
 // end = exclusive Y-m-d
@@ -19,7 +18,6 @@ class Search extends Page {
     }
 
     function getContent() {
-        Model::loadModel('maandplanning', 'event');
         $events = Event::searchEvents($this->needle);
 
         $data = array('results' => array());

@@ -3,22 +3,29 @@ namespace Pirate\Model;
 use Pirate\Database\Database;
 
 class Model {
+
+    static function setupAutoload() {
+        spl_autoload_register(function ($class) {
+            $parts = explode('\\', $class);
+            if (count($parts) == 4 && $parts[0] == 'Pirate' && $parts[1] == 'Model') {
+                Model::loadModel($parts[2], $parts[3]);
+            }
+        });
+    }
+
     // Houdt bij welke blocks al in het geheugen geladen zijn
     private static $loadedModels = array();
 
     /**
-     * Laad een block dynamisch in het geheugen als dit nog niet is gebeurd en geeft deze terug.
+     * Laad een model dynamisch in het geheugen
      * @param  [type] $sail naam van de sail die deze block bevat. Zoals in namespace en mapnaam
      * @param  [type] $name klassenaam van de block = bestandsnaam
-     * @return Block       [description]
+     * @return  /
      */
     static function loadModel($sail, $name) {
-        // TODO: indien niet gevonden: lege block meegeven of een error block.
-        
-        if (!isset($loadedModels[$sail][$name])) {
-            // TODO: Extra interne beveiliging hier toevoegen: . / \ en sepciale tekens blokkeren
-            require(__DIR__.'/../sails/'.strtolower($sail).'/models/'.strtolower($name).'.php');
-        }
+        $file = __DIR__.'/../sails/'.strtolower($sail).'/models/'.strtolower($name).'.php';
+        if (file_exists($file))
+            require($file);
     }
 
     protected static function getDb() {

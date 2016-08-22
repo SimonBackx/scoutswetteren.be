@@ -16,6 +16,7 @@
         @media screen and (max-width: $width-reduce-padding) {
             padding: 60px $smartphone-padding;
         }
+        padding-bottom: 0;
 
         .sitemap {
             overflow: hidden;
@@ -66,7 +67,7 @@
                         &:hover {
                             opacity: 1;
                         }
-                    }
+                    } 
                 }
             }
         }
@@ -101,6 +102,24 @@
             }
 
 
+        }
+    }
+
+    #credits {
+        max-width: $width;
+        margin: 0 auto;
+        color: rgba(255, 255, 255, 0.45);
+        padding: 0 20px;
+        padding-bottom: 60px;
+        text-align: left;
+
+        .login {
+            float: right;
+            text-transform: uppercase;
+
+            svg {
+                margin-right: 5px;
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 <?php
-namespace Pirate\Model;
+namespace Pirate\Model\Maandplanning;
 use Pirate\Model\Model;
 
 class Event extends Model {
