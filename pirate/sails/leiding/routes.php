@@ -2,11 +2,13 @@
 namespace Pirate\Sail\Leiding;
 use Pirate\Page\Page;
 use Pirate\Route\Route;
+use Pirate\Model\Leiding\Leiding;
 
 class LeidingRouter extends Route {
     function doMatch($url, $parts) {
         if ($url == 'login') {
-            return true;
+            if (!Leiding::isLoggedIn())
+                return true;
         }
         return false;
     }

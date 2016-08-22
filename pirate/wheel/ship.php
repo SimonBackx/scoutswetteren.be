@@ -7,6 +7,10 @@ class Ship {
     function sail() {
         global $config;
 
+        if ($_SERVER['SERVER_PORT'] != 443) {
+            die('Server gebruikt geen HTTPS.');
+        }
+
         date_default_timezone_set('Europe/Brussels');
 
         // Catch all errors and warnings
@@ -31,6 +35,9 @@ class Ship {
         // autoloader voor models laden:
         Model::setupAutoload();
 
+        if (!isset($_GET['route'])) {
+            $_GET['route'] = '';
+        }
         $page = $router->route($_GET['route']);
 
         // Return the page, set the status code etc.
