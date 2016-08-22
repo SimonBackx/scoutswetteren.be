@@ -1,8 +1,8 @@
 <?php
-
 namespace Pirate\Template;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
+use Pirate\Model\Leiding\Leiding;
 
 class Template {
     static public $twig;
@@ -37,6 +37,11 @@ class Template {
      */
     static function render($template, $data, $sail = null) {
         $data['http'] = "//{$_SERVER['HTTP_HOST']}";
+
+        $data['general'] = array(
+            'logged_in' => Leiding::isLoggedIn()
+        );
+
         return self::$twig->render($template.'.html', $data);
 
 

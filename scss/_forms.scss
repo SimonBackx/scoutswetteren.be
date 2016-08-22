@@ -37,10 +37,38 @@ form {
             border-color: $merlot;
             color: $merlot;
         }
+
+        &.error {
+            border-color: $error-red;
+            color: $error-red; 
+        }
     }
 
     input[type=submit] {
         font-size: $size-text-bigger;
         cursor: pointer;
+    }
+
+    ul.error {
+        padding: 0;
+        margin: 0;
+
+
+        li {
+            color: $error-red;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: $size-text;
+        }
+    }
+
+    &.error {
+        input[type=text], input[type=password], input[type=email] {
+            border-color: $error-red;
+        }
+        label {
+            color: $error-red;
+        }
     }
 }

@@ -49,5 +49,7 @@ class Ship {
         echo $errors;
         $page->execute();
 
+        $page->goodbye();
+
     }
 }

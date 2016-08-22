@@ -6,27 +6,16 @@ class Page {
         return 200;
     }
 
-    // Geeft layout object waarin het gerenderd moet worden
-    function getLayout() {
-
-    }
-
     function getContent() {
         return 'getContent method not implemented';
     }
-
-    // Voor een zijmenu bijvoorbeeld
-    function getSide() {}
-
-    // Array die layout kan gebruiken voor extra eigenschappen
-    // (bv doorzichtigheid van het menu)
-    function getLayoutData() {
-        return array();
-    }
-
     final function execute() {
         http_response_code($this->getStatusCode());
         echo $this->getContent();
+    }
+
+    function goodbye() {
+        
     }
 
 }
