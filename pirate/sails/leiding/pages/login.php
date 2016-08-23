@@ -22,7 +22,7 @@ class Login extends Page {
             if (Leiding::login($email, $password)) {
                 // Doe iets :p
                 $success = true;
-                header("Location: https://".$_SERVER['SERVER_NAME']."/");
+                header("Location: https://".$_SERVER['SERVER_NAME']."/admin");
                 
             } else {
                 $wrong = true;

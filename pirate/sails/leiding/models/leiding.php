@@ -10,6 +10,7 @@ class Leiding extends Model {
     public $phone;
     public $totem;
     public $tak;
+    private $password;
     private $permissions;
 
     // als didCheckLogin == false, dan is currentToken en user nog niet op de juiste waarde
@@ -24,6 +25,7 @@ class Leiding extends Model {
         $this->mail = $row['mail'];
         $this->phone = $row['phone'];
         $this->totem = $row['totem'];
+        $this->password = $row['password'];
         $this->tak = $row['tak'];
 
         // Hier nog permissions opvullen!
@@ -63,6 +65,60 @@ class Leiding extends Model {
                     return self::createToken();
                 }
             }
+        }
+        return false;
+    }
+
+    // returns if password is correct
+    function confirmPassword($password) {
+        if (hash_equals(crypt($password, $this->password), $this->password)) {
+            return true;
+        }
+        return false;
+    }
+
+    //
+    function changePassword($new) {
+        // check if logged in as same account
+        if (!self::isLoggedIn()) {
+            return false;
+        }
+        if (self::$user->id != $this->id) {
+            return false;
+        }
+
+        // Geldigheid controleren
+        
+        if (strlen($new) < 10) {
+            return false;
+        }
+        
+        // Alle tokens wissen en huidige token opnieuw aanmaken
+        $client = intval($this->id);
+        $query = "DELETE FROM tokens WHERE client = '$client'";
+
+        if (!self::getDb()->query($query)) {
+            return false;
+        }
+        self::$currentToken = null;
+        self::createToken();
+
+        return $this->setPassword($new);
+    }
+
+    private function setPassword($new) {
+        $id = self::getDb()->escape_string($this->id);
+        $password = self::getDb()->escape_string($this->passwordEncrypt($new));
+
+        $query = "UPDATE leiding 
+            SET 
+             password = '$password'
+             where id = '$id' 
+        ";
+
+        if (self::getDb()->query($query)) {
+            $this->password = $passsword;
+            return true;
         }
         return false;
     }
@@ -232,7 +288,7 @@ class Leiding extends Model {
     }
 
     // TODO: private maken
-    static function passwordEncrypt($password){
+    private function passwordEncrypt($password){
         // Voor de eerste keer password hash maken
         $salt = '$2y$10$' . strtr(base64_encode(\mcrypt_create_iv(16, MCRYPT_DEV_RANDOM)), '+', '.'). '$';
         return crypt($password, $salt);

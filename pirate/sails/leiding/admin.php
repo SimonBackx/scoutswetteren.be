@@ -9,11 +9,18 @@ class LeidingAdminRouter extends Route {
         if (empty($url)) {
             return true;
         }
+        if ($url == 'wachtwoord-wijzigen') {
+            return true;
+        }
         return false;
     }
 
     function getPage($url, $parts) {
-        require(__DIR__.'/admin/gegevens.php');
-        return new Admin\Gegevens();
+        if (empty($url)) {
+            require(__DIR__.'/admin/gegevens.php');
+            return new Admin\Gegevens();
+        }
+        require(__DIR__.'/admin/wachtwoord-wijzigen.php');
+        return new Admin\WachtwoordWijzigen();
     }
 }
