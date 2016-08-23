@@ -221,10 +221,12 @@ article.list {
 
         &.last {
             padding-right: 0;
+            white-space: nowrap;
         }
 
         .button {
             margin: 0;
+            margin-left: 20px;
         }
     }
 
@@ -234,7 +236,14 @@ article.list {
         .column {
             display: block;
             padding: 5px 0;
+
+            .button {
+                margin: 0;
+                margin-right: 10px;
+            }
         }
+
+
     }
 }
 
