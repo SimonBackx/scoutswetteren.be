@@ -66,6 +66,13 @@ class Leiding extends Model {
         return false;
     }
 
+    static function logout() {
+        self::deleteToken(self::$currentToken);
+        self::$currentToken = null;
+        self::$user = null;
+        self::$didCheckLogin = true;
+    }
+
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies
     // Indien al token op huidige sessie, dan verwijdert hij die eerst
     private static function createToken() {

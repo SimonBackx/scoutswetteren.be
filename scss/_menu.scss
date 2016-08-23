@@ -11,7 +11,12 @@
 
     padding: 5px 0 5px 30px;
     height: 60px;
-    overflow: hidden;
+
+    .overflow-bar {
+        overflow: hidden;
+        height: 60px;
+        width: auto;
+    }
 
     .logo {
         float: left;
@@ -114,6 +119,72 @@
             left: 0;
             right: 0;
             height: 60px;
+        }
+    }
+
+    .admin {
+        float: right;
+        height: 60px;
+        padding: 0 20px;
+        line-height: 60px;
+
+        .admin-menu {
+            display: none;
+            position: absolute;
+            z-index: 10;
+            right: 0px;
+            top: 50px;
+            padding: 10px;
+            line-height: normal;
+
+            .content {
+                width: 350px;
+                box-sizing: border-box;
+
+                background: #FFFFFF;
+                box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.50);
+                border-radius: 4px;
+
+                .box {
+                    border-bottom: 1px solid $line-gray;
+                    padding: 10px 0;
+
+                    &.last {
+                        border: 0;
+                    }
+                    .logout {
+                        float: right;
+                    }
+
+                    a.button {
+                        display: block;
+                        margin: 0;
+                        padding: 10px 20px;
+                    }
+                }
+
+                p {
+                    font-size: $size-button;
+                    margin: 10px 20px;
+                    padding: 0;
+                }
+            }
+
+            @media screen and (max-width: 350px) {
+                left: 0;
+                right: 0;
+                padding: 10px 0;
+
+                .content {
+                    width: 100%;
+                }
+            }
+        }
+
+        &:hover {
+            .admin-menu {
+                display: block;
+            }
         }
     }
 }

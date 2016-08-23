@@ -17,7 +17,6 @@ class Article extends Page {
     function getContent() {
         return Template::render('blog/article', array(
             'title' => $this->article->title,
-            'fixed_menu' => true,
             'description' => 'Beschrijving',
             'article' => array(
                 'title' => $this->article->title,

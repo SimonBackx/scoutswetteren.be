@@ -1,2 +1,0 @@
-<?php
-$services = array();

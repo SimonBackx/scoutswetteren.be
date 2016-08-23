@@ -16,7 +16,6 @@ class Blog extends Page {
 
         return Template::render('blog/blog', array(
             'title' => 'Blog archief',
-            'fixed_menu' => true,
             'description' => 'Beschrijving',
             'content' => $archief,
             'call_to_action' => array(

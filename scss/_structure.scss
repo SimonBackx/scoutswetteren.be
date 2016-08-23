@@ -1,9 +1,11 @@
 main {
     background: $lightgray-background;
     padding: 10px 20px;
+    padding-top: 70px;
+    flex: 1;
 
-    &.fixed {
-        padding-top: 70px;
+    &.transparent {
+        padding-top: 10px;
     }
 
     @media screen and (max-width: $width-reduce-padding) {

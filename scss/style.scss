@@ -42,6 +42,14 @@ body, html {
     font-size: $size-text;
 }
 
+
+// Voor sticky footer
+#container {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
 @mixin bg-gradient-t2b($start-colour, $end-colour) {
     background-image: -webkit-gradient(linear, left top, left bottom, from($start-colour), to($end-colour));
     background-image: -webkit-linear-gradient(top, $start-colour, $end-colour);
@@ -100,6 +108,11 @@ a {
     }
 }
 
+blockquote {
+    padding: 0;
+    margin: 0;
+}
+
 button, input {
     border: 0;
     outline: 0;
@@ -119,10 +132,7 @@ button {
     cursor: pointer;
 }
 
-blockquote {
-    padding: 0;
-    margin: 0;
-}
+
 
 a.button, button.button, input[type=submit] {
     padding: 10px 30px;
@@ -150,6 +160,11 @@ a.button, button.button, input[type=submit] {
 
         &.search {
             background: url(../images/hourglass-aubergine.png) no-repeat left center;
+        }
+
+        &.fill {
+            color: white;
+            background: $aubergine;
         }
     }
 
@@ -209,6 +224,7 @@ a.button, button.button, input[type=submit] {
     clear: both;
 }
 
+@import "buttons-bar";
 @import "search";
 @import "forms";
 

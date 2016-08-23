@@ -1,0 +1,28 @@
+nav.buttons {
+    max-width: $width;
+    margin: 15px auto 0 auto;
+    text-align: right;
+
+    a.button {
+        font-size: 11pt;
+        color: $aubergine;
+
+        border: 0;
+        padding: 0;
+        margin: 15px;
+
+        &.selected {
+            color: white;
+            background: $aubergine;
+
+            padding: 10px 30px;
+            border: 2px solid white;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    }
+}
+
+.block.withButtons{
+    margin-top: 0;
+}

@@ -3,7 +3,7 @@ namespace Pirate\Sail\Blog;
 use Pirate\Page\Page;
 use Pirate\Route\Route;
 use  Pirate\Model\Model;
-use  Pirate\Model\Article;
+use  Pirate\Model\Blog\Article;
 
 class BlogRouter extends Route {
     private $article;
@@ -15,7 +15,6 @@ class BlogRouter extends Route {
                 $date = $parts[1].'-'.$parts[2].'-'.$parts[3];
                 $slug = $parts[4];
 
-                Model::loadModel('blog', 'article');
                 $this->article = Article::getArticle($date, $slug);
 
                 if (!is_null($this->article)) {

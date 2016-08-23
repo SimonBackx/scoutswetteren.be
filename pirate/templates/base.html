@@ -25,101 +25,138 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-    <nav id="menu"{% if fixed_menu %} class="fixed"{% endif %}>
-        <div class="logo">
-            <a href="/"><img src="{{ http }}/images/menu-logo.png" alt="Prins Boudewijn"></a>
-        </div>
-        <div class="items">
-            <div class="space">
-                <a href="">Info</a>
-                <a href="">Foto's</a>
-                <a href="">Verhuur</a>
-                <a href="">Contact</a>
-                <a href="" class="call-to-action">Lid worden</a>
-            </div>
-            <div class="visible">
-                <a href="">Info</a>
-                <a href="">Foto's</a>
-                <a href="">Verhuur</a>
-                <a href="">Contact</a>
-                {% if general.logged_in == false %}<a href="" class="call-to-action">Inschrijven</a>{% endif %}
-            </div>
-            <div class="floater">
-                <div class="smartphone-menu">
-                    <div id="smartphone-menu-button"><img src="{{ http }}/images/hamburger.png" alt="Menu"></div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    {% block main %}{% endblock %}
-
-    <footer id="footer">
-        <div class="center">
-            <div class="contact">
-                <a href="https://goo.gl/maps/bSxMTnRibso" target="_blank">
-                    <figure><img src="{{ http }}/images/footer-pin.png" alt=""></figure>
-                    <div>Groene Wegel <br>
-                    9230 Wetteren</div>
-                </a>
-                <a href="https://www.facebook.com/scoutsprinsboudewijn" target="_blank">
-                    <figure><img src="{{ http }}/images/footer-fb.png" alt=""></figure>
-                    <div>Like ons op Facebook</div>
-                </a>
-            </div>
-            <nav class="sitemap">
-                <div class="bundle">
-                    <div class="column">
-                        <h1>Informatie</h1>
-                        <a href="">Locatie</a>
-                        <a href="">Inschrijven</a>
-                        <a href="">Takken</a>
-                        <a href="">Leiding</a>
-                        <a href="">Oudercomité</a>
-                        <a href="">Kamp en weekend</a>
-                    </div>
-                    <div class="column">
-                        <h1>Verhuur</h1>
-                        <a href="">Praktisch</a>
-                        <a href="">Foto's</a>
-                        <a href="">Beschikbaarheid</a>
-                    </div>
-                </div>
-                <div class="bundle">
-                    <div class="column">
-                        <h1>Foto's</h1>
-                        <a href="">Kapoenen</a>
-                        <a href="">Wouters</a>
-                        <a href="">Jonggivers</a>
-                        <a href="">Givers</a>
-                        <a href="">Jin</a>
-                        <a href="">Algemeen</a>
-                    </div>
-                    <div class="column">
-                        <h1>Contact</h1>
-                        <a href="">Groepsleiding</a>
-                        <a href="">Leiding</a>
-                        <a href="">Oudercomité</a>
-                        <a href="">Verhuur</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
-        <div id="credits">
-            © 2016 - Alle rechten voorbehouden
-            {% if general.logged_in == false %}
-            <a class="login" href="/login" rel="nofollow">
-                <svg width="13px" height="15px" viewBox="0 -1 13 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <g id="Lock" opacity="0.45" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <div id="container">
+        <nav id="menu"{% if menu.transparent == false %} class="fixed"{% endif %}>
+            {% if general.logged_in %}
+            <div class="admin">
+                <svg width="25px" height="15px" viewBox="0 -1 13 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="Lock" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <rect id="Rectangle-2" fill="#FFFFFF" x="0" y="6" width="13" height="8" rx="1"></rect>
                         <path d="M3,11.5 L10,11.5 L10,3.5 C10,1.56700338 8.43299662,0 6.5,0 C4.56700338,0 3,1.56700338 3,3.5 L3,11.5 Z" id="Oval" stroke="#FFFFFF" stroke-width="2"></path>
                     </g>
                 </svg>
-                Inloggen
-            </a>
+                <svg width="10px" height="7px" viewBox="24 6 10 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <polyline id="Path-2" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" points="33 7 29 11 25 7"></polyline>
+                </svg>
+                <div class="admin-menu">
+                    <div class="content">
+                        <div class="box">
+                            <a href="/logout" class="logout merlot button noborder">Uitloggen</a>
+                            <p>Simon Backx</p>
+                        </div>
+                        <!--<div class="box">
+                            <a href="/logout" class="aubergine button noborder">Meldingen bekijken</a>
+                        </div>-->
+                        <div class="last box">
+                            <a href="/admin/gegevens" class="aubergine button noborder">Mijn gegevens</a>
+                            <a href="/admin/inschrijvingen" class="aubergine button noborder">Inschrijvingen</a>
+                            <a href="/admin/maandplanning" class="aubergine button noborder">Maandplanning</a>
+                            <a href="/admin/blog" class="aubergine button noborder">Blog</a>
+                            <a href="/admin/fotos" class="aubergine button noborder">Foto's</a>
+                            <a href="/admin/leiding" class="aubergine button noborder">Leiding</a>
+                            <a href="/admin/help" class="aubergine button noborder">Help</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endif %}
-        </div>
-    </footer>
+            <div class="overflow-bar">
+                <div class="logo">
+                    <a href="/"><img src="{{ http }}/images/menu-logo.png" alt="Prins Boudewijn"></a>
+                </div>
+                <div class="items">
+                    <div class="space">
+                        <a href="">Info</a>
+                        <a href="">Foto's</a>
+                        <a href="">Verhuur</a>
+                        <a href="">Contact</a>
+                        {% if general.logged_in == false %}<a href="" class="call-to-action">Inschrijven</a>{% endif %}
+                    </div>
+                    <div class="visible">
+                        <a href="">Info</a>
+                        <a href="">Foto's</a>
+                        <a href="">Verhuur</a>
+                        <a href="">Contact</a>
+                        {% if general.logged_in == false %}<a href="" class="call-to-action">Inschrijven</a>{% endif %}
+                    </div>
+                    <div class="floater">
+                        <div class="smartphone-menu">
+                            <div id="smartphone-menu-button"><img src="{{ http }}/images/hamburger.png" alt="Menu"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        {% block main %}{% endblock %}
+
+        <footer id="footer">
+            <div class="center">
+                <div class="contact">
+                    <a href="https://goo.gl/maps/bSxMTnRibso" target="_blank">
+                        <figure><img src="{{ http }}/images/footer-pin.png" alt=""></figure>
+                        <div>Groene Wegel <br>
+                        9230 Wetteren</div>
+                    </a>
+                    <a href="https://www.facebook.com/scoutsprinsboudewijn" target="_blank">
+                        <figure><img src="{{ http }}/images/footer-fb.png" alt=""></figure>
+                        <div>Like ons op Facebook</div>
+                    </a>
+                </div>
+                <nav class="sitemap">
+                    <div class="bundle">
+                        <div class="column">
+                            <h1>Informatie</h1>
+                            <a href="">Locatie</a>
+                            <a href="">Inschrijven</a>
+                            <a href="">Takken</a>
+                            <a href="">Leiding</a>
+                            <a href="">Oudercomité</a>
+                            <a href="">Kamp en weekend</a>
+                        </div>
+                        <div class="column">
+                            <h1>Verhuur</h1>
+                            <a href="">Praktisch</a>
+                            <a href="">Foto's</a>
+                            <a href="">Beschikbaarheid</a>
+                        </div>
+                    </div>
+                    <div class="bundle">
+                        <div class="column">
+                            <h1>Foto's</h1>
+                            <a href="">Kapoenen</a>
+                            <a href="">Wouters</a>
+                            <a href="">Jonggivers</a>
+                            <a href="">Givers</a>
+                            <a href="">Jin</a>
+                            <a href="">Algemeen</a>
+                        </div>
+                        <div class="column">
+                            <h1>Contact</h1>
+                            <a href="">Groepsleiding</a>
+                            <a href="">Leiding</a>
+                            <a href="">Oudercomité</a>
+                            <a href="">Verhuur</a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div id="credits">
+                © 2016 - Alle rechten voorbehouden
+                {% if general.logged_in == false %}
+                <a class="login" href="/login" rel="nofollow">
+                    <svg width="13px" height="15px" viewBox="0 -1 13 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g id="Lock" opacity="0.45" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <rect id="Rectangle-2" fill="#FFFFFF" x="0" y="6" width="13" height="8" rx="1"></rect>
+                            <path d="M3,11.5 L10,11.5 L10,3.5 C10,1.56700338 8.43299662,0 6.5,0 C4.56700338,0 3,1.56700338 3,3.5 L3,11.5 Z" id="Oval" stroke="#FFFFFF" stroke-width="2"></path>
+                        </g>
+                    </svg>
+                    Inloggen
+                </a>
+                {% endif %}
+            </div>
+        </footer>
+    </div>
     <script type="text/javascript" src="{{ http }}/js/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="{{ http }}/js/main.js"></script>
     <script type="text/javascript" src="{{ http }}/js/twig.min.js"></script>

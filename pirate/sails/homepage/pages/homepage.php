@@ -17,6 +17,7 @@ class Homepage extends Page {
         $blog = Block::getBlock('Blog', 'Overview')->getContent();
 
         return Template::render('homepage', array(
+            'menu' => array('transparent' => true),
             'description' => 'Beschrijving',
             'maandplanning' => $maandplanning,
             'blog' => $blog,

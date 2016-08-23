@@ -30,7 +30,6 @@ class Login extends Page {
         }
 
         return Template::render('leiding/login', array(
-            'fixed_menu' => true,
             'wrong' => $wrong,
             'success' => $success,
             'email' => $email,
