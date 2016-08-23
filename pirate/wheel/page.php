@@ -1,5 +1,6 @@
 <?php
 namespace Pirate\Page;
+use Pirate\Template\Template;
 
 class Page {
     function getStatusCode() {
@@ -26,6 +27,6 @@ class Page404 extends Page {
     }
 
     function getContent() {
-        return 'Page not found';
+        return Template::render('404');
     }
 }

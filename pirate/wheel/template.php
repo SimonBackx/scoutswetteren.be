@@ -35,7 +35,7 @@ class Template {
      * @param  (optioneel) [type] $sail     Optioneel
      * @return String    HTML
      */
-    static function render($template, $data, $sail = null) {
+    static function render($template, $data = array(), $sail = null) {
         $data['http'] = "//{$_SERVER['HTTP_HOST']}";
 
         $data['general'] = array(
