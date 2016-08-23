@@ -27,6 +27,7 @@ class Leiding extends Model {
         $this->tak = $row['tak'];
 
         // Hier nog permissions opvullen!
+        $this->permissions = explode('±', $row['permissions']);
     }
 
     // Returns true on success
@@ -71,6 +72,24 @@ class Leiding extends Model {
         self::$currentToken = null;
         self::$user = null;
         self::$didCheckLogin = true;
+    }
+
+    static function getAdminMenu() {
+        include(__DIR__.'/../../_bindings/admin.php');
+        $priorityButtons = array();
+        $allButtons = array();
+        foreach ($admin_pages as $permission => $buttons) {
+            if ($permission == '' || self::hasPermission($permission)) {
+                foreach ($buttons as $button) {
+                    if (isset($button['priority']) && $button['priority'] == true) {
+                        $priorityButtons[] = $button;
+                    } else {
+                        $allButtons[] = $button;
+                    }
+                }
+            }
+        }
+        return array_merge($priorityButtons, $allButtons);
     }
 
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies

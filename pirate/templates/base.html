@@ -48,13 +48,9 @@
                             <a href="/logout" class="aubergine button noborder">Meldingen bekijken</a>
                         </div>-->
                         <div class="last box">
-                            <a href="/admin/gegevens" class="aubergine button noborder">Mijn gegevens</a>
-                            <a href="/admin/inschrijvingen" class="aubergine button noborder">Inschrijvingen</a>
-                            <a href="/admin/maandplanning" class="aubergine button noborder">Maandplanning</a>
-                            <a href="/admin/blog" class="aubergine button noborder">Blog</a>
-                            <a href="/admin/fotos" class="aubergine button noborder">Foto's</a>
-                            <a href="/admin/leiding" class="aubergine button noborder">Leiding</a>
-                            <a href="/admin/help" class="aubergine button noborder">Help</a>
+                            {% for button in admin.buttons %}
+                                <a href="/admin/{{ button.url }}" class="aubergine button noborder">{{ button.name }}</a>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

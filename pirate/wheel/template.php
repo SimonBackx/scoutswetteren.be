@@ -42,43 +42,19 @@ class Template {
             'logged_in' => Leiding::isLoggedIn()
         );
 
-        return self::$twig->render($template.'.html', $data);
-
-
-        /*extract($data);
-
-        // Hulp variabelen
-        $http = "//{$_SERVER['HTTP_HOST']}";
-
-        ob_start();
-        include(self::getTemplatePath($template, $sail, 'php'));
-        $content = ob_get_contents();
-        ob_end_clean();
-        return $content;*/
-    }
-
-    static function renderSimple($template, $replacement, $sail = null) {
-        $template = file_get_contents(self::getTemplatePath($template, $sail, 'html'));
-
-        $patterns= array('/{{ ?http ?}}/');
-        $http = "//{$_SERVER['HTTP_HOST']}";
-        $replacements = array($http);
-
-        foreach ($replacement as $key => $value) {
-
-            if (is_array($value)) {
-
+        if (Leiding::isLoggedIn()) {
+            if (isset($data['admin']) && is_array($data['admin'])) {
+                $data['admin']['buttons'] = Leiding::getAdminMenu();
+            } else {
+                $data['admin'] = array(
+                    'buttons' => Leiding::getAdminMenu()
+                );
             }
-            // unescaped
-            $patterns[] = '/{{{ ?'.$key.' ?}}}/';
-            $replacements[] = $value;
-
-            // escaped
-            $patterns[] = '/{{ ?'.$key.' ?}}/';
-            $replacements[] = htmlspecialchars($value);
         }
-        return preg_replace($patterns, $replacements, $template);
+
+        return self::$twig->render($template.'.html', $data);
     }
+
 }
 
 $loader = new Twig_Loader_Filesystem(__DIR__.'/../templates/');

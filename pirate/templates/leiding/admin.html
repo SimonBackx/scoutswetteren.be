@@ -7,12 +7,9 @@
 {% block main %}
     <main>
         <nav class="buttons">
-            <a href="" class="selected button">Dashboard</a>
-            <a href="" class="button">Inschrijvingen</a>
-            <a href="" class="button">Maandplanning</a>
-            <a href="" class="button">Blog</a>
-            <a href="" class="button">Foto's</a>
-            <a href="" class="button">Leiding</a>
+            {% for button in admin.buttons %}
+                <a href="/admin/{{ button.url }}" class="{% if button.url == admin.selected %}selected {% endif %}button">{{ button.name }}</a>
+            {% endfor %}
         </nav>
         <section class="white block withButtons">
             <div class="text">{{ content | raw }}</div>

@@ -56,6 +56,9 @@ class LeidingRouter extends Route {
 
         // Admin pagina
         require(__DIR__.'/pages/admin.php');
-        return new Pages\Admin($this->adminPage);
+        $sail = '';
+        if (isset($parts[1]))
+            $sail = $parts[1];
+        return new Pages\Admin($this->adminPage, $sail);
     }
 }

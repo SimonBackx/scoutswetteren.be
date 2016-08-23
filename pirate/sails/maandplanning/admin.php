@@ -7,7 +7,7 @@ use Pirate\Route\Route;
 class MaandplanningAdminRouter extends Route {
     function doMatch($url, $parts) {
 
-        if (empty($url) || $parts[0] == 'maandplanning') {
+        if (isset($parts[0]) && $parts[0] == 'maandplanning') {
             return true;
         }
         return false;
