@@ -312,7 +312,7 @@ class Leiding extends Model {
 
                 if (substr($output, 0, 3) != '324' || (strlen($original) != 12 && strlen($original) != 13)) {
                     if (substr($output, 0, 2) != '04') {
-                        $errors[] = 'Vul GSM nummer in formaat +324 XX XX XX XX of 04XX XX XX XX';
+                        $errors[] = 'Vul GSM nummer in formaat +32 4XX XX XX XX of 04XX XX XX XX';
                         $error = true;
                     } else {
                         $output = '32'.substr($output, 1);
@@ -321,7 +321,19 @@ class Leiding extends Model {
 
                 if (!$error) {
                     $output = '+'.$output;
-                    $this->phone = $output;
+
+                    // Non breaking spaces toevoegen
+                    $strlen = strlen( $output );
+                    $result = '';
+                    for( $i = 0; $i < $strlen; $i++ ) {
+                        $char = substr( $output, $i, 1 );
+                        if ($i == 3 || ($i >= 5 && $i%2 == 0)) {
+                            $result .= ' ';
+                        }
+                        $result .= $char;
+                    }
+
+                    $this->phone = $result;
                     $data['phone'] = $this->phone;
                 }
 
