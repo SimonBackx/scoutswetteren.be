@@ -91,6 +91,19 @@ p {
     line-height: 170%;
 }
 
+ul {
+    padding-left: 20px;
+}
+
+li {
+    font-size: $size-text;
+    font-weight: normal;
+    font-size: $size-text;
+    line-height: 170%;
+    margin: 5px 0;
+    padding: 0;
+}
+
 .smaller {
     h1 {
         font-size: $size-smaller-title;
