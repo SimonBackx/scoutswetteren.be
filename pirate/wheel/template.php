@@ -43,13 +43,11 @@ class Template {
         );
 
         if (Leiding::isLoggedIn()) {
-            if (isset($data['admin']) && is_array($data['admin'])) {
-                $data['admin']['buttons'] = Leiding::getAdminMenu();
-            } else {
-                $data['admin'] = array(
-                    'buttons' => Leiding::getAdminMenu()
-                );
+            if (!isset($data['admin']) || !is_array($data['admin'])) {
+                $data['admin'] = array();
             }
+            $data['admin']['buttons'] = Leiding::getAdminMenu();
+            $data['admin']['name'] = Leiding::getUser()->firstname.' '.Leiding::getUser()->lastname;
         }
 
         return self::$twig->render($template.'.html', $data);
