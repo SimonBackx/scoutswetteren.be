@@ -256,7 +256,7 @@ class Leiding extends Model {
     }
 
     function isValidPhone($phone) {
-        $pattern = '/^[0-9 +()]+$/';
+        $pattern = '/^[0-9  +()]+$/';
         return (preg_match($pattern, $phone) === 1);
     }
 
@@ -270,25 +270,29 @@ class Leiding extends Model {
         $errors = array();
 
         if ($this->isValidFirstname($data['firstname'])) {
-            $this->firstname = $data['firstname'];
+            $this->firstname = ucwords($data['firstname']);
+            $data['firstname'] = $this->firstname;
         } else {
             $errors[] = 'Ongeldige voornaam';
         }
 
         if ($this->isValidLastname($data['lastname'])) {
-            $this->lastname = $data['lastname'];
+            $this->lastname = ucwords($data['lastname']);
+            $data['lastname'] = $this->lastname;
         } else {
             $errors[] = 'Ongeldige achternaam';
         }
 
         if ($this->isValidTotem($data['totem'])) {
-            $this->totem = $data['totem'];
+            $this->totem = ucfirst(strtolower($data['totem']));
+            $data['totem'] = $this->totem;
         }  else {
             $errors[] = 'Ongeldige totem';
         }
 
         if ($this->isValidMail($data['mail'])) {
-            $this->mail = $data['mail'];
+            $this->mail = strtolower($data['mail']);
+            $data['mail'] = $this->mail;
         }  else {
             $errors[] = 'Ongeldige e-mailadres';
         }
@@ -298,7 +302,7 @@ class Leiding extends Model {
 
             // lengte bepalen
             if (strlen($output) != 10 && strlen($output) != 12 && strlen($output) != 13) {
-                $errors[] = 'Lengte - Vul GSM nummer in formaat +324 XX XX XX XX of 04XX XX XX XX';
+                $errors[] = 'Vul GSM nummer in formaat +324 XX XX XX XX of 04XX XX XX XX';
             } else {
                 $original = $output;
                 $error = false;
@@ -328,7 +332,7 @@ class Leiding extends Model {
                     for( $i = 0; $i < $strlen; $i++ ) {
                         $char = substr( $output, $i, 1 );
                         if ($i == 3 || ($i >= 5 && $i%2 == 0)) {
-                            $result .= ' ';
+                            $result .= ' ';
                         }
                         $result .= $char;
                     }
@@ -338,8 +342,6 @@ class Leiding extends Model {
                 }
 
             }
-
-
         } else {
             $errors[] = 'Ongeldig GSM nummer';
         }
