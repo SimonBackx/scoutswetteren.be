@@ -1,56 +1,54 @@
 <form method="post">
- <div class="splitted">
-        <div class="part text">
-            <header>
-                <h1>Mijn gegevens</h1>
-                {% if success %}<h2>Opgeslagen!</h2>{% endif %}
-            </header>
+    <div class="text">
+        <header>
+            <h1>Mijn gegevens</h1>
+            {% if success %}<h2>Opgeslagen!</h2>{% endif %}
+        </header>
 
-            <div class="splitted">
-                <div class="part column first">
-                    <label>Voornaam</label>
-                    <input type="text" name="firstname" value="{{ leiding.firstname }}" placeholder="Vul uw voornaam in" required="required">
+        <div class="splitted">
+            <div class="part column first">
+                <label>Voornaam</label>
+                <input type="text" name="firstname" value="{{ leiding.firstname }}" placeholder="Vul uw voornaam in" required="required">
 
-                    <label>Achternaam</label>
-                    <input type="text" name="lastname" value="{{ leiding.lastname }}" placeholder="Vul uw achternaam in" required="required">
+                <label>Achternaam</label>
+                <input type="text" name="lastname" value="{{ leiding.lastname }}" placeholder="Vul uw achternaam in" required="required">
 
-                    <label>Totem</label>
-                    <input type="text" name="totem" value="{{ leiding.totem }}" placeholder="Optioneel" required="required">
-                
-                    {% if errors|length > 0 %}
-                        <ul class="error">
-                            {% for error in errors %}
-                                <li>{{ error }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-
-                </div>
-                <div class="part column last">
-                    <label>E-mailadres</label>
-                    <input type="text" name="mail" value="{{ leiding.mail }}" placeholder="Vul uw e-mailadres in" required="required">
-
-                    <label>GSM nummer</label>
-                    <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw gsm nummer in" required="required">
-
-                    <label>Functies</label>
-                    <ul>
-                        {% for functie in functies %}
-                            <li>{{ functie }}</li>
-                        {% else %}
-                           <li>Nog geen speciale functies gekregen</li> 
+                <label>Totem</label>
+                <input type="text" name="totem" value="{{ leiding.totem }}" placeholder="Optioneel" required="required">
+            
+                {% if errors|length > 0 %}
+                    <ul class="error">
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
                         {% endfor %}
                     </ul>
+                {% endif %}
 
-                </div>
+            </div>
+            <div class="part column last">
+                <label>E-mailadres</label>
+                <input type="text" name="mail" value="{{ leiding.mail }}" placeholder="Vul uw e-mailadres in" required="required">
+
+                <label>GSM nummer</label>
+                <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw gsm nummer in" required="required">
+
+                <label>Functies</label>
+                <ul>
+                    {% for functie in functies %}
+                        <li>{{ functie }}</li>
+                    {% else %}
+                       <li>Nog geen speciale functies gekregen</li> 
+                    {% endfor %}
+                </ul>
 
             </div>
 
-            <footer>
-                <input type="submit" class="aubergine fill" value="Opslaan">
-                <a href="/admin/wachtwoord-wijzigen" class="button merlot">Wachtwoord aanpassen</a>
-            </footer>
-
         </div>
-</div>
+
+        <footer>
+            <input type="submit" class="aubergine fill" value="Opslaan">
+            <a href="/admin/wachtwoord-wijzigen" class="button merlot">Wachtwoord aanpassen</a>
+        </footer>
+
+    </div>
 </form>

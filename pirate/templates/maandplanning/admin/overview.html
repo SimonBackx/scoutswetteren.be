@@ -1,0 +1,30 @@
+<div class="text">
+        <!--<h1>Maandplanning niet in orde!</h1>
+        <p>Voeg voor elke week in de komende maand een activiteit toe, ook als het geen scouts is. Doe dit consequent en zeker een week op voorhand, zodat ouders op de website kunnen vertrouwen. Voeg belangrijke activiteiten zoals leefweek, weekend en kamp op tijd toe. Je kan ook gemeenschappelijke activiteiten aanmaken zoals wafelbak, winterfeest of fakkeltocht.</p>
+    -->
+
+    {% for month in months %}
+        <h1>{{ month.month }}</h1>
+        <div class="list-bundle">
+        {% for event in month.events %}
+            <article class="list">
+                <div class="medium merlot column">{{ event.date }}</div>
+                <div class="small column">{{ event.time }}</div>
+                {% if event.type == 'event' %}
+                    <div class="max column">{{ event.description }}</div>
+                    <div class="last column">
+                        <a href="" class="button noborder">Aanpassen</a>
+                    </div>
+                {% else %}
+                    <div class="max column bold">Nog geen activiteit toegevoegd</div>
+                    <div class="last column">
+                        <a href="" class="button noborder">Geen scouts</a><a href="" class="button noborder">Nieuw</a>
+                    </div>
+                {% endif %}
+            </article>
+        {% endfor %}
+        </div>
+        <a href="" class="icon-button plus">Activiteit toevoegen</a>
+    {% endfor %}
+</div>
+

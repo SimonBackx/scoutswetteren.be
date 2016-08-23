@@ -12,6 +12,8 @@ class Event extends Model {
     public $group;
     public $in_past;
 
+    static private $groups = array('Kapoenen', 'Wouters', 'Jonggivers', 'Givers', 'Jin', 'Leiding', 'Oudercomité', 'Alle takken', 'Familie en vrienden');
+
     function __construct($row) {
         $this->id = $row['id'];
         $this->name = $row['name'];
@@ -47,6 +49,22 @@ class Event extends Model {
         $events = array();
         $query = 'SELECT *, case when startdate < NOW() then 1 else 0 end as in_past FROM events WHERE `name` like "%'.$needle.'%" OR `group` like "%'.$needle.'%" ORDER BY in_past, startdate, group_order LIMIT 30';
         
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $events[] = new Event($row);
+                }
+            }
+        }
+        return $events;
+    }
+
+    static function getEventsForTak($tak) {
+        $tak = self::getDb()->escape_string($tak);
+
+        $events = array();
+        $query = 'SELECT * FROM events WHERE startdate >= NOW() AND group = "'.ucfirst($tak).'" OR group = "Familie en vrienden" OR group = "Alle takken" ORDER BY startdate LIMIT 30';
+
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
                 while ($row = $result->fetch_assoc()) {

@@ -26,6 +26,7 @@ function datetimeToWeekday($datetime) {
     global $config;
     return $config['days'][$datetime->format('N')-1];
 }
+
 function snippetFromHtml($content){
     $snippet = $content;
     $snippet = strip_tags($snippet);
