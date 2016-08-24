@@ -5,7 +5,7 @@ form {
         color: $aubergine;
     }
 
-    input[type=text], input[type=password], input[type=email] {
+    input[type=text], input[type=password], input[type=email], .input-box, .select-box {
         display: block;
         box-sizing: border-box;
         width: 100%;
@@ -16,7 +16,7 @@ form {
         border-bottom: 2px solid $gray;
         padding: 10px 0;
         margin-bottom: 20px;
-        color: $gray;
+        color: $merlot;
 
         &::-webkit-input-placeholder {
             color: $gray;
@@ -34,7 +34,7 @@ form {
             color: $gray;
         }
 
-        &:focus, &:valid{
+        &:focus, &:valid, &:not(:placeholder-shown){
             border-color: $merlot;
             color: $merlot;
         }
@@ -44,6 +44,109 @@ form {
             color: $error-red; 
         }
     }
+
+    .picker__input.picker__input--active {
+        border-color: $merlot;
+    }
+
+    input[type=checkbox] {
+      display: none;
+    }
+    input[type=checkbox] + label:before {
+      content: "";
+      display: inline-block;
+      vertical-align: text-bottom;
+     
+      width: 22px;
+      height: 22px;
+     
+      margin-right: 20px;
+      background-color: white;
+      border: 2px solid $gray;
+    }
+
+    input[type=checkbox]:checked + label:before {
+        border: 0;
+        padding: 2px;
+        background: $merlot url(../images/checkbox-checked.png) no-repeat center center;
+        background-image: url(../images/checkbox-checked.svg),
+        linear-gradient(transparent, transparent);
+    }
+
+
+    .dropdown-list {
+        display: none;
+        position: absolute;
+        width: 300px;
+        max-height: 400px;
+        background: #FFFFFF;
+        box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.50);
+        border-radius: 4px;
+        overflow: scroll;
+        margin-top: -20px;
+
+        .option {
+            cursor: pointer;
+            padding: 20px 30px;
+            border-bottom: 1px solid $line-gray;
+            color: $merlot;
+
+            &:hover {
+                background: $gray-background;
+            }
+        }
+    }
+
+    input.dropdown:focus + .dropdown-list {
+        display: block;
+    }
+
+    .input-box {
+        input[type=text] {
+            display: inline-block;
+            width: 80px;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border: 0;
+            margin: 0;
+        }
+    }
+
+    .select-box {
+        overflow: hidden;
+        border-color: $merlot;
+        padding: 0;
+
+        select::-ms-expand {
+            display: none;
+        }  
+
+        select {
+            padding: 10px 0;
+            font-size: inherit;
+            outline: none;
+            color: $merlot;
+
+            width: 130%;
+            border: none;
+            box-shadow: none;
+            background: transparent;
+            background-image: none;
+            appearance: none;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+        }
+    }
+
+    input[type=text].datepicker {
+        background: url(../images/input-arrow.png) no-repeat right center;
+    }
+
+    .select-box, input[type=text].dropdown {
+        background: url(../images/input-arrow.png) no-repeat right center;
+    }
+
+
 
     input[type=submit] {
         font-size: $size-text-bigger;

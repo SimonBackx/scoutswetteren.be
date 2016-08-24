@@ -25,6 +25,31 @@ $( document ).ready(function() {
         nextPage();
     });
 
+    // Dropdown aanpassen als getypt wordt
+    $('form .dropdown').bind("propertychange change click keyup input paste focus", function(event){
+        // Zoeken naar overeenkomstige
+        var value = $(this).val().toLowerCase();
+        var list =  $(this).next().children('.option');
+        list.each(function() {
+            var text = $(this).text().toLowerCase();
+            if (text.startsWith(value) && text != value) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+
+    // Input aanpassen als op een item geklikt wordt
+    $('form .dropdown-list .option').mousedown(function(event) {
+        event.preventDefault();
+        var value = $(this).text();
+        var input = $(this).parent().prev();
+        input.val(value);
+        input.focus();
+    });
+
+    // Search
     $('input.search').bind("propertychange change click keyup input paste", function(event){
         var needle = $(this).val();
 
@@ -80,13 +105,13 @@ Date.prototype.deep_copy = function()
 {
     var dat = new Date(this.valueOf());
     return dat;
-}
+};
 Date.prototype.addDays = function(days)
 {
     var dat = new Date(this.valueOf());
     dat.setDate(dat.getDate() + days);
     return dat;
-}
+};
 Date.prototype.getMonday = function()
 {
     var d = new Date(this.valueOf());
@@ -94,7 +119,11 @@ Date.prototype.getMonday = function()
     diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
     d.setDate(diff);
     return d;
-}
+};
+String.prototype.startsWith = function(needle)
+{
+    return(this.indexOf(needle) == 0);
+};
 
 function bindMaandplanning() {
     $('#calendar-weeks .row').click(function() {

@@ -192,6 +192,7 @@ article.list {
     display: table;
     width: 100%;
     box-sizing: border-box;
+    font-size: $size-text-bigger;
 
     .column {
         display: table-cell;
@@ -203,12 +204,8 @@ article.list {
             color: $aubergine;
         }
 
-        &.small {
-            min-width: 120px;
-        }
-
         &.medium {
-            min-width: 150px;
+            min-width: 160px;
         }
 
         &.max {
@@ -232,7 +229,7 @@ article.list {
 
     @media screen and (max-width: $width-reduce-padding + 200px) {
         display: block;
-        
+
         .column {
             display: block;
             padding: 5px 0;

@@ -1,0 +1,66 @@
+<form method="post">
+    <div class="text">
+        <header>
+            <h1>Activiteit aanmaken</h1>
+            {% if success %}<h2>Opgeslagen!</h2>{% endif %}
+        </header>
+
+        <div class="splitted">
+            <div class="part column first">
+                <label>Naam</label>
+                <input type="text" name="firstname" value="{{ leiding.firstname }}" placeholder="Korte beschrijving van de activiteit" required="required">
+
+                <label>Datum</label>
+                <input type="text" class="datepicker" name="startdate" value="{{ leiding.lastname }}" placeholder="Startdatum van de activiteit" required="required">
+
+                <label>Tijdstip</label>
+                <label class="input-box">
+                    Van <input type="text" name="locatie" value="{{ leiding.lastname }}" placeholder="14:00" required="required"> <label>tot <input type="text" name="locatie" value="{{ leiding.lastname }}" placeholder="7:30" required="required"></label>
+                </label>
+
+                <input id="overnachting" type="checkbox" name="gender" value="male">
+                <label for="overnachting">Activiteit met overnachting</label>
+            
+                {% if errors|length > 0 %}
+                    <ul class="error">
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+            </div>
+            <div class="part column last">
+                
+                <label>Locatie</label>
+                <input type="text" id="dropdown-locatie" class="dropdown" name="locatie" value="{{ leiding.lastname }}" placeholder="Scoutsterrein" required="required">
+                <div class="dropdown-list">
+                    <div class="option">Scoutsterrein</div>
+                    <div class="option">Station Wetteren</div>
+                    <div class="option">Bib Wetteren</div>
+                </div>
+                
+                <label>Voor wie?</label>
+                <label class="select-box">
+                    <select required="required">
+                        <option disabled selected hidden>Maak een keuze</option>
+                        <option>Kapoenen</option>
+                        <option>Wouters</option>
+                        <option>Jonggivers</option>
+                        <option>Givers</option>
+                        <option>Jin</option>
+                        <option>Alle takken</option>
+                    </select>
+                </label>
+
+            </div>
+
+        </div>
+
+        <footer>
+            <input type="submit" class="aubergine fill" value="Opslaan">
+            <a href="/admin/" class="button merlot">Verwijderen</a>
+        </footer>
+
+    </div>
+</form>

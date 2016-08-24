@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/style.css' rel='stylesheet' type='text/css'>
+    <link href='{{ http }}/css/pickadate.css' rel='stylesheet' type='text/css'>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="{{ description }}">
@@ -156,5 +157,20 @@
     <script type="text/javascript" src="{{ http }}/js/jquery-3.1.0.min.js"></script>
     <script type="text/javascript" src="{{ http }}/js/main.js"></script>
     <script type="text/javascript" src="{{ http }}/js/twig.min.js"></script>
+    <script type="text/javascript" src="/js/pickadate.js"></script>
+    <script type="text/javascript" src="/js/pickadate.date.js"></script>
+    <script type="text/javascript">
+        $( document ).ready(function() {
+            $('.datepicker').pickadate({
+                monthsFull: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+                weekdaysShort: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
+                format: 'dd-mm-yyyy',
+                firstDay: 1,
+                today: '',
+                clear: '',
+                close: 'Sluiten'
+            });
+        });
+    </script>
 </body>
 </html>
