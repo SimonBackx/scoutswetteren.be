@@ -133,14 +133,6 @@ class Event extends Model {
             $errors[] = 'Beschrijving te kort';
         }
 
-        if (empty($data['starttime'])) {
-            $data['starttime'] = self::getDefaultStartHour();
-        }
-
-        if (empty($data['endtime'])) {
-            $data['endtime'] = self::getDefaultEndHour();
-        }
-
         // Startdatum
         $startdate = \DateTime::createFromFormat('d-m-Y H:i', $data['startdate'].' '.$data['starttime']);
         if ($startdate !== false) {

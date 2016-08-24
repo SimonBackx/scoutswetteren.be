@@ -35,6 +35,20 @@ class Edit extends Page {
             'endtime' => ''
         );
 
+        if (!empty(Leiding::getUser()->tak)) {
+            $data['group'] = ucfirst(Leiding::getUser()->tak);
+        }
+
+        if (isset($_GET['date'])) {
+            $data['startdate'] = $_GET['date'];
+
+            // Uren invullen met de standaard waarden
+            $data['starttime'] = Event::getDefaultStartHour();
+            $data['endtime'] = Event::getDefaultEndHour();
+
+            $data['location'] = Event::$defaultLocation;
+        }
+
         if (!is_null($this->id)) {
             $event = Event::getEvent($this->id);
             if (!is_null($event)) {
@@ -52,6 +66,13 @@ class Edit extends Page {
                     'starttime' => $event->startdate->format('H:i'),
                     'endtime' => $event->enddate->format('H:i'),
                 );
+
+                if (is_null($event->location)) {
+                    $data['location'] = Event::$defaultLocation;
+                }
+                if (is_null($event->endlocation)) {
+                    $data['endlocation'] = Event::$defaultLocation;
+                }
 
             } else {
                 $event = new Event();
@@ -86,8 +107,10 @@ class Edit extends Page {
             $errors = $event->setProperties($data);
 
             if (count($errors) == 0) {
-                if ($event->save())
+                if ($event->save()) {
                     $success = true;
+                    header("Location: https://".$_SERVER['SERVER_NAME']."/admin/maandplanning");
+                }
                 else
                     $errors[] = 'Probleem bij opslaan';
             }

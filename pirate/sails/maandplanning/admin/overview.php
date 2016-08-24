@@ -46,7 +46,7 @@ class Overview extends Page {
             'type' => 'empty',
             'date' => ucfirst(datetimeToWeekday($sunday)).' '.$sunday->format('d/m'),
             'time' => '14:00',
-            'full_date' => $sunday->format('d-m-Y'),
+            'full_date' => urlencode($sunday->format('d-m-Y')),
         );
     }
 

@@ -15,7 +15,7 @@
 
                 <label>Tijdstip</label>
                 <div class="input-box">
-                    Van <input type="text" name="starttime" value="{{ event.starttime }}" placeholder="{{ default_start_hour }}" required="required">tot <input type="text" name="endtime" value="{{ event.endtime }}" placeholder="{{ default_end_hour }}" required="required">
+                    Vanaf <input type="text" name="starttime" value="{{ event.starttime }}" placeholder="{{ default_start_hour }}" required="required">
                 </div>
 
                 <input id="overnachting" type="checkbox" name="overnachting" value="1" {% if event.overnachting %} checked{% endif %}>
@@ -25,7 +25,14 @@
                     <div class="visible-when-checked">
                         <label>Einddatum</label>
                         <input type="text" class="datepicker" name="enddate" value="{{ event.enddate }}" placeholder="Einddatum van de activiteit" required="required">
+                    </div>
 
+                    <label>Afhalen</label>
+                    <div class="input-box">
+                        Om <input type="text" name="endtime" value="{{ event.endtime }}" placeholder="{{ default_end_hour }}" required="required">
+                    </div>
+
+                    <div class="visible-when-checked">
                         <label>Afhaal locatie</label>
                         <input type="text" id="dropdown-locatie" class="dropdown" name="endlocation" value="{{ event.endlocation }}" placeholder="{{ default_locatie }}" required="required">
                         <div class="dropdown-list">
@@ -35,6 +42,7 @@
                         </div>
                     </div>
                 </div>
+
             
                 {% if errors|length > 0 %}
                     <ul class="error">
@@ -71,7 +79,10 @@
 
         <footer>
             <input type="submit" class="aubergine fill" value="Opslaan">
+            <a href="/admin/maandplanning" class="button merlot">Annuleren</a>
+            {% if new == false %}
             <a href="/admin/" class="button merlot">Verwijderen</a>
+            {% endif %}
         </footer>
 
     </div>
