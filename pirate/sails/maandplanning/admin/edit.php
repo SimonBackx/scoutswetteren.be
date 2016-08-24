@@ -40,11 +40,12 @@ class Edit extends Page {
             if (!is_null($event)) {
                 $new = false;
 
+
                 $data = array(
                     'name' => $event->name,
                     'startdate' => $event->startdate->format('d-m-Y'),
                     'enddate' => $event->enddate->format('d-m-Y'),
-                    'overnachting' => false,
+                    'overnachting' => ($event->startdate->format('d-m-Y') != $event->enddate->format('d-m-Y')),
                     'location' => $event->location,
                     'endlocation' => $event->endlocation,
                     'group' => $event->group,

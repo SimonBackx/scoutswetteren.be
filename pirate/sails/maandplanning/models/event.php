@@ -181,6 +181,9 @@ class Event extends Model {
         } else {
             if (strlen($data['location']) < 4) {
                 $errors[] = 'Ongeldige locatie. Laat leeg voor '.strtolower(self::$defaultLocation).'.';
+            } else {
+                $this->location = ucfirst($data['location']);
+                $data['location'] = $this->location;
             }
         }
 
@@ -191,6 +194,9 @@ class Event extends Model {
             } else {
                 if (strlen($data['endlocation']) < 4) {
                     $errors[] = 'Ongeldige eindlocatie. Laat leeg voor '.strtolower(self::$defaultLocation).'.';
+                } else {
+                    $this->endlocation = ucfirst($data['endlocation']);
+                    $data['endlocation'] = $this->endlocation;
                 }
             }
         }
@@ -219,7 +225,58 @@ class Event extends Model {
     }
 
     function save() {
-        
+        // Is het nieuw of bestaat het al?
+        if (empty($this->id)) {
+
+        }
+
+        if (is_null($this->location)) {
+            $location = "NULL";
+        } else {
+            $location = "'".self::getDb()->escape_string($this->location)."'";
+        }
+
+        if (is_null($this->endlocation)) {
+            $endlocation = "NULL";
+        } else {
+            $endlocation = "'".self::getDb()->escape_string($this->endlocation)."'";
+        }
+
+
+        $name = self::getDb()->escape_string($this->name);
+        $startdate = self::getDb()->escape_string($this->startdate->format('Y-m-d H:i:s'));
+        $enddate = self::getDb()->escape_string($this->enddate->format('Y-m-d H:i:s'));
+
+        $group = self::getDb()->escape_string($this->group);
+
+        $group_order = self::getDb()->escape_string($this->group_order);
+        $leiding_id = self::getDb()->escape_string(Leiding::getUser()->id);
+
+        if (empty($this->id)) {
+            $query = "INSERT INTO 
+                events (`name`,  `startdate`, `enddate`, `location`, `endlocation`, `group`, `group_order`, `leiding_id`)
+                VALUES ('$name', '$startdate', '$enddate', $location, $endlocation, '$group', '$group_order', '$leiding_id')";
+        } else {
+            $id = self::getDb()->escape_string($this->id);
+            $query = "UPDATE events 
+                SET 
+                 `name` = '$name',
+                 `startdate` = '$startdate',
+                 `enddate` = '$enddate',
+                 `location` = $location,
+                 `endlocation` = $endlocation,
+                 `group` = '$group',
+                 `group_order` = '$group_order'
+                 where id = '$id' 
+            ";
+        }
+
+        if (self::getDb()->query($query)) {
+            if (empty($this->id)) {
+                $this->id = self::getDb()->insert_id;
+            }
+            return true;
+        }
         return false;
     }
 }
