@@ -102,6 +102,9 @@ class Kalender extends Block {
             );
         }
 
+        // sorteren zodat alles in de volgorde van datum staat
+        ksort($data);
+
         return array_values($data);
     }
 
