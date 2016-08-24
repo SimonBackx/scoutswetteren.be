@@ -41,15 +41,15 @@ class Edit extends Page {
                 $new = false;
 
                 $data = array(
-                    'name' => '',
-                    'startdate' => '',
-                    'enddate' => '',
+                    'name' => $event->name,
+                    'startdate' => $event->startdate->format('d-m-Y'),
+                    'enddate' => $event->enddate->format('d-m-Y'),
                     'overnachting' => false,
-                    'location' => '',
-                    'endlocation' => '',
-                    'group' => '',
-                    'starttime' => '',
-                    'endtime' => ''
+                    'location' => $event->location,
+                    'endlocation' => $event->endlocation,
+                    'group' => $event->group,
+                    'starttime' => $event->startdate->format('H:i'),
+                    'endtime' => $event->enddate->format('H:i'),
                 );
 
             } else {

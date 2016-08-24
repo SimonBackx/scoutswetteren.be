@@ -175,9 +175,9 @@ class Event extends Model {
             $errors[] = 'Einde van de activiteit ligt voor het begin';
         }
 
-        if (strlen($data['location']) == 0) {
-            $this->location = self::$defaultLocation;
-            $data['location'] = $this->location;
+        if (strlen($data['location']) == 0 || $data['location'] == self::$defaultLocation) {
+            $this->location = null;
+            $data['location'] = '';
         } else {
             if (strlen($data['location']) < 4) {
                 $errors[] = 'Ongeldige locatie. Laat leeg voor '.strtolower(self::$defaultLocation).'.';
@@ -185,9 +185,9 @@ class Event extends Model {
         }
 
         if ($data['overnachting']) {
-            if (strlen($data['endlocation']) == 0) {
-                $this->endlocation = self::$defaultLocation;
-                $data['endlocation'] = $this->endlocation;
+            if (strlen($data['endlocation']) == 0 || $data['endlocation'] == self::$defaultLocation) {
+                $this->endlocation = null;
+                $data['endlocation'] = '';
             } else {
                 if (strlen($data['endlocation']) < 4) {
                     $errors[] = 'Ongeldige eindlocatie. Laat leeg voor '.strtolower(self::$defaultLocation).'.';
@@ -219,6 +219,7 @@ class Event extends Model {
     }
 
     function save() {
+        
         return false;
     }
 }
