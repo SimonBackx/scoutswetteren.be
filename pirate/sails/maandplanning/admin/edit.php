@@ -49,11 +49,14 @@ class Edit extends Page {
             $data['location'] = Event::$defaultLocation;
         }
 
+        if (isset($_GET['name'])) {
+            $data['name'] = $_GET['name'];
+        }
+
         if (!is_null($this->id)) {
             $event = Event::getEvent($this->id);
             if (!is_null($event)) {
                 $new = false;
-
 
                 $data = array(
                     'name' => $event->name,

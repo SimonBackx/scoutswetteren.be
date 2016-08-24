@@ -17,7 +17,7 @@
                 {% else %}
                     <div class="max column bold">Nog geen activiteit toegevoegd</div>
                     <div class="last column">
-                        <a href="/admin/maandplanning/edit/" class="button noborder">Geen scouts</a><a href="/admin/maandplanning/edit?date={{ event.full_date | e('html_attr') }}" class="button noborder">Nieuw</a>
+                        <a href="/admin/maandplanning/edit?name=Geen+scouts+deze+week&amp;date={{ event.full_date | e('html_attr') }}" class="button noborder">Geen scouts</a><a href="/admin/maandplanning/edit?date={{ event.full_date | e('html_attr') }}" class="button noborder">Nieuw</a>
                     </div>
                 {% endif %}
             </article>
