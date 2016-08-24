@@ -19,6 +19,12 @@ class MaandplanningAdminRouter extends Route {
                     $this->id = intval($parts[2]);
                 }
                 return true;
+            } elseif ($parts[1] == 'delete' && count($parts) == 3) {
+                if (!is_numeric($parts[2])) {
+                    return false;
+                }
+                $this->id = intval($parts[2]);
+                return true;
             }
         }
 
@@ -30,7 +36,11 @@ class MaandplanningAdminRouter extends Route {
             require(__DIR__.'/admin/overview.php');
             return new Admin\Overview();
         }
-        require(__DIR__.'/admin/edit.php');
-        return new Admin\Edit($this->id);
+        if ($parts[1] == 'edit') {
+            require(__DIR__.'/admin/edit.php');
+            return new Admin\Edit($this->id);
+        }
+        require(__DIR__.'/admin/delete.php');
+        return new Admin\Delete($this->id);
     }
 }

@@ -43,7 +43,7 @@ main {
         }
 
         .list-bundle {
-            margin: 0 -60px;
+            margin: 0 -60px 60px -60px;
         }
 
         h1 {
@@ -89,7 +89,7 @@ main {
             }
 
             .list-bundle {
-                margin: 0px (-$smartphone-padding);
+                margin: 0 (-$smartphone-padding) 60px (-$smartphone-padding);
             }
         }
 

@@ -70,6 +70,8 @@ class Edit extends Page {
                     'endtime' => $event->enddate->format('H:i'),
                 );
 
+                $data['id'] = $event->id;
+
                 if (is_null($event->location)) {
                     $data['location'] = Event::$defaultLocation;
                 }

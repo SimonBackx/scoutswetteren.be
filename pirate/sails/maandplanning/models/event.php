@@ -271,4 +271,12 @@ class Event extends Model {
         }
         return false;
     }
+
+    function delete() {
+        $id = self::getDb()->escape_string($this->id);
+        $query = "DELETE FROM 
+                events WHERE id = '$id' ";
+
+        return self::getDb()->query($query);
+    }
 }
