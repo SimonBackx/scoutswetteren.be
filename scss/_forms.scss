@@ -3,6 +3,7 @@ form {
 
     label {
         color: $aubergine;
+        display: block;
     }
 
     input[type=text], input[type=password], input[type=email], .input-box, .select-box {
@@ -52,6 +53,11 @@ form {
     input[type=checkbox] {
       display: none;
     }
+
+    input[type=checkbox] + label {
+        margin: 30px 0;
+    }
+
     input[type=checkbox] + label:before {
       content: "";
       display: inline-block;
@@ -71,6 +77,22 @@ form {
         background: $merlot url(../images/checkbox-checked.png) no-repeat center center;
         background-image: url(../images/checkbox-checked.svg),
         linear-gradient(transparent, transparent);
+    }
+
+
+    input[type=checkbox] + label + .checkbox-controllable {
+        .visible-when-checked {
+            display: none;
+        }
+    }
+
+    input[type=checkbox]:checked + label + .checkbox-controllable{
+        .visible-when-checked {
+            display: block;
+        }
+        .hidden-when-checked {
+            display: none;
+        }
     }
 
 
@@ -137,6 +159,8 @@ form {
             -webkit-appearance: none;
         }
     }
+
+
 
     input[type=text].datepicker {
         background: url(../images/input-arrow.png) no-repeat right center;
