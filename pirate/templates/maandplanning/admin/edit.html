@@ -27,13 +27,13 @@
                         <input type="text" class="datepicker" name="enddate" value="{{ event.enddate }}" placeholder="Einddatum van de activiteit" required="required">
                     </div>
 
-                    <label>Afhalen</label>
+                    <label>Tijdstip waarop activiteit stopt</label>
                     <div class="input-box">
                         Om <input type="text" name="endtime" value="{{ event.endtime }}" placeholder="{{ default_end_hour }}" required="required">
                     </div>
 
                     <div class="visible-when-checked">
-                        <label>Afhaal locatie</label>
+                        <label>Locatie waar de activiteit stopt</label>
                         <input type="text" id="dropdown-locatie" class="dropdown" name="endlocation" value="{{ event.endlocation }}" placeholder="{{ default_locatie }}" required="required">
                         <div class="dropdown-list">
                             <div class="option">{{ default_locatie }}</div>
