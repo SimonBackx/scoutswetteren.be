@@ -24,6 +24,7 @@ class Edit extends Page {
         $success = false;
 
         $data = array(
+            'id' => '',
             'name' => '',
             'startdate' => '',
             'enddate' => '',
@@ -88,7 +89,7 @@ class Edit extends Page {
 
         $allset = true;
         foreach ($data as $key => $value) {
-            if ($key == 'overnachting')
+            if ($key == 'overnachting' || $key == 'id')
                 continue;
 
             if (!isset($_POST[$key])) {
