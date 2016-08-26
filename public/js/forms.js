@@ -34,6 +34,11 @@ $( document ).ready(function() {
         selectYears: true,
         selectMonths: true,
     });
+
+    $('textarea').bind("propertychange change click keyup input paste focus", function(event){
+        $(this).css({'height': 'auto'});
+        $(this).css({'height': $(this)[0].scrollHeight + 2});
+    });
 });
 
 String.prototype.startsWith = function(needle)

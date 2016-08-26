@@ -6,11 +6,17 @@ form {
         display: block;
     }
 
-    input {
+    input, textarea, select {
         font-size: $size-text-bigger;
     }
 
-    input[type=text], input[type=password], input[type=email], .input-box, .select-box {
+    textarea { 
+        resize: none; 
+        min-height: 80px;
+        height: auto;
+    }
+
+    input[type=text], input[type=password], input[type=email], .input-box, .select-box, textarea {
         display: block;
         box-sizing: border-box;
         width: 100%;
@@ -20,7 +26,7 @@ form {
         overflow: none;
         border-bottom: 2px solid $gray;
         padding: 10px 0;
-        margin-bottom: 20px;
+        margin: 0 0 20px 0;
         color: $merlot;
 
         &::-webkit-input-placeholder {
@@ -51,7 +57,11 @@ form {
     }
 
     .grouped {
-        margin-bottom: 30px;
+        margin: 30px 0;
+    }
+
+    .grouped + .icon-button {
+        margin-top: 0;
     }
 
     .picker__input.picker__input--active {

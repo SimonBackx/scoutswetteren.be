@@ -5,21 +5,21 @@
         <div class="white block">
                 <form method="post">
                     <div class="text">
-                        <header>
-                            <h1>Nieuw lid inschrijven</h1>
-                        </header>
+                        
+                        <h1>Nieuw lid inschrijven</h1>
 
                         <input type="hidden" id="leden-aantal" name="leden-aantal" value="{{ max(1, leden | length) }}">
+                        <input type="hidden" id="ouders-aantal" name="ouders-aantal" value="{{ max(1, ouders | length) }}">
 
-                        {% for i in 0..6 %}
+                        {% for i in 0..5 %}
                             {% set lid = leden[loop.index0] %}
-                            <div class="grouped lid splitted" id="lid-{{ loop.index }}"{% if loop.index > 1 and lid | length == 0 %} style="display: none;"{% endif %}>
+                            <div class="grouped splitted" id="leden-{{ loop.index }}"{% if loop.index > 1 and lid | length == 0 %} style="display: none;"{% endif %}>
                                 <div class="part column first">
                                     <label>Voornaam</label>
                                     <input type="text" name="lid-voornaam-{{ loop.index }}" placeholder="Voornaam van het kind / de jongere" value="{{ lid['voornaam'] | e('html_attr') }}" required="required">
 
                                     <label>Achternaam</label>
-                                    <input type="text" name="lid-achternaam-{{ loop.index }}" placeholder="Naam van het kind / de jongere" value="{{ lid.achternaam | e('html_attr') }}" required="required">
+                                    <input type="text" class="achternaam" name="lid-achternaam-{{ loop.index }}" placeholder="Naam van het kind / de jongere" value="{{ lid.achternaam | e('html_attr') }}" required="required">
 
                                     <label>Geslacht</label>
                                     <input id="geslacht-jongen-{{ loop.index }}" type="radio" name="lid-geslacht-{{ loop.index }}" value="M"{% if lid.geslacht != 'V' %} checked{% endif %}>
@@ -28,9 +28,9 @@
                                     <input id="geslacht-meisje-{{ loop.index }}" type="radio" name="lid-geslacht-{{ loop.index }}" value="V"{% if lid.geslacht == 'V' %} checked{% endif %}>
                                     <label for="geslacht-meisje-{{ loop.index }}">Meisje</label>
                                 
-                                    {% if errors|length > 0 %}
+                                    {% if lid.errors|length > 0 %}
                                         <ul class="error">
-                                            {% for error in errors %}
+                                            {% for error in lid.errors %}
                                                 <li>{{ error }}</li>
                                             {% endfor %}
                                         </ul>
@@ -93,7 +93,82 @@
 
                             </div>
                         {% endfor %}
-                        <button class="icon-button plus" id="add-brother-sister">Zus / broer toevoegen</button>
+                        <button class="icon-button plus add-count" data-field="leden" data-move="achternaam" data-max="6">Zus / broer toevoegen</button>
+
+                        <h1>Ouders of voogd</h1>
+
+                        {% for i in 0..3 %}
+                            {% set ouder = ouders[loop.index0] %}
+                            <div class="grouped splitted" id="ouders-{{ loop.index }}"{% if loop.index > 1 and ouder | length == 0 %} style="display: none;"{% endif %}>
+                                <div class="part column first">
+                                    <label>Titel</label>
+                                    <label class="select-box">
+                                        <select required="required" name="ouder-functie-{{ loop.index }}">
+                                            <option disabled selected hidden>Maak een keuze</option>
+                                            {% for titel in titels %}
+                                                <option value="{{ titel }}"{% if titel == ouder.titel %} selected{% endif %}>{{ titel }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+
+                                    <label>Voornaam</label>
+                                    <input type="text" name="ouder-voornaam-{{ loop.index }}" placeholder="Voornaam van de ouder" value="{{ ouder.voornaam | e('html_attr') }}" required="required">
+
+                                    <label>Achternaam</label>
+                                    <input type="text" name="ouder-achternaam-{{ loop.index }}" placeholder="Naam van de ouder" value="{{ ouder.achternaam | e('html_attr') }}" required="required">
+
+                                    <label>Adres</label>
+                                    <input type="text" class="adres" name="ouder-adres-{{ loop.index }}" placeholder="Straat en nummer" value="{{ ouder.adres | e('html_attr') }}" required="required">
+                                
+                                    {% if ouder.errors|length > 0 %}
+                                        <ul class="error">
+                                            {% for error in ouder.errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+
+                                <div class="part column last">
+                                    <label>Gemeente</label>
+                                    <input type="text" class="gemeente" name="ouder-gemeente-{{ loop.index }}" placeholder="Vul de gemeente in van de ouder" value="{{ ouder.gemeente | e('html_attr') }}" required="required">
+
+                                    <label>GSM of telefoon</label>
+                                    <input type="text" name="ouder-telefoon-{{ loop.index }}" placeholder="Vul nummer van de ouder in" value="{{ ouder.telefoon | e('html_attr') }}" required="required">
+
+                                    <label>E-mailadres</label>
+                                    <input type="text" name="ouder-email-{{ loop.index }}" placeholder="Vul e-mailadres van de ouder in" value="{{ ouder.email | e('html_attr') }}" required="required">
+                                    
+                                </div>
+
+                            </div>
+                        {% endfor %}
+
+                        <button class="icon-button plus add-count" data-field="ouders" data-move="adres,gemeente" data-max="4">Ouder toevoegen</button>
+
+                        <div class="splitted grouped">
+                                <div class="part column first">
+                                    <label>Opmerkingen huisbezoeken</label>
+                                    <p>Na het inschrijven van nieuwe leden en net voor kamp, gebeurt het soms dat we op huisbezoek komen als we dit nuttig vinden. Maar het is onmogelijk om voor elk lid een datum / tijdstip af te spreken, daarom kan je hieronder enkele opmerkingen achterlaten.</p>
+                                    <textarea type="text" name="opmerkingen-huisbezoek" placeholder="Bv. dagen en uren waarop huisbezoeken niet mogelijk zijn">{{ data.huisbezoeken }}</textarea>
+
+                                    {% if errors|length > 0 %}
+                                        <ul class="error">
+                                            {% for error in errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+
+                                <div class="part column last">
+                                    <label>Belangrijke afspraken vanuit de gezinssituatie</label>
+                                    <textarea type="text" name="afspraken-gezinssituatie" placeholder="Bv. regeling echtscheiding">{{ data.gezinssituatie }}</textarea>
+                                </div>
+
+                            </div>
+
+
 
                         <footer>
                             <input type="submit" class="aubergine fill" value="Opslaan">
@@ -113,17 +188,36 @@
              };
 
             $( document ).ready(function() {
-                $('#add-brother-sister').click(function(event) {
+                $('.add-count').click(function(event) {
                     event.preventDefault();
-                    var aantal = parseInt($('#leden-aantal').val());
-                    aantal++;
-                    $('#leden-aantal').val(aantal);
-                    $('#lid-'+aantal).show();
+                    var field = $(this).attr('data-field');
+                    var max = parseInt($(this).attr('data-max'));
+                    var aantal_el = $('#'+field+'-aantal');
 
-                    if (aantal >= 6) {
+                    var aantal = parseInt(aantal_el.val());
+                    var last_one = $('#'+field+'-'+aantal);
+                    aantal++;
+                    aantal_el.val(aantal);
+                    var new_one = $('#'+field+'-'+aantal);
+                    new_one.show();
+
+                    if (aantal >= max) {
                         $(this).hide();
                     }
+                    new_one.find('input')[0].focus();
+
+                    var move_raw = $(this).attr('data-move');
+                    var move = move_raw.split(',');
+                    if (move.length > 0) {
+                        for (var i = 0; i < move.length; i++) {
+                            var cl = move[i];
+                            var ori = last_one.find('.'+cl);
+                            var ne = new_one.find('.'+cl);
+                            ne.val(ori.val());
+                        }
+                    }
                 });
+
                 $('.lid-geboortedatum').change(function() {
                     var year = parseInt($(this).val().substr(6,4));
                     $(this).siblings('aside').hide();

@@ -13,7 +13,8 @@ class NieuwLid extends Page {
     function getContent() {
 
         return Template::render('leden/nieuw-lid', array(
-            'leden' => array()
+            'leden' => array(),
+            'titels' => array('Mama', 'Papa', 'Voogd', 'Stiefmama', 'Stiefpapa')
         ));
     }
 }
