@@ -75,6 +75,35 @@ main {
         }
     }
 
+    .subtext {
+        &.part {
+            vertical-align: middle;
+        }
+
+        padding: 100px 60px;
+        color: $cod-gray;
+
+        @media screen and (max-width: $width-stop-splitted) {
+          padding: 80px 60px;
+
+          &.part {
+              padding-top: 0;
+          }
+        }
+
+        h1, h2 {
+            color: $aubergine;
+        }
+
+        h2 {
+            margin-top: 25px;
+        }
+
+        p {
+            color: $cardinal;
+        }
+    }
+
     // Small height screens: make boxes less long
     @media screen and (max-width: $width-reduce-padding) {
         .text {
@@ -164,19 +193,6 @@ main {
         }
     }
 }
-
-.icon-button {
-    color: $aubergine;
-    padding: 5px 5px 5px 30px;
-    margin: 20px 0;
-    display: inline-block;
-    background: url(../images/icon-button.png) no-repeat left center;
-
-    &.plus {
-       background: url(../images/plus-button.png) no-repeat left center; 
-    }
-}
-
 
 // Lijst structuren
 // 

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <article class="white block">
+            <div class="splitted">
+                <div class="part text">
+                    <header>
+                        <h1>Inschrijven / gegevens aanpassen</h1>
+                    </header>
+
+                    <p>Via deze website is het mogelijk om je kind(eren) in te schrijven en tijdens het jaar (medische) gegevens aan te passen. We organiseren elk jaar ook één of meerdere inschrijvingsmomenten waarop je dit op de scouts kan doen. Volg daarvoor de blog op de startpagina.</p>
+
+                    <p>Voor kamp en tijdens het jaar vragen we alle ouders om alle gegevens geregeld na te kijken zodat we altijd de meest recente informatie hebben.</p>
+
+                    <p>Het inschrijvingsgeld dit jaar bedraagt € 32,00, cash of via overschrijving te betalen (meer info volgt na het inschrijven). Kapoenen betalen € 42,00. Zie ook "Waarvoor wordt het lidgeld gebruikt?".</p>
+                    
+                    <footer>
+                        <a href="#veel-gestelde-vragen" class="button merlot">Veel gestelde vragen</a>
+                    </footer>
+                </div>
+                <div class="part subtext">
+                   <h2>Nieuwe leden</h2>
+                   <p>Nieuwe leden zonder broers / zussen in de scouts kunnen zich met onderstaande knop inschrijven nadat ze op twee activiteiten langs zijn gekomen.</p>
+                    <a href="/inschrijven/nieuw-lid" rel="nofollow" class="icon-button">Inschrijven</a>
+
+                   <h2>Bestaande leden en broers / zussen</h2>
+                   <p>De ouders van het gezin kunnen hier inloggen om de inschrijvingen te verlengen of aan te passen. Ze kunnen ook broers of zussen inschrijven.</p>
+                       <a href="/inschrijven/inloggen" rel="nofollow" class="icon-button">Inloggen</a>
+
+                   <h2>Hulp nodig?</h2>
+                   <p>Neem eerst eens kijkje bij de veel gestelde vragen. Lukt het nog steeds niet? Kom dan eens langs op zondag of stuur de web verantwoordelijke je vraag via de contact pagina.</p>
+                </div>
+            </div>
+        </article>
+        <article class="white block" id="veel-gestelde-vragen">
+            <div class="subtext">
+                <header>
+                    <h1>Veel gestelde vragen</h1>
+                </header>
+
+                <div class="splitted">
+                    <div class="part column first">
+                        <h2>Heeft de scouts een speciale regeling voor gezinnen met financiële moelijkheden?</h2>
+                        <p>We willen de scouts toegankelijk houden voor iedereen. De scouts betaalt het lidgeld en - in de mate van het mogelijke - een deel van of volledig de kosten van activiteiten tijdens het jaar (groepsreis, weekend, kamp...) voor gezinnen met financiële moelijkheden. Zij kunnen dit discreet aangeven bij het inschrijven of via iemand van de takleiding. Ook alle gezinnen met ingeschreven broers en/of zussen betalen minder voor kampen. </p>
+
+                        <h2>Waarvoor wordt het lidgeld gebruikt?</h2>
+                        <p>Een deel ervan gaat naar de koepelorganisatie Scouts en Gidsen Vlaanderen en dient o.a. voor verzekeringen, het maken en versturen van tijdschriften, algemene werkingskosten... De rest wordt gebruikt om de kosten van de wekelijkse activiteiten te dekken. Bij de kapoenen wordt het ook nog gebruikt om vieruurtjes aan te kopen.</p>
+
+                        <h2>Mijn kind heeft ..., is hij/zij ook welkom op de scouts?</h2>
+                        <p>We hebben meerdere leden met bepaalde allergie(ën), ADHD, syndroom van Asperger, ... Meestel levert dit geen problemen op. Scouts en Gidsen Vlaanderen (SGV) heeft ook een speciale werking voor kinderen met een handicap, met inclusie als doel. Meer info vind je op de website van SGV. https://www.scoutsengidsenvlaanderen.be/akabe. In Wetteren kan je daarvoor bij de scouts van Sint-Jan in overschelde terecht.</p>
+                    </div>
+                    <div class="part column last">
+                        <h2>Aan wie kunnen we het lidgeld betalen?</h2>
+                        <p>Gelieve dit steeds bij de takleiding te doen, die vind je steeds terug op de contact pagina. Ook voor andere vragen kan je steeds bij hen terecht. Zij kennen uw zoon/dochter namelijk het best.</p>
+
+                        <h2>Ik wil een broer / zus inschrijven, hoe kan ik dit doen?</h2>
+                        <p>wip</p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        {{ include('call_to_action.html') }}
+    </main>
+{% endblock %}

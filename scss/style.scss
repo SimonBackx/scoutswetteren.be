@@ -1,6 +1,8 @@
 // Color variables
 $aubergine: #470A14;
 $merlot: #881327;
+$cardinal: #BD1C37;
+
 $cod-gray: #141414;
 $bright-sun: #FFDA37;
 $heath: #520F1A;
@@ -203,6 +205,24 @@ a.button, button.button, input[type=submit] {
         font-size: $size-button-big;
     }
 }
+
+a.icon-button, button.icon-button {
+    &, &:hover, &:visited, &:active, &:link {
+        color: $aubergine;
+    }
+
+    text-transform: uppercase;
+    padding: 5px 5px 5px 20px;
+    margin: 10px 0;
+    display: inline-block;
+    background: url(../images/icon-button.png) no-repeat left center;
+
+    &.plus {
+       background: url(../images/plus-button.png) no-repeat left center; 
+    }
+}
+
+
 
 // Resize font sizes on small screens
 @media screen and (max-width: 480px) {

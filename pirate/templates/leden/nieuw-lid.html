@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <div class="white block">
+                <form method="post">
+                    <div class="text">
+                        <header>
+                            <h1>Nieuw lid inschrijven</h1>
+                        </header>
+
+                        <input type="hidden" id="leden-aantal" name="leden-aantal" value="{{ max(1, leden | length) }}">
+
+                        {% for i in 0..6 %}
+                            {% set lid = leden[loop.index0] %}
+                            <div class="grouped lid splitted" id="lid-{{ loop.index }}"{% if loop.index > 1 and lid | length == 0 %} style="display: none;"{% endif %}>
+                                <div class="part column first">
+                                    <label>Voornaam</label>
+                                    <input type="text" name="lid-voornaam-{{ loop.index }}" placeholder="Voornaam van het kind / de jongere" value="{{ lid['voornaam'] | e('html_attr') }}" required="required">
+
+                                    <label>Achternaam</label>
+                                    <input type="text" name="lid-achternaam-{{ loop.index }}" placeholder="Naam van het kind / de jongere" value="{{ lid.achternaam | e('html_attr') }}" required="required">
+
+                                    <label>Geslacht</label>
+                                    <input id="geslacht-jongen-{{ loop.index }}" type="radio" name="lid-geslacht-{{ loop.index }}" value="M"{% if lid.geslacht != 'V' %} checked{% endif %}>
+                                    <label for="geslacht-jongen-{{ loop.index }}">Jongen</label>
+
+                                    <input id="geslacht-meisje-{{ loop.index }}" type="radio" name="lid-geslacht-{{ loop.index }}" value="V"{% if lid.geslacht == 'V' %} checked{% endif %}>
+                                    <label for="geslacht-meisje-{{ loop.index }}">Meisje</label>
+                                
+                                    {% if errors|length > 0 %}
+                                        <ul class="error">
+                                            {% for error in errors %}
+                                                <li>{{ error }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+
+                                <div class="part column last">
+                                    <label>Geboortedatum</label>
+                                    <input type="text" name="lid-geboortedatum-{{ loop.index }}" class="lid-geboortedatum datepicker" placeholder="Kies een datum" value="{{ lid.geboortedatum | e('html_attr') }}" required="required">
+
+                                    <aside class="kapoenen" style="display: none;">
+                                        <p>
+                                        Tak: kapoenen
+                                        </p>
+                                        <p>
+                                            De Kapoenen is de tak voor de allerkleinsten. Het leven van een kapoen (6-8) is er één vol spel, fantasie, creativiteit en expressie. Sommigen gaan voor de eerste keer naar de scouts, voor de eerste keer op weekend, voor de eerste keer op kamp. Zoveel nieuwe dingen! Wat doen we bij de kapoenen? We spelen, we ravotten, we maken ons vuil, we kliederen en kladderen, we zingen, we klimmen in de bomen... Een heleboel dus! Speelkledij is een must!
+                                        </p>
+                                    </aside>
+                                    <aside class="wouters" style="display: none;">
+                                        <p>
+                                        Tak: wouters
+                                        </p>
+                                        <p>
+                                            Wie tussen 8 en 11 jaar is, kan meespelen bij de wouters. Zij voelen zich vaak al ervaren scouten, en dat zijn ze eigenlijk ook wel een beetje. Wouters worden zich steeds meer bewust van wat er rond hen gebeurt: op school, thuis en op de scouts. Ze krijgen ruimte en kansen om dingen uit te proberen en van elkaar te leren. Ze verleggen hun grenzen, halen kattenkwaad uit en kunnen vooral onbezorgd spelen.
+                                        </p>
+                                    </aside>
+                                    <aside class="jonggivers" style="display: none;">
+                                        <p>
+                                        Tak: jonggivers
+                                        </p>
+                                        <p>
+                                            De jonggivers, een geval apart. Niet oud, maar ook niet zo jong meer. In ieder geval in volle ontwikkeling. Ze mogen al alleen op pad, leren sjorren, kaartlezen en gaan op tentenkamp, waar ze zelfs hun eigen potje leren koken! Jonggivers krijgen een waaier van mogelijkheden om mee te beslissen, zelf de handen uit de mouwen te steken en allerlei vaardigheden onder de knie te krijgen. Een tak boordevol nieuwe dingen!
+                                        </p>
+                                    </aside>
+                                    <aside class="givers" style="display: none;">
+                                        <label>GSM van de jongere</label>
+                                        <input type="text" name="lid-gsm-{{ loop.index }}" placeholder="Vul GSM nummer in van het lid" value="{{ lid.gsm | e('html_attr') }}" required="required">
+
+                                        <p>
+                                        Tak: givers
+                                        </p>
+                                        <p>
+                                            Givers trekken samen op, hun vrienden zijn heilig. Ze hechten heel veel belang aan de groepssfeer. Van hun leiding krijgen ze alle mogelijkheden, ervaringen, spanning en enthousiasme die ze alleen binnen scoutsing kunnen vinden. Maar givers hebben ook hun eigen willetje. Ze krijgen dan ook elke keer dat ietsje meer. Dat ietsje meer participatie, dat ietsje meer zelfstandigheid, dat ietsje meer uitdaging. Als je hier zit, ben je al een echte!
+                                        </p>
+                                    </aside>
+                                    <aside class="jin" style="display: none;">
+                                        <p>
+                                        Tak: jin
+                                        </p>
+                                        <p>
+                                           Jin, Jij en Ik een Noodzaak. Als jin sta je op een grens: die tussen lid en leiding. In hun eigen 'jonge' stijl werken ze gekke activiteiten, projecten en zelfs hun kamp uit. Al doende leren ze samen te werken en verantwoordelijkheid op te nemen. Hieruit groeit engagement voor de groep en voor de samenleving. Het is een jaar waarin ze hun eigen zegje hebben, waar ze samen met hun medejin tot ideeën komen en ze samen uitwerken. De jin gaat op buitenlands kamp. Ze organiseren financiële activiteiten om dat te kunnen bekostigen. Ze mogen zelf hun kamp invullen en vorm geven. Jin, gun ze hun apenjaar!
+                                        </p>
+                                    </aside>
+                                    <aside class="ongeldig" style="display: none;">
+                                        <p>
+                                            Jouw zoon/dochter is te jong/oud voor onze scouts. Leden zijn welkom vanaf 6 jaar, of als ze nog 6 jaar worden in dat jaar.
+                                        </p>
+                                    </aside>
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                        <button class="icon-button plus" id="add-brother-sister">Zus / broer toevoegen</button>
+
+                        <footer>
+                            <input type="submit" class="aubergine fill" value="Opslaan">
+                            <a href="/admin/wachtwoord-wijzigen" class="button merlot">Wachtwoord aanpassen</a>
+                        </footer>
+
+                    </div>
+                </form>
+        </div>
+        <script type="text/javascript">
+            var geboortedatums = {
+                 2009: 'kapoenen', 2010: 'kapoenen',
+                 2008: 'wouters', 2007: 'wouters', 2006: 'wouters', 
+                 2005: 'jonggivers', 2004: 'jonggivers', 2003: 'jonggivers',
+                 2002: 'givers', 2001: 'givers', 2000: 'givers',
+                 1999: 'jin'
+             };
+
+            $( document ).ready(function() {
+                $('#add-brother-sister').click(function(event) {
+                    event.preventDefault();
+                    var aantal = parseInt($('#leden-aantal').val());
+                    aantal++;
+                    $('#leden-aantal').val(aantal);
+                    $('#lid-'+aantal).show();
+
+                    if (aantal >= 6) {
+                        $(this).hide();
+                    }
+                });
+                $('.lid-geboortedatum').change(function() {
+                    var year = parseInt($(this).val().substr(6,4));
+                    $(this).siblings('aside').hide();
+
+                    if (isNaN(year)) {
+                        return;
+                    } 
+
+                    if (typeof geboortedatums[year] === 'undefined') {
+                        $(this).siblings('aside.ongeldig').show();
+                    } else {
+                        $(this).siblings('aside.'+geboortedatums[year]).show();
+                    }
+                });
+            });
+        </script>
+
+        {{ include('call_to_action.html') }}
+    </main>
+{% endblock %}

@@ -19,6 +19,8 @@
 
     <link rel="shortcut icon" href="{{ http }}/favicon.ico">
 
+    <script type="text/javascript" src="{{ http }}/js/jquery-3.1.0.min.js"></script>
+
     <!--[if lt IE 9]>
      <script type="text/javascript" src="{{ http }}/js/html5shiv.min.js"></script>
     <![endif]-->
@@ -63,18 +65,18 @@
                 </div>
                 <div class="items">
                     <div class="space">
-                        <a href="">Info</a>
-                        <a href="">Foto's</a>
-                        <a href="">Verhuur</a>
-                        <a href="">Contact</a>
-                        {% if general.logged_in == false %}<a href="" class="call-to-action">Inschrijven</a>{% endif %}
+                        <a href="/info">Info</a>
+                        <a href="/fotos">Foto's</a>
+                        <a href="/verhuur">Verhuur</a>
+                        <a href="/contact">Contact</a>
+                        {% if general.logged_in == false %}<a href="/inschrijven" class="call-to-action">Inschrijven</a>{% endif %}
                     </div>
                     <div class="visible">
-                        <a href="">Info</a>
-                        <a href="">Foto's</a>
-                        <a href="">Verhuur</a>
-                        <a href="">Contact</a>
-                        {% if general.logged_in == false %}<a href="" class="call-to-action">Inschrijven</a>{% endif %}
+                        <a href="/info">Info</a>
+                        <a href="/fotos">Foto's</a>
+                        <a href="/verhuur">Verhuur</a>
+                        <a href="/contact">Contact</a>
+                        {% if general.logged_in == false %}<a href="/inschrijven" class="call-to-action">Inschrijven</a>{% endif %}
                     </div>
                     <div class="floater">
                         <div class="smartphone-menu">
@@ -154,25 +156,11 @@
             </div>
         </footer>
     </div>
-    <script type="text/javascript" src="{{ http }}/js/jquery-3.1.0.min.js"></script>
-    <script type="text/javascript" src="{{ http }}/js/main.js"></script>
+
+    <script type="text/javascript" src="{{ http }}/js/homepage.js"></script>
     <script type="text/javascript" src="{{ http }}/js/twig.min.js"></script>
     <script type="text/javascript" src="/js/pickadate.js"></script>
     <script type="text/javascript" src="/js/pickadate.date.js"></script>
-    <script type="text/javascript">
-        $( document ).ready(function() {
-            $('.datepicker').pickadate({
-                monthsFull: ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
-                weekdaysShort: ['Zo', 'Ma', 'Di', 'Wo', 'Do', 'Vr', 'Za'],
-                format: 'dd-mm-yyyy',
-                firstDay: 1,
-                today: '',
-                clear: '',
-                close: 'Sluiten',
-                selectYears: true,
-                selectMonths: true,
-            });
-        });
-    </script>
+    <script type="text/javascript" src="/js/forms.js"></script>
 </body>
 </html>
