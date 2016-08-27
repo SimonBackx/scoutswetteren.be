@@ -3,14 +3,17 @@ namespace Pirate\Model\Leden;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 
-class Lid extends Model {
+class Ouder extends Model {
     public $id;
     private $gezin;
+    public $titel;
     public $voornaam;
     public $achternaam;
-    public $geslacht;
-    public $geboortedatum;
+    public $adres;
+    public $gemeente;
     public $gsm;
+    public $email;
+    private $password;
 
 
     function __construct($row = array()) {
@@ -20,44 +23,19 @@ class Lid extends Model {
 
         $this->id = $row['id'];
         $this->gezin = $row['gezin'];
+        $this->titel = $row['titel'];
         $this->voornaam = $row['voornaam'];
         $this->achternaam = $row['achternaam'];
-        $this->geslacht = $row['geslacht'];
-        $this->geboortedatum = new \DateTime($row['geboortedatum']);
+        $this->adres = $row['adres'];
+        $this->gemeente = $row['gemeente'];
+        $this->email = $row['email'];
+        $this->password = $row['password'];
         $this->gsm = $row['gsm'];
-    }
-
-    static function getScoutsjaar() {
-        $jaar = intval(date('Y'));
-        $maand = intval(date('n'));
-        if ($maand >= 9) {
-            return $jaar;
-        } else {
-            return $jaar - 1;
-        }
-    }
-
-    static function getTakkenVerdeling($scoutsjaar) {
-        return array(
-                 $scoutsjaar - 7 => 'kapoenen', $scoutsjaar - 6 => 'kapoenen',
-                 $scoutsjaar - 8 => 'wouters', $scoutsjaar - 9 => 'wouters', $scoutsjaar - 10 => 'wouters', 
-                 $scoutsjaar - 11 => 'jonggivers', $scoutsjaar - 12 => 'jonggivers', $scoutsjaar - 13 => 'jonggivers',
-                 $scoutsjaar - 14 => 'givers', $scoutsjaar - 15 => 'givers', $scoutsjaar - 16 => 'givers',
-                 $scoutsjaar - 17 => 'jin'
-             );
-    }
-
-    static function getTak($geboortejaar) {
-        $verdeling = self::getTakkenVerdeling(self::getScoutsjaar());
-        if (isset($verdeling[$geboortejaar])) {
-            return $verdeling[$geboortejaar];
-        }
-        return false;
     }
 
     // empty array on success
     // array of errors on failure
-    function setProperties(&$data) {
+    /*function setProperties(&$data) {
         $errors = array();
 
         if (Validator::isValidFirstname($data['voornaam'])) {
@@ -150,7 +128,7 @@ function save() {
             return true;
         }
         return false;
-    }
+    }*/
 
 
     

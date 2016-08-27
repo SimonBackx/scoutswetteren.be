@@ -217,11 +217,6 @@ class Event extends Model {
     }
 
     function save() {
-        // Is het nieuw of bestaat het al?
-        if (empty($this->id)) {
-
-        }
-
         if (is_null($this->location)) {
             $location = "NULL";
         } else {
