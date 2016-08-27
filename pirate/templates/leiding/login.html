@@ -20,10 +20,10 @@
 
             <form{% if wrong %} class="error"{% endif %} method="post" action="/login">
                 <label for="email_field">E-mailadres</label>
-                <input id="email_field" type="email" name="email" placeholder="Vul hier uw e-mailadres in" required="required" value="{{ email | e('html_attr') }}">
+                <input id="email_field" type="email" name="email" placeholder="Vul hier uw e-mailadres in" value="{{ email | e('html_attr') }}">
 
                 <label for="password_field">Wachtwoord</label>
-                <input id="password_field" type="password" name="password" placeholder="Vul hier uw wachtwoord in" required="required">
+                <input id="password_field" type="password" name="password" placeholder="Vul hier uw wachtwoord in">
 
                 {% if wrong %}
                 <ul class="error">

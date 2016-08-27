@@ -12,7 +12,7 @@
             color: $aubergine;
 
             time {
-                font-size: $size-subtitle;
+                font-size: $size-text-bigger;
                 color: $merlot;
                 font-weight: normal;
                 padding-left: 20px;
@@ -112,7 +112,7 @@
             }
 
             time {
-                font-size: $size-subtitle;
+                font-size: $size-text-bigger
             }
         }
 
@@ -120,7 +120,7 @@
             clear: both;
             padding: 15px 50px;
             margin: -5px -50px;
-            font-size: $size-subtitle;
+            font-size: $size-text-bigger;
 
             &.weekdays {
                 color: $bright-sun;

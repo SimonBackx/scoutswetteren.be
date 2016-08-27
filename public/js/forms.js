@@ -37,9 +37,27 @@ $( document ).ready(function() {
 
     $('textarea').bind("propertychange change click keyup input paste focus", function(event){
         $(this).css({'height': 'auto'});
-        $(this).css({'height': $(this)[0].scrollHeight + 2});
+        $(this).css({'height': $(this)[0].scrollHeight });
     });
+
+    // Alle selects met 1e optie geselecteerd = gray maken
+    $('select').each(function() {
+        checkSelect.call(this);
+    });
+
+    $('select').bind("propertychange change click keyup input paste focus", function(event){
+        checkSelect.call(this);
+    });
+    
 });
+
+function checkSelect() {
+    if ($(this)[0].selectedIndex == 0) {
+        $(this).addClass('empty');
+    } else {
+        $(this).removeClass('empty');
+    }
+}
 
 String.prototype.startsWith = function(needle)
 {

@@ -45,7 +45,7 @@ form {
             color: $gray;
         }
 
-        &:focus, &:valid, &:not(:placeholder-shown){
+        &:focus {
             border-color: $merlot;
             color: $merlot;
         }
@@ -54,18 +54,6 @@ form {
             border-color: $error-red;
             color: $error-red; 
         }
-    }
-
-    .grouped {
-        margin: 30px 0;
-    }
-
-    .grouped + .icon-button {
-        margin-top: 0;
-    }
-
-    .picker__input.picker__input--active {
-        border-color: $merlot;
     }
 
     input[type=checkbox], input[type=radio] {
@@ -147,17 +135,6 @@ form {
         display: block;
     }
 
-    .input-box {
-        input[type=text] {
-            display: inline-block;
-            width: 80px;
-            box-sizing: border-box;
-            padding: 5px 10px;
-            border: 0;
-            margin: 0;
-        }
-    }
-
     .select-box {
         overflow: hidden;
         border-color: $merlot;
@@ -181,10 +158,62 @@ form {
             appearance: none;
             -moz-appearance: none;
             -webkit-appearance: none;
+
+            &.empty {
+                color: $gray;
+            }
         }
     }
 
+    .input-box {
+        padding: 0;
 
+        input[type=text] {
+            display: inline-block;
+            width: 80px;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            border: 0;
+            margin: 0;
+        }
+
+        .select-box {
+            width: 30%;
+            box-sizing: border-box;
+            display: inline-block;
+            border: 0;
+            margin: 0;
+
+            select {
+                padding-left: 20px;
+            }
+            &:first-child select{
+                padding-left: 0;
+            }
+            &:first-child {
+                width: 29%;
+            }
+            float: left;
+        }
+
+        .max {
+            width: auto;
+            float: none;
+            overflow: hidden;
+            display: block;
+        }
+
+        .right {
+            float: right;
+        }
+
+        &:after {
+            clear: both;
+            display: block;
+            height: 0;
+            content: '';
+        }
+    }
 
     input[type=text].datepicker {
         background: url(../images/input-arrow.png) no-repeat right center;

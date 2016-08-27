@@ -46,12 +46,8 @@ main {
             margin: 0 -60px 60px -60px;
         }
 
-        h1 {
+        h1, h2 {
             color: $aubergine;
-        }
-
-        h2 {
-            color: $merlot;
         }
 
         header {
@@ -62,6 +58,7 @@ main {
             h2 {
                 padding: 0;
                 margin: 0;
+                color: $merlot;
             }
             padding-bottom: 40px;
         }
@@ -84,7 +81,7 @@ main {
         color: $cod-gray;
 
         @media screen and (max-width: $width-stop-splitted) {
-          padding: 80px 60px;
+          padding: 80px $smartphone-padding;
 
           &.part {
               padding-top: 0;
@@ -96,6 +93,7 @@ main {
         }
 
         h2 {
+            font-size: $size-text-bigger;
             margin-top: 25px;
         }
 
@@ -260,3 +258,12 @@ article.list {
     }
 }
 
+blockquote {
+    border-left: 2px solid $cardinal;
+    color: $cardinal;
+    padding: 0 20px;
+    max-width: 800px;
+    max-height: 400px;
+    margin: 20px 0;
+    overflow: scroll;
+}

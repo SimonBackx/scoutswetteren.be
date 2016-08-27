@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Model\Leiding;
 use Pirate\Model\Model;
+use Pirate\Model\Validating\Validator;
 
 class Leiding extends Model {
     public $id;
@@ -294,113 +295,41 @@ class Leiding extends Model {
         return crypt($password, $salt);
     }
 
-    // Controle
-    // 
-    function isValidFirstname($firstname) {
-        $pattern = '/^[\w ]+$/';
-        return (preg_match($pattern, $firstname) === 1);
-    }
-
-    function isValidLastname($lastname) {
-        $pattern = '/^[\w ]+$/';
-        return (preg_match($pattern, $lastname) === 1);
-    }
-
-    function isValidTotem($totem) {
-        $pattern = '/^[\w ]+$/';
-        return (preg_match($pattern, $totem) === 1);
-    }
-
-    function isValidPhone($phone) {
-        $pattern = '/^[0-9  +()]+$/';
-        return (preg_match($pattern, $phone) === 1);
-    }
-
-    function isValidMail($mail) {
-        return (filter_var($mail, FILTER_VALIDATE_EMAIL));
-    }
-
     // empty array on success
     // array of errors on failure
     function setProperties(&$data) {
         $errors = array();
 
-        if ($this->isValidFirstname($data['firstname'])) {
+        if (Validator::isValidFirstname($data['firstname'])) {
             $this->firstname = ucwords($data['firstname']);
             $data['firstname'] = $this->firstname;
         } else {
             $errors[] = 'Ongeldige voornaam';
         }
 
-        if ($this->isValidLastname($data['lastname'])) {
+        if (Validator::isValidLastname($data['lastname'])) {
             $this->lastname = ucwords($data['lastname']);
             $data['lastname'] = $this->lastname;
         } else {
             $errors[] = 'Ongeldige achternaam';
         }
 
-        if ($this->isValidTotem($data['totem'])) {
+        if (Validator::isValidTotem($data['totem'])) {
             $this->totem = ucfirst(strtolower($data['totem']));
             $data['totem'] = $this->totem;
         }  else {
             $errors[] = 'Ongeldige totem';
         }
 
-        if ($this->isValidMail($data['mail'])) {
+        if (Validator::isValidMail($data['mail'])) {
             $this->mail = strtolower($data['mail']);
             $data['mail'] = $this->mail;
         }  else {
             $errors[] = 'Ongeldige e-mailadres';
         }
 
-        if ($this->isValidPhone($data['phone'])) {
-            $output = preg_replace('/[^0-9+]/', '', $data['phone']);
+        Validator::validatePhone($data['phone'], $this->phone, $errors);
 
-            // lengte bepalen
-            if (strlen($output) != 10 && strlen($output) != 12 && strlen($output) != 13) {
-                $errors[] = 'Vul GSM nummer in formaat +324 XX XX XX XX of 04XX XX XX XX';
-            } else {
-                $original = $output;
-                $error = false;
-                if (substr($output, 0, 4) == '0032' && strlen($output) == 13) {
-                    $output = substr($output, 2);
-                }
-
-                if (substr($output, 0, 3) == '+32' && strlen($output) == 12) {
-                    $output = substr($output, 1);
-                }
-
-                if (substr($output, 0, 3) != '324' || (strlen($original) != 12 && strlen($original) != 13)) {
-                    if (substr($output, 0, 2) != '04') {
-                        $errors[] = 'Vul GSM nummer in formaat +32 4XX XX XX XX of 04XX XX XX XX';
-                        $error = true;
-                    } else {
-                        $output = '32'.substr($output, 1);
-                    }
-                }
-
-                if (!$error) {
-                    $output = '+'.$output;
-
-                    // Non breaking spaces toevoegen
-                    $strlen = strlen( $output );
-                    $result = '';
-                    for( $i = 0; $i < $strlen; $i++ ) {
-                        $char = substr( $output, $i, 1 );
-                        if ($i == 3 || ($i >= 5 && $i%2 == 0)) {
-                            $result .= ' ';
-                        }
-                        $result .= $char;
-                    }
-
-                    $this->phone = $result;
-                    $data['phone'] = $this->phone;
-                }
-
-            }
-        } else {
-            $errors[] = 'Ongeldig GSM nummer';
-        }
         return $errors;
     }
 

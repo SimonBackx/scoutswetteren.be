@@ -24,7 +24,7 @@ $size-smartphone-text: 10pt;
 
 $size-text-bigger: 14pt;
 
-$size-subtitle: 15pt;
+$size-subtitle: 20pt;
 $size-smartphone-subtitle: 10pt;
 
 $size-button: 12pt;
@@ -83,7 +83,13 @@ h1 {
 h2 {
     font-weight: normal;
     font-size: $size-subtitle;
-    margin: 20px 0;
+    margin: 30px 0 20px 0;
+}
+
+header {
+    h2 {
+        font-size: $size-text-bigger;
+    }
 }
 
 p {
@@ -113,7 +119,7 @@ li {
 }
 
 figcaption {
-    font-size: $size-subtitle;
+    font-size: $size-text-bigger;
 }
 
 a {
@@ -128,7 +134,7 @@ blockquote {
     margin: 0;
 }
 
-button, input, select, textarea {
+button, input, select, textarea, blockquote {
     border: 0;
     outline: 0;
     background: none;

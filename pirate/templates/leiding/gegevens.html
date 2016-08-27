@@ -8,13 +8,13 @@
         <div class="splitted">
             <div class="part column first">
                 <label>Voornaam</label>
-                <input type="text" name="firstname" value="{{ leiding.firstname }}" placeholder="Vul uw voornaam in" required="required">
+                <input type="text" name="firstname" value="{{ leiding.firstname }}" placeholder="Vul uw voornaam in">
 
                 <label>Achternaam</label>
-                <input type="text" name="lastname" value="{{ leiding.lastname }}" placeholder="Vul uw achternaam in" required="required">
+                <input type="text" name="lastname" value="{{ leiding.lastname }}" placeholder="Vul uw achternaam in">
 
                 <label>Totem</label>
-                <input type="text" name="totem" value="{{ leiding.totem }}" placeholder="Optioneel" required="required">
+                <input type="text" name="totem" value="{{ leiding.totem }}" placeholder="Optioneel">
             
                 {% if errors|length > 0 %}
                     <ul class="error">
@@ -27,10 +27,10 @@
             </div>
             <div class="part column last">
                 <label>E-mailadres</label>
-                <input type="text" name="mail" value="{{ leiding.mail }}" placeholder="Vul uw e-mailadres in" required="required">
+                <input type="text" name="mail" value="{{ leiding.mail }}" placeholder="Vul uw e-mailadres in">
 
                 <label>GSM nummer</label>
-                <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw gsm nummer in" required="required">
+                <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw gsm nummer in">
 
                 <label>Functies</label>
                 <ul>

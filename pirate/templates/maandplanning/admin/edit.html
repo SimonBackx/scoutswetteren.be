@@ -8,14 +8,14 @@
         <div class="splitted">
             <div class="part column first">
                 <label>Naam</label>
-                <input type="text" name="name" value="{{ event.name }}" placeholder="Korte beschrijving van de activiteit" required="required">
+                <input type="text" name="name" value="{{ event.name }}" placeholder="Korte beschrijving van de activiteit">
 
                 <label>Datum</label>
-                <input type="text" class="datepicker" name="startdate" value="{{ event.startdate }}" placeholder="Startdatum van de activiteit" required="required">
+                <input type="text" class="datepicker" name="startdate" value="{{ event.startdate }}" placeholder="Startdatum van de activiteit">
 
                 <label>Tijdstip</label>
                 <div class="input-box">
-                    Vanaf <input type="text" name="starttime" value="{{ event.starttime }}" placeholder="{{ default_start_hour }}" required="required">
+                    Vanaf <input type="text" name="starttime" value="{{ event.starttime }}" placeholder="{{ default_start_hour }}">
                 </div>
 
                 <input id="overnachting" type="checkbox" name="overnachting" value="1" {% if event.overnachting %} checked{% endif %}>
@@ -24,17 +24,17 @@
                 <div class="checkbox-controllable">
                     <div class="visible-when-checked">
                         <label>Einddatum</label>
-                        <input type="text" class="datepicker" name="enddate" value="{{ event.enddate }}" placeholder="Einddatum van de activiteit" required="required">
+                        <input type="text" class="datepicker" name="enddate" value="{{ event.enddate }}" placeholder="Einddatum van de activiteit">
                     </div>
 
                     <label>Tijdstip waarop activiteit stopt</label>
                     <div class="input-box">
-                        Om <input type="text" name="endtime" value="{{ event.endtime }}" placeholder="{{ default_end_hour }}" required="required">
+                        Om <input type="text" name="endtime" value="{{ event.endtime }}" placeholder="{{ default_end_hour }}">
                     </div>
 
                     <div class="visible-when-checked">
                         <label>Locatie waar de activiteit stopt</label>
-                        <input type="text" id="dropdown-locatie" class="dropdown" name="endlocation" value="{{ event.endlocation }}" placeholder="{{ default_locatie }}" required="required">
+                        <input type="text" id="dropdown-locatie" class="dropdown" name="endlocation" value="{{ event.endlocation }}" placeholder="{{ default_locatie }}">
                         <div class="dropdown-list">
                             <div class="option">{{ default_locatie }}</div>
                             <div class="option">Station Wetteren</div>
@@ -56,7 +56,7 @@
             <div class="part column last">
                 
                 <label>Locatie</label>
-                <input type="text" id="dropdown-locatie" class="dropdown" name="location" value="{{ event.location }}" placeholder="Scoutsterrein" required="required">
+                <input type="text" id="dropdown-locatie" class="dropdown" name="location" value="{{ event.location }}" placeholder="Scoutsterrein">
                 <div class="dropdown-list">
                     <div class="option">Scoutsterrein</div>
                     <div class="option">Station Wetteren</div>
@@ -65,7 +65,7 @@
                 
                 <label>Voor wie?</label>
                 <label class="select-box">
-                    <select required="required" name="group">
+                    <select name="group">
                         <option disabled selected hidden>Maak een keuze</option>
                         {% for group in groups %}
                             <option value="{{ group }}"{% if group == event.group %} selected{% endif %}>{{ group }}</option>
