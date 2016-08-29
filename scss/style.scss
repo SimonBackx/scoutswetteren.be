@@ -222,9 +222,16 @@ a.icon-button, button.icon-button {
     margin: 10px 0;
     display: inline-block;
     background: url(../images/icon-button.png) no-repeat left center;
+    background-image: linear-gradient(transparent, transparent), url(../images/icon-button.svg);
 
     &.plus {
-       background: url(../images/plus-button.png) no-repeat left center; 
+       background: url(../images/plus-button.png) no-repeat left center;
+       background-image: linear-gradient(transparent, transparent), url(../images/plus-button.svg);
+    }
+
+    &.delete {
+       background: url(../images/delete-button.png) no-repeat left center; 
+       background-image: linear-gradient(transparent, transparent), url(../images/delete-button.svg);
     }
 }
 

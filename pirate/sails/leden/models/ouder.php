@@ -2,6 +2,7 @@
 namespace Pirate\Model\Leden;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
+use Pirate\Model\Leden\Gezin;
 
 class Ouder extends Model {
     public $id;
@@ -10,11 +11,14 @@ class Ouder extends Model {
     public $voornaam;
     public $achternaam;
     public $adres;
+    public $postcode;
     public $gemeente;
+    public $telefoon;
     public $gsm;
     public $email;
     private $password;
 
+    static $titels = array('Mama', 'Papa', 'Voogd', 'Stiefmoeder', 'Stiefvader');
 
     function __construct($row = array()) {
         if (count($row) == 0) {
@@ -28,15 +32,24 @@ class Ouder extends Model {
         $this->achternaam = $row['achternaam'];
         $this->adres = $row['adres'];
         $this->gemeente = $row['gemeente'];
+        $this->postcode = $row['postcode'];
+
         $this->email = $row['email'];
         $this->password = $row['password'];
         $this->gsm = $row['gsm'];
+        $this->telefoon = $row['telefoon'];
     }
 
     // empty array on success
     // array of errors on failure
-    /*function setProperties(&$data) {
+    function setProperties(&$data) {
         $errors = array();
+
+        if (!in_array($data['titel'], self::$titels)) {
+            $errors[] = 'Ongeldige titel';
+        } else {
+            $this->titel = $data['titel'];
+        }
 
         if (Validator::isValidFirstname($data['voornaam'])) {
             $this->voornaam = ucwords($data['voornaam']);
@@ -52,52 +65,54 @@ class Ouder extends Model {
             $errors[] = 'Ongeldige achternaam';
         }
 
-        if ($data['geslacht'] == 'M' || $data['geslacht'] == 'V') {
-            $this->geslacht = $data['geslacht'];
+        Validator::validatePhone($data['gsm'], $this->gsm, $errors);
+
+        if (Validator::isValidMail($data['email'])) {
+            $this->email = strtolower($data['email']);
+            $data['email'] = $this->email;
         } else {
-            $errors[] = 'Geen geslacht geselecteerd';
+            $errors[] = 'Ongeldig e-mailadres';
         }
 
-        $geboortedatum = $data['geboortedatum_jaar'].'-'.$data['geboortedatum_maand'].'-'.$data['geboortedatum_dag'];
-        $geboortedatum = \DateTime::createFromFormat('Y-n-j', $geboortedatum);
-        if ($geboortedatum !== false && checkdate($data['geboortedatum_maand'], $data['geboortedatum_dag'], $data['geboortedatum_jaar'])) {
-            $this->geboortedatum = clone $geboortedatum;
-            $data['geboortedatum_dag'] = $geboortedatum->format('j');
-            $data['geboortedatum_maand'] = $geboortedatum->format('n');
-            $data['geboortedatum_jaar'] = $geboortedatum->format('Y');
+
+        if (Validator::isValidAddress($data['adres'])) {
+            $this->adres = ucwords($data['adres']);
+            $data['adres'] = $this->adres;
         } else {
-            $errors[] = 'Ongeldige geboortedatum';
+            $errors[] = 'Ongeldig adres';
         }
 
-        if (is_numeric($data['geboortedatum_jaar'])) {
-            $tak = self::getTak($data['geboortedatum_jaar']);
+        Validator::validateGemeente($data['gemeente'], $data['postcode'], $this->gemeente, $this->postcode, $errors);
 
-            if ($tak === false) {
-                $errors[] = 'Uw zoon is te oud  / jong voor de scouts. Kinderen zijn toegelaten vanaf 6 jaar.';
-            } else {
-                $data['tak'] = $tak;
 
-                if ($tak == 'givers' || $tak == 'jin') {
-                    Validator::validatePhone($data['gsm'], $this->gsm, $errors);
-                }
-            }
+        if (!empty($data['telefoon'])) {
+            Validator::validateNetPhone($data['telefoon'], $this->telefoon, $errors);
+        } else {
+            $this->telefoon = null;
         }
 
         return $errors;
     }
 
-function save() {
-        if (is_null($this->gsm)) {
-            $gsm = "NULL";
-        } else {
-            $gsm = "'".self::getDb()->escape_string($this->gsm)."'";
-        }
+    function setGezin(Gezin $gezin) {
+        $this->gezin = $gezin->gezin_id;
+    }
 
+    function save() {
+        if (is_null($this->telefoon)) {
+            $telefoon = "NULL";
+        } else {
+            $telefoon = "'".self::getDb()->escape_string($this->telefoon)."'";
+        }
 
         $voornaam = self::getDb()->escape_string($this->voornaam);
         $achternaam = self::getDb()->escape_string($this->achternaam);
-        $geslacht = self::getDb()->escape_string($this->geslacht);
-        $geboortedatum = self::getDb()->escape_string($this->geboortedatum->format('Y-m-d'));
+        $adres = self::getDb()->escape_string($this->adres);
+        $gemeente = self::getDb()->escape_string($this->gemeente);
+        $postcode = self::getDb()->escape_string($this->postcode);
+        $gsm = self::getDb()->escape_string($this->gsm);
+        $email = self::getDb()->escape_string($this->email);
+        $titel = self::getDb()->escape_string($this->titel);
 
         if (empty($this->id)) {
             if (empty($this->gezin)) {
@@ -106,16 +121,20 @@ function save() {
             $gezin = self::getDb()->escape_string($this->gezin);
 
             $query = "INSERT INTO 
-                leden (`gezin`,  `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`)
-                VALUES ('$gezin', '$voornaam', '$achternaam', '$geslacht', '$geboortedatum', $gsm)";
+                ouders (`gezin`, `titel`, `voornaam`, `achternaam`, `adres`, `gemeente`,`postcode`, `gsm`, `email`, `telefoon`)
+                VALUES ('$gezin', '$titel', '$voornaam', '$achternaam', '$adres', '$gemeente', '$postcode', '$gsm', '$email', $telefoon)";
         } else {
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE events 
+            $query = "UPDATE ouders 
                 SET 
+                 `titel` = '$titel',
                  `voornaam` = '$voornaam',
                  `achternaam` = '$achternaam',
-                 `geslacht` = '$geslacht',
-                 `geboortedatum` = '$geboortedatum',
+                 `adres` = '$adres',
+                 `gemeente` = '$gemeente',
+                 `postcode` = '$postcode',
+                 `email` = '$email',
+                 `telefoon` = $telefoon,
                  `gsm` = $gsm
                  where id = '$id' 
             ";
@@ -128,7 +147,7 @@ function save() {
             return true;
         }
         return false;
-    }*/
+    }
 
 
     

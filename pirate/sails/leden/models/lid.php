@@ -2,6 +2,7 @@
 namespace Pirate\Model\Leden;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
+use Pirate\Model\Leden\Gezin;
 
 class Lid extends Model {
     public $id;
@@ -107,8 +108,11 @@ class Lid extends Model {
 
         return $errors;
     }
+    function setGezin(Gezin $gezin) {
+        $this->gezin = $gezin->gezin_id;
+    }
 
-function save() {
+    function save() {
         if (is_null($this->gsm)) {
             $gsm = "NULL";
         } else {
@@ -132,7 +136,7 @@ function save() {
                 VALUES ('$gezin', '$voornaam', '$achternaam', '$geslacht', '$geboortedatum', $gsm)";
         } else {
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE events 
+            $query = "UPDATE leden 
                 SET 
                  `voornaam` = '$voornaam',
                  `achternaam` = '$achternaam',
