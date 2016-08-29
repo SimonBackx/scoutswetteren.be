@@ -24,6 +24,7 @@ class Ship {
         require(__DIR__.'/template.php');
         require(__DIR__.'/database.php');
         require(__DIR__.'/model.php');
+        require(__DIR__.'/mail.php');
 
         // Loading Sails's services with certain priority level
         Database::init();

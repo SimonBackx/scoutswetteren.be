@@ -109,7 +109,8 @@ class Leiding extends Model {
 
     private function setPassword($new) {
         $id = self::getDb()->escape_string($this->id);
-        $password = self::getDb()->escape_string($this->passwordEncrypt($new));
+        $encrypted = $this->passwordEncrypt($new);
+        $password = self::getDb()->escape_string($encrypted);
 
         $query = "UPDATE leiding 
             SET 
@@ -118,7 +119,7 @@ class Leiding extends Model {
         ";
 
         if (self::getDb()->query($query)) {
-            $this->password = $passsword;
+            $this->password = $encrypted;
             return true;
         }
         return false;

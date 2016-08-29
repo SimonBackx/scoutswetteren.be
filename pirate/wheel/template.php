@@ -35,7 +35,7 @@ class Template {
      * @param  (optioneel) [type] $sail     Optioneel
      * @return String    HTML
      */
-    static function render($template, $data = array(), $sail = null) {
+    static function render($template, $data = array(), $ext = 'html') {
         $data['http'] = "//{$_SERVER['HTTP_HOST']}";
 
         $data['general'] = array(
@@ -50,7 +50,7 @@ class Template {
             $data['admin']['name'] = Leiding::getUser()->firstname.' '.Leiding::getUser()->lastname;
         }
 
-        return self::$twig->render($template.'.html', $data);
+        return self::$twig->render($template.'.'.$ext, $data);
     }
 
 }

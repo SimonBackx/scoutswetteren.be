@@ -7,6 +7,7 @@ use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Database\Database;
+use Pirate\Mail\Mail;
 
 class NieuwLid extends Page {
 
@@ -152,6 +153,20 @@ class NieuwLid extends Page {
                             // Password generator mails maken en versturen
                             
                             // yay!
+                            $mail = new Mail('Account aanmaken', 'nieuw-lid', array('leden' => $leden, 'ouders' => $ouders));
+                            foreach ($ouder_models as $ouder) {
+                                $mail->addTo($ouder->email, array('naam' => $ouder->voornaam, 'url' => 'http://www.scoutswetteren.be'), $ouder->voornaam.' '.$ouder->achternaam);
+                            }
+                            if (!$mail->send()) {
+                                $errors[] = 'Er ging iets mis met het versturen van de e-mails. Contacteer de webmaster.';
+                                $success = false;
+                            } else {
+                                return Template::render('leden/nieuw-lid-gelukt', array(
+                                    'leden' => $leden,
+                                    'ouders' => $ouders,
+                                    'gezin' => $gezin_data,
+                                ));
+                            }
                         }
                     }
                 }
