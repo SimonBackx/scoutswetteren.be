@@ -12,11 +12,11 @@ class LedenRouter extends Route {
     private $afrekening = null;
 
     function doMatch($url, $parts) {
-        if ($url == 'inschrijven') {
+        if ($url == 'inschrijven' && !Ouder::isLoggedIn()) {
             return true;
         }
 
-        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'nieuw-lid') {
+        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'nieuw-lid' && !Ouder::isLoggedIn()) {
             return true;
         }
 
@@ -51,10 +51,10 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'uitloggen') {
                     return true;
                 }
-                if ($parts[1] == 'broer-zus-toevoegen' && Inschrijving::isInschrijvingsPeriode()) {
+                if ($parts[1] == 'broer-zus-toevoegen') {
                     return true;
                 }
-                if ($parts[1] == 'verleng-inschrijving' && Inschrijving::isInschrijvingsPeriode()) {
+                if ($parts[1] == 'verleng-inschrijving') {
                     return true;
                 }
                 if ($parts[1] == 'wachtwoord-wijzigen') {
@@ -106,6 +106,16 @@ class LedenRouter extends Route {
                     require(__DIR__.'/pages/logout.php');
                     return new Pages\Logout();
                 }
+                if ($parts[1] == 'wachtwoord-wijzigen') {
+                    require(__DIR__.'/pages/wachtwoord-wijzigen.php');
+                    return new Pages\WachtwoordWijzigen();
+                }
+
+                // Broer zus toevoegen of verlengen enkel in inschrijvingsperiode:
+                if (!Inschrijving::isInschrijvingsPeriode()) {
+                    require(__DIR__.'/pages/buiten-inschrijvingen-periode.php');
+                    return new Pages\BuitenInschrijvingenPeriode();
+                }
                 if ($parts[1] == 'broer-zus-toevoegen') {
                     require(__DIR__.'/pages/broer-zus-toevoegen.php');
                     return new Pages\BroerZusToevoegen();
@@ -114,10 +124,7 @@ class LedenRouter extends Route {
                     require(__DIR__.'/pages/verleng-inschrijving.php');
                     return new Pages\VerlengInschrijving();
                 }
-                if ($parts[1] == 'wachtwoord-wijzigen') {
-                    require(__DIR__.'/pages/wachtwoord-wijzigen.php');
-                    return new Pages\WachtwoordWijzigen();
-                }
+                
             }
 
             // Beveiligde sectie: reeds authenticatie gedaan
@@ -141,6 +148,11 @@ class LedenRouter extends Route {
                 require(__DIR__.'/pages/ouder-overview.php');
                 return new Pages\OuderOverview();
             }
+        }
+
+        if (!Inschrijving::isInschrijvingsPeriode()) {
+            require(__DIR__.'/pages/buiten-inschrijvingen-periode.php');
+            return new Pages\BuitenInschrijvingenPeriode();
         }
 
         require(__DIR__.'/pages/nieuw-lid.php');

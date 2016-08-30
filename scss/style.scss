@@ -130,6 +130,14 @@ a {
     }
 }
 
+p a {
+    text-decoration: underline;
+    
+    &:hover {
+        color: $cardinal;
+    }
+}
+
 blockquote {
     padding: 0;
     margin: 0;
@@ -224,9 +232,9 @@ a.icon-button, button.icon-button {
 
     text-transform: uppercase;
     padding: 5px 5px 5px 20px;
-    margin: 10px 0;
+    margin: 20px 0;
     font-size: $size-button;
-    display: inline-block;
+    display: block;
     background: url(../images/icon-button.png) no-repeat left center;
     background-image: linear-gradient(transparent, transparent), url(../images/icon-button.svg);
 
