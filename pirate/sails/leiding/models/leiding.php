@@ -253,7 +253,7 @@ class Leiding extends Model {
                     return null;
                 }
 
-                self::$currentToken = $token;
+                self::$currentToken = $row['token'];
                 self::$user = new Leiding($row);
 
                 if ($interval->days >= 1 || $interval->h >= 1) {

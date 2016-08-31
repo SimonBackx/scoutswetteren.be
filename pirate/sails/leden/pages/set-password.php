@@ -36,6 +36,8 @@ class SetPassword extends Page {
                         $errors[] = 'Er ging iets mis. Contacteer de webmaster';
                     } else {
                         $success = true;
+                        header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+                        return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
                     }
                 }
             }

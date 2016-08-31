@@ -1,5 +1,16 @@
 form {
 
+    &.questions {
+        h2 {
+            color: $merlot;
+            font-size: $size-question;
+        }
+    }
+
+    aside.source {
+        color: $gray;
+    }
+
     label {
         color: $aubergine;
         font-size: $size-text-bigger;
@@ -66,10 +77,14 @@ form {
 
     input[type=radio] + label {
         margin: 15px 20px 20px 0;
-        display: inline-block;
+        display: block;
     }
 
-    input[type=checkbox] + label:before, input[type=radio] + label:before {
+    input[type=checkbox] + label:before, 
+    input[type=radio] + label:before,
+    input[type=checkbox] + .checkbox-controllable label.checkbox-label-inside:before,
+    input[type=radio] + .checkbox-controllable label.checkbox-label-inside:before
+    {
       content: "";
       display: inline-block;
       vertical-align: text-bottom;
@@ -83,7 +98,11 @@ form {
       border-radius: 2px;
     }
 
-    input[type=checkbox]:checked + label:before, input[type=radio]:checked + label:before  {
+    input[type=checkbox]:checked + label:before, 
+    input[type=radio]:checked + label:before,
+    input[type=checkbox]:checked + .checkbox-controllable label.checkbox-label-inside:before,
+    input[type=radio]:checked + .checkbox-controllable label.checkbox-label-inside:before
+    {
         border: 0;
         padding: 2px;
         background: $merlot url(../images/checkbox-checked.png) no-repeat center center;
@@ -92,13 +111,19 @@ form {
     }
 
 
-    input[type=checkbox] + label + .checkbox-controllable {
+    input[type=checkbox] + label + .checkbox-controllable,
+    input[type=radio] + label + .checkbox-controllable,
+    input[type=checkbox] + .checkbox-controllable,
+    input[type=radio] + .checkbox-controllable {
         .visible-when-checked {
             display: none;
         }
     }
 
-    input[type=checkbox]:checked + label + .checkbox-controllable{
+    input[type=checkbox]:checked + label + .checkbox-controllable,
+    input[type=radio]:checked + label + .checkbox-controllable,
+    input[type=checkbox]:checked + .checkbox-controllable,
+    input[type=radio]:checked + .checkbox-controllable {
         .visible-when-checked {
             display: block;
         }

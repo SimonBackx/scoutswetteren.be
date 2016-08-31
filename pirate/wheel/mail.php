@@ -12,13 +12,12 @@ class Mail {
         $this->sendgrid_mail->setSubject($subject);
 
         $text = Template::render('mails/'.$template, $data, 'txt');
-        $html = Template::render('mails/'.$template, $data, 'html');
+        //$html = Template::render('mails/'.$template, $data, 'html');
 
         $this->sendgrid_mail->addContent(array('type' => 'text/plain', 'value' => $text));
-        $this->sendgrid_mail->addContent(array('type' => 'text/html', 'value' => $html));
+        //$this->sendgrid_mail->addContent(array('type' => 'text/html', 'value' => $html));
 
-        $this->setFrom('website@scoutswetteren.be');
-
+        $this->setFrom('website@scoutswetteren.be', 'Scouts Prins Boudewijn');
     }
 
     function setFrom($email, $name = null) {

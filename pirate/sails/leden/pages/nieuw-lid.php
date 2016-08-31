@@ -153,9 +153,13 @@ class NieuwLid extends Page {
                             // Password generator mails maken en versturen
                             
                             // yay!
-                            $mail = new Mail('Account aanmaken', 'nieuw-lid', array('leden' => $leden, 'ouders' => $ouders));
+                            $mail = new Mail('Inschrijving bij de scouts - Account aanmaken', 'nieuw-lid', array('leden' => $leden, 'ouders' => $ouders));
                             foreach ($ouder_models as $ouder) {
-                                $mail->addTo($ouder->email, array('naam' => $ouder->voornaam, 'url' => 'http://www.scoutswetteren.be'), $ouder->voornaam.' '.$ouder->achternaam);
+                                $mail->addTo(
+                                    $ouder->email, 
+                                    array('naam' => $ouder->voornaam, 'url' => $ouder->getSetPasswordUrl()),
+                                    $ouder->voornaam.' '.$ouder->achternaam
+                                );
                             }
                             if (!$mail->send()) {
                                 $errors[] = 'Er ging iets mis met het versturen van de e-mails. Contacteer de webmaster.';

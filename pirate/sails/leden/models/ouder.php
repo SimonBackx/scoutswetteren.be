@@ -6,7 +6,7 @@ use Pirate\Model\Leden\Gezin;
 
 class Ouder extends Model {
     public $id;
-    private $gezin;
+    public $gezin;
     public $titel;
     public $voornaam;
     public $achternaam;
@@ -135,6 +135,7 @@ class Ouder extends Model {
             }
             $gezin = self::getDb()->escape_string($this->gezin);
             $key = self::generateKey();
+            $this->set_password_key = $key;
 
             $query = "INSERT INTO 
                 ouders (`gezin`, `titel`, `voornaam`, `achternaam`, `adres`, `gemeente`,`postcode`, `gsm`, `email`, `telefoon`, `set_password_key`)
@@ -368,10 +369,10 @@ class Ouder extends Model {
 
         $client = intval($_COOKIE['ouder_client']);
         $token = self::getDb()->escape_string($_COOKIE['ouder_token']);
-        $query = "SELECT o.*, t.token, t.time,
+        $query = "SELECT o.*, t.token, t.time
         from ouders o
         join ouder_tokens t on t.client = o.id
-        where t.client = $client and token = '$token'";
+        where t.client = $client and t.token = '$token'";
 
         // Momenteel niet helemaal time safe, maar performance primeert hier
         if ($result = self::getDb()->query($query)) {
@@ -388,7 +389,7 @@ class Ouder extends Model {
                     return null;
                 }
 
-                self::$currentToken = $token;
+                self::$currentToken = $row['token'];
                 self::$user = new Ouder($row);
 
                 if ($interval->days >= 1 || $interval->h >= 1) {
@@ -401,6 +402,7 @@ class Ouder extends Model {
                 
             }
         }
+
         return self::$user;
     }
 

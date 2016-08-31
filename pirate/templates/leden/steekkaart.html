@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <div class="white block">
+                <form method="post" class="questions">
+                    <div class="text">
+                        {% if new %}
+                            <h1>Vul de individuele steekkaart van {{ lid.voornaam }} in</h1>
+                            <p>De individuele steekkaart vul je het best meteen in, maar moet sowieso binnen 3 weken ingevuld worden.</p>
+                        {% else %}
+                            <h1>Individuele steekkaart van {{ lid.voornaam }}</h1>
+                            <p>Kijk de gegevens na.</p>
+                        {% endif %}
+
+                        {% if kan_overslaan %}
+                        <input type="submit" class="aubergine fill" name="overslaan" value="Overslaan">
+                        {% endif %}
+
+                        {% if fail %}
+                        <ul class="error">
+                            <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen even na.</li>
+                        </ul>
+                        {% endif %}
+                        {% if success %}
+                            <h2>Gelukt!</h2>
+                        {% endif %}
+
+                        {% if errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <h1>Adres en bereikbaarheid</h1>
+
+                        <label>Naam verblijfsinstelling (optioneel)</label>
+                        <input type="text" name="verblijfsinstelling" placeholder="Naam internaat, instelling..." value="{{ data.verblijfsinstelling | e('html_attr') }}">
+
+                        <h2>Wie kunnen we bereiken als de ouders niet bereikbaar zijn (zoals op kinderpas -12 jarigen)?</h2>
+
+                        <div class="splitted">
+                            <div class="part column first">
+                                <label>Naam contactpersoon</label>
+                                <input type="text" name="contactpersoon_naam" placeholder="Vul de naam hier in" value="{{ data.contactpersoon_naam | e('html_attr') }}">
+
+                                <label>GSM contactpersoon</label>
+                                <input type="text" name="contactpersoon_gsm" placeholder="Vul het gsm nummer hier in" value="{{ data.contactpersoon_gsm | e('html_attr') }}">
+
+                            </div>
+
+                            <div class="part column last">
+                                <label>Functie contactpersoon</label>
+                                <input type="text" name="contactpersoon_functie" placeholder="Bv. oma, opa, tante, grote broer..." value="{{ data.contactpersoon_functie | e('html_attr') }}">
+                            </div>
+                        </div>
+
+
+                        {% if bereikbaarheid_errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in bereikbaarheid_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <h1>Deelname aan activiteiten</h1>
+                        <h2>Kan en mag {{ lid.voornaam }} deelnemen aan alle gewone scoutingsactiviteiten op maat van de leeftijdstak (op tocht gaan, spelen, kamperen, ...)?</h2>
+                        <input id="deelname_on_act_ja" type="radio" name="deelname_onmogelijke_activiteiten_radio" value="ja"{% if data.deelname_onmogelijke_activiteiten_radio == 'ja' %} checked{% endif %}>
+                        <label for="deelname_on_act_ja">Ja</label>
+                        <input id="deelname_on_act_nee" type="radio" name="deelname_onmogelijke_activiteiten_radio" value="nee"{% if data.deelname_onmogelijke_activiteiten_radio == 'nee' %} checked{% endif %}>
+                        <label for="deelname_on_act_nee">Nee</label>
+
+                        <div class="checkbox-controllable">
+                            <div class="visible-when-checked">
+                                <div class="splitted">
+                                    <div class="part column first">
+                                        <label>Niet toegestane of onmogelijke activiteiten</label>
+                                        <textarea placeholder="Vul hier de niet toegestane of onmogelijke activiteiten in" name="deelname_onmogelijke_activiteiten">{{ data.deelname_onmogelijke_activiteiten }}</textarea>
+                                    </div>
+
+                                    <div class="part column last">
+                                        <label>Eventuele reden</label>
+                                        <textarea placeholder="Vul hier de reden in" name="deelname_reden">{{ data.deelname_reden }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>Is er bijzondere aandacht nodig om risico's te voorkomen? (optioneel)</h2>
+
+                        <div class="splitted">
+                            <div class="part column first">
+                                <label>Bij sporten</label>
+                                <textarea placeholder="bv. al dan niet kunnen zwemmen of fietsen, vroegere breuken, last van hoogte, rust..." name="deelname_sporten">{{ data.deelname_sporten }}</textarea>
+
+                                <label>Bij hygiëne</label>
+                                <textarea placeholder="bv. allergie, bedwateren, zelfstandigheid..." name="deelname_hygiene">{{ data.deelname_hygiene }}</textarea>
+                            </div>
+
+                            <div class="part column last">
+                                <label>Bij sociale omgang</label>
+                                <textarea placeholder="bv. pesten, heimwee, angsten, slaapwandelen..." name="deelname_sociaal">{{ data.deelname_sociaal }}</textarea>
+
+                                <label>Andere beperkingen of zorgen</label>
+                                <textarea placeholder="Bv. voegere ziekten of heelkundige ingrepen" name="deelname_andere">{{ data.deelname_andere }}</textarea>
+                            </div>
+                        </div>
+
+                        {% if deelname_errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in deelname_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <h1>Medische informatie</h1>
+                        <p>Het is verboden om als leid(st)er, behalve EHBO, op eigen initiatief medische handelingen uit te voeren. Ook het verstrekken van lichte pijnstillende en koortswerende medicatie zoals Perdolan, Dafalgan of Aspirine is, zonder toelating van de ouders, voorbehouden aan een arts. Daarom is het noodzakelijk om via deze steekkaart vooraf toestemming van ouders te hebben voor het eventueel toedienen van dergelijke hulp.</p>
+
+                        <h2>Wij geven toestemming aan de leiding om bij hoogdringendheid aan onze zoon of dochter een dosis via de apotheek vrij verkrijgbare pijnstillende en koortswerende medicatie toe te dienen: *</h2>
+
+                        <input id="medisch_toestemming_medicatie_ja" type="radio" name="medisch_toestemming_medicatie" value="ja" {% if data.medisch_toestemming_medicatie == 'ja' %} checked{% endif %}>
+                        <label for="medisch_toestemming_medicatie_ja">Ja</label>
+                        <input id="medisch_toestemming_medicatie_nee" type="radio" name="medisch_toestemming_medicatie" value="nee" {% if data.medisch_toestemming_medicatie == 'nee' %} checked{% endif %}>
+                        <label for="medisch_toestemming_medicatie_nee">Nee</label>
+
+                        <aside class="source">* gebaseerd op aanbeveling Kind &amp; Gezin 09.12.2009 – Aanpak van koorts / Toedienen van geneesmiddelen in de kinderopvang</aside>
+
+                        <h2>Moet {{lid.voornaam}} specifieke medicatie krijgen?</h2>
+                        <input id="medisch_specifieke_medicatie_ja" type="radio" name="medisch_specifieke_medicatie" value="ja"{% if data.medisch_specifieke_medicatie == 'ja' %} checked{% endif %}>
+                        <label for="medisch_specifieke_medicatie_ja">Ja</label>
+                        
+
+                        <div class="checkbox-controllable">
+                            <input id="medisch_specifieke_medicatie_nee" type="radio" name="medisch_specifieke_medicatie" value="nee" {% if data.medisch_specifieke_medicatie == 'nee' %} checked{% endif %}>
+                            <label for="medisch_specifieke_medicatie_nee">Nee</label>
+                            <div class="visible-when-checked">
+                                <p>Gelieve onderstaand doktersattest te downloaden en ingevuld te bezorgen aan de takleiding.</p>
+                                <a href="/files/individuele_steekkaart_dokterattest.pdf" target="_blank" class="fill merlot button">Downloaden</a>
+                            </div>
+                        </div>
+
+                        <h2>Zijn er ziekten te melden (astma, suikerziekte, hooikoorts, epilepsie, hart, ...)?</h2>
+                        <input id="medisch_ziekten_ja" type="radio" name="medisch_ziekten_checkbox" value="ja"{% if data.medisch_ziekten_checkbox == 'ja' %} checked{% endif %}>
+                        <label for="medisch_ziekten_ja">Ja</label>
+                        
+
+                        <div class="checkbox-controllable">
+                            <input id="medisch_ziekten_nee" type="radio" name="medisch_ziekten_checkbox" value="nee"{% if data.medisch_ziekten_checkbox == 'nee' %} checked{% endif %}>
+                            <label for="medisch_ziekten_nee">Nee</label>
+
+                            <div class="visible-when-checked">
+                                <div class="splitted">
+                                    <div class="part column first">
+                                        <label>Welke?</label>
+                                        <textarea placeholder="Vul hier de te melden ziekten in" name="medisch_ziekten">{{ data.medisch_ziekten }}</textarea>
+                                    </div>
+
+                                    <div class="part column last">
+                                        <label>Info over aanpak bij deze aandoening(en)</label>
+                                        <textarea placeholder="Vul hier in hoe de leiding hiermee moet omgaan" name="medisch_ziekten_aanpak">{{ data.medisch_ziekten_aanpak }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>Moet {{ lid.voornaam }} een bepaalt dieet volgen?</h2>
+                        <input id="medisch_dieet_ja" type="radio" name="medisch_dieet_checkbox" value="ja"{% if data.medisch_dieet_checkbox == 'ja' %} checked{% endif %}>
+                        <div class="checkbox-controllable">
+                            <div class="splitted">
+                                <div class="part column first">
+                                    <label for="medisch_dieet_ja" class="checkbox-label-inside">Ja</label>
+
+                                    <input id="medisch_dieet_nee" type="radio" name="medisch_dieet_checkbox" value="nee"{% if data.medisch_dieet_checkbox == 'nee' %} checked{% endif %}>
+                                    <label for="medisch_dieet_nee">Nee</label>         
+                                </div>
+
+                                <div class="part column last">
+                                    <div class="visible-when-checked">
+                                        <label>Welk?</label>
+                                        <textarea placeholder="Vul hier details van het dieet in" name="medisch_dieet">{{ data.medisch_dieet }}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>Werd {{ lid.voornaam }} ingeënt tegen klem (tetanus)?</h2>
+
+                        <input id="medisch_klem_ja" type="radio" name="medisch_klem_checkbox" value="ja"{% if data.medisch_klem_checkbox == 'ja' %} checked{% endif %}>
+                        <div class="checkbox-controllable">
+                            <div class="splitted">
+                                <div class="part column first">
+                                    <label for="medisch_klem_ja" class="checkbox-label-inside">Ja</label>
+                                    <input id="medisch_klem_nee" type="radio" name="medisch_klem_checkbox" value="nee"{% if data.medisch_klem_checkbox == 'nee' %} checked{% endif %}>
+                                    <label for="medisch_klem_nee">Nee</label>          
+                                </div>
+
+                                <div class="part column last">
+                                    <div class="visible-when-checked">
+                                        <label>In welk jaar?</label>
+                                        <input type="text" name="medisch_klem_jaar" placeholder="Jaar van laatste inenting" value="{{ data.medisch_klem_jaar | e('html_attr') }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="splitted">
+                            <div class="part column first">
+                                <h2>Huisarts van {{ lid.voornaam }}</h2>
+                                <label>Naam huisarts</label>
+                                <input type="text" name="huisarts_naam" placeholder="Vul hier de naam in" value="{{ data.huisarts_naam | e('html_attr') }}">
+
+                                <label>Telefoon huisarts</label>
+                                <input type="text" name="huisarts_telefoon" placeholder="Vul hier het telefoonnummer in" value="{{ data.huisarts_telefoon | e('html_attr') }}">    
+                            </div>
+
+                            <div class="part column last">
+                                 <h2>Bloedgroep van {{ lid.voornaam }}</h2>
+                                <label>Bloedgroep</label>
+                                <label class="select-box">
+                                    <select name="bloedgroep">
+                                        <option value="">Maak een keuze</option>
+                                        <option value="onbekend"{% if data.bloedgroep == 'onbekend' %} selected{% endif %}>Onbekend</option>
+                                        <option value="O+"{% if data.bloedgroep == 'O+' %} selected{% endif %}>O+</option>
+                                        <option value="O-"{% if data.bloedgroep == 'O-' %} selected{% endif %}>O-</option>
+                                        <option value="A+"{% if data.bloedgroep == 'A+' %} selected{% endif %}>A+</option>
+                                        <option value="A-"{% if data.bloedgroep == 'A-' %} selected{% endif %}>A-</option>
+                                        <option value="B+"{% if data.bloedgroep == 'B+' %} selected{% endif %}>B+</option>
+                                        <option value="B-"{% if data.bloedgroep == 'B-' %} selected{% endif %}>B-</option>
+                                        <option value="AB+"{% if data.bloedgroep == 'AB+' %} selected{% endif %}>AB+</option>
+                                        <option value="AB-"{% if data.bloedgroep == 'AB-' %} selected{% endif %}>AB-</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+
+                        {% if medische_errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in medische_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <h1>Aanvullende opmerkingen</h1>
+                        <h2>{{ lid.voornaam }} mag tijdens de activiteiten worden gefotografeerd voor publicatie op onze website en onze Facebook pagina</h2>
+
+                        <input id="toestemming_fotos_ja" type="radio" name="toestemming_fotos" value="ja"{% if data.toestemming_fotos == 'ja' %} checked{% endif %}>
+                        <label for="toestemming_fotos_ja">Ja</label>
+                        <input id="toestemming_fotos_nee" type="radio" name="toestemming_fotos" value="nee"{% if data.toestemming_fotos == 'nee' %} checked{% endif %}>
+                        <label for="toestemming_fotos_nee">Nee</label>
+
+                        <h2>Zijn er bepaalde aspecten waarmee leiding rekening kan houden als de omstandigheden dat toestaan binnen de visie van scouting?</h2>
+                        <div class="splitted">
+                            <div class="part column first">
+                                <label>Op vlak van voeding</label>
+                                <textarea placeholder="Bv. vegetariër, halal, ..." name="aanvullend_voeding">{{data.aanvullend_voeding}}</textarea>
+                            </div>
+
+                            <div class="part column last">
+                                <label>Andere aandachtspunten</label>
+                                <textarea placeholder="Aandachtspunten die belang kunnen hebben bij de omgang met ons kind" name="aanvullend_andere">{{data.aanvullend_andere}}</textarea>
+                            </div>
+                        </div>
+
+                        {% if aanvullende_errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in aanvullende_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                         <h1>Engagement</h1>
+                         <h2>De leiding engageert er zich toe om samen zorg te dragen voor de veiligheid en het welzijn van alle leden. Bij twijfels of vragen hieromtrent is het absoluut wenselijk dat ouders en leiding contact met elkaar opnemen. Wij danken u voor het vertrouwen.</h2>
+
+                         <h1>Wijzigingen</h1>
+                         <h2>Als er iets verandert aan de gezondheidstoestand van uw zoon of dochter na de invuldatum van deze steekkaart, dan vragen wij uitdrukkelijk dit zo snel mogelijk hier aan te passen.</h2>
+
+                         <h1>Bevestiging</h1>
+                         <h2>Ik verklaar dat de ingevulde gegevens volledig en correct zijn. Het is raadzaam deze steekkaart voor elk kamp na te kijken.</h2>
+
+                        <label>Uw naam</label>
+                        <input type="text" name="nagekeken_door" placeholder="Wie vulde deze steekkaart in?" value="{{ data.nagekeken_door | e('html_attr') }}">
+                        <label>Functie</label>
+                        <label class="select-box">
+                            <select name="nagekeken_door_titel">
+                                <option value="">Maak een keuze</option>
+                                <option value="ouder"{% if data.nagekeken_door_titel == 'ouder' %} selected{% endif %}>Ouder van {{ lid.voornaam }}</option>
+                                <option value="voogd"{% if data.nagekeken_door_titel == 'voogd' %} selected{% endif %}>Voogd van {{ lid.voornaam }}</option>
+                            </select>
+                        </label>
+
+                        {% if bevestiging_errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in bevestiging_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <footer>
+                            <input type="submit" class="aubergine fill" value="Opslaan en goedkeuren">
+                        </footer>
+
+                    </div>
+                </form>
+        </div>
+    </main>
+{% endblock %}

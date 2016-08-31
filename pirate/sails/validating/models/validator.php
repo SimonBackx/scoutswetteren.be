@@ -8,6 +8,11 @@ class Validator extends Model {
         return (preg_match($pattern, $firstname) === 1);
     }
 
+    static function isValidName($firstname) {
+        $pattern = '/^[\w ]+$/';
+        return (preg_match($pattern, $firstname) === 1);
+    }
+
     static function isValidLastname($lastname) {
         $pattern = '/^[\w ]+$/';
         return (preg_match($pattern, $lastname) === 1);
@@ -120,6 +125,31 @@ class Validator extends Model {
             }
 
         }
+        return false;
+    }
+
+    static function validateBothPhone(&$in, &$out, &$errors) {
+        $in_copy = $in;
+        $out_copy = $out;
+        $errors_copy = array();
+
+        if (self::validateNetPhone($in_copy, $out_copy, $errors_copy)) {
+            $in = $in_copy;
+            $out = $out_copy;
+            return true;
+        }
+
+        $in_copy = $in;
+        $out_copy = $out;
+        $errors_copy = array();
+
+        if (self::validatePhone($in_copy, $out_copy, $errors_copy)) {
+            $in = $in_copy;
+            $out = $out_copy;
+            return true;
+        }
+
+        $errors[] = 'Ongeldig telefoonnummer of gsm-nummer (enkel Belgische nummers toegelaten)';
         return false;
     }
 

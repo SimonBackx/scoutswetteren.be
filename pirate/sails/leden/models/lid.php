@@ -3,15 +3,20 @@ namespace Pirate\Model\Leden;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
+use Pirate\Model\Leden\Inschrijving;
+use Pirate\Model\Leden\Steekkaart;
 
 class Lid extends Model {
     public $id;
-    private $gezin;
+    public $gezin;
     public $voornaam;
     public $achternaam;
     public $geslacht;
     public $geboortedatum;
     public $gsm;
+
+    public $inschrijving; // Inschrijving object
+    public $steekkaart; // Steekkaart object
 
 
     function __construct($row = array()) {
@@ -26,6 +31,59 @@ class Lid extends Model {
         $this->geslacht = $row['geslacht'];
         $this->geboortedatum = new \DateTime($row['geboortedatum']);
         $this->gsm = $row['gsm'];
+
+        if (!empty($row['inschrijving_id'])) {
+            $this->inschrijving = new Inschrijving($row);
+        } else {
+            $this->inschrijving = null;
+        }
+
+         if (!empty($row['steekkaart_id'])) {
+            $this->steekkaart = new Steekkaart($row);
+        } else {
+            $this->steekkaart = null;
+        }
+    }
+
+    static function getLid($id) {
+        $id = self::getDb()->escape_string($id);
+
+        $query = '
+            SELECT l.*, i.*, s.* from leden l
+                left join steekkaarten s on s.lid = l.id
+                left join inschrijvingen i on i.lid = l.id
+                left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
+            where l.id = "'.$id.'" and i2.inschrijving_id is null';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Lid($row);
+            }
+        }
+        return null;
+    }
+
+    static function getLedenForOuder($ouder) {
+        $ouder = self::getDb()->escape_string($ouder);
+
+        $leden = array();
+        $query = '
+            SELECT l.*, i.*, s.* from ouders o
+                join leden l on l.gezin = o.gezin
+                left join steekkaarten s on s.lid = l.id
+                left join inschrijvingen i on i.lid = l.id
+                left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
+            where o.id = "'.$ouder.'" and i2.inschrijving_id is null';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $leden[] = new Lid($row);
+                }
+            }
+        }
+        return $leden;
     }
 
     static function getScoutsjaar() {
@@ -54,6 +112,10 @@ class Lid extends Model {
             return $verdeling[$geboortejaar];
         }
         return false;
+    }
+
+    function schrijfIn() {
+        return Inschrijving::schrijfIn($this);
     }
 
     // empty array on success
