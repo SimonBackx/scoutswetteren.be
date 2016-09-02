@@ -37,11 +37,19 @@ class LedenRouter extends Route {
                 if (count($parts) == 2 && $parts[1] == 'login') {
                     return true;
                 }
+                if (count($parts) == 3 && $parts[1] == 'afrekening') {
+                    return true;
+                }
                 return false;
             }
 
             if (count($parts) == 1) {
                 return true;
+            }
+            if (count($parts) == 2) {
+                if ($parts[1] == 'uitloggen') {
+                    return true;
+                }
             }
 
             if (count($parts) == 3) {
@@ -83,6 +91,13 @@ class LedenRouter extends Route {
                 require(__DIR__.'/pages/login.php');
                 return new Pages\Login();
             }
+            if (count($parts) == 2) {
+                if ($parts[1] == 'uitloggen') {
+                    require(__DIR__.'/pages/logout.php');
+                    return new Pages\Logout();
+                }
+            }
+
             // Beveiligde sectie: reeds authenticatie gedaan
             if (count($parts) == 3) {
                 if ($parts[1] == 'steekkaart' && !empty($this->lid)) {

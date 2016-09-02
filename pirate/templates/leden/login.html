@@ -24,6 +24,9 @@
 
                 <label for="password_field">Wachtwoord</label>
                 <input id="password_field" type="password" name="password" placeholder="Vul hier uw wachtwoord in">
+                {% if redirect_to %}
+                    <input type="hidden" name="redirect_to" value="{{ redirect_to_url | e('html_attr') }}">
+                {% endif %}
 
                 {% if wrong %}
                 <ul class="error">

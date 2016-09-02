@@ -1,6 +1,6 @@
 Dag %naam%,
 
-Bedankt voor het vertrouwen in onze scouts. We hebben de inschrijvingsaanvraag van {% for lid in leden %}{{ lid.voornaam }}{% if loop.index < (leden | length)-1 %}, {% endif %}{% if loop.index == (leden | length)-1 %} en {% endif %}{% endfor %} goed ontvangen. 
+We hebben de inschrijvingsaanvraag van {% for lid in leden %}{{ lid.voornaam }}{% if loop.index < (leden | length)-1 %}, {% endif %}{% if loop.index == (leden | length)-1 %} en {% endif %}{% endfor %} goed ontvangen. 
 
 {% if ouders | length == 1 %}
 Om de inschrijving te voltooien moet je een account aanmaken via onderstaande link. Met dat account kan je later de inschrijving bewerken en verlengen. Daarna moet je nog enkele stappen overlopen zodat we de inschrijving kunnen voltooien.
@@ -18,6 +18,6 @@ Klik op de onderstaande link of kopieer hem in je adresbalk.
 
 %url%
 
-Alvast bedankt,
+Bedankt voor het vertrouwen in onze scouts,
 
 Leiding Scouts Prins Boudewijn

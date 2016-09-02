@@ -7,6 +7,7 @@ use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Leden\Afrekening;
+use Pirate\Mail\Mail;
 
 class OuderOverview extends Page {
     public $redirect = null;
@@ -76,6 +77,18 @@ class OuderOverview extends Page {
         if (count($inschrijvingen_afrekenen) > 0) {
             $afrekening = Afrekening::createForInschrijvingen($inschrijvingen_afrekenen);
             if (!is_null($afrekening)) {
+
+                $mail = new Mail('Afrekening lidgeld', 'afrekening', array('leden' => $leden));
+
+                $ouder = Ouder::getUser();
+                $mail->addTo(
+                    $ouder->email, 
+                    array('naam' => $ouder->voornaam, 'url' => "https://".$_SERVER['SERVER_NAME']."/ouders/afrekening/".$afrekening->id.'/'),
+                    $ouder->voornaam.' '.$ouder->achternaam
+                );
+
+                $mail->send();
+
                 $this->redirect = "ouders/afrekening/".$afrekening->id.'/?klaar';
                 return 302;
             }
