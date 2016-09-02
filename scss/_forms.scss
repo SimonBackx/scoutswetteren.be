@@ -6,6 +6,16 @@ form {
             font-size: $size-question;
         }
     }
+    
+    blockquote {
+        border-left: 2px solid $cardinal;
+        color: $cardinal;
+        padding: 0 20px;
+        max-width: 800px;
+        max-height: 400px;
+        margin: 20px 0;
+        overflow: scroll;
+    }
 
     aside.source {
         color: $gray;

@@ -3,6 +3,7 @@ namespace Pirate\Template;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Leden\Ouder;
 
 class Template {
     static public $twig;
@@ -39,7 +40,8 @@ class Template {
         $data['http'] = "//{$_SERVER['HTTP_HOST']}";
 
         $data['general'] = array(
-            'logged_in' => Leiding::isLoggedIn()
+            'logged_in' => Leiding::isLoggedIn(),
+            'logged_in_ouders' => Ouder::isLoggedIn()
         );
 
         if (Leiding::isLoggedIn()) {

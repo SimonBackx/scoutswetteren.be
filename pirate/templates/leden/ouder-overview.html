@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <div class="white block">
+            <div class="text">
+
+                <h1>Mijn inschrijvingen</h1>
+                <p>U bent ingelogd als {{ ouder.voornaam }}.</p>
+
+                <div><a href="/ouders/uitloggen" class="icon-button">Uitloggen</a></div>
+                <div><a href="/ouders/nieuw-lid" class="icon-button plus">Broer of zus inschrijven</a></div>
+
+                <h1>Leden</h1>
+                <div class="list-bundle">
+                {% for lid in leden %}
+                    <article class="list">
+                        <div class="medium merlot column">{{ lid.voornaam }} {{ lid.achternaam }}</div>
+                        {% if lid.isIngeschreven() %}
+                            <div class="small merlot column">{{ lid.inschrijving.tak | capitalize }}</div>
+                            <div class="max column{% if not lid.heeftSteekkaart() %} bold{% endif %}">
+                                {% if not lid.heeftSteekkaart() %}
+                                    Individuele steekkaart nog niet ingevuld
+                                {% else %}
+                                    Laatst nagekeken op {{ lid.steekkaart.getNagekekenString() }}
+                                {% endif %}
+                            </div>
+                            <div class="last column">
+                                <a href="/ouders/steekkaart/{{ lid.id | e('html_attr')}}" class="{% if lid.heeftSteekkaart() %}button noborder{% else %}icon-button plus{% endif %}">
+                                {% if not lid.heeftSteekkaart() %}
+                                    Invullen
+                                {% else %}
+                                    Nakijken
+                                {% endif %}
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="max column">Niet ingeschreven voor huidig scoutsjaar</div>
+                            <div class="last column">
+                                <a href="/ouders/verleng-inschrijving/" class="button noborder">Inschrijven</a>
+                            </div>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+                </div>
+
+
+                <h1>Afrekeningen</h1>
+                {% for ouder in ouders %}
+                
+                {% endfor %}
+
+            </div>
+        </div>
+    </main>
+{% endblock %}
+

@@ -5,6 +5,7 @@ use Pirate\Block\Block;
 use Pirate\Template\Template;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Steekkaart;
+use Pirate\Database\Database;
 
 class EditSteekkaart extends Page {
     private $lid;
@@ -83,14 +84,6 @@ class EditSteekkaart extends Page {
             'nagekeken_door_titel' => ''
         );
 
-        $ingevuld = false;
-        foreach ($data as $key => $value) {
-            if (isset($_POST[$key])) {
-                $data[$key] = $_POST[$key];
-                $ingevuld = true;
-            }
-        }
-
         if (!empty($this->lid->steekkaart) && $this->lid->steekkaart->isIngevuld()) {
             $data = array(
                 'contactpersoon_naam' => $steekkaart->contactpersoon_naam,
@@ -124,6 +117,14 @@ class EditSteekkaart extends Page {
             );
         }
 
+        $ingevuld = false;
+        foreach ($data as $key => $value) {
+            if (isset($_POST[$key])) {
+                $data[$key] = $_POST[$key];
+                $ingevuld = true;
+            }
+        }
+
         if ($ingevuld) {
             $fail = !$steekkaart->setProperties($data, $bereikbaarheid_errors, $deelname_errors, $medische_errors, $aanvullende_errors, $bevestiging_errors);
 
@@ -134,7 +135,7 @@ class EditSteekkaart extends Page {
                 $success = $steekkaart->save();
 
                 if (!$success) {
-                    $errors[] = 'Er ging iets mis bij het opslaan. Neem contact op met de webmaster';
+                    $errors[] = 'Er ging iets mis bij het opslaan: "'.Database::getDb()->error.'" Neem contact op met de webmaster';
                 } else {
                     // Doorverwijzen
                     header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");

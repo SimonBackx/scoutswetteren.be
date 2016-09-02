@@ -131,14 +131,14 @@ main {
     table-layout: fixed;
     width: 100%;
 
-    @media screen and (max-width: $width-stop-splitted) {
+    @media screen and (max-width: $width-stop-splitted), print {
       display: block;
     }
 
     .part {
         display: table-cell;
 
-        @media screen and (max-width: $width-stop-splitted) {
+        @media screen and (max-width: $width-stop-splitted), print {
           display: block;
         }
 
@@ -151,7 +151,7 @@ main {
             &.last {
                 padding-left: 20px;
             }
-            @media screen and (max-width: $width-stop-splitted) {
+            @media screen and (max-width: $width-stop-splitted), print {
                 &.first {
                     padding-right: 0;
                 }
@@ -164,7 +164,7 @@ main {
         &.image {
             width: 50%;
 
-            @media screen and (max-width: $width-stop-splitted) {
+            @media screen and (max-width: $width-stop-splitted), print {
               width: 100%;
               height: 400px;
               margin: 0;
@@ -221,6 +221,10 @@ article.list {
             color: $aubergine;
         }
 
+        &.small {
+            min-width: 120px;
+        }
+
         &.medium {
             min-width: 160px;
         }
@@ -238,7 +242,7 @@ article.list {
             white-space: nowrap;
         }
 
-        .button {
+        .button, .icon-button {
             margin: 0;
             margin-left: 20px;
         }
@@ -251,7 +255,7 @@ article.list {
             display: block;
             padding: 5px 0;
 
-            .button {
+            .button, .icon-button {
                 margin: 0;
                 margin-right: 10px;
             }
@@ -261,12 +265,42 @@ article.list {
     }
 }
 
-blockquote {
-    border-left: 2px solid $cardinal;
-    color: $cardinal;
-    padding: 0 20px;
-    max-width: 800px;
-    max-height: 400px;
-    margin: 20px 0;
-    overflow: scroll;
+table.details {
+    font-size: $size-text-bigger;
+    margin: 30px 0;
+
+    tfoot {
+        tr {
+            td {
+                padding-top: 15px;
+            }
+            td:first-child{
+                text-transform: uppercase;
+                text-align: right;
+            }
+        }
+    }
+    &.right {
+        tr {
+            td {
+                text-align: right;
+            }
+            td:first-child {
+                @media screen and (max-width: $width-stop-splitted), print {
+                    text-align: left;
+                }
+            }
+        }
+    }
+
+    tr {
+        td {
+            padding: 5px 0;
+            color: $merlot;
+        }
+        td:first-child{
+            color: $aubergine;
+            padding-right: 30px;
+        }
+    }
 }

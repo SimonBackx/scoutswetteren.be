@@ -7,25 +7,30 @@ use Pirate\Model\Leden\Lid;
 
 class Inschrijving extends Model {
     public $id;
-    private $lid;
+    public $lid; // Object
     public $datum;
     public $scoutsjaar;
     public $tak;
     public $betaald;
     public $betaald_door_scouts;
     public $prijs;
-    public $afrekening;
+    public $afrekening; // id!
 
     public static $lidgeld_per_tak = array('kapoenen' => 42, 'wouters' => 32, 'jonggivers' => 32, 'givers' => 32, 'jin' => 32);
 
-    function __construct($row = array()) {
+    function __construct($row = array(), $lid_object = null) {
         if (count($row) == 0) {
             return;
         }
 
         $this->id = $row['inschrijving_id'];
 
-        $this->lid = $row['lid'];
+        if (is_null($lid_object)) {
+            $this->lid = new Lid($row);
+        } else {
+            $this->lid = $lid_object;
+        }
+        
         $this->datum = new \DateTime($row['datum']);
         $this->scoutsjaar = $row['scoutsjaar'];
         $this->tak = $row['tak'];
@@ -33,6 +38,9 @@ class Inschrijving extends Model {
         $this->betaald_door_scouts = $row['betaald_door_scouts'];
         $this->afrekening = $row['afrekening'];
         $this->prijs = $row['prijs'];
+    }
+    function getPrijs() {
+        return '€ '.money_format('%!.2n', $this->prijs);
     }
 
     // Inschrijvingen vanaf juni verbieden
@@ -53,20 +61,30 @@ class Inschrijving extends Model {
         $lidgeld = self::getLidgeld($tak);
         $prijs = self::getDb()->escape_string($lidgeld);
 
+        $betaald_door_scouts = 'NULL';
+        if ($lid->gezin->scouting_op_maat == 1) {
+            $betaald_door_scouts = '"'.$prijs.'"';
+        }
+
         $inschrijving = new Inschrijving();
 
         $lid_id = self::getDb()->escape_string($lid->id);
 
         $query = "INSERT INTO 
-                inschrijvingen (`lid`,  `scoutsjaar`, `tak`, `prijs`)
-                VALUES ('$lid_id', '$jaar', '$tak', '$prijs')";
+                inschrijvingen (`lid`,  `scoutsjaar`, `betaald_door_scouts`, `tak`, `prijs`)
+                VALUES ('$lid_id', '$jaar', $betaald_door_scouts, '$tak', '$prijs')";
 
         if (self::getDb()->query($query)) {
             $inschrijving->id = self::getDb()->insert_id;
-            $inschrijving->lid = $lid->id;
+            $inschrijving->lid = $lid;
             $inschrijving->datum = new \DateTime();
             $inschrijving->scoutsjaar = $scoutsjaar;
             $inschrijving->tak = $tak;
+            if ($lid->gezin->scouting_op_maat == 1) {
+                $inschrijving->betaald_door_scouts = $lidgeld;
+            } else {
+                $inschrijving->betaald_door_scouts = null;
+            }
             $inschrijving->prijs = $lidgeld;
 
             $lid->inschrijving = $inschrijving;

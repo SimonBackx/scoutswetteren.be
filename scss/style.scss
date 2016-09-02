@@ -1,6 +1,6 @@
 // Color variables
 $aubergine: #470A14;
-$merlot: #881327;
+$merlot: #9E182E;
 $cardinal: #BD1C37;
 
 $cod-gray: #141414;
@@ -221,6 +221,7 @@ a.icon-button, button.icon-button {
     text-transform: uppercase;
     padding: 5px 5px 5px 20px;
     margin: 10px 0;
+    font-size: $size-button;
     display: inline-block;
     background: url(../images/icon-button.png) no-repeat left center;
     background-image: linear-gradient(transparent, transparent), url(../images/icon-button.svg);

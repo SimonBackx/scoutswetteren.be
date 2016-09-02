@@ -4,7 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 
 class Gezin extends Model {
-    public $gezin_id;
+    public $id;
     public $gezinssituatie;
     public $scouting_op_maat;
 
@@ -14,9 +14,9 @@ class Gezin extends Model {
             return;
         }
 
-        $this->gezin_id = $row['gezin_id'];
+        $this->id = $row['gezin_id'];
         $this->gezinssituatie = $row['gezinssituatie'];
-        $this->scouting_op_maat = $row['scouting_op_maat'];
+        $this->scouting_op_maat = intval($row['scouting_op_maat']);
     }
 
     // empty array on success
@@ -34,12 +34,12 @@ class Gezin extends Model {
             $scouting_op_maat = 1;
         }
 
-        if (empty($this->gezin_id)) {
+        if (empty($this->id)) {
             $query = "INSERT INTO 
                 gezinnen (`gezinssituatie`,  `scouting_op_maat`)
                 VALUES ('$gezinssituatie', '$scouting_op_maat')";
         } else {
-            $id = self::getDb()->escape_string($this->gezin_id);
+            $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE events 
                 SET 
                  `gezinssituatie` = '$gezinssituatie',
@@ -49,8 +49,8 @@ class Gezin extends Model {
         }
 
         if (self::getDb()->query($query)) {
-            if (empty($this->gezin_id)) {
-                $this->gezin_id = self::getDb()->insert_id;
+            if (empty($this->id)) {
+                $this->id = self::getDb()->insert_id;
             }
             return true;
         }

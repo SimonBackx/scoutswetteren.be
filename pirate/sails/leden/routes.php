@@ -4,9 +4,11 @@ use Pirate\Page\Page;
 use Pirate\Route\Route;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Afrekening;
 
 class LedenRouter extends Route {
     private $lid = null;
+    private $afrekening = null;
 
     function doMatch($url, $parts) {
         if ($url == 'inschrijven') {
@@ -29,6 +31,12 @@ class LedenRouter extends Route {
 
             // Beveiligde sectie
             if (!Ouder::isLoggedIn()) {
+                if (count($parts) == 1) {
+                    return true;
+                }
+                if (count($parts) == 2 && $parts[1] == 'login') {
+                    return true;
+                }
                 return false;
             }
 
@@ -36,15 +44,27 @@ class LedenRouter extends Route {
                 return true;
             }
 
-            if (count($parts) == 3 && $parts[1] == 'steekkaart') {
-                // kijken of gezin wel in orde is
-                $lid = Lid::getLid($parts[2]);
-                if (!is_null($lid) && $lid->gezin == Ouder::getUser()->gezin) {
-                    $this->lid = $lid;
-                    return true;
-                }
+            if (count($parts) == 3) {
+                if ($parts[1] == 'steekkaart') {
+                    // kijken of gezin wel in orde is
+                    $lid = Lid::getLid($parts[2]);
+                    if (!is_null($lid) && $lid->gezin->id == Ouder::getUser()->gezin) {
+                        $this->lid = $lid;
+                        return true;
+                    }
 
-                return false;
+                    return false;
+                }
+                if ($parts[1] == 'afrekening') {
+                    // kijken of gezin wel in orde is
+                    $afrekening = Afrekening::getAfrekening($parts[2]);
+                    if (!is_null($afrekening) && $afrekening->gezin == Ouder::getUser()->gezin) {
+                        $this->afrekening = $afrekening;
+                        return true;
+                    }
+
+                    return false;
+                }
             }
         }
 
@@ -59,11 +79,19 @@ class LedenRouter extends Route {
         }
 
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
+             if (!Ouder::isLoggedIn()) {
+                require(__DIR__.'/pages/login.php');
+                return new Pages\Login();
+            }
             // Beveiligde sectie: reeds authenticatie gedaan
             if (count($parts) == 3) {
                 if ($parts[1] == 'steekkaart' && !empty($this->lid)) {
                     require(__DIR__.'/pages/steekkaart.php');
                     return new Pages\EditSteekkaart($this->lid);
+                }
+                if ($parts[1] == 'afrekening' && !empty($this->afrekening)) {
+                    require(__DIR__.'/pages/afrekening.php');
+                    return new Pages\ViewAfrekening($this->afrekening);
                 }
 
                 if ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-herstellen') {

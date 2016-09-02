@@ -8,7 +8,7 @@ use Pirate\Model\Leden\Steekkaart;
 
 class Lid extends Model {
     public $id;
-    public $gezin;
+    public $gezin; // Gezin object
     public $voornaam;
     public $achternaam;
     public $geslacht;
@@ -18,6 +18,8 @@ class Lid extends Model {
     public $inschrijving; // Inschrijving object
     public $steekkaart; // Steekkaart object
 
+    static private $scoutsjaar = null;
+
 
     function __construct($row = array()) {
         if (count($row) == 0) {
@@ -25,7 +27,13 @@ class Lid extends Model {
         }
 
         $this->id = $row['id'];
-        $this->gezin = $row['gezin'];
+
+        if (!empty($row['gezin_id'])) {
+            $this->gezin = new Gezin($row);
+        } else {
+            $this->gezin = null;
+        }
+
         $this->voornaam = $row['voornaam'];
         $this->achternaam = $row['achternaam'];
         $this->geslacht = $row['geslacht'];
@@ -33,13 +41,13 @@ class Lid extends Model {
         $this->gsm = $row['gsm'];
 
         if (!empty($row['inschrijving_id'])) {
-            $this->inschrijving = new Inschrijving($row);
+            $this->inschrijving = new Inschrijving($row, $this);
         } else {
             $this->inschrijving = null;
         }
 
          if (!empty($row['steekkaart_id'])) {
-            $this->steekkaart = new Steekkaart($row);
+            $this->steekkaart = new Steekkaart($row, $this);
         } else {
             $this->steekkaart = null;
         }
@@ -49,8 +57,9 @@ class Lid extends Model {
         $id = self::getDb()->escape_string($id);
 
         $query = '
-            SELECT l.*, i.*, s.* from leden l
+            SELECT l.*, i.*, s.*, g.* from leden l
                 left join steekkaarten s on s.lid = l.id
+                left join gezinnen g on g.gezin_id = l.gezin
                 left join inschrijvingen i on i.lid = l.id
                 left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
             where l.id = "'.$id.'" and i2.inschrijving_id is null';
@@ -69,9 +78,10 @@ class Lid extends Model {
 
         $leden = array();
         $query = '
-            SELECT l.*, i.*, s.* from ouders o
+            SELECT l.*, i.*, s.*, g.* from ouders o
                 join leden l on l.gezin = o.gezin
                 left join steekkaarten s on s.lid = l.id
+                left join gezinnen g on g.gezin_id = l.gezin
                 left join inschrijvingen i on i.lid = l.id
                 left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
             where o.id = "'.$ouder.'" and i2.inschrijving_id is null';
@@ -86,14 +96,31 @@ class Lid extends Model {
         return $leden;
     }
 
-    static function getScoutsjaar() {
-        $jaar = intval(date('Y'));
-        $maand = intval(date('n'));
-        if ($maand >= 9) {
-            return $jaar;
-        } else {
-            return $jaar - 1;
+    function isIngeschreven() {
+        if (empty($this->inschrijving)) {
+            return false;
         }
+        return $this->inschrijving->scoutsjaar == self::getScoutsjaar();
+    }
+
+    function heeftSteekkaart() {
+        if (empty($this->steekkaart)) {
+            return false;
+        }
+        return $this->steekkaart->isIngevuld();
+    }
+
+    static function getScoutsjaar() {
+        if (is_null(self::$scoutsjaar)) {
+            $jaar = intval(date('Y'));
+            $maand = intval(date('n'));
+            if ($maand >= 9) {
+                self::$scoutsjaar = $jaar;
+            } else {
+                self::$scoutsjaar = $jaar - 1;
+            }
+        }
+        return self::$scoutsjaar;
     }
 
     static function getTakkenVerdeling($scoutsjaar) {
@@ -170,8 +197,9 @@ class Lid extends Model {
 
         return $errors;
     }
+
     function setGezin(Gezin $gezin) {
-        $this->gezin = $gezin->gezin_id;
+        $this->gezin = $gezin;
     }
 
     function save() {
@@ -191,7 +219,7 @@ class Lid extends Model {
             if (empty($this->gezin)) {
                 return false;
             }
-            $gezin = self::getDb()->escape_string($this->gezin);
+            $gezin = self::getDb()->escape_string($this->gezin->id);
 
             $query = "INSERT INTO 
                 leden (`gezin`,  `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`)

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="white login block">
+            {% if success %}
+            <header>
+                <h1>Inloggen gelukt</h1>
+                <h2>U wordt doorverwezen...</h2>
+            </header>
+            {% else %}
+            <header>
+                <h1>Inloggen</h1>
+                <h2>Enkel voor ouders.</h2>
+            </header>
+
+            <form{% if wrong %} class="error"{% endif %} method="post" action="/ouders/login">
+                <label for="email_field">E-mailadres</label>
+                <input id="email_field" type="email" name="email" placeholder="Vul hier uw e-mailadres in" value="{{ email | e('html_attr') }}">
+
+                <label for="password_field">Wachtwoord</label>
+                <input id="password_field" type="password" name="password" placeholder="Vul hier uw wachtwoord in">
+
+                {% if wrong %}
+                <ul class="error">
+                    <li>Wachtwoord of e-mailadres onjuist</li>
+                </ul>
+                {% endif %}
+                <footer>
+                    <input type="submit" value="Inloggen" class="merlot">
+                    <a href="/ouders/wachtwoord-vergeten" class="noborder aubergine button">Wachtwoord vergeten?</a>
+                </footer>
+            </form>
+
+            {% endif %}
+        </section>
+
+    </main>
+{% endblock %}

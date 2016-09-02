@@ -7,7 +7,7 @@ use Pirate\Model\Leden\Lid;
 
 class Steekkaart extends Model {
     public $id;
-    public $lid;
+    public $lid; // object Lid
     public $laatst_nagekeken;
     public $nagekeken_door;
     public $nagekeken_door_titel;
@@ -41,18 +41,23 @@ class Steekkaart extends Model {
     public $aanvullend_voeding;
     public $aanvullend_andere;
 
-    function __construct($row = array()) {
+    function __construct($row = array(), $lid_object = null) {
         if (count($row) == 0) {
             return;
         }
 
-        $this->id = $row['inschrijving_id'];
+        $this->id = $row['steekkaart_id'];
 
-        $this->lid = $row['lid'];
         if (!empty($row['laatst_nagekeken'])) {
             $this->laatst_nagekeken = new \DateTime($row['laatst_nagekeken']);
         } else {
             $this->laatst_nagekeken = null;
+        }
+
+        if (is_null($lid_object)) {
+            $this->lid = new Lid($row);
+        } else {
+            $this->lid = $lid_object;
         }
 
         $this->nagekeken_door = $row['nagekeken_door'];
@@ -83,6 +88,13 @@ class Steekkaart extends Model {
         $this->toestemming_fotos = $row['toestemming_fotos'];
         $this->aanvullend_voeding = $row['aanvullend_voeding'];
         $this->aanvullend_andere = $row['aanvullend_andere'];
+    }
+
+    function getNagekekenString() {
+        if (empty($this->laatst_nagekeken)) {
+            return 'Nog niet ingevuld';
+        }
+        return datetimeToDateString($this->laatst_nagekeken);
     }
 
     // $data is een array met alle data die nagekeken moet worden
@@ -260,7 +272,7 @@ class Steekkaart extends Model {
     }
 
     function setLid(Lid $lid) {
-        $this->lid = $lid->id;
+        $this->lid = $lid;
     }
 
     function isIngevuld() {
@@ -332,7 +344,7 @@ class Steekkaart extends Model {
         if (empty($this->lid)) {
             return false;
         }
-        $lid = self::getDb()->escape_string($this->lid);
+        $lid = self::getDb()->escape_string($this->lid->id);
 
         // 2 opties: mét alle data, of helemaal zonder enige data
         if (empty($this->nagekeken_door)) {
@@ -425,13 +437,12 @@ class Steekkaart extends Model {
                 VALUES ('$lid', '$laatst_nagekeken', '$nagekeken_door' , '$nagekeken_door_titel', '$contactpersoon_naam', '$contactpersoon_gsm', '$contactpersoon_functie', $verblijfsinstelling, $deelname_onmogelijke_activiteiten, $deelname_reden, '$deelname_sporten', '$deelname_sociaal', '$deelname_hygiene', '$deelname_andere', '$medisch_toestemming_medicatie', '$medisch_specifieke_medicatie', $medisch_ziekten, $medisch_ziekten_aanpak, $medisch_dieet, $medisch_klem_jaar, '$bloedgroep', '$huisarts_naam', '$huisarts_telefoon', '$toestemming_fotos', '$aanvullend_voeding', '$aanvullend_andere')";
         } else {
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE ouders 
+            $query = "UPDATE steekkaarten 
                 SET 
                  `lid` = '$lid',
                  `laatst_nagekeken` = '$laatst_nagekeken',
                  `nagekeken_door` = '$nagekeken_door', 
-                 `nagekeken_door_titel` = '$nagekeken_door', 
-                 `nagekeken_door_titel' = '$nagekeken_door_titel', 
+                 `nagekeken_door_titel` = '$nagekeken_door_titel', 
                  `contactpersoon_naam` = '$contactpersoon_naam',
                  `contactpersoon_gsm` = '$contactpersoon_gsm',
                  `contactpersoon_functie` = '$contactpersoon_functie',
@@ -454,7 +465,7 @@ class Steekkaart extends Model {
                  `toestemming_fotos` = '$toestemming_fotos',
                  `aanvullend_voeding` = '$aanvullend_voeding',
                  `aanvullend_andere` = '$aanvullend_andere'
-                where id = '$id' 
+                where steekkaart_id = '$id' 
             ";
         }
 

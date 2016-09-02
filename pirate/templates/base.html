@@ -6,6 +6,7 @@
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/style.css' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/pickadate.css' rel='stylesheet' type='text/css'>
+    <link href='/css/print.css' media="print" rel='stylesheet' type='text/css'>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="{{ description }}">
@@ -69,14 +70,26 @@
                         <a href="/fotos">Foto's</a>
                         <a href="/verhuur">Verhuur</a>
                         <a href="/contact">Contact</a>
-                        {% if general.logged_in == false %}<a href="/inschrijven" class="call-to-action">Inschrijven</a>{% endif %}
+                        {% if general.logged_in == false %}
+                            {% if general.logged_in_ouders %}
+                                <a href="/ouders" class="call-to-action">Mijn inschrijvingen</a>
+                            {% else %}
+                                <a href="/inschrijven" class="call-to-action">Inschrijven</a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                     <div class="visible">
                         <a href="/info">Info</a>
                         <a href="/fotos">Foto's</a>
                         <a href="/verhuur">Verhuur</a>
                         <a href="/contact">Contact</a>
-                        {% if general.logged_in == false %}<a href="/inschrijven" class="call-to-action">Inschrijven</a>{% endif %}
+                        {% if general.logged_in == false %}
+                            {% if general.logged_in_ouders %}
+                                <a href="/ouders" class="call-to-action">Mijn inschrijvingen</a>
+                            {% else %}
+                                <a href="/inschrijven" class="call-to-action">Inschrijven</a>
+                            {% endif %}
+                        {% endif %}
                     </div>
                     <div class="floater">
                         <div class="smartphone-menu">

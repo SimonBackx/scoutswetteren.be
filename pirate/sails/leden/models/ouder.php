@@ -102,7 +102,7 @@ class Ouder extends Model {
     }
 
     function setGezin(Gezin $gezin) {
-        $this->gezin = $gezin->gezin_id;
+        $this->gezin = $gezin->id;
     }
 
     function getSetPasswordUrl() {

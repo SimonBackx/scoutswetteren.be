@@ -12,6 +12,7 @@ class Ship {
         }
 
         date_default_timezone_set('Europe/Brussels');
+        setlocale(LC_MONETARY, 'nl_BE');
 
         // Catch all errors and warnings
         // 

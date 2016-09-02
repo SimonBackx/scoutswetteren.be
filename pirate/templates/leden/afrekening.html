@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <div class="white block">
+            <div class="text">
+
+                {% if finished %}
+                    <h1>Hoera! Je kinderen zijn ingeschreven.</h1>
+                    <p>Hieronder vind je een overzicht van het te betalen inschrijvingsgeld. Dit kan betaald worden aan de takleiding van elk lid afzonderlijk (elke tak heeft een aparte takkas) of via een overschrijving in één geheel. Gelieve dit niet te lang uit te stellen. We hebben dit overzicht ook via e-mail naar je verzonden.</p>
+                {% else %} 
+                    <h1>Afrekening</h1>
+                    <p>Hieronder vind je een overzicht van het te betalen inschrijvingsgeld. Dit kan betaald worden aan de takleiding van elk lid afzonderlijk (elke tak heeft een aparte takkas) of via een overschrijving in één geheel. Gelieve dit niet te lang uit te stellen.</p>
+                {% endif %}
+
+                <p>Overschrijven kan naar volgend rekeningsnummer, zeker MET vermelding van "{{ afrekening.mededeling }}" voor onze interne administratie.</p>
+                
+                <div class="splitted">
+                    <div class="part column first">
+                        <table class="details">
+                            <tr>
+                                <td>IBAN</td>
+                                <td>BE60 4441 7118 4170</td>
+                            </tr>
+                            <tr>
+                                <td>BIC</td>
+                                <td>KREDBEBB</td>
+                            </tr>
+                            <tr>
+                                <td>Naam</td>
+                                <td>Scouts Prins Boudewijn Wetteren</td>
+                            </tr>
+                            <tr>
+                                <td>Adres</td>
+                                <td>Groene wegel 2, 9230 Wetteren</td>
+                            </tr>
+                            <tr>
+                                <td>Mededeling</td>
+                                <td>"{{ afrekening.mededeling }}"</td>
+                            </tr>
+                            <tr>
+                                <td>Bedrag</td>
+                                <td>{{ afrekening.getTeBetalen() }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="part column last">
+                        <table class="details right">
+                            <tbody>
+                                {% for inschrijving in afrekening.inschrijvingen %}
+                                    <tr>
+                                        <td>{{ inschrijving.lid.voornaam }} {{ inschrijving.lid.achternaam }}</td>
+                                        <td>{{ inschrijving.getPrijs() }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                {% if afrekening.betaald_scouts > 0 %}
+                                <tr>
+                                    <td>Verminderd lidgeld</td>
+                                    <td>- {{ afrekening.getBetaaldScouts() }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td>Totaal</td>
+                                    <td>{{ afrekening.getTeBetalen() }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <footer>
+                    <a href="javascript:window.print();" class="fill merlot button">Afdrukken</a><a href="/ouders" class="merlot button">Klaar</a>
+                </footer>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
