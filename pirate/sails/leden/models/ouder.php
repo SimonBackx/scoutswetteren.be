@@ -32,7 +32,13 @@ class Ouder extends Model {
         }
 
         $this->id = $row['id'];
-        $this->gezin = $row['gezin'];
+
+        if (!empty($row['gezin_id'])) {
+            $this->gezin = new Gezin($row);
+        } else {
+            $this->gezin = null;
+        }
+
         $this->titel = $row['titel'];
         $this->voornaam = $row['voornaam'];
         $this->achternaam = $row['achternaam'];
@@ -102,7 +108,7 @@ class Ouder extends Model {
     }
 
     function setGezin(Gezin $gezin) {
-        $this->gezin = $gezin->id;
+        $this->gezin = $gezin;
     }
 
     function getSetPasswordUrl() {
@@ -133,7 +139,7 @@ class Ouder extends Model {
             if (empty($this->gezin)) {
                 return false;
             }
-            $gezin = self::getDb()->escape_string($this->gezin);
+            $gezin = self::getDb()->escape_string($this->gezin->id);
             $key = self::generateKey();
             $this->set_password_key = $key;
 
@@ -201,8 +207,9 @@ class Ouder extends Model {
 
     static function login($mail, $password) {
         $mail = self::getDb()->escape_string($mail);
-        $query = "SELECT *
-        from ouders
+        $query = "SELECT o.*, g.*
+        from ouders o
+        left join gezinnen g on g.gezin_id = o.id
         where email = '$mail'";
 
         if ($result = self::getDb()->query($query)){
@@ -369,8 +376,9 @@ class Ouder extends Model {
 
         $client = intval($_COOKIE['ouder_client']);
         $token = self::getDb()->escape_string($_COOKIE['ouder_token']);
-        $query = "SELECT o.*, t.token, t.time
+        $query = "SELECT o.*, g.*, t.token, t.time
         from ouders o
+        left join gezinnen g on g.gezin_id = o.id
         join ouder_tokens t on t.client = o.id
         where t.client = $client and t.token = '$token'";
 

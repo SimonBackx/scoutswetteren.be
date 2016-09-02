@@ -50,13 +50,16 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'uitloggen') {
                     return true;
                 }
+                if ($parts[1] == 'broer-zus-toevoegen') {
+                    return true;
+                }
             }
 
             if (count($parts) == 3) {
                 if ($parts[1] == 'steekkaart') {
                     // kijken of gezin wel in orde is
                     $lid = Lid::getLid($parts[2]);
-                    if (!is_null($lid) && $lid->gezin->id == Ouder::getUser()->gezin) {
+                    if (!is_null($lid) && $lid->gezin->id == Ouder::getUser()->gezin->id) {
                         $this->lid = $lid;
                         return true;
                     }
@@ -66,7 +69,7 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'afrekening') {
                     // kijken of gezin wel in orde is
                     $afrekening = Afrekening::getAfrekening($parts[2]);
-                    if (!is_null($afrekening) && $afrekening->gezin == Ouder::getUser()->gezin) {
+                    if (!is_null($afrekening) && $afrekening->gezin == Ouder::getUser()->gezin->id) {
                         $this->afrekening = $afrekening;
                         return true;
                     }
@@ -95,6 +98,10 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'uitloggen') {
                     require(__DIR__.'/pages/logout.php');
                     return new Pages\Logout();
+                }
+                if ($parts[1] == 'broer-zus-toevoegen') {
+                    require(__DIR__.'/pages/broer-zus-toevoegen.php');
+                    return new Pages\BroerZusToevoegen();
                 }
             }
 
