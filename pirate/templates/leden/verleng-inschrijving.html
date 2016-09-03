@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <div class="white block">
+                <form method="post">
+                    <div class="text">
+                        
+                        <header>
+                            <h1>Inschrijvingen verlengen</h1>
+                            <p>Selecteer de gezinsleden die je wilt inschrijven voor het nieuwe scoutsjaar. Je kan tijdens het jaar nog bijkomende broers en zussen inschrijven.</p>
+                            {% if al_ingeschreven | length > 0 %}
+                                <p>{% for lid in al_ingeschreven %}
+                                    {{ lid.voornaam }}{% if loop.index < (al_ingeschreven | length)-1 %}, {% endif %}{% if loop.index == (al_ingeschreven | length)-1 %} en {% endif %}
+                                {% endfor %} zijn al ingeschreven.</p>
+                            {% endif %}
+                        </header>
+
+
+                        
+                        {% if success %}
+                            <h2>Gelukt!</h2>
+                        {% endif %}
+
+                        {% if errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        {% for lid in leden %}
+                            <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" name="leden[]" value="{{ lid.id }}"{% if lid.inschrijving.scoutsjaar == scoutsjaar-1 %} checked{% endif %}>
+                            <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }})</label>
+                        {% endfor %}
+                        <div><a href="/ouders/broer-zus-toevoegen" class="icon-button plus">Broer of zus toevoegen</a></div>
+                         
+                        <footer>
+                            <input type="submit" class="merlot fill" value="Inschrijven" name="submit">
+                            <input type="submit" class="merlot" value="Annuleren" name="annuleren">
+                        </footer>
+
+                    </div>
+                </form>
+        </div>
+    </main>
+{% endblock %}

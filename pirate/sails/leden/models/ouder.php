@@ -6,7 +6,7 @@ use Pirate\Model\Leden\Gezin;
 
 class Ouder extends Model {
     public $id;
-    public $gezin;
+    public $gezin; // object
     public $titel;
     public $voornaam;
     public $achternaam;
@@ -236,6 +236,25 @@ class Ouder extends Model {
             }
         }
         return false;
+    }
+
+    static function getOudersForGezin(Gezin $gezin) {
+        $gezin = self::getDb()->escape_string($gezin->id);
+
+        $ouders = array();
+        $query = '
+            SELECT o.*, g.* from ouders o
+                left join gezinnen g on g.gezin_id = o.gezin
+            where o.gezin = "'.$gezin.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $ouders[] = new Ouder($row);
+                }
+            }
+        }
+        return $ouders;
     }
 
     // returns if password is correct

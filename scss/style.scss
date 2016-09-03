@@ -163,8 +163,12 @@ a.button, button.button, input[type=submit] {
     text-transform: uppercase;
     font-size: $size-button;
 
-    margin: 20px 0;
+    margin: 20px 7px;
     display: inline-block;
+
+    &:first-child {
+        margin-left: 0;
+    }
 
     &.merlot {
         color: $merlot;

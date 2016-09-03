@@ -8,47 +8,53 @@
                 <h1>Mijn inschrijvingen</h1>
                 <p>U bent ingelogd als {{ ouder.voornaam }}.</p>
 
-                <div><a href="/ouders/uitloggen" class="icon-button">Uitloggen</a></div>
-                <div><a href="/ouders/broer-zus-toevoegen" class="icon-button plus">Broer of zus inschrijven</a></div>
+                <a href="/ouders/uitloggen" class="icon-button">Uitloggen</a>
+                <a href="/ouders/wachtwoord-wijzigen" class="icon-button">Wachtwoord wijzigen</a>
 
-                <h1>Leden</h1>
+                <h1>Ingeschreven leden</h1>
                 <div class="list-bundle">
                 {% for lid in leden %}
                     <article class="list">
                         <div class="medium merlot column">{{ lid.voornaam }} {{ lid.achternaam }}</div>
-                        {% if lid.isIngeschreven() %}
-                            <div class="small merlot column">{{ lid.inschrijving.tak | capitalize }}</div>
-                            <div class="max column{% if not lid.heeftSteekkaart() %} bold{% endif %}">
-                                {% if not lid.heeftSteekkaart() %}
-                                    Individuele steekkaart nog niet ingevuld
-                                {% else %}
-                                    Laatst nagekeken op {{ lid.steekkaart.getNagekekenString() }}
-                                {% endif %}
-                            </div>
-                            <div class="last column">
-                                <a href="/ouders/steekkaart/{{ lid.id | e('html_attr')}}" class="{% if lid.heeftSteekkaart() %}button noborder{% else %}icon-button plus{% endif %}">
-                                {% if not lid.heeftSteekkaart() %}
-                                    Invullen
-                                {% else %}
-                                    Nakijken
-                                {% endif %}
-                                </a>
-                            </div>
-                        {% else %}
-                            <div class="max column">Niet ingeschreven voor huidig scoutsjaar</div>
-                            <div class="last column">
-                                <a href="/ouders/verleng-inschrijving/" class="button noborder">Inschrijven</a>
-                            </div>
-                        {% endif %}
+                        <div class="small merlot column">{{ lid.inschrijving.tak | capitalize }}</div>
+                        <div class="max column{% if not lid.heeftSteekkaart() %} bold{% endif %}">
+                            {% if not lid.heeftSteekkaart() %}
+                                Individuele steekkaart nog niet ingevuld
+                            {% else %}
+                                Laatst nagekeken op {{ lid.steekkaart.getNagekekenString() }}
+                            {% endif %}
+                        </div>
+                        <div class="last column">
+                            <a href="/ouders/steekkaart/{{ lid.id | e('html_attr')}}" class="{% if lid.heeftSteekkaart() %}button noborder{% else %}icon-button plus{% endif %}">
+                            {% if not lid.heeftSteekkaart() %}
+                                Invullen
+                            {% else %}
+                                Nakijken
+                            {% endif %}
+                            </a>
+                        </div>
                     </article>
+                {% else %}
+                    <p>Er is nog niemand ingeschreven voor het huidige scoutsjaar.</p>
                 {% endfor %}
                 </div>
-
+                <a href="{% if niet_ingeschreven_aantal > 0 %}/ouders/verleng-inschrijving{% else %}/ouders/broer-zus-toevoegen{% endif %}" class="icon-button plus">Broer of zus toevoegen</a>
 
                 <h1>Ouders</h1>
                 {% for ouder in ouders %}
-                
+                    <h2>{{ouder.voornaam}} {{ouder.achternaam}} ({{ouder.titel}})</h2>
+                    <p>{{ouder.adres}}, {{ouder.postcode}} {{ouder.gemeente}}</p>
+                    <p>{{ouder.telefoon}}</p>
+                    <p>{{ouder.gsm}}</p>
+                    <p>{{ouder.email}}</p>
                 {% endfor %}
+
+                <h2>Belangrijke afspraken vanuit de gezinssituatie</h2>
+                {% if gezin.gezinssituatie | length > 0 %}<p>{{ gezin.gezinssituatie }}</p>{% else %}<p>Niets opgegeven</p>{% endif %}
+
+                <h1>Aanpassingen maken</h1>
+
+                <p>Door tijdsgebrek is het momenteel nog niet mogelijk om gegevens van ouders aan te passen. Moesten er bepaalde gegevens veranderen (gezinssituatie, adres, telefoonnummer, e-mailadres...), gelieve dan een e-mail te sturen naar website@scoutswetteren.be en we zullen het voor je aanpassen.</p>
 
             </div>
         </div>

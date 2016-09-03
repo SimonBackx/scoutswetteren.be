@@ -141,6 +141,10 @@ class Lid extends Model {
         return false;
     }
 
+    function getTakVoorHuidigScoutsjaar() {
+        return self::getTak(intval($this->geboortedatum->format('Y')));
+    }
+
     function schrijfIn() {
         return Inschrijving::schrijfIn($this);
     }

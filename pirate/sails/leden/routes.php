@@ -5,6 +5,7 @@ use Pirate\Route\Route;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Afrekening;
+use Pirate\Model\Leden\Inschrijving;
 
 class LedenRouter extends Route {
     private $lid = null;
@@ -50,7 +51,13 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'uitloggen') {
                     return true;
                 }
-                if ($parts[1] == 'broer-zus-toevoegen') {
+                if ($parts[1] == 'broer-zus-toevoegen' && Inschrijving::isInschrijvingsPeriode()) {
+                    return true;
+                }
+                if ($parts[1] == 'verleng-inschrijving' && Inschrijving::isInschrijvingsPeriode()) {
+                    return true;
+                }
+                if ($parts[1] == 'wachtwoord-wijzigen') {
                     return true;
                 }
             }
@@ -102,6 +109,14 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'broer-zus-toevoegen') {
                     require(__DIR__.'/pages/broer-zus-toevoegen.php');
                     return new Pages\BroerZusToevoegen();
+                }
+                if ($parts[1] == 'verleng-inschrijving') {
+                    require(__DIR__.'/pages/verleng-inschrijving.php');
+                    return new Pages\VerlengInschrijving();
+                }
+                if ($parts[1] == 'wachtwoord-wijzigen') {
+                    require(__DIR__.'/pages/wachtwoord-wijzigen.php');
+                    return new Pages\WachtwoordWijzigen();
                 }
             }
 

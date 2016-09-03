@@ -68,9 +68,11 @@ class OuderOverview extends Page {
         }
 
         $inschrijvingen_afrekenen = array();
+        $leden_waarvoor_afgerekend = array();
         foreach ($leden as $lid) {
             if (!empty($lid->inschrijving) && $lid->isIngeschreven() && empty($lid->inschrijving->afrekening)) {
                 $inschrijvingen_afrekenen[] = $lid->inschrijving;
+                $leden_waarvoor_afgerekend[] = $lid;
             }
         }
 
@@ -78,7 +80,7 @@ class OuderOverview extends Page {
             $afrekening = Afrekening::createForInschrijvingen($inschrijvingen_afrekenen);
             if (!is_null($afrekening)) {
 
-                $mail = new Mail('Afrekening lidgeld', 'afrekening', array('leden' => $leden));
+                $mail = new Mail('Afrekening lidgeld', 'afrekening', array('leden' => $leden_waarvoor_afgerekend));
 
                 $ouder = Ouder::getUser();
                 $mail->addTo(
@@ -91,6 +93,8 @@ class OuderOverview extends Page {
 
                 $this->redirect = "ouders/afrekening/".$afrekening->id.'/?klaar';
                 return 302;
+            } else {
+                echo 'afrekenen mislukt';
             }
         }
 
@@ -102,10 +106,25 @@ class OuderOverview extends Page {
             header("Location: https://".$_SERVER['SERVER_NAME']."/".$this->redirect);
             return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/".$this->redirect;
         }
+
+        $leden_ingeschreven = array();
+        $niet_ingeschreven_aantal = 0;
+        foreach ($this->leden as $lid) {
+            if ($lid->isIngeschreven()) {
+                $leden_ingeschreven[] = $lid;
+            } else {
+                $niet_ingeschreven_aantal++;
+            }
+        }
+        $user = Ouder::getUser();
+        $ouders = Ouder::getOudersForGezin($user->gezin);
         
         return Template::render('leden/ouder-overview', array(
-            'leden' => $this->leden,
-            'ouder' => Ouder::getUser()
+            'leden' => $leden_ingeschreven,
+            'niet_ingeschreven_aantal' => $niet_ingeschreven_aantal,
+            'ouder' => $user,
+            'gezin' => $user->gezin,
+            'ouders' => $ouders
         ));
     }
 }
