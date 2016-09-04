@@ -96,6 +96,30 @@ class Lid extends Model {
         return $leden;
     }
 
+    static function getLedenForTak($tak) {
+        $tak = self::getDb()->escape_string($tak);
+
+        $scoutsjaar = self::getDb()->escape_string(self::getScoutsjaar());
+
+        $leden = array();
+        $query = '
+            SELECT l.*, i.*, s.*, g.* from leden l
+                left join steekkaarten s on s.lid = l.id
+                left join gezinnen g on g.gezin_id = l.gezin
+                left join inschrijvingen i on i.lid = l.id
+                left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
+            where i.scoutsjaar = "'.$scoutsjaar.'" and i.tak = "'.$tak.'" and i2.inschrijving_id is null';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $leden[] = new Lid($row);
+                }
+            }
+        }
+        return $leden;
+    }
+
     function isIngeschreven() {
         if (empty($this->inschrijving)) {
             return false;

@@ -23,21 +23,13 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
+                    'title' => 'Startdag 2016',
+                    'text' => 'Zondag 11 september vliegen we er weer in vanaf 14 uur! En vrijdag 9 september om 19 uur kan je komen genieten van lekkere streekbieren of frisdranken op onze streekbieravond.'
+                ),
+                array(
                     'title' => 'Een nieuwe huisstijl!',
-                    'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning en foto\'s vind je nu sneller terug.',
+                    'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning vind je nu altijd terug op de startpagina',
                     'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/')
-                ),
-                array(
-                    'title' => 'Een nieuwe huisstijl!',
-                    'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning en foto\'s vind je nu sneller terug.',
-                    'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/'),
-                    'extra_button' => array('text' => 'Inschrijven', 'url' => '/inschrijven'),
-                ),
-                array(
-                    'title' => 'Een nieuwe huisstijl!',
-                    'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning en foto\'s vind je nu sneller terug.',
-                    'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/'),
-                    'extra_button' => array('text' => 'Inschrijven', 'url' => '/inschrijven'),
                 )
             ),
             'call_to_action' => array(

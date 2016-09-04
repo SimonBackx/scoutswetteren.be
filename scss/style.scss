@@ -131,7 +131,9 @@ a {
 }
 
 p a {
-    text-decoration: underline;
+    &, &:hover, &:visited, &:active, &:link {
+        text-decoration: underline;
+    }
     
     &:hover {
         color: $cardinal;

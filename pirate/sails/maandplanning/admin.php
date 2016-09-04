@@ -1,5 +1,4 @@
 <?php
-
 namespace Pirate\Sail\Maandplanning;
 use Pirate\Page\Page;
 use Pirate\Route\Route;
