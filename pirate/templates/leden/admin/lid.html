@@ -1,0 +1,110 @@
+<div class="text questions">
+
+    <h1>{{ lid.voornaam }} {{ lid.achternaam }}</h1>
+
+    <div class="splitted">
+         <div class="part column first">
+            <h2>Algemene info</h2>
+            <p>Geslacht: {{ lid.geslacht }}</p>
+            <p>Geboortedatum: {{ lid.geboortedatum | date("d/m/Y") }}</p>
+            <p>GSM lid: {% if lid.gsm | length > 0 %}{{ lid.gsm }}{% else %}/{% endif %}</p>
+        </div>
+        <div class="part column last">
+            <h2>Gezin</h2>
+            {% if lid.gezin.scouting_op_maat %}<p>Gezin die het financieel moelijk heeft</p>{% endif %}
+            <p>Gezinssituatie: {% if lid.gezin.gezinssituatie | length > 0 %}{{ lid.gezin.gezinssituatie }}{% else %}/{% endif %}</p>
+        </div>
+    </div>
+
+    {% if not lid.steekkaart.laatst_nagekeken is empty %}
+        <h1>Adres en bereikbaarheid</h1>
+        <p>Verblijfsinstelling: {% if lid.steekkaart.verblijfsinstelling | length > 0 %}{{ lid.steekkaart.verblijfsinstelling }}{% else %}/{% endif %}</p>
+
+        <h2>Wie kunnen we bereiken als de ouders niet bereikbaar zijn (zoals op kinderpas -12 jarigen)?</h2>
+
+        <p>{{ lid.steekkaart.contactpersoon_functie }}</p>
+        <p>{{ lid.steekkaart.contactpersoon_naam }}</p>
+        <p>{{ lid.steekkaart.contactpersoon_gsm }}</p>
+
+
+        <h1>Deelname aan activiteiten</h1>
+        <h2>Kan en mag {{ lid.voornaam }} deelnemen aan alle gewone scoutingsactiviteiten op maat van de leeftijdstak (op tocht gaan, spelen, kamperen, ...)?</h2>
+
+        <p>{% if not lid.steekkaart.deelname_onmogelijke_activiteiten is empty %}Nee: {{ lid.steekkaart.deelname_onmogelijke_activiteiten }} - Reden: {{ lid.steekkaart.deelname_reden }}{% else %}Ja{% endif %}</p>
+
+        <h2>Is er bijzondere aandacht nodig om risico's te voorkomen? (optioneel)</h2>
+
+        <p>Bij sporten: {% if lid.steekkaart.deelname_sporten | length > 0 %}{{ lid.steekkaart.deelname_sporten }}{% else %}Nee{% endif %}</p>
+        <p>Bij sociale omgang: {% if lid.steekkaart.deelname_sociaal | length > 0 %}{{ lid.steekkaart.deelname_sociaal }}{% else %}Nee{% endif %}</p>
+        <p>Bij hygiëne: {% if lid.steekkaart.deelname_hygiene | length > 0 %}{{ lid.steekkaart.deelname_hygiene }}{% else %}Nee{% endif %}</p>
+        <p>Andere: {% if lid.steekkaart.deelname_andere | length > 0 %}{{ lid.steekkaart.deelname_andere }}{% else %}Nee{% endif %}</p>
+
+        <h1>Medische informatie</h1>
+        <p>Het is verboden om als leid(st)er, behalve EHBO, op eigen initiatief medische handelingen uit te voeren. Ook het verstrekken van lichte pijnstillende en koortswerende medicatie zoals Perdolan, Dafalgan of Aspirine is, zonder toelating van de ouders, voorbehouden aan een arts. Daarom is het noodzakelijk om via deze steekkaart vooraf toestemming van ouders te hebben voor het eventueel toedienen van dergelijke hulp.</p>
+
+        <h2>Wij geven toestemming aan de leiding om bij hoogdringendheid aan onze zoon of dochter een dosis via de apotheek vrij verkrijgbare pijnstillende en koortswerende medicatie toe te dienen: *</h2>
+
+        <p>{{ lid.steekkaart.medisch_toestemming_medicatie }}</p>
+        <aside class="source">* gebaseerd op aanbeveling Kind &amp; Gezin 09.12.2009 – Aanpak van koorts / Toedienen van geneesmiddelen in de kinderopvang</aside>
+
+        <h2>Moet {{lid.voornaam}} specifieke medicatie krijgen?</h2>
+        <p>{{ lid.steekkaart.medisch_specifieke_medicatie }} - indien ja: ouders moeten brief afgeven met meer info van dokter</p>
+
+        <h2>Zijn er ziekten te melden (astma, suikerziekte, hooikoorts, epilepsie, hart, ...)?</h2>
+
+        {% if lid.steekkaart.medisch_ziekten | length > 0 %}
+            <p>Ja: {{ lid.steekkaart.medisch_ziekten }}</p>
+            <p>Info aanpak: {{ lid.steekkaart.medisch_ziekten_aanpak }}</p>
+        {% else %}
+            <p>Nee</p>
+        {% endif %}
+
+        <h2>Moet {{ lid.voornaam }} een bepaalt dieet volgen?</h2>
+        {% if lid.steekkaart.medisch_dieet | length > 0 %}
+            <p>Ja: {{ lid.steekkaart.medisch_dieet }}</p>
+        {% else %}
+            <p>Nee</p>
+        {% endif %}
+
+        <h2>Werd {{ lid.voornaam }} ingeënt tegen klem (tetanus)?</h2>
+        {% if lid.steekkaart.medisch_klem_jaar | length > 0 %}
+            <p>Ja, in {{ lid.steekkaart.medisch_klem_jaar }}</p>
+        {% else %}
+            <p>Nee</p>
+        {% endif %}
+
+        <h2>Bloedgroep</h2>
+        <p>{{ lid.steekkaart.bloedgroep }}</p>
+
+        <h2>Huisarts</h2>
+        <p>{{ lid.steekkaart.huisarts_naam }}</p>
+        <p>{{ lid.steekkaart.huisarts_telefoon }}</p>
+
+        <h1>Aanvullende opmerkingen</h1>
+        <h2>{{ lid.voornaam }} mag tijdens de activiteiten worden gefotografeerd voor publicatie op onze website en onze Facebook pagina</h2>
+        <p>{{ lid.steekkaart.toestemming_fotos }}</p>
+
+        <h2>Zijn er bepaalde aspecten waarmee leiding rekening kan houden als de omstandigheden dat toestaan binnen de visie van scouting?</h2>
+
+        {% if lid.steekkaart.aanvullend_voeding | length > 0 %}
+            <p>Ja op vlak van voeding: {{ lid.steekkaart.aanvullend_voeding }}</p>
+        {% else %}
+            <p>Niet op vlak van voeding</p>
+        {% endif %}
+        {% if lid.steekkaart.aanvullend_andere | length > 0 %}
+            <p>Ja, andere aandachtspunten: {{ lid.steekkaart.aanvullend_andere }}</p>
+        {% endif %}
+
+        <h1>Laatst ingevuld</h1>
+        <p>Door: {{ lid.steekkaart.nagekeken_door}} ({{ lid.steekkaart.nagekeken_door_titel }})</p>
+        <p>Op {{ lid.steekkaart.laatst_nagekeken | date("d/m/Y") }}</p>
+
+    {% else %}
+
+        <h2>Steekkaart niet ingevuld</h2>
+
+    {% endif %}
+
+
+</div>
+

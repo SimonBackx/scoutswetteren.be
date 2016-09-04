@@ -1,3 +1,9 @@
+.questions {
+        h2 {
+            color: $merlot;
+            font-size: $size-question;
+        }
+    }
 main {
     background: $lightgray-background;
     padding: 10px 20px;

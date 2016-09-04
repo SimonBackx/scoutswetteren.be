@@ -29,7 +29,7 @@ class Homepage extends Page {
                 array(
                     'title' => 'Een nieuwe huisstijl!',
                     'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning vind je nu altijd terug op de startpagina',
-                    'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/')
+                    'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/09/09/nieuwe-huisstijl-en-online-inschrijven')
                 )
             ),
             'call_to_action' => array(
