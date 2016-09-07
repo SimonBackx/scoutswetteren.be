@@ -11,9 +11,18 @@ class Verhuur extends Page {
     }
 
     function getContent() {
-        $kalender = Block::getBlock('Verhuur', 'Verhuurkalender')->getContent();
+        global $config;
+        $verhuurkalender_block = Block::getBlock('Verhuur', 'Verhuurkalender');
+        $verhuurkalender_block->getMonth($year, $month);
+
+        $kalender = $verhuurkalender_block->getContent();
 
         return Template::render('verhuur/verhuur', array(
+            'calendar' => array(
+                'month' => ucfirst($config['months'][$month-1]),
+                'data_year' => $year,
+                'data_month' => $month
+            ),
             'kalender' => $kalender,
             'call_to_action' => array(
                 'title' => 'Volg je kapoen',

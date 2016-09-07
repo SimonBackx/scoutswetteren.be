@@ -3,4 +3,4 @@
 // Alle geregistreerde sails die Api routes ontvangen op:
 // /api/sailnaam/...
 // d.m.v. routes
-$api_routes = array('maandplanning', 'blog');
+$api_routes = array('maandplanning', 'blog', 'verhuur');

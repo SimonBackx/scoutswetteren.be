@@ -1,13 +1,67 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <script type="text/javascript" src="{{ http }}/js/homepage.js"></script>
     <style type="text/css">
         #over-image {
             background-image: url(/images/over-flat.jpg);
         }
     </style>
 {% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{{ http }}/js/homepage.js"></script>
+    <script type="text/javascript">
+         $( document ).ready(function() {
+            $('#header .navigation .item').click(function() {
+                goToItem($(this));
+            });
+            $('#header button.next').on('click',function(evt) {
+                evt.preventDefault();
+                var next = $('#header .item.selected').next();
+                if (next.length == 0) {
+                    next = $('#header .item:first');
+                }
+
+                goToItem(next);
+            });
+            $('#header button.back').on('click',function(evt) {
+                evt.preventDefault();
+                var next = $('#header .item.selected').prev();
+                if (next.length == 0) {
+                    next = $('#header .item:last');
+                }
+
+                goToItem(next);
+            });
+        });
+
+        function goToItem(next) {
+            var content = next.html();
+            animateTo(content);
+            $('#header .item.selected').removeClass('selected');
+            next.addClass('selected');
+        }
+        function animateTo(html) {
+            var current = $('#header .center');
+            var current_article = $('#header .center article');
+            var width = current_article.width();
+            current_article.css({ 'width': width});
+            current_article.animate({ 'margin-left': -150, 'margin-right': 150}, 200);
+            current.fadeOut(200, function() {
+                current.html(html);
+                current_article = $('#header .center article');
+                current_article.css({ 'width': width});
+
+                current_article.css({'margin-left': 150, 'margin-right': -150});
+                current_article.animate({ 'margin-left': 0, 'margin-right': 0}, 200, function() {
+                    current_article.css({ 'width': ''});
+                });
+                current.fadeIn(200);
+            });
+        }
+    </script>
+{% endblock %}
+
 {% block main %}
     <header id="header">
         <div class="horizontal gradient">
@@ -81,58 +135,5 @@
 
         {{ include('call_to_action.html') }}
 
-        <script type="text/javascript">
-             $( document ).ready(function() {
-                $('#header .navigation .item').click(function() {
-                    goToItem($(this));
-                });
-                $('#header button.next').on('click',function(evt) {
-                    evt.preventDefault();
-                    var next = $('#header .item.selected').next();
-                    if (next.length == 0) {
-                        next = $('#header .item:first');
-                    }
-
-                    goToItem(next);
-                });
-                $('#header button.back').on('click',function(evt) {
-                    evt.preventDefault();
-                    var next = $('#header .item.selected').prev();
-                    if (next.length == 0) {
-                        next = $('#header .item:last');
-                    }
-
-                    goToItem(next);
-                });
-            });
-
-            function goToItem(next) {
-                var content = next.html();
-                animateTo(content);
-                $('#header .item.selected').removeClass('selected');
-                next.addClass('selected');
-            }
-            function animateTo(html) {
-                var current = $('#header .center');
-                var current_article = $('#header .center article');
-                var width = current_article.width();
-                current_article.css({ 'width': width});
-                current_article.animate({ 'margin-left': -150, 'margin-right': 150}, 200);
-                current.fadeOut(200, function() {
-                    current.html(html);
-                    current_article = $('#header .center article');
-                    current_article.css({ 'width': width});
-
-                    current_article.css({'margin-left': 150, 'margin-right': -150});
-                    current_article.animate({ 'margin-left': 0, 'margin-right': 0}, 200, function() {
-                        current_article.css({ 'width': ''});
-                    });
-                    current.fadeIn(200);
-                });
-
-
-
-            }
-        </script>
     </main>
 {% endblock %}

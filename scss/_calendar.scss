@@ -22,9 +22,13 @@
         article {
             padding: 25px 40px;
             background: $gray-background;
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            box-sizing: border-box;
 
             .column {
-                float: left;
+                display: table-cell;
 
                 &.group {
                     color: $merlot;
@@ -40,15 +44,16 @@
 
                 &.description {
                     color: $aubergine;
-
-                    overflow: hidden;
-                    width: auto;
-                    float: none;
                 }
 
-                @media screen and (max-width: $width-reduce-padding + 100px) {
-                    float: none;
+            }
+
+            @media screen and (max-width: $width-reduce-padding + 100px) {
+                display: block;
+
+                .column {
                     padding: 5px 0;
+                    display: block;
 
                     &.group {
                         font-weight: bold;
@@ -60,7 +65,7 @@
                         width: auto;
                         display: inline-block;
                      }
-                }
+                 }
             }
         }
 
@@ -157,7 +162,7 @@
         .row {
             clear: both;
             padding: 5px 2px;
-            max-width: 315px;
+            max-width: 287px;
             margin: -5px auto;
             font-size: $size-text-bigger;
 
@@ -169,14 +174,17 @@
 
             &.selected {
                 background: $heath url(../images/calendar-arrow.png) no-repeat left center;
+                margin: -5px -50px;
+                padding: 5px 66px;
             }
 
             .column {
                 float: left;
                 width: 14.2857% ; //45px;
-                max-width: 45px;
-                height: 45px;
-                line-height: 45px;
+                max-width: 41px;
+                margin: 0px;
+                height: 41px;
+                line-height: 41px;
                 border-radius: 25px;
                 text-align: center;
 
@@ -185,7 +193,7 @@
                 }
 
                 &.other {
-                    opacity: 0.5;
+                    background: $cardinal;
                 }
 
                 &.aankomst-selected, &.vertrek-selected, &.in-between {
@@ -195,7 +203,7 @@
 
 
                 &.hidden {
-                    color: rgba(white, 0.5);
+                    opacity: 0.5;
                 }
             }
             .clear {

@@ -33,7 +33,8 @@
             border-radius: 4px;
 
             max-height: 400px;
-            overflow: scroll;
+            overflow-y: scroll;
+            overflow-x: hidden;
 
             .result {
                 padding: 20px 30px;

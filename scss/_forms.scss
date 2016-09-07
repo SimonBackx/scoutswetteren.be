@@ -7,10 +7,10 @@ form {
         border-left: 2px solid $cardinal;
         color: $cardinal;
         padding: 0 20px;
-        max-width: 800px;
+        width: 800px;
         max-height: 400px;
         margin: 20px 0;
-        overflow: scroll;
+        overflow-y: scroll;
     }
 
     .slider {
@@ -74,12 +74,6 @@ form {
         font-size: $size-text-bigger;
     }
 
-    textarea { 
-        resize: none; 
-        min-height: 80px;
-        height: auto;
-    }
-
     input[type=text], input[type=password], input[type=email], .input-box, .select-box, textarea {
         display: block;
         box-sizing: border-box;
@@ -118,6 +112,14 @@ form {
             border-color: $error-red;
             color: $error-red; 
         }
+    }
+
+    textarea { 
+        resize: none; 
+        min-height: 90px;
+        height: auto;
+        overflow: auto;
+        -ms-overflow-style: none;
     }
 
     input[type=checkbox], input[type=radio] {
@@ -236,6 +238,10 @@ form {
             appearance: none;
             -moz-appearance: none;
             -webkit-appearance: none;
+
+            option {
+                color: $merlot;
+            }
 
             &.empty {
                 color: $gray;

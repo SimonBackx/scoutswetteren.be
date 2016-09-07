@@ -3,6 +3,8 @@
 <head>
     <title>{% if title %}{{ title }} - {% endif %}Scouts Prins Boudewijn Wetteren</title>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/style.css' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/pickadate.css' rel='stylesheet' type='text/css'>
@@ -61,9 +63,9 @@
             </div>
             {% endif %}
             <div class="overflow-bar">
-                <div class="logo">
-                    <a href="/"><img src="{{ http }}/images/menu-logo.png" alt="Prins Boudewijn"></a>
-                </div>
+                <a class="logo" href="/" title="Startpagina">
+                    <!--<a href="/"><img src="{{ http }}/images/menu-logo.png" alt="Prins Boudewijn"></a>-->
+                </a>
                 <div class="items">
                     <div class="space">
                         <a href="/info">Info</a>
@@ -93,7 +95,15 @@
                     </div>
                     <div class="floater">
                         <div class="smartphone-menu">
-                            <div id="smartphone-menu-button"><img src="{{ http }}/images/hamburger.png" alt="Menu"></div>
+                            <div id="smartphone-menu-button">
+                                <svg width="30px" height="20px" viewBox="1179 -2 30 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <g id="hamburger" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1179.000000, -2.000000)">
+                                        <rect id="Rectangle-139" fill="#FFFFFF" x="0" y="0" width="30" height="2" rx="1"></rect>
+                                        <rect id="Rectangle-139" fill="#FFFFFF" x="0" y="9" width="30" height="2" rx="1"></rect>
+                                        <rect id="Rectangle-139" fill="#FFFFFF" x="0" y="18" width="30" height="2" rx="1"></rect>
+                                    </g>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -36,8 +36,9 @@ $( document ).ready(function() {
     });
 
     $('textarea').bind("propertychange change click keyup input paste focus", function(event){
-        $(this).css({'height': 'auto'});
-        $(this).css({'height': $(this)[0].scrollHeight });
+        var min = $(this).css('min-height');
+        $(this).css({'height': 'auto', 'min-height': 0});
+        $(this).css({'height': $(this)[0].scrollHeight + 20, 'min-height': min});
     });
 
     // Alle selects met 1e optie geselecteerd = gray maken

@@ -43,13 +43,20 @@ body, html {
     margin: 0;
     -webkit-font-smoothing: antialiased;
     font-size: $size-text;
+    position: static;
 }
 
 
 // Voor sticky footer
 #container {
-    display: flex;
     min-height: 100vh;
+
+    display: block;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
     flex-direction: column;
 }
 
@@ -127,6 +134,8 @@ a {
     &, &:hover, &:visited, &:active, &:link {
         color: inherit;
         text-decoration: none;
+        outline: none;
+        border: 0;
     }
 }
 

@@ -5,23 +5,16 @@ use Pirate\Template\Template;
 //use Pirate\Model\Verhuur\Event;
 
 class Verhuurkalender extends Block {
-
-    // Geeft volledige block
-    function getContent() {
+    function getForMonth($year, $month) {
         global $config;
-        $day = date('N')-1;
-
-        // Maand bepalen
-        $day = date('N')-1;
-        $month = date('m', strtotime('+'.(7-$day).' days'));
-        $year = date('Y', strtotime('+'.(7-$day).' days'));
-
-        $week_start = date('Y-m-d', strtotime('-'.$day.' days'));
-        $week_end = date('Y-m-d', strtotime('+'.(7-$day).' days'));
 
         // Jump naar eerste dag vd maand
-        $day = new \DateTime($year.'-'.$month.'-01');
-        $first_datetime_string = $day->format('c');
+        try {
+            $day = new \DateTime($year.'-'.$month.'-01');
+            $first_datetime_string = $day->format('c');
+        } catch (\Exception $e){
+            return '<p>Er ging iets mis</p>';
+        }
         
         // keep running back until we reach a monday
         $wkday = $day->format('N')-1;
@@ -64,14 +57,28 @@ class Verhuurkalender extends Block {
         }
 
         return Template::render('verhuur/verhuurkalender', 
-                array(
-                    'calendar' => array(
-                        'weeks' => $data,
-                        'month' => ucfirst($config['months'][$month-1]),
-                        'datetime' => $first_datetime_string
-                    )
+            array(
+                'calendar' => array(
+                    'weeks' => $data,
+                    'month' => ucfirst($config['months'][$month-1]),
+                    'datetime' => $first_datetime_string
                 )
-            );
+            )
+        );
+    }
+    // Geeft volledige block
+    function getContent() {
+        $this->getMonth($year, $month);
+        return $this->getForMonth($year, $month);
+    }
+
+    function getMonth(&$year, &$month) {
+        $day = date('N')-1;
+
+        // Maand bepalen
+        $day = date('N')-1;
+        $month = date('m', strtotime('+'.(7-$day).' days'));
+        $year = date('Y', strtotime('+'.(7-$day).' days'));
     }
 
 }

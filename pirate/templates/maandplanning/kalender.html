@@ -24,7 +24,7 @@
                 {% for week in calendar.weeks %}
                     <div class="row{% if week.is_selected == true %} selected{% endif %}">
                         {% for day in week.days %}
-                            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} other{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
+                            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} hidden{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
                         {% endfor %}
                         <div class="clear"></div>
                     </div>
@@ -48,7 +48,7 @@
                 {% for week in calendar.weeks %}
                     <div class="row{% if week.is_selected == true %} selected{% endif %}">
                         {% for day in week.days %}
-                            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} other{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
+                            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} hidden{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
                         {% endfor %}
                         <div class="clear"></div>
                     </div>
