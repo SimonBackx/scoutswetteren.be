@@ -1,0 +1,10 @@
+{% for week in calendar.weeks %}
+    <div class="row">
+        {% for day in week.days %}
+            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} hidden{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
+        {% endfor %}
+        <div class="clear"></div>
+    </div>
+{% else %}
+    <p>We konden de kalender niet laden. Contacteer ons als dit probleem zich blijft voordoen.</p>
+{% endfor %}

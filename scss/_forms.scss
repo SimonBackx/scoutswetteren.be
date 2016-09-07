@@ -1,3 +1,7 @@
+$slider-circle: 12px;
+$slider-box: 30px;
+$slider-top: 20px;
+
 form {
     blockquote {
         border-left: 2px solid $cardinal;
@@ -7,6 +11,53 @@ form {
         max-height: 400px;
         margin: 20px 0;
         overflow: scroll;
+    }
+
+    .slider {
+        height: 65px;
+        margin: 0px 0 5px 0;
+        position: relative;
+        max-width: 500px;
+        cursor: pointer;
+
+        .bar {
+            position: absolute;
+            background: $gray;
+            left: 0;
+            right: 0;
+            top: $slider-top;
+            height: 2px;
+            border-radius: 2px;
+            overflow: hidden;
+
+            .progress {
+                width: 0%;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                position: absolute;
+                background: $merlot;
+            }
+        }
+        .slide {
+            .circle {
+                position: absolute;
+                top: $slider-top - ($slider-circle - 2)/2;
+                left: ($slider-box - $slider-circle)/2;
+                right: ($slider-box - $slider-circle)/2;
+                height: $slider-circle;
+                border-radius: $slider-circle/2;
+                background: $merlot;
+            }
+            left: 0%;
+            margin-left: - $slider-box/2;
+
+            position: absolute;
+            top: 0;
+            padding-top: $slider-top + 7 + $slider-circle/2;
+            width: $slider-box;
+            text-align: center;
+        }
     }
 
     aside.source {
@@ -19,7 +70,7 @@ form {
         display: block;
     }
 
-    input, textarea, select {
+    input, textarea, select, a.button {
         font-size: $size-text-bigger;
     }
 
@@ -58,7 +109,7 @@ form {
             color: $gray;
         }
 
-        &:focus {
+        &:focus, &.selected {
             border-color: $merlot;
             color: $merlot;
         }

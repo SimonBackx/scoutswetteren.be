@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <script type="text/javascript" src="{{ http }}/js/homepage.js"></script>
+    <style type="text/css">
+        #over-image {
+            background-image: url(/images/over-flat.jpg);
+        }
+    </style>
+{% endblock %}
 {% block main %}
     <header id="header">
         <div class="horizontal gradient">
@@ -46,8 +54,8 @@
 
         <article class="white block">
             <div class="splitted">
-                <figure class="part image">
-                    <img src="/images/over-flat.jpg" alt="">
+                <figure class="part image" id="over-image">
+                    <img src="/images/over-flat.jpg" alt="Groepskamp 2015">
                     <figcaption>Groepskamp 2015</figcaption>
                 </figure>
                 <div class="part text">
@@ -62,8 +70,8 @@
                     <p>Alle kinderen vanaf 6 jaar (eerste leerjaar) tot 18 jaar zijn welkom op de scouts. Nieuwe leden ontvangen we met open armen op onze activiteiten, zij kunnen 2 keer langs komen zonder zich te moeten inschrijven. Op de maandplanning hierboven kan je zien wanneer de volgende activiteiten plaatsvinden.</p>
                     
                     <footer>
-                        <a href="" class="button fill merlot">Meer info</a>
-                        <a href="" class="button merlot">Inschrijven</a>
+                        <a href="/info" class="button fill merlot">Meer info</a>
+                        <a href="/inschrijven" class="button merlot">Inschrijven</a>
                     </footer>
                 </div>
             </div>
@@ -78,7 +86,8 @@
                 $('#header .navigation .item').click(function() {
                     goToItem($(this));
                 });
-                $('button.next').on('click touchstart',function() {
+                $('#header button.next').on('click',function(evt) {
+                    evt.preventDefault();
                     var next = $('#header .item.selected').next();
                     if (next.length == 0) {
                         next = $('#header .item:first');
@@ -86,7 +95,8 @@
 
                     goToItem(next);
                 });
-                $('button.back').on('click touchstart',function() {
+                $('#header button.back').on('click',function(evt) {
+                    evt.preventDefault();
                     var next = $('#header .item.selected').prev();
                     if (next.length == 0) {
                         next = $('#header .item:last');

@@ -1,9 +1,21 @@
 .questions {
-        h2 {
-            color: $merlot;
-            font-size: $size-question;
+
+    h2 {
+        font-size: $size-question;
+        color: $aubergine !important;
+        
+        span {
+            font-size: $size-text;
+            display: inline-block;
+            color: $gray;
+            margin-left: 10px;
         }
     }
+
+    p {
+        color: $merlot;
+    }
+}
 main {
     background: $lightgray-background;
     padding: 10px 20px;
@@ -16,6 +28,7 @@ main {
 
     @media screen and (max-width: $width-reduce-padding) {
         padding: 10px 0;
+        padding-top: 70px;
     }
 
     .block {
@@ -39,13 +52,31 @@ main {
     }
 }
 
+#map {
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+
+}
+
 .block {
+    > .map {
+        height: 600px;
+        height: 60vh;
+        position: relative;
+
+        @media screen and (max-width: $width-reduce-padding) {
+            display: none;
+        }
+    }
     .text {
-        padding: 100px 60px;
+        padding: 70px 30px 70px 50px;
         color: $cod-gray;
 
         @media screen and (max-width: $width-stop-splitted) {
-          padding: 80px 60px;
+          padding: 60px 20px;
         }
 
         .list-bundle {
@@ -69,14 +100,17 @@ main {
                 margin: 0;
                 color: $merlot;
             }
-            padding-bottom: 40px;
+            margin-bottom: 40px
         }
 
         footer {
-            padding-top: 60px;
+            margin-top: 30px;
 
-            a {
+            a, input[type=submit] {
                 margin: 7px;
+            }
+            a:first-child, input[type=submit]:first-child {
+                margin-left: 0;
             }
         }
     }
@@ -86,7 +120,7 @@ main {
             vertical-align: middle;
         }
 
-        padding: 100px 60px;
+        padding: 60px 60px;
         color: $cod-gray;
 
         @media screen and (max-width: $width-stop-splitted) {
@@ -103,6 +137,13 @@ main {
 
         h2 {
             font-size: $size-question;
+            
+            span {
+                font-size: $size-text;
+                display: inline-block;
+                color: $gray;
+                margin-left: 10px;
+            }
         }
 
         p {
@@ -147,9 +188,11 @@ main {
           display: block;
         }
 
-        vertical-align: top;
+        vertical-align: middle;
 
         &.column {
+            vertical-align: top;
+
             &.first {
                 padding-right: 20px;
             }
@@ -165,9 +208,25 @@ main {
                 }
             }
         }
+        &.map {
+             width: 45%;
+             position: relative;
+                overflow: hidden;
+
+             @media screen and (max-width: $width-stop-splitted), print {
+              width: 100%;
+              height: 400px;
+              margin: 0;
+              padding: 0;
+            }
+        }
 
         &.image {
-            width: 50%;
+            width: 45%;
+            
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
 
             @media screen and (max-width: $width-stop-splitted), print {
               width: 100%;
@@ -180,11 +239,7 @@ main {
             overflow: hidden;
 
             img {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                overflow: hidden;
+                display: none;
             }
             
             figcaption {
@@ -196,6 +251,15 @@ main {
                 color: white;
                 padding: 15px 25px;
             }
+        }
+        &.subtext {
+            width: 45%;
+        }
+        &.subtext-splitted {
+            width: 60%;
+        }
+        &.calendar, &.activities {
+            vertical-align: top;
         }
     }
 }
@@ -306,6 +370,73 @@ table.details {
         td:first-child{
             color: $aubergine;
             padding-right: 30px;
+        }
+    }
+}
+
+.photo-bar {
+    margin: 10px -10px;
+    
+    .table {
+        width: 100%;
+        height: 500px;
+        display: table;
+        table-layout: fixed;
+        border-collapse: separate;
+        border-spacing: 10px 0;
+
+        &.full {
+            height: 600px;
+            figure, img {
+                width: 100%;
+            }
+        }
+
+        figure {
+            display: table-cell;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 60%;
+
+            img {
+                height: 100%;
+                flex: none;
+                background: gray;
+            }
+
+            &.small {
+                width: 40%;
+            }
+        }
+
+    }
+    @media screen and (max-width: 800px) {
+        margin: 0;
+        
+        .table {
+            display: block;
+            height: auto;
+
+            &.full {
+                height: auto;
+            }
+
+            figure {
+                margin: 10px 0;
+                display: block;
+                width: auto;
+                height: 60vh;
+
+                &.small {
+                    width: auto;
+                }
+            }
         }
     }
 }

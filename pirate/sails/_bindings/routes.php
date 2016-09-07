@@ -1,4 +1,4 @@
 <?php
 
 // Alle modules die routes bevatten, in de gebruikte volgorde
-$routes = array('homepage', 'blog', 'leiding', 'leden');
+$routes = array('homepage', 'info', 'blog', 'leiding', 'leden', 'verhuur');

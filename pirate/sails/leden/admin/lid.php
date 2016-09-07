@@ -5,6 +5,7 @@ use Pirate\Block\Block;
 use Pirate\Template\Template;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Inschrijving;
 
 class ViewLid extends Page {
@@ -19,8 +20,10 @@ class ViewLid extends Page {
     }
 
     function getContent() {
+        $ouders = Ouder::getOudersForGezin($this->lid->gezin);
         return Template::render('leden/admin/lid', array(
-            'lid' => $this->lid
+            'lid' => $this->lid,
+            'ouders' => $ouders
         ));
     }
 }

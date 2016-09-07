@@ -20,6 +20,10 @@
                 {% else %}
                     {% if lid.inschrijving.betaald < lid.inschrijving.prijs and lid.inschrijving.betaald_door_scouts < lid.inschrijving.prijs %}
                             Lidgeld nog niet betaald
+                    {% else %}
+                        {% if lid.steekkaart.laatst_nagekeken is empty %}
+                            Steekkaart nog niet ingevuld
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </div>

@@ -85,6 +85,44 @@
         position: relative;
 
         @media screen and (max-width: 1000px) {
+            padding: 40px 20px;
+            display: none;
+        }
+
+        &.enabled {
+            time.column:hover {
+                background: $merlot;
+            }
+            @media screen and (max-width: 1000px) {
+                display: block;
+                position: fixed;
+                right: 0;
+                top: 0;
+                z-index: 1000;
+                width: 100%;
+                max-width: 400px;
+                bottom: 0;
+                width: auto;
+                overflow: hidden;
+                box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.50);
+
+                p {
+                    text-align: center;
+                }
+            }
+        }
+
+        .selection-hint {
+            background: $aubergine;
+            text-align: center;
+            padding: 40px 20px;
+            margin: -40px -50px 10px -50px;
+
+            @media screen and (max-width: 1000px) {
+                margin: -40px -20px 10px -20px;
+            }
+
+            font-size: $size-text-bigger;
             display: none;
         }
 
@@ -118,8 +156,9 @@
 
         .row {
             clear: both;
-            padding: 15px 50px;
-            margin: -5px -50px;
+            padding: 5px 2px;
+            max-width: 315px;
+            margin: -5px auto;
             font-size: $size-text-bigger;
 
             &.weekdays {
@@ -134,7 +173,11 @@
 
             .column {
                 float: left;
-                width: 1/7*100%;
+                width: 14.2857% ; //45px;
+                max-width: 45px;
+                height: 45px;
+                line-height: 45px;
+                border-radius: 25px;
                 text-align: center;
 
                 &.today {
@@ -144,6 +187,16 @@
                 &.other {
                     opacity: 0.5;
                 }
+
+                &.aankomst-selected, &.vertrek-selected, &.in-between {
+                    background: $bright-sun;
+                    color: $aubergine;
+                }
+
+
+                &.hidden {
+                    color: rgba(white, 0.5);
+                }
             }
             .clear {
                 clear: both;
@@ -152,6 +205,11 @@
 
         #calendar-weeks {
             .row {
+                cursor: pointer;
+            }
+        }
+        #verhuur-calendar-weeks {
+            .column {
                 cursor: pointer;
             }
         }

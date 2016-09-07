@@ -1,0 +1,611 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <style type="text/css">
+        #terrein-image {
+            background-image: url(/images/part/terrein.jpg);
+        }
+        #accomodatie-image {
+            background-image: url(/images/part/accomodatie.jpg);
+        }
+        #huurprijs-image {
+            background-image: url(/images/part/huurprijs.jpg);
+        }
+        #price {
+            font-size: 28pt;
+            font-weight: bold;
+        }
+
+        #image-bos {
+            background-image: url(/images/verhuur/default/bos.jpg);
+        }
+        #image-voorkant {
+            background-image: url(/images/verhuur/default/voorkant.jpg);
+        }
+        #image-achter-terrein {
+            background-image: url(/images/verhuur/default/achter-terrein.jpg);
+        }
+        #image-avond {
+            background-image: url(/images/verhuur/default/avond.jpg);
+        }
+        #image-douches {
+            background-image: url(/images/verhuur/default/douches.jpg);
+        }
+        #image-leefruimte1 {
+            background-image: url(/images/verhuur/default/leefruimte1.jpg);
+        }
+        #image-boven {
+            background-image: url(/images/verhuur/default/boven.jpg);
+        }
+        #image-leefruimte2 {
+            background-image: url(/images/verhuur/default/leefruimte2.jpg);
+        }
+        #image-slaapzaaltje {
+            background-image: url(/images/verhuur/default/slaapzaaltje.jpg);
+        }
+
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        
+        var map;
+        var initMap = function() {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: 51.00649122457492, lng: 3.8951897621154785},
+              mapTypeControl: false,
+              scrollwheel: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              zoom: 15
+            });
+            
+            new google.maps.Marker({
+                position: {lat: 51.0026835, lng: 3.9018309},
+                map: map,
+                icon: {
+                    url: '{{ http }}/images/markers/scouts.svg',
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(10, 48)
+                },
+                title: 'Scouts Prins Boudewijn'
+            });
+
+            new google.maps.Marker({
+                position: {lat: 51.00695, lng: 3.885319},
+                map: map,
+                icon: {
+                    url: '{{ http }}/images/markers/wetteren.svg',
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(10, 45)
+                },
+                title: 'Wetteren Centrum'
+            });
+
+            new google.maps.Marker({
+                position: {lat: 51.009799062637796, lng: 3.902764320373535},
+                map: map,
+                icon: {
+                    url: '{{ http }}/images/markers/den-blakken.svg',
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(10, 45)
+                },
+                title: 'Den Blakken'
+            });
+
+            new google.maps.Marker({
+                position: {lat: 51.00712580771406, lng: 3.903815746307373},
+                map: map,
+                icon: {
+                    url: '{{ http }}/images/markers/zandbergen.svg',
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(10, 45)
+                },
+                title: 'De Zandbergen'
+            });
+
+            new google.maps.Marker({
+                position: {lat: 51.00470219345775, lng: 3.895597457885742},
+                map: map,
+                icon: {
+                    url: '{{ http }}/images/markers/warande.svg',
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(10, 45)
+                },
+                title: 'De warande'
+            });
+
+            new google.maps.Marker({
+                position: {lat: 51.00190036458359, lng: 3.8829588890075684},
+                map: map,
+                icon: {
+                    url: '{{ http }}/images/markers/station.svg',
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(10, 45)
+                },
+                title: 'Station Wetteren'
+            });
+        }
+
+        
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"
+    async defer></script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <nav class="buttons">
+            <a href="/verhuur" class="selected button">Gebouw</a>
+            <a href="/verhuur" class=" button">Klimkoffer</a>
+            <a href="/verhuur" class=" button">Varia</a>
+        </nav>
+
+        <article class="white block withButtons">
+            <div class="splitted">
+                <figure class="part image" id="terrein-image">
+                    <img src="/images/part/terrein.jpg" alt="Hoofdlokaal">
+                    <figcaption>Hoofdlokaal</figcaption>
+                </figure>
+                <div class="part text">
+                    <header>
+                        <h1>Terrein en locatie</h1>
+                        <h2>Groene Wegel 2, 9230 Wetteren</h2>
+                    </header>
+
+                    <p>Scouts Prins Boudewijn is erg rustig gelegen,  op ongeveer 2 km van het centrum van Wetteren. Natuur- en recreatiegebieden zijn bereikbaar op wandelafstand.</p>
+
+                    <p>Het terrein bestaat uit een open grasveld omringd door een bos. Aan de overkant van de weg bevindt zich nog een deel van het terrein. De totale oppervlakte is ongeveer 8000 m², waarvan 3000 m² bos.   </p>
+
+                    <p>Grootwarenhuizen Colruyt, Aldi, Lidl, Carrefour en Delhaize, meerdere bakkers, een ziekenhuis en de Action bevinden zich binnen een straal van 2 kilometer. </p>
+                  
+                    <footer>
+                        <a href="#reserveren" class="button fill merlot">Reserveren</a>
+                        <a href="#fotos" class="button merlot">Foto's</a>
+                    </footer>
+                </div>
+            </div>
+        </article>
+
+        <article class="white block">
+            <div class="splitted">
+                <div class="part text">
+                    <header>
+                        <h1>Accomodatie</h1>
+                    </header>
+
+
+                    <p>Het hoofdgebouw bestaat uit een uitgeruste inoxkeuken met professioneel gasvuur met oven, frigo, diepvriezer, microgolf en koffiezet. Bestek, borden, pannen en potten zijn aanwezig voor 40 personen. Handdoeken, afwasmiddel, toiletpapier en kuisproduct zijn niet aanwezig. Borstels, dweilen en emmers wel.  </p>
+
+                    <p>Op het gelijkvloers bevinden zich de toiletten, douches, een grote leefruimte (inclusief tafels, stoelen en banken) en de keuken. De bovenverdieping bestaat uit een grote slaapzaal en kleiner slaapzaaltje (of vergaderzaaltje).  </p>
+
+                    <p>Centrale verwarming, buitenverlichting, een brandalarm, branddeuren en een nooduitgang zijn aanwezig.</p>
+
+                </div>
+
+                <figure class="part image" id="accomodatie-image">
+                    <img src="/images/part/accomodatie.jpg" alt="Keuken">
+                    <figcaption>Keuken</figcaption>
+                </figure>
+
+            </div>
+        </article>
+
+        <article class="white block">
+            <div class="splitted">
+                <figure class="part image" id="huurprijs-image">
+                    <img src="/images/part/huurprijs.jpg" alt="Achterliggende terrein">
+                    <figcaption>Het achterliggende terrein</figcaption>
+                </figure>
+
+                <div class="part text">
+                    <header>
+                        <h1>Huurprijs</h1>
+                    </header>
+
+                    <p>Het hoofdgebouw (maximaal 40 personen) wordt samen met één chalet verhuurd. In deze chalet mag niet geslapen worden. Deze worden enkel verhuurd aan jeugdbewegingen, scholen, sportclubs en socio-culturele organisaties, geen fuifverhuur. </p>
+
+                    <p>De huurprijs bedraagt € 95 /nacht voor verblijven in 2016 (voor 2017: €98 en 2018: €100). Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € 15 / nacht + € 2 / extra persoon / nacht (max. 20 personen extra).  </p>
+
+                    <p>De waarborg bedraagt 400 euro voor een verblijf van 2 nachten of minder en 750 euro vanaf 3 overnachtingen.</p>
+
+                </div>
+            </div>
+        </article>
+
+                <article class="white block">
+            <div class="map">
+                <div id="map">
+                  
+                </div>
+            </div>
+        </article>
+
+
+
+        <section class="white block">
+            <div class="splitted">
+                <div class="part calendar">
+                    <div class="selection-hint">Selecteer een datum</div>
+                    <header>
+                        <button class="previous"></button>
+                        <time class="month" datetime="{{ calendar.datetime }}">{{ calendar.month }}</time>
+                        <button class="next"></button>
+                    </header>
+                    <div class="weekdays row">
+                        <div class="column">Ma</div>
+                        <div class="column">Di</div>
+                        <div class="column">Wo</div>
+                        <div class="column">Do</div>
+                        <div class="column">Vr</div>
+                        <div class="column">Za</div>
+                        <div class="column">Zo</div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div id="verhuur-calendar-weeks">
+                        {{ kalender | raw }}
+                        <p>Alle dagen aangeduid in het wit zijn nog vrij of nog niet bevestigd.</p>
+                    </div>
+                </div>
+
+                <div class="part text">
+                     <header>
+                        <h1>Reservatie aanvragen</h1>
+                    </header>
+
+                    <form method="post" action="/verhuur/reserveren">
+                        <div class="splitted">
+                            <div class="part column first">
+                                <label>Aankomst</label>
+                                <input type="text" name="aankomst" placeholder="Aankomstdatum" class="calendar_input" data-id="aankomst-selected" data-text="Kies een aankomstdatum" data-next-id="vertrek-datum" id="aankomst-datum">
+                            </div>
+                            <div class="part column last">
+                                <label>Vertrek</label>
+                                <input type="text" name="vertrek" placeholder="Vertrekdatum" class="calendar_input" data-id="vertrek-selected" data-text="Kies een vertrekdatum" id="vertrek-datum">
+                            </div>
+                        </div>
+                        <div class="splitted">
+                            <div class="part column first">
+                                <label>Aantal personen in hoofdgebouw</label>
+                                <div class="slider" data-max="40" data-min="1">
+                                    <input type="hidden" name="personen" value="1" id="aantal-personen">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="slide">
+                                        <div class="circle"></div>
+                                        <span class="value">1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="part column last">
+                                <div id="aantal-personen-tenten-box" style="display: none;">
+                                    <label>Aantal personen in tenten</label>
+                                    <div class="slider" data-max="20" data-min="0">
+                                        <input type="hidden" name="personen-tenten" value="0" id="aantal-personen-tenten">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="slide">
+                                            <div class="circle"></div>
+                                            <span class="value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="list-bundle">
+                            <article class="list">
+                                <div class="medium column">
+                                    <div id="price">€ 0</div>
+                                    <div id="borg"></div>
+                                </div>
+                                <div class="max merlot column">
+                                    <p>Voorlopige prijs op basis van opgegeven aantal dagen en personen. Exclusief elektriciteit, gas en water. Definitieve prijs zal in huurcontract staan.</p>
+                                </div>
+                            </article>
+                        </div>
+
+                        <footer>
+                            <input type="submit" name="submit" value="Verder" class="fill merlot">
+                            <a href="/contact" class="button merlot">Contact</a>
+                        </footer>
+                    </form>
+                    
+                </div>
+                
+            </div>
+        </section>
+
+        <section class="block" id="fotos">
+            <div class="photo-bar">
+                <div class="table">
+                    <figure class="small" id="image-bos"></figure>
+                    <figure id="image-voorkant"></figure>
+                </div>
+            </div>
+
+            <div class="photo-bar">
+                <div class="table full">
+                    <figure id="image-achter-terrein"></figure>
+                </div>
+            </div>
+
+            <div class="photo-bar">
+                 <div class="table">
+                    <figure id="image-leefruimte1"></figure>
+                    <figure class="small" id="image-avond"></figure>
+                </div>
+            </div>
+
+            <div class="photo-bar">
+                <div class="table">
+                    <figure class="small" id="image-boven"></figure>
+                    <figure id="image-leefruimte2"></figure>
+                </div>
+            </div>
+
+            <div class="photo-bar">
+                <div class="table">
+                    <figure id="image-douches"></figure>
+                    <figure class="small" id="image-slaapzaaltje"></figure>
+                </div>
+            </div>
+        </section>
+
+        <script type="text/javascript">
+            var maandTekst = ["Januari", "Februari", "Maart", "April", "Mei", "Juni",
+              "Juli", "Augustus", "September", "Oktober", "November", "December"
+            ];
+
+            var startAfwijkingX = 0;
+            var slider_click = false;
+
+            function getEventX(event) {
+                var x = 0;
+                if (event.hasOwnProperty('changedTouches')) {
+                    var touches = event.changedTouches;
+                    for (var i = 0; i < touches.length; i++) {
+                        x = touches[i].pageX;
+                    }
+                }
+                else {
+                    x = event.pageX;
+                }
+                return x;
+            }
+
+            function getPercentageForSliderValue(min, max, value) {
+                return (value - min) / (max - min);
+            }
+
+            function getSliderValueForPercentage(min, max, percentage) {
+                return Math.max(Math.min(max, Math.round(percentage * (max - min)) + min), min);
+            }
+
+            function sliderUpdate(event) {
+                var width = slider_click.width();
+                var pos = getEventX(event);
+
+                var min = parseInt(slider_click.attr('data-min'));
+                var max = parseInt(slider_click.attr('data-max'));
+
+                var percentage = (pos - startAfwijkingX - slider_click.offset().left) / width;
+                var value = getSliderValueForPercentage(min, max, percentage);
+                var percentage = getPercentageForSliderValue(min, max, value)*100;
+
+                var slide = slider_click.children('.slide');
+                slide.css({'left': percentage+'%'});
+                slide.children('.value').text(value);
+                var input = slider_click.children('input');
+                input.val(value);
+                input.change();
+                slider_click.find('.progress').css({'width': percentage+'%'});
+            }
+            var clicked_input = false;
+
+            $(document).ready(function() {
+                $('.slider').on('mousedown touchstart', function(event) {
+                    event.preventDefault();
+                    var startSliderX = getEventX(event);
+                    var startSliderValue = parseInt($(this).children('input').val());
+
+                    var width = $(this).width();
+
+                    var min = parseInt($(this).attr('data-min'));
+                    var max = parseInt($(this).attr('data-max'));
+                    var startPercentage = getPercentageForSliderValue(min, max, startSliderValue);
+                    var startX = startPercentage * width + $(this).offset().left;
+
+                    startAfwijkingX = startSliderX - startX;
+                    slider_click = $(this);
+
+                    if (startAfwijkingX > 10 || startAfwijkingX < -10) {
+                        startAfwijkingX = 0;
+                        sliderUpdate(event);
+                    }
+                });
+                $(document).on('mousemove touchmove', function(event) {
+                    if (!slider_click) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    sliderUpdate(event);
+                });
+
+                $(document).on('mouseup touchend', function() {
+                    slider_click = false;
+                });
+
+                bindDays();
+
+                
+                $('.calendar_input').on('focus', function(evt) {
+                    $(this).blur();
+                    if (calendar_input) {
+                        calendar_input.removeClass('selected');
+                    }
+                    $(this).addClass('selected');
+                    calendar_input = $(this);
+                    openCalendarInput($(this).attr('data-text'));
+                });
+
+                $('.calendar_input').click(function(evt) {
+                    clicked_input = true;
+                });
+
+                $(document).click(function() {
+                    if (clicked_input) {
+                        clicked_input = false;
+                        return;
+                    }
+                    if (calendar_input)
+                        calendar_input.removeClass('selected');
+                    calendar_input = null;
+                    closeCalendarInput();
+                });
+
+                $('input').change(function() {
+                    calculatePrice();
+                    updateCalendarSelection();
+                });
+            });
+
+            function bindDays() {
+                $('#verhuur-calendar-weeks time').off();
+                $('#verhuur-calendar-weeks time').click(function(event) {
+                    clicked_input = true;
+                    if (!calendar_input) {
+                        calendar_input = $('.calendar_input:first');
+                        resetVertrek();
+                    }
+                    var calendar_id = calendar_input.attr('data-id');
+                    $('#verhuur-calendar-weeks time').removeClass(calendar_id);
+                    $(this).addClass(calendar_id);
+
+                    calendar_input.val($(this).attr('datetime'));
+                    calendar_input.change();
+
+                    calendar_input.removeClass('selected');
+                    
+                    var next = $('#'+calendar_input.attr('data-next-id'));
+                    if (next.length > 0 && next.val() == '') {
+                        clicked_input = true;
+                        next.focus();
+                    } else {
+                        closeCalendarInput();
+                        calendar_input = null;
+                    }
+
+                });
+            }
+
+            var calendar_input = null;
+
+            function parseDateString(strDate) {
+                var dateParts = strDate.split("-");
+                return new Date(dateParts[2], (dateParts[1] - 1), dateParts[0]);
+            }
+
+            function updateCalendarSelection() {
+                if ($('.calendar .vertrek-selected, .calendar .aankomst-selected').length != 2) {
+                    $('.calendar time.column').removeClass('in-between');
+                    return;
+                }
+
+                var isBetween = false;
+                $('.calendar time.column').each(function() {
+                    $(this).removeClass('in-between');
+
+                    if ($(this).hasClass('aankomst-selected')) {
+                        isBetween = true;
+                    }
+                    if ($(this).hasClass('vertrek-selected')) {
+                        isBetween = false;
+                    }
+
+                    if (isBetween) {
+                        $(this).addClass('in-between');
+                    }
+                });
+            }
+
+            function resetVertrek() {
+                $('#vertrek-datum').val('');
+                var vertrek = $('.calendar .vertrek-selected');
+                vertrek.removeClass('vertrek-selected');
+            }
+
+            function calculatePrice() {
+                // Loopen van begin tot einde:
+                var startdate_str = $('#aankomst-datum').val();
+                var enddate_str = $('#vertrek-datum').val();
+
+                if (!startdate_str || !enddate_str || startdate_str == '' || enddate_str == '') {
+                    $('#price').text('€ 0');
+                    $('#borg').text('');
+                    $('#aantal-personen-tenten-box').hide();
+                    return;
+                }
+
+                startdate = parseDateString(startdate_str);
+                enddate = parseDateString(enddate_str);
+
+                if (enddate < startdate) {
+                    resetVertrek();
+                    $('#price').text('€ 0');
+                    $('#borg').text('');
+                    $('#aantal-personen-tenten-box').hide();
+                    
+                    return;
+                }
+
+                var timeDiff = Math.abs(startdate.getTime() - enddate.getTime());
+                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+
+                if (diffDays <= 2) {
+                    $('#aantal-personen-tenten-box').hide();
+                } else {
+                    $('#aantal-personen-tenten-box').show();
+                }
+
+
+                var persons_tenten = $('#aantal-personen-tenten').val();
+
+                var prices_year = 2016;
+                var prices = [95, 98, 100];
+
+                var base_price = diffDays * prices[enddate.getFullYear()-prices_year];
+                if (persons_tenten > 0) {
+                    base_price += (persons_tenten)*2*diffDays + 15*diffDays;
+                }
+
+                var borg = 400;
+
+                if (diffDays > 2) {
+                    borg = 750;
+                }
+
+                $('#price').text('€ '+base_price);
+                $('#borg').text('+ € '+borg+' borg');
+            }
+            function closeCalendarInput() {
+                $('.calendar').removeClass('enabled');
+                var hint = $('.calendar .selection-hint');
+                hint.stop().slideUp('fast');
+            }
+            function openCalendarInput(text) {
+                $('.calendar').addClass('enabled');
+                var hint = $('.calendar .selection-hint');
+                hint.text(text);
+                hint.slideDown('fast');
+            } 
+
+        </script>
+
+    </main>
+{% endblock %}

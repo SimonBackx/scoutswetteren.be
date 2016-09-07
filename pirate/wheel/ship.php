@@ -8,7 +8,7 @@ class Ship {
         global $config;
 
         if ($_SERVER['SERVER_PORT'] != 443) {
-            die('Server gebruikt geen HTTPS.');
+           // die('Server gebruikt geen HTTPS.');
         }
 
         date_default_timezone_set('Europe/Brussels');

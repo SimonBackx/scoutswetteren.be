@@ -15,6 +15,14 @@
             <p>Gezinssituatie: {% if lid.gezin.gezinssituatie | length > 0 %}{{ lid.gezin.gezinssituatie }}{% else %}/{% endif %}</p>
         </div>
     </div>
+    <h1>Ouders</h1>
+    {% for ouder in ouders %}
+        <h2>{{ouder.voornaam}} {{ouder.achternaam}} ({{ouder.titel}})</h2>
+        <p>{{ouder.adres}}, {{ouder.postcode}} {{ouder.gemeente}}</p>
+        <p>{{ouder.telefoon}}</p>
+        <p>{{ouder.gsm}}</p>
+        <p>{{ouder.email}}</p>
+    {% endfor %}
 
     {% if not lid.steekkaart.laatst_nagekeken is empty %}
         <h1>Adres en bereikbaarheid</h1>
@@ -101,7 +109,7 @@
 
     {% else %}
 
-        <h2>Steekkaart niet ingevuld</h2>
+        <h1>Steekkaart niet ingevuld</h1>
 
     {% endif %}
 

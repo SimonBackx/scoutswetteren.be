@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <style type="text/css">
+        #terrein-image {
+            background-image: url(/images/part/terrein.jpg);
+        }
+        #accomodatie-image {
+            background-image: url(/images/part/accomodatie.jpg);
+        }
+        #price {
+            font-size: 28pt;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block main %}
+    <main>
+        <article class="white block">
+            <form method="post">
+                <div class="part text">
+                    {% if error %}
+                        <header>
+                            <h1>Niet alle velden werden correct ingevuld</h1>
+                        </header>
+                        <footer>
+                           <a href="/verhuur" class="button fill merlot">Terug</a>
+                        </footer>
+                    {% else %}
+                    <header>
+                        <h1>Reservatie aanvragen</h1>
+                    <h2>Van {{ data.aankomst }} tot {{ data.vertrek }} voor {{ data.personen + data.personen_tenten }} personen.</h2>
+                    </header>
+
+                    <input type="hidden" name="aankomst" value="{{ data.aankomst | e('html_attr') }}">
+                    <input type="hidden" name="vertrek" value="{{ data.vertrek | e('html_attr') }}">
+                    <input type="hidden" name="personen" value="{{ data.personen | e('html_attr') }}">
+
+                    <div class="splitted">
+                        <div class="part column first">
+                            <label>Naam verantwoordelijke</label>
+                            <input type="text" name="naam" value="{{ data.naam | e('html_attr') }}" placeholder="Uw naam">
+
+                            <label>GSM verantwoordelijke</label>
+                            <input type="text" name="gsm" value="{{ data.gsm | e('html_attr') }}" placeholder="Uw gsm-nummer">
+
+                            <label>E-mailadres verantwoordelijke</label>
+                            <input type="email" name="email" value="{{ data.email | e('html_attr') }}" placeholder="Uw e-mailadres">
+
+                        </div>
+                        <div class="part column last">
+                            <label>Wie</label>
+                            <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="wie">{{ data.wie }}</textarea>
+
+                            <label>Opmerkingen</label>
+                            <textarea placeholder="Eventuele vragen of opmerkingen" name="opmerkingen">{{ data.opmerkingen }}</textarea>
+                        </div>
+                    </div>
+
+                    <p>Na het indienen ontvang je een e-mail met het huurcontract. Zodra dat ingevuld en doorgestuurd is, leggen we de reservatie vast. Als we alles eenmaal hebben goedgekeurd moet de waarborg onmiddelijk gestort worden, of we zijn genoodzaakt om de reservatie terug vrij te geven.</p>
+                  
+                    <footer>
+                        <input type="submit" name="submit" value="Indienen" class="fill merlot">
+                    </footer>
+                    {% endif %}
+                </div>
+            </form>
+        </article>
+    </main>
+{% endblock %}

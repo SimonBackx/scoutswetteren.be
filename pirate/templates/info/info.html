@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <style type="text/css">
+        #terrein-image {
+            background-image: url(/images/part/terrein.jpg);
+        }
+        #kamp-image {
+            background-image: url(/images/part/kamp.jpg);
+        }
+        #lid-worden-image {
+            background-image: url(/images/part/lid-worden.jpg);
+        }
+        #price {
+            font-size: 28pt;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        
+        var map;
+        var initMap = function() {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: 51.00695, lng: 3.885319},
+              mapTypeControl: false,
+              scrollwheel: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              zoom: 14
+            });
+            var marker_scouts = new google.maps.Marker({
+                position: {lat: 51.0026835, lng: 3.9018309},
+                map: map,
+                animation: google.maps.Animation.DROP,
+                icon: '{{ http }}/images/pin.svg',
+                title: 'Scouts Prins Boudewijn'
+            });
+        }
+
+        
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"
+    async defer></script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <article class="white block">
+            <div class="splitted">
+                <div class="part map">
+                    <div id="map"></div>
+                </div>
+                <div class="part text">
+                    <header>
+                        <h1>Locatie</h1>
+                        <h2>Groene Wegel 2, 9230 Wetteren</h2>
+                    </header>
+
+                    <p>De terreinen van onze scoutsgroep zijn gelegen in de Groene Wegel te Wetteren. De naam van onze straat zegt genoeg. Het is een oase van groen en rust en het is er absoluut veilig om te spelen. Aangezien we buiten het centrum gelegen zijn is er is niet zo veel verkeer. De auto's die toch willen passeren moeten over een verkeersdrempel, waardoor hun snelheid geremd wordt.   </p>
+
+                    <p>Recent hebben we onze houten chalets vervangen door gloednieuwe, geïsoleerde houtskeletbouw. Onmogelijk zonder ons oudercomité en de steun van sympatisanten. </p>
+                    
+                    <p>Het is onze prioriteit om te voldoen aan de brandveiligheidsnormen: we hebben een brandcentrale, een reglementaire nooduitgang, buitendeuren met een paniekbaar, rookmelders, brandblusapparaten (jaarlijkse controle) en branddekens in de keuken.</p>
+                </div>
+            </div>
+        </article>
+         <article class="white block">
+             <div class="part text">
+                <header>
+                    <h1>Takverdeling</h1>
+                    <h2>Leden worden opgedeeld in leeftijdsgroepen op basis van geboortedatum.</h2>
+                </header>
+                <div class="splitted questions">
+                    <div class="part column first">
+                        <h2>Kapoenen <span>2000 - 2002</span></h2>
+                        <p>De Kapoenen is de tak voor de allerkleinsten. Het leven van een kapoen (6-8) is er één vol spel, fantasie, creativiteit en expressie. </p>
+                        <a href="/info/kapoenen" class="icon-button">Meer</a>
+
+                        <h2>Wouters <span>2000 - 2002</span></h2>
+                        <p>Wouters krijgen ruimte en kansen om dingen uit te proberen en van elkaar te leren. Ze verleggen hun grenzen, halen kattenkwaad uit en kunnen vooral onbezorgd spelen.</p>
+                        <a href="/info/wouters" class="icon-button">Meer</a>
+
+                        <h2>Jonggivers <span>2000 - 2002</span></h2>
+                        <p>Jonggivers krijgen een waaier van mogelijkheden om mee te beslissen, zelf de handen uit de mouwen te steken en allerlei vaardigheden onder de knie te krijgen. </p>
+                        <a href="/info/jonggivers" class="icon-button">Meer</a>
+                    </div>
+                    
+                    <div class="part column last">
+                        <h2>Givers <span>2000 - 2002</span></h2>
+                        <p>Givers trekken samen op, hun vrienden zijn heilig. Ze hechten heel veel belang aan de groepssfeer. Van hun leiding krijgen ze alle mogelijkheden, ervaringen, spanning en enthousiasme die ze alleen binnen scouting kunnen vinden. </p>
+                        <a href="/info/givers" class="icon-button">Meer</a>
+
+                        <h2>Jin <span>2000 - 2002</span></h2>
+                        <p> Jin, Jij en Ik een Noodzaak. Als jin sta je op een grens: die tussen lid en leiding. In hun eigen 'jonge' stijl werken ze gekke activiteiten, projecten en zelfs hun kamp uit. </p>
+                        <a href="/info/jin" class="icon-button">Meer</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="white block">
+            <div class="splitted">
+                <figure class="part image" id="lid-worden-image">
+                    <figcaption>Kapoenen</figcaption>
+                </figure>
+
+                <div class="part text">
+                    <header>
+                        <h1>Lid worden</h1>
+                    </header>
+
+                    <p>Hoewel het scoutsjaar officieel start in september kunnen we nieuwe leden doorheen het volledige jaar inschrijven. Nieuwe leden kunnen gratis twee keer proberen voor ze zich moeten inschrijven. Daarna kunnen ze zich via deze website online inschrijven.</p>
+
+                    <p>Bij de eerste inschrijving ontvangt het lid zijn eerste scoutsdas gratis. Het uniform moet je zelf aankopen. Meer info over het uniform vind je verder op deze pagina.   We vragen bestaande leden om ook elk jaar hun contactgegevens (adres, telefoonnummer, e-mail, ...) en medische gegevens na te kijken zodat deze correct blijven.</p>
+
+                    <footer>
+                        <a href="/inschrijven" class="button fill merlot">Inschrijven</a>
+                    </footer>
+
+                </div>
+
+            </div>
+        </article>
+
+        <article class="white block">
+            <div class="splitted">
+                <div class="part text">
+                    <header>
+                        <h1>Alles over kamp</h1>
+                    </header>
+
+                    <p>TODO: Hoewel het scoutsjaar officieel start in september kunnen we nieuwe leden doorheen het volledige jaar inschrijven. Het inschrijvingsgeld bedraagt dit jaar €32 (verzekeringen) + eventueel een kleine bijdrage voor het vieruurtje (enkel bij kapoenen). Voor gezinnen die het moeilijker hebben om financieel de eindjes aan elkaar te knopen, worden deze kosten vergoed door de scouts. U kan onze leiding hier altijd discreet over aanspreken.  </p>
+
+                    <p>Pas na drie keer proberen hoeft men zich in te schrijven. Bij de eerste inschrijving ontvangt het lid zijn eerste scoutsdas gratis. Het uniform moet je zelf aankopen. Meer info over het uniform vind je verder op deze pagina.  We vragen bestaande leden om ook elk jaar hun contactgegevens (adres, telefoonnummer, e-mail, ...) en medische gegevens na te kijken zodat deze correct blijven.</p>
+
+                </div>
+
+                <figure class="part image" id="kamp-image">
+                    <img src="/images/part/kamp.jpg" alt="Groot kamp 2012">
+                    <figcaption>Groot kamp 2012</figcaption>
+                </figure>
+
+            </div>
+        </article>
+
+        <article class="white block">
+            <div class="splitted">
+                <figure class="part image" id="terrein-image">
+                    <img src="/images/part/terrein.jpg" alt="Lokalen en terrein">
+                    <figcaption>Lokalen en terrein</figcaption>
+                </figure>
+                
+                 <div class="part text">
+                    <header>
+                        <h1>Het oudercomité</h1>
+                    </header>
+
+                    <p>Achter elke scout staan een mama en een papa. Ze schrijven hun kroost in, omdat ze zelf ooit bij de scouts waren, omdat ze het belangrijk vinden dat hun kinderen met anderen spelen, omdat de kinderen er sociale vaardigheden leren. Ze schenken hun vertrouwen aan een groep jonge leiders en leidsters, die telkens weer paraat staan om de kinderen een mooie zondagnamiddag te bezorgen.</p>
+
+                    <p>Achter onze leidingsploeg staat het oudercomité en de materiaalmeesters : een groep geëngageerde ouders en oud-leiding die de werking ondersteunen en een vzw vormen.</p>
+
+                    <p>Ze staan actief in voor tal van praktische zaken: het verhuur van het lokaal, kleine en grotere herstellingswerken, gras maaien, onderhoud van het bos, naar het containerpark rijden, pannenkoeken bakken op de startdag… Elk jaar organiseren we het eetfestijn op een zondagmiddag dat we afsluiten met een toneeltje/show van de scoutsleden. </p>
+
+                    <p>Het verhuur van de lokalen en het terrein wordt door het oudercomité geregeld, en is bovendien hun belangrijkste bron van inkomsten.</p>
+
+                </div>
+
+            </div>
+        </article>
+
+
+    </main>
+{% endblock %}
