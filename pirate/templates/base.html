@@ -26,6 +26,7 @@
 
     <!--[if lt IE 9]>
      <script type="text/javascript" src="{{ http }}/js/html5shiv.min.js"></script>
+     <style>.ie-only{display:block;}</style>
     <![endif]-->
 
     {% block head %}{% endblock %}
@@ -179,6 +180,7 @@
             </div>
         </footer>
     </div>
+    <p class="ie-only">U gebruikt een browser die niet wordt ondersteund door onze website. U kunt beter een andere browser gebruiken. <a href="https://whatbrowser.org/">Meer informatie</a></p>
 
     <script type="text/javascript" src="{{ http }}/js/twig.min.js"></script>
     <script type="text/javascript" src="/js/pickadate.js"></script>

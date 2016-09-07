@@ -46,6 +46,19 @@ body, html {
     position: static;
 }
 
+.ie-only {
+    display: none;
+    position: absolute;
+    font-weight: bold;
+    left: 0;
+    right: 0;
+    top: 70px;
+    z-index: 1000;
+    background: $merlot;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
 
 // Voor sticky footer
 #container {
@@ -137,6 +150,10 @@ a {
         outline: none;
         border: 0;
     }
+
+    img {
+        border: 0;
+    }
 }
 
 p a {
@@ -202,6 +219,7 @@ a.button, button.button, input[type=submit] {
     
     &.aubergine {
         color: $aubergine;
+        border-color: $aubergine;
 
         &.search {
             background: url(../images/hourglass-aubergine.png) no-repeat left center;
