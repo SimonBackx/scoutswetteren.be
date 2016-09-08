@@ -159,7 +159,7 @@ class Kalender extends Block {
                 'day' => $day->format('j'),
                 'is_today' => $is_today,
                 'is_current_month' => ($day->format('m') == $month),
-                'datetime' => $day->format('c')
+                'datetime' => $day->format('Y-m-d')
             );
 
             if ($is_today) {

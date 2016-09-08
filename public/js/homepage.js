@@ -106,8 +106,10 @@ function bindMaandplanning() {
         var first = $(this).children('.column:first');
         var last = $(this).children('.column:last');
 
-        var first_date = new Date(first.attr('datetime'));
-        var last_date = new Date(last.attr('datetime')).addDays(1);
+        console.log('Van '+first.attr('datetime')+' tot '+last.attr('datetime'));
+
+        var first_date = stringToDate(first.attr('datetime'));
+        var last_date = stringToDate(last.attr('datetime')).addDays(1);
 
         console.log('Van '+first_date+' tot '+last_date);
 
@@ -147,7 +149,7 @@ function goToMonth(firstday) {
             'day': day.getDate(),
             'is_today': is_today,
             'is_current_month': (day.getMonth() == month),
-            'datetime': day.toISOString()
+            'datetime': day.getFullYear()+'-'+(day.getMonth()+1)+'-'+day.getDate()
         });
 
         if (is_today) {
@@ -186,7 +188,7 @@ function goToMonth(firstday) {
 function goToWeek(start, end) {
     $('#maandplanning-events').children('div').animate({'opacity': 0}, 200);
     $height = $('#maandplanning-events').outerHeight();
-
+    console.log("/api/maandplanning/events-between/"+dateToString(start)+"/"+dateToString(end)+"/");
     // Start download
     $.ajax({
       url: "/api/maandplanning/events-between/"+dateToString(start)+"/"+dateToString(end)+"/",
@@ -224,6 +226,11 @@ function dateToString(date) {
     var month = pad(date.getMonth()+1);
     var year = pad(date.getFullYear());
     return year+"-"+month+"-"+day;
+}
+
+function stringToDate(strDate) {
+    var dateParts = strDate.split("-");
+    return new Date(dateParts[0], (dateParts[1] - 1), dateParts[2]);
 }
 
 function pad(str){
