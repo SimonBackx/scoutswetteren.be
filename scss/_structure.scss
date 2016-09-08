@@ -17,9 +17,10 @@
     }
 }
 main {
-    background: $lightgray-background;
+    background-color: $lightgray-background;
     padding: 10px 20px;
     padding-top: 70px;
+    display: block; // IE Fix
     -ms-flex: 1 0 0;
     -webkit-flex: 1;
     flex: 1 0 0;
