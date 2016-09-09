@@ -19,38 +19,43 @@
         <article class="white block">
             <form method="post">
                 <div class="part text">
-                    {% if error %}
-                        <header>
-                            <h1>Niet alle velden werden correct ingevuld</h1>
-                        </header>
-                        <footer>
-                           <a href="/verhuur" class="button fill merlot">Terug</a>
-                        </footer>
-                    {% else %}
                     <header>
                         <h1>Reservatie aanvragen</h1>
-                    <h2>Van {{ data.aankomst }} tot {{ data.vertrek }} voor {{ data.personen + data.personen_tenten }} personen.</h2>
+                    <h2>Van {{ data.startdatum }} tot {{ data.einddatum }} voor {{ data.personen + data.personen_tenten }} personen.</h2>
                     </header>
 
-                    <input type="hidden" name="aankomst" value="{{ data.aankomst | e('html_attr') }}">
-                    <input type="hidden" name="vertrek" value="{{ data.vertrek | e('html_attr') }}">
+                    {% if errors|length > 0 %}
+                        <ul class="error">
+                                <li>Controleer onderstaande foutmeldingen:</li>
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <input type="hidden" name="startdatum" value="{{ data.startdatum | e('html_attr') }}">
+                    <input type="hidden" name="einddatum" value="{{ data.einddatum | e('html_attr') }}">
                     <input type="hidden" name="personen" value="{{ data.personen | e('html_attr') }}">
+                    <input type="hidden" name="personen_tenten" value="{{ data.personen_tenten | e('html_attr') }}">
 
                     <div class="splitted">
                         <div class="part column first">
+                            <label>Groepsnaam</label>
+                            <input type="text" name="groep" value="{{ data.groep | e('html_attr') }}" placeholder="Naam van de jeugdbeweging / organisatie">
+
                             <label>Naam verantwoordelijke</label>
-                            <input type="text" name="naam" value="{{ data.naam | e('html_attr') }}" placeholder="Uw naam">
+                            <input type="text" name="contact_naam" value="{{ data.contact_naam | e('html_attr') }}" placeholder="Uw naam">
 
                             <label>GSM verantwoordelijke</label>
-                            <input type="text" name="gsm" value="{{ data.gsm | e('html_attr') }}" placeholder="Uw gsm-nummer">
+                            <input type="text" name="contact_gsm" value="{{ data.contact_gsm | e('html_attr') }}" placeholder="Uw gsm-nummer">
 
                             <label>E-mailadres verantwoordelijke</label>
-                            <input type="email" name="email" value="{{ data.email | e('html_attr') }}" placeholder="Uw e-mailadres">
+                            <input type="email" name="contact_email" value="{{ data.contact_email | e('html_attr') }}" placeholder="Uw e-mailadres">
 
                         </div>
                         <div class="part column last">
-                            <label>Wie</label>
-                            <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="wie">{{ data.wie }}</textarea>
+                            <label>Info</label>
+                            <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="info">{{ data.info }}</textarea>
 
                             <label>Opmerkingen</label>
                             <textarea placeholder="Eventuele vragen of opmerkingen" name="opmerkingen">{{ data.opmerkingen }}</textarea>
@@ -61,8 +66,8 @@
                   
                     <footer>
                         <input type="submit" name="submit" value="Indienen" class="fill merlot">
+                        <a href="/verhuur" class="button merlot">Annuleren</a>
                     </footer>
-                    {% endif %}
                 </div>
             </form>
         </article>

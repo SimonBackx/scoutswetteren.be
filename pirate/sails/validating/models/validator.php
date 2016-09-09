@@ -13,6 +13,12 @@ class Validator extends Model {
         return (preg_match($pattern, $firstname) === 1);
     }
 
+    // Bv 54e FOS
+    static function isValidGroupName($firstname) {
+        $pattern = '/^[\w0-9\' ]+$/';
+        return (preg_match($pattern, $firstname) === 1);
+    }
+
     static function isValidLastname($lastname) {
         $pattern = '/^[\w ]+$/';
         return (preg_match($pattern, $lastname) === 1);
@@ -83,24 +89,42 @@ class Validator extends Model {
         $output = preg_replace('/[^0-9+]/', '', $in);
 
         // lengte bepalen
-        if (strlen($output) != 10 && strlen($output) != 12 && strlen($output) != 13) {
-            $errors[] = 'Vul GSM nummer in formaat +32 4XX XX XX XX of 04XX XX XX XX';
+        if (strlen($output) < 10 || strlen($output) == 11) {
+            $errors[] = 'Ongeldig GSM nummer';
         } else {
             $original = $output;
             $error = false;
-            if (substr($output, 0, 4) == '0032' && strlen($output) == 13) {
+            $plus = 0;
+            if (substr($output, 0, 2) == '00') {
                 $output = substr($output, 2);
-            }
-
-            if (substr($output, 0, 3) == '+32' && strlen($output) == 12) {
+                $plus = 2;
+            } 
+            elseif (substr($output, 0, 1) == '+') {
                 $output = substr($output, 1);
+                $plus = 1;
             }
+            $country = substr($output, 0, 3);
 
-            if (substr($output, 0, 3) != '324' || (strlen($original) != 12 && strlen($original) != 13)) {
+            // Indien landcode is opgegeven:
+            if ($plus > 0 &&
+                (
+                    ($country == '324' && (strlen($original) == 11 + $plus))
+                || ($country == '316' && (strlen($original) == 11 + $plus))
+                || ($country == '336' && (strlen($original) == 11 + $plus))
+                || ($country == '337' && (strlen($original) == 11 + $plus))
+                || ($country == '491' && (strlen($original) == 14 + $plus || strlen($original) == 13 + $plus || strlen($original) == 12 + $plus || strlen($original) == 11 + $plus))
+                )
+            ) {
+
+                
+            } else {
+                // Geen bekende landcode opgegeven
+                
+                // Automatisch 04 nummer omvormen in een belgisch nummer, anders melding geven
                 if (substr($output, 0, 2) != '04') {
-                    $errors[] = 'Vul GSM nummer in formaat +32 4XX XX XX XX of 04XX XX XX XX';
+                    $errors[] = 'Ongeldig GSM nummer';
                     $error = true;
-                } else {
+                } else { 
                     $output = '32'.substr($output, 1);
                 }
             }
@@ -113,8 +137,10 @@ class Validator extends Model {
                 $result = '';
                 for( $i = 0; $i < $strlen; $i++ ) {
                     $char = substr( $output, $i, 1 );
-                    if ($i == 3 || ($i >= 5 && $i%2 == 0)) {
-                        $result .= ' ';
+                    if ($i <= 7 || $strlen <= 12) {
+                        if ($i == 3 || ($i >= 5 && $i%2 == 0)) {
+                            $result .= ' ';
+                        }
                     }
                     $result .= $char;
                 }
