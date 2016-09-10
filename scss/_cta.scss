@@ -16,5 +16,10 @@ section {
             font-size: $size-text-bigger;
             margin: 20px 0;
         }
+
+        @media screen and (max-width: $width-reduce-padding) {
+            padding: 40px $smartphone-padding;
+        }
+
     }
 }

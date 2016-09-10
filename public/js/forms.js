@@ -1,4 +1,14 @@
 $( document ).ready(function() {
+    $('#smartphone-menu-button').on('click touch', function(event) {
+        event.preventDefault();
+        $('#smartphone-menu-items').html($('#menu .items .visible').html());
+         $('#smartphone-menu').fadeIn(250);
+    });
+    $('#smartphone-menu .close').on('click touch', function(event) {
+        event.preventDefault();
+         $('#smartphone-menu').fadeOut(250);
+    });
+
     // Dropdown aanpassen als getypt wordt
     $('form .dropdown').bind("propertychange change click keyup input paste focus", function(event){
         // Zoeken naar overeenkomstige

@@ -41,7 +41,7 @@ class VerhuurReserveren extends Page {
                 if (count($errors) == 0) {
                     // Opslaan
                     if ($reservatie->save()) {
-                        return 'Geslaagd - wip pagina';
+                        return Template::render('verhuur/verhuur-ontvangen', array());
                     } else {
                         $errors[] = 'Er ging iets mis bij het opslaan';
                     }

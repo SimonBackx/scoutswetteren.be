@@ -2,6 +2,7 @@
     color: white;
     @include bg-gradient-t2b(#530F1A, #7D1628);
     text-align: center;
+    -webkit-flex: 0;
 
     .center {
         padding: 60px 20px;

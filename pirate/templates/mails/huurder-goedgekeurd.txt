@@ -1,0 +1,38 @@
+Dag {{ reservatie.contact_naam }},
+
+We hebben je aanvraag voor het huren van ons lokaal + terrein goedgekeurd. 
+
+Hieronder vind je een overzicht van je aanvraag, met onderaan het contract dat moet worden ingevuld en terug verzonden. Vul zeker het contractnummer in op het contract.
+
+Van {{ reservatie.startdatum | date('d-m-Y') }} tot {{ reservatie.einddatum | date('d-m-Y') }}
+
+Contractnummer: {{ reservatie.contract_nummer }}
+
+Groepsnaam: {{ reservatie.groep }}
+Naam verantwoordelijke: {{ reservatie.contact_naam }}
+GSM verantwoordelijke: {{ reservatie.contact_gsm }}
+E-mailadres verantwoordelijke: {{ reservatie.contact_email }}
+
+Info: 
+{{ reservatie.info }}
+
+Opmerkingen: 
+{{ reservatie.opmerkingen }}
+
+Aantal personen: {{ reservatie.personen }}
+{% if reservatie.personen_tenten > 0 %}
+Aantal personen in tenten:  {{ reservatie.personen }}
+{% endif %}
+
+Huurprijs: € {{ reservatie.huur }}
++ € {{ reservatie.waarborg }} borg
+
+Lees ook wanneer en hoe er betaald moet worden in het contract.
+
+Download contract:
+{{ http }}/files/huurovereenkomst.doc
+
+Klik op de bovenstaande link of kopieer hem in je adresbalk.
+
+Tot binnenkort,
+Scouts Prins Boudewijn Wetteren

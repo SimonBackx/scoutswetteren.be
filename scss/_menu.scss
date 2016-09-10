@@ -1,3 +1,30 @@
+#smartphone-menu {
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    right: 0;
+    top: 0px;
+    bottom: 0;
+    padding: 25px 20px;
+    text-align: center;
+    color: white;
+
+    .close {
+        display: block;
+        text-align: right;
+        cursor: pointer;
+    }
+
+    a {
+        display: block;
+        padding: 20px 20px;
+        margin: 10px 0;
+        font-size: $size-text-bigger;
+    }
+}
+
 #menu {
     position: absolute;
     z-index: 2;

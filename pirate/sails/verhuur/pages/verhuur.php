@@ -3,6 +3,7 @@ namespace Pirate\Sail\Verhuur\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
+use Pirate\Model\Verhuur\Reservatie;
 
 class Verhuur extends Page {
 
@@ -23,6 +24,8 @@ class Verhuur extends Page {
                 'data_year' => $year,
                 'data_month' => $month
             ),
+            'calculate_huurprijs' => Reservatie::js_calculateHuur(),
+            'calculate_borg' => Reservatie::js_calculateBorg(),
             'kalender' => $kalender,
             'call_to_action' => array(
                 'title' => 'Volg je kapoen',

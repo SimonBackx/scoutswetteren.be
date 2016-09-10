@@ -1,0 +1,23 @@
+<div class="text">
+
+    <h1>Verhuurkalender</h1>
+    <p></p>
+
+    <a href="/admin/verhuur/reservatie/" class="icon-button plus">Reservatie manueel toevoegen</a>
+
+    {% for group in groups %}
+        <h1>{{ group.name }}</h1>
+        <div class="list-bundle">
+        {% for reservatie in group.reservaties %}
+            <article class="list">
+                <div class="medium merlot column">{{ reservatie.startdatum | date('d-m-Y') }} tot {{ reservatie.einddatum | date('d-m-Y') }}</div>
+                <div class="max column">{{ reservatie.groep }}</div>
+                <div class="last column">
+                    <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken / aanpassen</a>
+                </div>
+            </article>
+        {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+

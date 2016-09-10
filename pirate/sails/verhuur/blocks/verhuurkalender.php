@@ -2,7 +2,7 @@
 namespace Pirate\Sail\Verhuur\Blocks;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
-//use Pirate\Model\Verhuur\Event;
+use Pirate\Model\Verhuur\Reservatie;
 
 class Verhuurkalender extends Block {
     function getForMonth($year, $month) {
@@ -15,11 +15,18 @@ class Verhuurkalender extends Block {
         } catch (\Exception $e){
             return '<p>Er ging iets mis</p>';
         }
-        
+
         // keep running back until we reach a monday
         $wkday = $day->format('N')-1;
-        $day = $day->modify('-'.$wkday.' days' );
+        $day = $day->modify('-'.$wkday.' days');
 
+        $day_end = new \DateTime($year.'-'.$month.'-01');
+        $day_end->modify('+1 month');
+
+        $wkday = 7-$day_end->format('N');
+        $day_end = $day_end->modify('+'.$wkday.' days');
+
+        $reservaties = Reservatie::getReservaties($day->format('Y-m-d'), $day_end->format('Y-m-d'), true);
         // Start adding to our array
         $data = array();
 
@@ -37,13 +44,25 @@ class Verhuurkalender extends Block {
                 $week++;
                 $data[] = array('is_selected' => false, 'days' => array());
             }
-            $is_today = ($today == $day->format('Ymd'));
+            $me = $day->format('Ymd');
+            $is_today = ($today == $me);
+            $disabled = false;
+
+            while (count($reservaties) > 0 && $reservaties[0]->startdatum <= $day) {
+                if ($reservaties[0]->einddatum >= $day) {
+                    $disabled = true;
+                    break;
+                } else {
+                    array_shift($reservaties);
+                }
+            }
 
             $data[count($data)-1]['days'][] = array(
                 'day' => $day->format('j'),
                 'is_today' => $is_today,
                 'is_current_month' => ($day->format('m') == $month),
-                'datetime' => $day->format('d-m-Y')
+                'datetime' => $day->format('d-m-Y'),
+                'disabled' => $disabled
             );
 
             if ($is_today) {

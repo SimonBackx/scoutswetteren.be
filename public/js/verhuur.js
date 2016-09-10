@@ -370,24 +370,16 @@ function calculatePrice() {
 
 
     var persons_tenten = $('#aantal-personen-tenten').val();
+    var persons = $('#aantal-personen').val();
 
-    var prices_year = 2016;
-    var prices = [95, 98, 100];
-
-    var base_price = diffDays * prices[enddate.getFullYear()-prices_year];
-    if (persons_tenten > 0) {
-        base_price += (persons_tenten)*2*diffDays + 15*diffDays;
-    }
-
-    var borg = 400;
-
-    if (diffDays > 2) {
-        borg = 750;
-    }
+    var base_price = calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten);
+    var borg = calculateBorg(startdate, enddate, diffDays, persons, persons_tenten);
 
     $('#price').text('€ '+base_price);
     $('#borg').text('+ € '+borg+' borg');
 }
+
+
 function closeCalendarInput() {
     $('.calendar').removeClass('enabled');
     var hint = $('.calendar .selection-hint');

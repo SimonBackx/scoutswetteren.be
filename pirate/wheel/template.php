@@ -37,7 +37,11 @@ class Template {
      * @return String    HTML
      */
     static function render($template, $data = array(), $ext = 'html') {
-        $data['http'] = "//{$_SERVER['HTTP_HOST']}";
+        if (empty($_SERVER['HTTPS'])) {
+            $data['http'] = "http://{$_SERVER['HTTP_HOST']}";
+        } else {
+            $data['http'] = "https://{$_SERVER['HTTP_HOST']}";
+        }
 
         $data['general'] = array(
             'logged_in' => Leiding::isLoggedIn(),

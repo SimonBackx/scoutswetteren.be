@@ -1,0 +1,92 @@
+<form method="post">
+    <div class="text">
+        <header>
+            <h1>Reservatie {% if new %}aanmaken{% else %}aanpassen{% endif %}</h1>
+            {% if success %}<h2>Opgeslagen!</h2>{% endif %}
+        </header>
+
+        <h2>Algemeen</h2>
+        <div class="splitted">
+            <div class="part column first">
+                {% if data.goedgekeurd %}
+                    <label>Contract nummer</label>
+                    <input type="text" class="datepicker" name="contract_nummer" value="{{ data.contract_nummer }}" readonly="readonly">
+                {% endif %}
+
+                <label>Aankomst datum</label>
+                <input type="text" class="datepicker" name="startdatum" value="{{ data.startdatum }}" placeholder="Startdatum van het verhuur">
+            </div>
+            <div class="part column last">
+                <label>Vertrek datum</label>
+                <input type="text" class="datepicker" name="einddatum" value="{{ data.einddatum }}" placeholder="Einddatum van het verhuur">
+            </div>
+        </div>
+
+        <h2>Huurder</h2>
+        <div class="splitted">
+            <div class="part column first">
+                <label>Groepsnaam</label>
+                <input type="text" name="groep" value="{{ data.groep | e('html_attr') }}" placeholder="Naam van de jeugdbeweging / organisatie">
+
+                <label>Naam verantwoordelijke</label>
+                <input type="text" name="contact_naam" value="{{ data.contact_naam | e('html_attr') }}" placeholder="Naam contactpersoon">
+
+                <label>GSM verantwoordelijke</label>
+                <input type="text" name="contact_gsm" value="{{ data.contact_gsm | e('html_attr') }}" placeholder="GSM-nummer contactpersoon">
+
+                <label>E-mailadres verantwoordelijke</label>
+                <input type="email" name="contact_email" value="{{ data.contact_email | e('html_attr') }}" placeholder="E-mailadres contactpersoon">
+
+            </div>
+            <div class="part column last">
+                <label>Info</label>
+                <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="info">{{ data.info }}</textarea>
+
+                <label>Opmerkingen</label>
+                <textarea placeholder="Eventuele vragen of opmerkingen" name="opmerkingen">{{ data.opmerkingen }}</textarea>
+            </div>
+        </div>
+
+        <h2>Prijs</h2>
+        <div class="splitted">
+            <div class="part column first">
+                <label>Huurprijs</label>
+                <input type="text" class="datepicker" name="startdatum" value="€ {{ data.huur | e('html_attr') }}" placeholder="Huurprijs">
+            </div>
+            <div class="part column last">
+                <label>Waarborg</label>
+                <input type="text" class="datepicker" name="einddatum" value="€ {{ data.waarborg | e('html_attr') }}" placeholder="Waarborg">
+            </div>
+        </div>
+
+        <h2>Status</h2>
+        <input id="contract_ondertekend" type="checkbox" name="contract_ondertekend" value="1" {% if data.contract_ondertekend == 1 %} checked{% endif %}>
+        <label for="contract_ondertekend">Contract ondertekend</label>
+
+        <input id="waarborg_betaald" type="checkbox" name="waarborg_betaald" value="1" {% if data.waarborg_betaald == 1 %} checked{% endif %}>
+        <label for="waarborg_betaald">Waarborg betaald</label>
+
+        <input id="ligt_vast" type="checkbox" name="ligt_vast" value="1" {% if data.ligt_vast == 1 %} checked{% endif %}>
+        <label for="ligt_vast">Vastleggen in verhuurkalender</label>
+
+        <input id="huur_betaald" type="checkbox" name="huur_betaald" value="1" {% if data.huur_betaald == 1 %} checked{% endif %}>
+        <label for="huur_betaald">Huur betaald</label>
+
+        <footer>
+            {% if new %}
+                    <input type="submit" class="merlot fill" value="Opslaan">
+            {% else %}
+                {% if not data.goedgekeurd %}
+                    <input type="submit" class="merlot fill" name="goedkeuren" value="Opslaan">
+                    <input type="submit" class="merlot fill" name="goedkeuren" value="Goedkeuren">
+                    <input type="submit" class="merlot" name="afkeuren" value="Afkeuren">
+                {% else %}
+                    <input type="submit" class="merlot fill" value="Opslaan">
+                    <input type="submit" class="merlot" name="afkeuren" value="Vrijgeven">
+                {% endif %}
+            {% endif %}
+            <a href="/admin/maandplanning" class="button merlot">Annuleren</a>
+        </footer>
+
+    </div>
+</form>

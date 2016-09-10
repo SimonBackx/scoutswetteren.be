@@ -1,7 +1,7 @@
 {% for week in calendar.weeks %}
     <div class="row">
         {% for day in week.days %}
-            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} hidden{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
+            <time class="column{% if day.is_today == true %} today{% endif %}{% if day.is_current_month == false %} hidden{% endif %}{% if day.disabled == true %} disabled{% endif %}" datetime="{{ day.datetime }}">{{ day.day }}</time>
         {% endfor %}
         <div class="clear"></div>
     </div>

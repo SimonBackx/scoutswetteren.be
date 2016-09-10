@@ -33,6 +33,39 @@ class Leiding extends Model {
         $this->permissions = explode('±', $row['permissions']);
     }
 
+    static function getLeiding($permission = null) {
+        $permission_code = '';
+        if (!is_null($permission)) {
+            $permission_code = "WHERE p2.permissionCode = '".self::getDb()->escape_string($permission)."'";
+        } else {
+            $permission_code = "WHERE p2.permissionId = p1.permissionId";
+            // TODO: Kan versneld worden als persmission = null -> dan dubbele joins weglaten
+        }
+
+        $leiding = array();
+        $query = "SELECT l.*,
+            group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
+        from leiding l
+        left join _permissions_leiding _pl on _pl._leidingId = l.id
+        left join permissions p on p.permissionId = _pl._permissionId
+
+        left join _permissions_leiding _pl2 on _pl2._leidingId = l.id
+        left join permissions p2 on p2.permissionId = _pl2._permissionId
+        
+        $permission_code
+        group by l.id";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $leiding[] = new Leiding($row);
+                }
+            }
+        }
+        return $leiding;
+    }
+
+
     // Returns true on success
     // Sets cookies if succeeded
     // isLoggedIn() etc kan gebruikt worden hierna

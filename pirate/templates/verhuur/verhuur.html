@@ -47,6 +47,17 @@
 {% endblock %}
 
 {% block javascript %}
+    <script type="text/javascript">
+        function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten) {
+            {{ calculate_huurprijs | raw }}
+            return '/';
+        }
+        function calculateBorg(startdate, enddate, diffDays, persons, persons_tenten) {
+            {{ calculate_borg | raw }}
+            return '/';
+        }
+
+    </script>
     <script src="/js/verhuur.js"
     async defer></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"
@@ -55,13 +66,7 @@
 
 {% block main %}
     <main>
-        <nav class="buttons">
-            <a href="/verhuur" class="selected button">Gebouw</a>
-            <a href="/verhuur/klimkoffer" class=" button">Klimkoffer</a>
-            <a href="/verhuur/varia" class=" button">Varia</a>
-        </nav>
-
-        <article class="white block withButtons">
+        <article class="white block">
             <div class="splitted">
                 <div class="part image" id="terrein-image">
                     <img src="/images/part/terrein.jpg" alt="Hoofdlokaal">
@@ -143,7 +148,7 @@
 
 
 
-        <section class="white block">
+        <section class="white block" id="reserveren">
             <div class="splitted">
                 <div class="part calendar">
                     <div class="selection-hint">Selecteer een datum</div>

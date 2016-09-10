@@ -32,6 +32,19 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+    <div id="smartphone-menu">
+        <div class="close">
+            <svg width="24px" height="24px" viewBox="1276 -6 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="close-hamburger" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1276.000000, -6.000000)">
+                    <rect id="Rectangle-139" fill="#FFFFFF" transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) " x="-3" y="11" width="30" height="2" rx="1"></rect>
+                    <rect id="Rectangle-139" fill="#FFFFFF" transform="translate(12.000000, 12.000000) rotate(45.000000) translate(-12.000000, -12.000000) " x="-3" y="11" width="30" height="2" rx="1"></rect>
+                </g>
+            </svg>
+        </div>
+        <div id="smartphone-menu-items">
+            
+        </div>
+    </div>
     <div id="container">
         <nav id="menu"{% if menu.transparent == false %} class="fixed"{% endif %}>
             {% if general.logged_in %}
@@ -70,7 +83,7 @@
                 <div class="items">
                     <div class="space">
                         <a href="/info">Info</a>
-                        <a href="/fotos">Foto's</a>
+                       <!-- <a href="/fotos">Foto's</a>-->
                         <a href="/verhuur">Verhuur</a>
                         <a href="/contact">Contact</a>
                         {% if general.logged_in == false %}
@@ -83,7 +96,7 @@
                     </div>
                     <div class="visible">
                         <a href="/info">Info</a>
-                        <a href="/fotos">Foto's</a>
+                        <!--<a href="/fotos">Foto's</a>-->
                         <a href="/verhuur">Verhuur</a>
                         <a href="/contact">Contact</a>
                         {% if general.logged_in == false %}
