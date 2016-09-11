@@ -55,7 +55,6 @@ class Router {
             if (in_array($url, array_keys($redirects))) {
                 header( "HTTP/1.1 301 Moved Permanently");
                 header("Location: https://".$_SERVER['SERVER_NAME']."/".$redirects[$url]);
-                echo 'test';
                 return new Page301();
             }
 

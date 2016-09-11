@@ -50,6 +50,9 @@ class Afrekening extends Model {
     }
 
     static function getAfrekening($id) {
+        if (!is_numeric($id)) {
+            return null;
+        }
         $id = self::getDb()->escape_string($id);
 
         $query = '

@@ -54,6 +54,10 @@ class Lid extends Model {
     }
 
     static function getLid($id) {
+        if (!is_numeric($id)) {
+            return null;
+        }
+
         $id = self::getDb()->escape_string($id);
 
         $query = '

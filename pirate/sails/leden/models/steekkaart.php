@@ -305,41 +305,6 @@ class Steekkaart extends Model {
         return false;
     }
 
-   /* public $id;
-    public $lid;
-    public $laatst_nagekeken;
-    public $nagekeken_door;
-    public $nagekeken_door_titel;
-
-    public $contactpersoon_naam;
-    public $contactpersoon_gsm;
-    public $contactpersoon_functie;
-
-    public $verblijfsinstelling;
-    public $deelname_onmogelijke_activiteiten;
-    public $deelname_reden;
-    public $deelname_sporten;
-    public $deelname_sociaal;
-    public $deelname_hygiene;
-    public $deelname_andere;
-
-    public $medisch_toestemming_medicatie;
-    public $medisch_specifieke_medicatie;
-
-    public $medisch_ziekten;
-    public $medisch_ziekten_aanpak;
-
-    public $medisch_dieet;
-    public $medisch_klem_jaar;
-    public $bloedgroep;
-
-    public $huisarts_naam;
-    public $huisarts_telefoon;
-
-    public $toestemming_fotos;
-    public $aanvullend_voeding;
-    public $aanvullend_andere;*/
-
     function save() {
         if (empty($this->lid)) {
             return false;

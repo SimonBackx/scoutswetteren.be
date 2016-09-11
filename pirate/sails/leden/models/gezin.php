@@ -22,6 +22,7 @@ class Gezin extends Model {
     // empty array on success
     // array of errors on failure
     function setProperties(&$data) {
+        $data['gezinssituatie'] = ucsentence($data['gezinssituatie']);
         $this->gezinssituatie = $data['gezinssituatie'];
         $this->scouting_op_maat = ($data['scouting_op_maat'] == true);
         return array();
