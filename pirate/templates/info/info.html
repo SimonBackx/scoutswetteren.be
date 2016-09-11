@@ -1,3 +1,5 @@
+{% set title = 'Info' %}
+{% set description = 'Informatie over onze locatie, inschrijven, op kamp gaan en de takkenverdeling.' %}
 {% extends "base.html" %}
 
 {% block head %}
@@ -48,7 +50,7 @@
 
 {% block main %}
     <main>
-        <article class="white block">
+        <article class="white block" id="locatie">
             <div class="splitted">
                 <div class="part map">
                     <div id="map"></div>
@@ -67,7 +69,7 @@
                 </div>
             </div>
         </article>
-         <article class="white block">
+         <article class="white block" id="takverdeling">
              <div class="part text">
                 <header>
                     <h1>Takverdeling</h1>
@@ -101,7 +103,7 @@
             </div>
         </article>
 
-        <article class="white block">
+        <article class="white block" id="lid-worden">
             <div class="splitted">
                 <figure class="part image" id="lid-worden-image">
                     <figcaption>Kapoenen</figcaption>
@@ -125,7 +127,7 @@
             </div>
         </article>
 
-        <article class="white block">
+        <article class="white block" id="kamp">
             <div class="splitted">
                 <div class="part text">
                     <header>
@@ -148,7 +150,7 @@
             </div>
         </article>
 
-        <article class="white block">
+        <article class="white block" id="oudercomite">
             <div class="splitted">
                 <figure class="part image" id="terrein-image">
                     <figcaption>Lokalen en terrein</figcaption>

@@ -16,7 +16,7 @@ class Blog extends Page {
 
         return Template::render('blog/blog', array(
             'title' => 'Blog archief',
-            'description' => 'Beschrijving',
+            
             'content' => $archief,
             'call_to_action' => array(
                 'title' => 'Volg je kapoen',

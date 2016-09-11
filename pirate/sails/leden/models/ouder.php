@@ -397,7 +397,7 @@ class Ouder extends Model {
         $token = self::getDb()->escape_string($_COOKIE['ouder_token']);
         $query = "SELECT o.*, g.*, t.token, t.time
         from ouders o
-        left join gezinnen g on g.gezin_id = o.id
+        left join gezinnen g on g.gezin_id = o.gezin
         join ouder_tokens t on t.client = o.id
         where t.client = $client and t.token = '$token'";
 

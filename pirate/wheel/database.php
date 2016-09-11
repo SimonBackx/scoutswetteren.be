@@ -10,7 +10,6 @@ class Database {
             self::$mysqli = new mysqli('127.0.0.1', 'root', 'root', 'scouts');
             if (self::$mysqli->connect_errno){
                 header('Location: /oops/database.html');
-                
             }
             self::$mysqli->set_charset("utf8mb4");
         }

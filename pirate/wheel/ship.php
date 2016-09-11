@@ -37,10 +37,9 @@ class Ship {
         // autoloader voor models laden:
         Model::setupAutoload();
 
-        if (!isset($_GET['route'])) {
-            $_GET['route'] = '';
-        }
-        $page = $router->route($_GET['route']);
+        $url = strtok($_SERVER["REQUEST_URI"],'?');
+        $url = substr($url, 1);
+        $page = $router->route($url);
 
         // Return the page, set the status code etc.
         // 

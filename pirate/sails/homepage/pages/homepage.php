@@ -18,7 +18,6 @@ class Homepage extends Page {
 
         return Template::render('homepage', array(
             'menu' => array('transparent' => true),
-            'description' => 'Beschrijving',
             'maandplanning' => $maandplanning,
             'blog' => $blog,
             'slideshows' => array(

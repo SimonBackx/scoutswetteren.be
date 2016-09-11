@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Route;
 use Pirate\Page\Page404;
+use Pirate\Page\Page301;
 
 class Router {
     function route($url) {
@@ -40,6 +41,24 @@ class Router {
                 }
             }
         } else {
+            $redirects = array(
+                'index.php/verhuur' => 'verhuur',
+                'index.php/takken' => 'info',
+                'index.php/info' => 'info',
+                'index.php/takken/kapoenen' => 'info/kapoenen',
+                'index.php/takken/wouters' => 'info/wouters',
+                'index.php/takken/jonggivers' => 'info/jonggivers',
+                'index.php/takken/givers' => 'info/givers',
+                'index.php/takken/jin' => 'info/jin',
+                'index.php/contact' => 'contact'
+            );
+            if (in_array($url, array_keys($redirects))) {
+                header( "HTTP/1.1 301 Moved Permanently");
+                header("Location: https://".$_SERVER['SERVER_NAME']."/".$redirects[$url]);
+                echo 'test';
+                return new Page301();
+            }
+
             include(__DIR__.'/../sails/_bindings/routes.php');
             if (!isset($routes)) {
                 echo 'Route bindings not found';

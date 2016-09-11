@@ -30,3 +30,13 @@ class Page404 extends Page {
         return Template::render('404');
     }
 }
+
+class Page301 extends Page {
+    function getStatusCode() {
+        return 301;
+    }
+
+    function getContent() {
+        return Template::render('301');
+    }
+}

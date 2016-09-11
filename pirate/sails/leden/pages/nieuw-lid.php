@@ -168,7 +168,7 @@ class NieuwLid extends Page {
                                 return Template::render('leden/nieuw-lid-gelukt', array(
                                     'leden' => $leden,
                                     'ouders' => $ouders,
-                                    'gezin' => $gezin_data,
+                                    'gezin' => $gezin_data
                                 ));
                             }
                         }

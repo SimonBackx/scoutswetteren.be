@@ -12,6 +12,7 @@ class LedenRouter extends Route {
     private $afrekening = null;
 
     function doMatch($url, $parts) {
+        echo $url;
         if ($url == 'inschrijven' && !Ouder::isLoggedIn()) {
             return true;
         }
@@ -66,6 +67,8 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'steekkaart') {
                     // kijken of gezin wel in orde is
                     $lid = Lid::getLid($parts[2]);
+                    echo $lid->gezin->id;
+                    echo '-'.Ouder::getUser()->gezin->id;
                     if (!is_null($lid) && $lid->gezin->id == Ouder::getUser()->gezin->id) {
                         $this->lid = $lid;
                         return true;
