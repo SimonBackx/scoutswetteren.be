@@ -34,6 +34,14 @@ class Validator extends Model {
         return (preg_match($pattern, $phone) === 1);
     }
 
+    static function isValidPrice($phone) {
+        $pattern = '/^[0-9,.€   ]+$/';
+        if (!(preg_match($pattern, $phone) === 1)) {
+            return false;
+        }
+        return substr_count($phone, ',') <= 1 ;
+    }
+
     static function isValidMail($mail) {
         return (filter_var($mail, FILTER_VALIDATE_EMAIL));
     }
@@ -244,6 +252,39 @@ class Validator extends Model {
             $in = $out;
             return true;
         }
+
+        return false;
+    }
+
+    static function validatePrice(&$in, &$out, &$errors) {
+        if (!self::isValidPrice($in)) {
+            $errors[] = 'Ongeldige prijs';
+            return false;
+        }
+
+        // Alles buiten de komma en de getallen laten staan
+        $output = preg_replace('/[^0-9,]/', '', $in);
+
+        $price = 0;
+        $strlen = strlen( $output );
+        $comma = -1;
+
+        for( $i = 0; $i < $strlen; $i++ ) {
+            $char = substr( $output, $i, 1 );
+            if ($char != ',') {
+                if ($comma == -1) {
+                    $price = $price*10 + intval($char);
+                } else {
+                    $price += intval($char)/pow(10, $i-$comma);
+                }
+            } else {
+                $comma = $i;
+            }
+        }
+
+        $out = $price;
+
+        $in = '€ '.money_format('%!.2n', $price);
 
         return false;
     }

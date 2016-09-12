@@ -170,7 +170,7 @@ form {
     input[type=radio] + label + .checkbox-controllable,
     input[type=checkbox] + .checkbox-controllable,
     input[type=radio] + .checkbox-controllable {
-        .visible-when-checked {
+        &> .visible-when-checked {
             display: none;
         }
     }
@@ -179,10 +179,10 @@ form {
     input[type=radio]:checked + label + .checkbox-controllable,
     input[type=checkbox]:checked + .checkbox-controllable,
     input[type=radio]:checked + .checkbox-controllable {
-        .visible-when-checked {
+        &> .visible-when-checked {
             display: block;
         }
-        .hidden-when-checked {
+        &> .hidden-when-checked {
             display: none;
         }
     }

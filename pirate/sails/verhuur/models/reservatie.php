@@ -32,7 +32,7 @@ class Reservatie extends Model {
     public $waarborg_betaald = false; // true / false
     public $huur_betaald = false; // true / false
     public $waarborg_ingetrokken = 0; // Null (= nog niet afgehandeld) of getal (0 - ...)
-    public $goedgekeurd = null;
+    public $goedgekeurd = null; // null, true of false
 
     static public $max_gebouw = 40;
     static public $max_tenten = 20;
@@ -47,6 +47,21 @@ class Reservatie extends Model {
             return 400;
         }
         return 750;
+    }
+
+    function getWaarborg() {
+        return '€ '.money_format('%!.2n', $this->waarborg);
+    }
+
+    function getHuur() {
+        return '€ '.money_format('%!.2n', $this->huur);
+    }
+
+    function getWaarborgIngetrokken() {
+        if (empty($this->waarborg_ingetrokken)) {
+            return '';
+        }
+        return '€ '.money_format('%!.2n', $this->waarborg_ingetrokken);
     }
 
     function calculateHuur() {
@@ -120,10 +135,17 @@ class Reservatie extends Model {
 
         $this->ligt_vast = ($row['ligt_vast'] == 1);
         $this->contract_ondertekend = ($row['contract_ondertekend'] == 1);
+
         $this->waarborg_betaald = ($row['waarborg_betaald'] == 1);
         $this->huur_betaald = ($row['huur_betaald'] == 1);
         $this->waarborg_ingetrokken = $row['waarborg_ingetrokken'];
-        $this->goedgekeurd = $row['goedgekeurd'];
+
+        if (!isset($row['goedgekeurd'])) {
+            $this->goedgekeurd =  null;
+        } else {
+            $this->goedgekeurd = ($row['goedgekeurd'] == 1);
+        }
+
     }
 
 
@@ -171,7 +193,7 @@ class Reservatie extends Model {
 
     static function getAantalInWeek($week) {
         $week = self::getDb()->escape_string($week);
-        $query = 'SELECT * FROM verhuur WHERE week(startdatum, 3) = "'.$week.'" and goedgekeurd = 1';
+        $query = 'SELECT * FROM verhuur WHERE week(startdatum, 3) = "'.$week.'" and contract_nummer is not null';
 
         if ($result = self::getDb()->query($query)){
             return $result->num_rows;
@@ -181,6 +203,10 @@ class Reservatie extends Model {
 
     // Maximaal 30 events! Rest wordt weg geknipt
     static function getReservatie($id) {
+        if (!is_numeric($id)) {
+            return null;
+        }
+
         $id = self::getDb()->escape_string($id);
         $query = 'SELECT * FROM verhuur WHERE id = "'.$id.'"';
 
@@ -208,6 +234,11 @@ class Reservatie extends Model {
     }
 
     function setProperties(&$data, $basic = false) {
+        $admin = false;
+        if (isset($data['huur']) && Leiding::isLoggedIn() && Leiding::hasPermission('verhuur')) {
+            $admin = true;
+        }
+
         $errors = array();
 
         // Startdatum
@@ -249,8 +280,13 @@ class Reservatie extends Model {
                 $days = $difference->d;
 
                 if ($days <= 2) {
+                    if ($admin && $personen_tenten > 0) {
+                        $errors[] = 'Het is niet mogelijk om tenten te zetten bij overnachtingen van 2 nachten of minder.';
+                    }
+
                     $data['personen_tenten'] = 0;
                     $this->personen_tenten = 0;
+
                     $ok = false;
                 }
             }
@@ -268,9 +304,49 @@ class Reservatie extends Model {
             $this->ligt_vast = false;
         }
 
+        if ($admin && !$basic) {
+            // Als goedgekeurd == '' of 0 => ligt_vast op 0 zetten
+            if ($data['goedgekeurd'] === false || $data['goedgekeurd'] === true) {
+                $this->goedgekeurd = $data['goedgekeurd'];
+
+                if (!$data['contract_ondertekend']) {
+                    $this->contract_ondertekend = false;
+                } else {
+                    $this->contract_ondertekend = true;
+                }
+
+                if (!$data['waarborg_betaald']) {
+                    $this->waarborg_betaald = false;
+                } else {
+                    $this->waarborg_betaald = true;
+                    Validator::validatePrice($data['waarborg_ingetrokken'], $this->waarborg_ingetrokken, $errors);
+                }
+
+                if (!$data['huur_betaald']) {
+                    $this->huur_betaald = false;
+                } else {
+                    $this->huur_betaald = true;
+                }
+
+                if (!$data['ligt_vast']) {
+                    $this->ligt_vast = false;
+                } else {
+                    $this->ligt_vast = true;
+                }
+
+                
+
+            } else {
+                $this->goedgekeurd = null;
+                //  ligt_vast op 0 zetten
+                $this->ligt_vast = 0;
+            }
+        }
+
+
 
         // Als nieuw: controleren of er al niet vaststaande verhuren zijn op deze datums
-        if ((empty($this->id) || $this->ligt_vast) && $startdatum !== false && $einddatum !== false) {
+        if ((empty($this->id) || $this->ligt_vast || $this->goedgekeurd) && $startdatum !== false && $einddatum !== false) {
             if (!empty($this->id)) {
                 $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, $this->id);
             } else {
@@ -317,7 +393,14 @@ class Reservatie extends Model {
 
         $data['opmerkingen'] = ucsentence($data['opmerkingen']);
         $this->opmerkingen = $data['opmerkingen'];
-        
+
+        // Extra instellingen (prijs etc)
+        if (!$admin) {
+            return $errors;
+        }
+
+        Validator::validatePrice($data['huur'], $this->huur, $errors);
+        Validator::validatePrice($data['waarborg'], $this->waarborg, $errors);
 
         return $errors;
     }
@@ -333,11 +416,11 @@ class Reservatie extends Model {
         $groep = self::getDb()->escape_string($this->groep);
         $ligt_vast = self::getDb()->escape_string((int) $this->ligt_vast);
 
-        if (!empty($this->leiding)) {
+        if (isset($this->leiding)) {
             // Simpel opslaan, enkel start, einde, leiding, groep + ligt_vast
             $leiding_id = self::getDb()->escape_string($this->leiding);
 
-            if (empty($this->id)) {
+            if (!isset($this->id)) {
                 $query = "INSERT INTO 
                     verhuur (`startdatum`,  `einddatum`, `leiding_id`, `groep`, `ligt_vast`)
                     VALUES ('$startdatum', '$einddatum', '$leiding_id', '$groep', '$ligt_vast')";
@@ -363,7 +446,7 @@ class Reservatie extends Model {
             $info = self::getDb()->escape_string($this->info);
             $opmerkingen = self::getDb()->escape_string($this->opmerkingen);
 
-            if (empty($this->id)) {
+            if (!isset($this->id)) {
                 $this->waarborg = $this->calculateWaarborg();
                 $this->huur = $this->calculateHuur();
             }
@@ -384,12 +467,12 @@ class Reservatie extends Model {
             } else {
                 $id = self::getDb()->escape_string($this->id);
 
-                if (empty($this->contract_nummer) && $this->goedgekeurd == 1) {
+                if (!isset($this->contract_nummer) && $this->goedgekeurd === true) {
                     $aantal = self::getAantalInWeek($this->startdatum->format('W')) + 1;
                     $this->contract_nummer = substr($this->startdatum->format('o'), 2).$this->startdatum->format('W').'-'.$aantal;
                 }
 
-                if (empty($this->contract_nummer)) {
+                if (!isset($this->contract_nummer)) {
                     $contract_nummer = 'NULL';
                 }
                 else {
@@ -397,8 +480,8 @@ class Reservatie extends Model {
                 }
 
                 $goedgekeurd = 'NULL';
-                if (!empty($this->goedgekeurd)) {
-                    $goedgekeurd = "'".self::getDb()->escape_string($this->goedgekeurd)."'";
+                if (isset($this->goedgekeurd)) {
+                    $goedgekeurd = "'".self::getDb()->escape_string((int) $this->goedgekeurd)."'";
                 }
 
                 $query = "UPDATE verhuur 

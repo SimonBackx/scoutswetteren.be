@@ -44,10 +44,6 @@ class Ship {
 
             // Loading Sails's services with certain priority level
             Database::init();
-        } catch (\Error $e) {
-            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>'.$e->getMessage().'</pre>';
-            exit;
-        }
 
         // Load router
         require(__DIR__.'/router.php');
@@ -57,6 +53,11 @@ class Ship {
         Model::setupAutoload();
 
         $page = $router->route($url);
+
+        } catch (\Error $e) {
+            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>'.$e->getFile().' line '.$e->getLine().' '.$e->getMessage().'</pre>';
+            exit;
+        }
 
         // Return the page, set the status code etc.
         // 

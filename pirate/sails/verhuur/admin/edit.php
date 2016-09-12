@@ -23,8 +23,6 @@ class Edit extends Page {
         $errors = array();
         $success = false;
 
-        return 'wip';
-
         $data = array(
             'contract_nummer' => '',
 
@@ -39,7 +37,9 @@ class Edit extends Page {
             'info' => '',
             'opmerkingen' => '',
             'waarborg' => '',
-            'huur' => ''
+            'huur' => '',
+            'waarborg_ingetrokken' => '',
+            'goedgekeurd' => null
         );
 
         $data_checkbox = array(
@@ -47,48 +47,57 @@ class Edit extends Page {
             'contract_ondertekend' => false,
             'waarborg_betaald' => false,
             'huur_betaald' => false,
-            'waarborg_ingetrokken' => false
         );
 
+
+
         if (!is_null($this->id)) {
-            $event = Event::getEvent($this->id);
-            if (!is_null($event)) {
+            $reservatie = Reservatie::getReservatie($this->id);
+            if (!is_null($reservatie)) {
                 $new = false;
 
                 $data = array(
-                    'name' => $event->name,
-                    'startdate' => $event->startdate->format('d-m-Y'),
-                    'enddate' => $event->enddate->format('d-m-Y'),
-                    'overnachting' => ($event->startdate->format('d-m-Y') != $event->enddate->format('d-m-Y')),
-                    'location' => $event->location,
-                    'endlocation' => $event->endlocation,
-                    'group' => $event->group,
-                    'starttime' => $event->startdate->format('H:i'),
-                    'endtime' => $event->enddate->format('H:i'),
+                    'contract_nummer' => $reservatie->contract_nummer,
+
+                    'startdatum' => $reservatie->startdatum->format('d-m-Y'),
+                    'einddatum' => $reservatie->einddatum->format('d-m-Y'),
+                    'personen' => $reservatie->personen,
+                    'personen_tenten' => $reservatie->personen_tenten,
+                    'groep' => $reservatie->groep,
+                    'contact_naam' => $reservatie->contact_naam,
+                    'contact_email' => $reservatie->contact_email,
+                    'contact_gsm' => $reservatie->contact_gsm,
+                    'info' => $reservatie->info,
+                    'opmerkingen' => $reservatie->opmerkingen,
+                    'waarborg' => $reservatie->getWaarborg(),
+                    'huur' => $reservatie->getHuur(),
+                    'waarborg_ingetrokken' => $reservatie->getWaarborgIngetrokken(),
+                    'goedgekeurd' => $reservatie->goedgekeurd
                 );
 
-                $data['id'] = $event->id;
+                $data_checkbox = array(
+                    'ligt_vast' => $reservatie->ligt_vast,
+                    'contract_ondertekend' => $reservatie->contract_ondertekend,
+                    'waarborg_betaald' => $reservatie->waarborg_betaald,
+                    'huur_betaald' => $reservatie->huur_betaald
+                );
 
-                if (is_null($event->location)) {
-                    $data['location'] = Event::$defaultLocation;
-                }
-                if (is_null($event->endlocation)) {
-                    $data['endlocation'] = Event::$defaultLocation;
-                }
+                //$data['id'] = $reservatie->id; // irnogen ook toevoegen heirna!
+
 
             } else {
-                $event = new Event();
+                $reservatie = new Reservatie();
             }
         } else {
-           $event = new Event();
+           $reservatie = new Reservatie();
         }
 
-         $allset = true;
+        $allset = true;
         foreach ($data as $key => $value) {
-            if ($key == 'contract_nummer' || $key == 'goedgekeurd')
-                continue;
-
             if (!isset($_POST[$key])) {
+                if ($key == 'contract_nummer')
+                    continue;
+
                 $allset = false;
                 break;
             }
@@ -96,41 +105,45 @@ class Edit extends Page {
             $data[$key] = $_POST[$key];
         }
 
-        foreach ($data_checkbox as $key => $value) {
-            if (!isset($_POST[$key])) {
-                $data_checkbox[$key] = 
+        if ($allset) {
+            foreach ($data_checkbox as $key => $value) {
+                if (!isset($_POST[$key])) {
+                    $data_checkbox[$key] = false;
+                } else {
+                    $data_checkbox[$key] = true;
+                }
             }
-            
-            $data[$key] = $_POST[$key];
         }
+        $data = array_merge($data, $data_checkbox);
 
         // Als alles geset is
         if ($allset) {
-            if (isset($_POST['overnachting'])) {
-                $data['overnachting'] = true;
+
+            if ($data['goedgekeurd'] !== '') {
+                $data['goedgekeurd'] = ($data['goedgekeurd'] == 1);
+            } else {
+                $data['goedgekeurd'] = null;
             }
 
             // Nu één voor één controleren
-            $errors = $event->setProperties($data);
+            $errors = $reservatie->setProperties($data);
 
             if (count($errors) == 0) {
-                if ($event->save()) {
+                if ($reservatie->save()) {
                     $success = true;
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/admin/maandplanning");
+                    //header("Location: https://".$_SERVER['SERVER_NAME']."/admin/verhuur");
                 }
                 else
                     $errors[] = 'Probleem bij opslaan';
             }
         }
 
-        return Template::render('maandplanning/admin/edit', array(
+
+
+        return Template::render('verhuur/admin/edit', array(
             'new' => $new,
-            'event' => $data,
+            'data' => $data,
             'errors' => $errors,
-            'groups' => Event::$groups,
-            'default_locatie' => Event::$defaultLocation,
-            'default_start_hour' => Event::getDefaultStartHour(),
-            'default_end_hour' => Event::getDefaultEndHour(),
             'success' => $success
         ));
     }
