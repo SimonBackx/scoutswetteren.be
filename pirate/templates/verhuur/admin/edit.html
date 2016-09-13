@@ -16,7 +16,7 @@
         <h2>Algemeen</h2>
         <div class="splitted">
             <div class="part column first">
-                {% if data.goedgekeurd %}
+                {% if data.contract_nummer is not empty %}
                     <label>Contract nummer</label>
                     <input type="text" name="contract_nummer" value="{{ data.contract_nummer }}" readonly="readonly">
                 {% endif %}
@@ -82,7 +82,7 @@
 
         <h2>Goedkeuren</h2>
         {% if data.goedgekeurd is not sameas(true) %}
-            <p>Als u de reservatie markeert als goedgekeurd, krijgt de verantwoordelijke hiervan automatisch een e-mail. Daarin staat ook het contract, contract nummer, prijs, waarborg en instructies.</p>
+            <p>Als u de reservatie markeert als goedgekeurd, krijgt de verantwoordelijke hiervan automatisch een e-mail (u ontvangt hiervan een kopie), tenzij het contract al is ingevuld. Daarin staat ook het contract, contract nummer, prijs, waarborg en instructies.</p>
         {% endif %}
         <input id="onbeslist" type="radio" name="goedgekeurd" value=""{% if data.goedgekeurd is null %} checked{% endif %}>
         <label for="onbeslist">Onbeslist</label>

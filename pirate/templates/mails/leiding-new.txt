@@ -1,0 +1,12 @@
+Dag {{ leiding.firstname }},
+
+We hebben een account voor je aangemaakt op www.scoutswetteren.be
+
+Je kan je eigen wachtwoord instellen door de link hieronder aan te klikken of te kopiëren in je adresbalk:
+{{ leiding.getSetPasswordUrl() }}
+
+Belangrijk: Als je later opnieuw wil inloggen, dan kan dat door op de website helemaal naar onderen te scrollen en rechts op 'inloggen' te klikken.
+
+
+Tot binnenkort,
+www.scoutswetteren.be

@@ -34,6 +34,8 @@ class Reservatie extends Model {
     public $waarborg_ingetrokken = 0; // Null (= nog niet afgehandeld) of getal (0 - ...)
     public $goedgekeurd = null; // null, true of false
 
+    public $aanvraag_datum;
+
     static public $max_gebouw = 40;
     static public $max_tenten = 20;
 
@@ -146,6 +148,8 @@ class Reservatie extends Model {
             $this->goedgekeurd = ($row['goedgekeurd'] == 1);
         }
 
+        $this->aanvraag_datum = new \DateTime($row['aanvraag_datum']);
+
     }
 
 
@@ -179,7 +183,7 @@ class Reservatie extends Model {
 
     static function getReservatiesOverview() {
         $reservaties = array();
-        $query = 'SELECT * FROM verhuur WHERE goedgekeurd IS NULL OR goedgekeurd = 1 ORDER BY (goedgekeurd is null) desc, (ligt_vast = 0) desc, startdatum';
+        $query = 'SELECT * FROM verhuur WHERE goedgekeurd IS NULL OR goedgekeurd = 1 ORDER BY (goedgekeurd is null) desc, (huur_betaald = 0 and DATEDIFF(startdatum, now()) < 30) desc, (ligt_vast = 0) desc, startdatum';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -188,6 +192,7 @@ class Reservatie extends Model {
                 }
             }
         }
+        echo self::getDb()->error;
         return $reservaties;
     }
 
@@ -311,35 +316,44 @@ class Reservatie extends Model {
 
                 if (!$data['contract_ondertekend']) {
                     $this->contract_ondertekend = false;
-                } else {
-                    $this->contract_ondertekend = true;
-                }
-
-                if (!$data['waarborg_betaald']) {
+                    $this->ligt_vast = false;
                     $this->waarborg_betaald = false;
-                } else {
-                    $this->waarborg_betaald = true;
-                    Validator::validatePrice($data['waarborg_ingetrokken'], $this->waarborg_ingetrokken, $errors);
-                }
-
-                if (!$data['huur_betaald']) {
                     $this->huur_betaald = false;
                 } else {
-                    $this->huur_betaald = true;
+                    $this->contract_ondertekend = true;
+
+                    if (!$data['waarborg_betaald']) {
+                        $this->waarborg_betaald = false;
+                    } else {
+                        $this->waarborg_betaald = true;
+
+                        if (!$data['huur_betaald']) {
+                            $this->huur_betaald = false;
+                        } else {
+                            $this->huur_betaald = true;
+                        }
+
+                        Validator::validatePrice($data['waarborg_ingetrokken'], $this->waarborg_ingetrokken, $errors);
+                    }
+
+                    if (!$data['ligt_vast']) {
+                        $this->ligt_vast = false;
+                    } else {
+                        $this->ligt_vast = true;
+                    }
                 }
 
-                if (!$data['ligt_vast']) {
-                    $this->ligt_vast = false;
-                } else {
-                    $this->ligt_vast = true;
-                }
+                
 
                 
 
             } else {
                 $this->goedgekeurd = null;
-                //  ligt_vast op 0 zetten
-                $this->ligt_vast = 0;
+                $this->ligt_vast = false;
+                $this->contract_ondertekend = false;
+                $this->ligt_vast = false;
+                $this->waarborg_betaald = false;
+                $this->huur_betaald = false;
             }
         }
 
@@ -384,7 +398,7 @@ class Reservatie extends Model {
 
         Validator::validateBothPhone($data['contact_gsm'], $this->contact_gsm, $errors);
 
-        if (strlen($data['info']) < 10) {
+        if (strlen($data['info']) < 10 && !$admin) {
             $errors[] = 'Geef wat meer info over jouw groep.';
         } else {
             $data['info'] = ucsentence($data['info']);
@@ -405,6 +419,31 @@ class Reservatie extends Model {
         return $errors;
     }
 
+    function sendContractMail() {
+        $leiding = Leiding::getLeiding('verhuur');
+        $verhuurder = 'website@scoutswetteren.be';
+        if (count($leiding) > 0) {
+            $verhuurder = $leiding[0]->mail;
+            $verhuurder_name = $leiding[0]->firstname.' '.$leiding[0]->lastname;
+        }
+
+        // Andere
+        $mail = new Mail('Uw verhuur aanvraag is goedgekeurd', 'huurder-goedgekeurd', array('reservatie' => $this, 'verhuurder' => $verhuurder));
+
+        $mail->addTo(
+            $this->contact_email, 
+            array(),
+            $this->contact_naam,
+            array(
+                array('email' => $verhuurder, 'name' => $verhuurder_name)
+            )
+        );
+
+        $mail->setReplyTo($verhuurder);
+
+        return $mail->send();
+    }
+
 
     // Slaat het object op (of voegt het toe)
     // En stelt huur en waarborg ook juist in, stuurt evt mail naar verantwoordelijke
@@ -416,14 +455,19 @@ class Reservatie extends Model {
         $groep = self::getDb()->escape_string($this->groep);
         $ligt_vast = self::getDb()->escape_string((int) $this->ligt_vast);
 
+        if (!isset($this->id)) {
+            $this->aanvraag_datum = new \DateTime();
+            $aanvraag_datum = self::getDb()->escape_string($this->aanvraag_datum->format('Y-m-d'));
+        }
+
         if (isset($this->leiding)) {
             // Simpel opslaan, enkel start, einde, leiding, groep + ligt_vast
             $leiding_id = self::getDb()->escape_string($this->leiding);
 
             if (!isset($this->id)) {
                 $query = "INSERT INTO 
-                    verhuur (`startdatum`,  `einddatum`, `leiding_id`, `groep`, `ligt_vast`)
-                    VALUES ('$startdatum', '$einddatum', '$leiding_id', '$groep', '$ligt_vast')";
+                    verhuur (`startdatum`,  `einddatum`, `leiding_id`, `groep`, `ligt_vast`, `aanvraag_datum`)
+                    VALUES ('$startdatum', '$einddatum', '$leiding_id', '$groep', '$ligt_vast', '$aanvraag_datum')";
             } else {
                 $id = self::getDb()->escape_string($this->id);
                 $query = "UPDATE verhuur 
@@ -459,30 +503,36 @@ class Reservatie extends Model {
             $huur_betaald = self::getDb()->escape_string((int) $this->huur_betaald);
             $waarborg_ingetrokken = self::getDb()->escape_string($this->waarborg_ingetrokken);
 
+            $goedgekeurd = 'NULL';
+            if (isset($this->goedgekeurd)) {
+                $goedgekeurd = "'".self::getDb()->escape_string((int) $this->goedgekeurd)."'";
+            }
+
+            if (!isset($this->contract_nummer) && $this->goedgekeurd === true) {
+                $aantal = self::getAantalInWeek($this->startdatum->format('W')) + 1;
+                $this->contract_nummer = substr($this->startdatum->format('o'), 2).$this->startdatum->format('W').'-'.$aantal;
+
+                if ($this->contract_ondertekend === false)
+                    $this->sendContractMail();
+            }
+
+            if (!isset($this->contract_nummer)) {
+                $contract_nummer = 'NULL';
+            }
+            else {
+                $contract_nummer = "'".self::getDb()->escape_string($this->contract_nummer)."'";
+            }
+
             if (empty($this->id)) {
+
                 $query = "INSERT INTO 
-                    verhuur (`startdatum`,`einddatum`,`personen`,`personen_tenten`,`groep`,`contact_naam`,`contact_email`,`contact_gsm`,`info`,`opmerkingen`,`waarborg`,`huur`,`ligt_vast`,  `contract_ondertekend`, `waarborg_betaald`, `huur_betaald`, `waarborg_ingetrokken`)
+                    verhuur (`contract_nummer`, `startdatum`,`einddatum`,`personen`,`personen_tenten`,`groep`,`contact_naam`,`contact_email`,`contact_gsm`,`info`,`opmerkingen`,`waarborg`,`huur`,`ligt_vast`,  `contract_ondertekend`, `waarborg_betaald`, `huur_betaald`, `waarborg_ingetrokken`, `goedgekeurd`, `aanvraag_datum`)
                     
-                    VALUES ('$startdatum','$einddatum','$personen','$personen_tenten','$groep','$contact_naam','$contact_email','$contact_gsm','$info','$opmerkingen', '$waarborg', '$huur', '$ligt_vast', '$contract_ondertekend', '$waarborg_betaald', '$huur_betaald', '$waarborg_ingetrokken')";
+                    VALUES ($contract_nummer, '$startdatum','$einddatum','$personen','$personen_tenten','$groep','$contact_naam','$contact_email','$contact_gsm','$info','$opmerkingen', '$waarborg', '$huur', '$ligt_vast', '$contract_ondertekend', '$waarborg_betaald', '$huur_betaald', '$waarborg_ingetrokken', $goedgekeurd, '$aanvraag_datum')";
             } else {
                 $id = self::getDb()->escape_string($this->id);
 
-                if (!isset($this->contract_nummer) && $this->goedgekeurd === true) {
-                    $aantal = self::getAantalInWeek($this->startdatum->format('W')) + 1;
-                    $this->contract_nummer = substr($this->startdatum->format('o'), 2).$this->startdatum->format('W').'-'.$aantal;
-                }
-
-                if (!isset($this->contract_nummer)) {
-                    $contract_nummer = 'NULL';
-                }
-                else {
-                    $contract_nummer = "'".self::getDb()->escape_string($this->contract_nummer)."'";
-                }
-
-                $goedgekeurd = 'NULL';
-                if (isset($this->goedgekeurd)) {
-                    $goedgekeurd = "'".self::getDb()->escape_string((int) $this->goedgekeurd)."'";
-                }
+                
 
                 $query = "UPDATE verhuur 
                     SET 
@@ -512,14 +562,16 @@ class Reservatie extends Model {
         }
 
         if (self::getDb()->query($query)) {
-            if (empty($this->id)) {
+            if (!isset($this->id) && !isset($this->goedgekeurd)) {
                 $this->id = self::getDb()->insert_id;
 
-                if (empty($this->leiding)) {
+                if (!isset($this->leiding)) {
                     // Mail voor verantwoordelijke
                     
                     $leiding = Leiding::getLeiding('verhuur');
+                    $verhuurder = 'website@scoutswetteren.be';
                     if (count($leiding) > 0) {
+                        $verhuurder = $leiding[0]->mail;
                         $mail = new Mail('Huur aanvraag van '.$this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
 
                         foreach ($leiding as $l) {
@@ -541,6 +593,8 @@ class Reservatie extends Model {
                         array(),
                         $this->contact_naam
                     );
+
+                    $mail->setReplyTo($verhuurder);
 
                     $mail->send();
 

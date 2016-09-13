@@ -1,0 +1,28 @@
+<div class="text">
+
+    <h1>Leiding</h1>
+    <p></p>
+
+    <a href="/admin/leiding/edit/" class="icon-button plus">Leider/ster toevoegen</a>
+
+
+    {% for group in groups %}
+        <h2>{{ group.name }}</h2>
+        <div class="list-bundle">
+        {% for leider in group.leiding %}
+            <article class="list">
+                <div class="merlot medium column">{{ leider.firstname }} {{ leider.lastname }}</div>
+                <div class="max  column">
+                    {% for permission in leider.permissions %}
+                        {{permission | capitalize }}
+                    {% endfor %}
+                </div>
+                <div class="last column">
+                    <a href="/admin/leiding/edit/{{ leider.id }}" class="button noborder">Aanpassen</a>
+                </div>
+            </article>
+        {% endfor %}
+        </div>
+    {% endfor %}
+</div>
+

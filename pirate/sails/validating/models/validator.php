@@ -4,28 +4,28 @@ use Pirate\Model\Model;
 
 class Validator extends Model {
     static function isValidFirstname($firstname) {
-        $pattern = '/^[\w ]+$/';
+        $pattern = '/^[A-zÀ-ÿ ]+$/';
         return (preg_match($pattern, $firstname) === 1);
     }
 
     static function isValidName($firstname) {
-        $pattern = '/^[\w ]+$/';
+        $pattern = '/^[A-zÀ-ÿ ]+$/';
         return (preg_match($pattern, $firstname) === 1);
     }
 
     // Bv 54e FOS
     static function isValidGroupName($firstname) {
-        $pattern = '/^[\w0-9\' ]+$/';
+        $pattern = '/^[A-zÀ-ÿ0-9\'\-,.\& ]+$/';
         return (preg_match($pattern, $firstname) === 1);
     }
 
     static function isValidLastname($lastname) {
-        $pattern = '/^[\w ]+$/';
+        $pattern = '/^[A-zÀ-ÿ ]+$/';
         return (preg_match($pattern, $lastname) === 1);
     }
 
     static function isValidTotem($totem) {
-        $pattern = '/^[\w ]+$/';
+        $pattern = '/^[A-zÀ-ÿ ]+$/';
         return (preg_match($pattern, $totem) === 1);
     }
 
@@ -257,13 +257,28 @@ class Validator extends Model {
     }
 
     static function validatePrice(&$in, &$out, &$errors) {
+        if (empty($in)) {
+            $in = '€ 0,00';
+            $out = 0;
+            return true;
+        }
         if (!self::isValidPrice($in)) {
             $errors[] = 'Ongeldige prijs';
             return false;
         }
+        $comma = strrpos($in, ',');
+        $point = strrpos($in, '.');
+        $separator = ',';
+        // Als geen komma, maar wel een punt:
+        // Punt gebruiken indien in laatste 2 characters
+        if ($comma == false && $point !== false) {
+            if ($point >= strlen($in) - 3) {
+                $separator = '.';
+            }
+        }
 
         // Alles buiten de komma en de getallen laten staan
-        $output = preg_replace('/[^0-9,]/', '', $in);
+        $output = preg_replace('/[^0-9'.$separator.']/', '', $in);
 
         $price = 0;
         $strlen = strlen( $output );
@@ -271,7 +286,7 @@ class Validator extends Model {
 
         for( $i = 0; $i < $strlen; $i++ ) {
             $char = substr( $output, $i, 1 );
-            if ($char != ',') {
+            if ($char != $separator) {
                 if ($comma == -1) {
                     $price = $price*10 + intval($char);
                 } else {

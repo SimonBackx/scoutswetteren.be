@@ -27,5 +27,5 @@ Huurprijs: € {{ reservatie.huur }}
 
 De prijs is enkel berekend op basis van het aangegevan aantal dagen en personen, maar kan wijzigen voor specifieke aanvragen. In dat geval ontvang je de juiste prijs van de verhuur verantwoordelijke. 
 
-Tot binnenkort,
+Misschien tot binnenkort,
 Scouts Prins Boudewijn Wetteren

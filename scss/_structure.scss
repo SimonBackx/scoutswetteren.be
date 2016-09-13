@@ -301,7 +301,12 @@ article.list {
         }
 
         &.medium {
-            min-width: 160px;
+            min-width: 180px;
+        }
+
+        &.large {
+            min-width: 300px;
+            text-align: right;
         }
 
         &.max {

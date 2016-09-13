@@ -1,9 +1,11 @@
 <form method="post">
     <div class="text">
         <header>
-            <h1>Mijn gegevens</h1>
+            <h1>{% if new %}Nieuw account toevoegen{% else %}{% if edit %}Gegevens van {{ leiding.firstname }}{% else %}Mijn gegevens{% endif %}{% endif %}</h1>
             {% if success %}<h2>Opgeslagen!</h2>{% endif %}
         </header>
+
+        {% if new %}<p>Vul hieronder de gegevens aan. Enkel de voornaam, achternaam, functies en e-mailadres zijn verplicht. Daarna krijgt de persoon in kwestie zelf een e-mail om de rest in te stellen.</p>{% endif %}
 
         <div class="splitted">
             <div class="part column first">
@@ -32,22 +34,48 @@
                 <label>GSM nummer</label>
                 <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw gsm nummer in">
 
+                {% if not edit %}
                 <label>Functies</label>
-                <ul>
-                    {% for functie in functies %}
-                        <li>{{ functie }}</li>
-                    {% else %}
-                       <li>Nog geen speciale functies gekregen</li> 
-                    {% endfor %}
-                </ul>
 
+                    <ul>
+                        {% for functie in functies %}
+                            <li>{{ functie }}</li>
+                        {% else %}
+                           <li>Nog geen speciale functies gekregen</li> 
+                        {% endfor %}
+                    </ul>
+                {% else %}
+
+                <label>Tak</label>
+                <label class="select-box">
+                    <select name="tak">
+                        <option value="">Geen leiding</option>
+                        {% for tak in takken %}
+                            <option value="{{ tak }}"{% if tak == leiding.tak %} selected{% endif %}>{{ tak | capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                {% endif %}
             </div>
 
         </div>
 
+        {% if edit %}
+            <label>Functies</label>
+            {% for code, permission in permissions %}
+                <input id="permission_{{ code | e('html_attr') }}" type="checkbox" name="permission_{{ code | e('html_attr') }}" value="1" {% if permission.checked %} checked{% endif %}>
+                <label for="permission_{{ code | e('html_attr') }}">{{ permission.name }}</label>
+            {% endfor %}
+        {% endif %}
+
         <footer>
             <input type="submit" class="aubergine fill" value="Opslaan">
-            <a href="/admin/wachtwoord-wijzigen" class="button merlot">Wachtwoord aanpassen</a>
+            {% if not edit %}
+                <a href="/admin/wachtwoord-wijzigen" class="button merlot">Wachtwoord aanpassen</a>
+            {% else %}
+                <a href="/admin/leiding/delete/{{ id }}" class="button merlot">Verwijderen</a>
+            {% endif %}
         </footer>
 
     </div>

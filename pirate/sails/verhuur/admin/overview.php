@@ -14,21 +14,56 @@ class Overview extends Page {
     function getContent() {
         $data = array();
 
+        $data_behandeling = array();
+
         $reservaties = Reservatie::getReservatiesOverview();
         foreach ($reservaties as $reservatie) {
             $group = array(
                 'name' => '',
                 'reservaties' => array()
             );
-            if (empty($reservatie->goedgekeurd )) {
-                $group['name'] = 'Nieuw';
-            } elseif ($reservatie->ligt_vast == 0) {
-                $group['name'] = 'In behandeling';
+            $today = new \DateTime();
+            $difference = $reservatie->startdatum->diff($today);
+            $days = $difference->days;
+
+            $difference = $today->diff($reservatie->aanvraag_datum);
+            $days_aanvraag = $difference->days;
+
+            if ($reservatie->goedgekeurd === null) {
+                $group['name'] = 'Nieuwe aanvraag';
+            } elseif (!$reservatie->contract_ondertekend) {
+                $group['name'] = 'Contract niet ondertekend';
+            } elseif (!$reservatie->ligt_vast) {
+                $group['name'] = 'Ligt niet vast in kalender';
+            } elseif (($days_aanvraag > 14 || $days < 14) && $reservatie->waarborg_betaald === false) {
+                $group['name'] = 'Waarborg nog niet betaald';
+            } elseif (!$reservatie->huur_betaald && $days < 30) {
+                $group['name'] = 'Huur nog niet betaald';
             } else {
-                $group['name'] = ucfirst(datetimeToMonthYear($reservatie->startdatum));
+                continue;
             }
 
-            if (!isset($data[count($data)-1]) || $data[count($data)-1]['name'] != $group['name']) {
+            if (!isset($data_behandeling[count($data_behandeling)-1]) || $data_behandeling[count($data_behandeling)-1]['name'] !== $group['name']) {
+                $data_behandeling[] = $group;
+            }
+
+            $data_behandeling[count($data_behandeling)-1]['reservaties'][] = $reservatie;
+            
+        }
+
+        foreach ($reservaties as $reservatie) {
+            $group = array(
+                'name' => '',
+                'reservaties' => array()
+            );
+
+            if ($reservatie->ligt_vast) {
+                $group['name'] = ucfirst(datetimeToMonthYear($reservatie->startdatum));
+            } else {
+                continue;
+            }
+
+            if (!isset($data[count($data)-1]) || $data[count($data)-1]['name'] !== $group['name']) {
                 $data[] = $group;
             }
 
@@ -36,8 +71,10 @@ class Overview extends Page {
             
         }
 
+
         return Template::render('verhuur/admin/overview', array(
-            'groups' => $data
+            'groups' => $data,
+            'in_behandeling' => $data_behandeling
         ));
     }
 }

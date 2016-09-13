@@ -5,15 +5,47 @@
 
     <a href="/admin/verhuur/reservatie/" class="icon-button plus">Reservatie manueel toevoegen</a>
 
+    <h1>Na te kijken</h1>
+    {% if in_behandeling | length > 0 %}
+        <div class="list-bundle">
+            {% for group in in_behandeling %}
+                {% for reservatie in group.reservaties %}
+                    <article class="list">
+                        <div class="medium merlot column">{{ reservatie.startdatum | date('j-m') }} tot {{ reservatie.einddatum | date('j-m-Y') }}</div>
+
+                        <div class="max column">{{ reservatie.groep }}</div>
+
+                        <div class="large merlot column">{{ group.name }}</div>
+
+                        <div class="last column">
+                            <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            {% endfor %}   
+        </div>
+    {% else %}
+        <p>Alles is in orde!</p>
+    {% endif %}
+    
+
+    <h1>Ligt vast</h1>
+    <p></p>
+
     {% for group in groups %}
-        <h1>{{ group.name }}</h1>
+        <h2>{{ group.name }}</h2>
         <div class="list-bundle">
         {% for reservatie in group.reservaties %}
             <article class="list">
-                <div class="medium merlot column">{{ reservatie.startdatum | date('d-m-Y') }} tot {{ reservatie.einddatum | date('d-m-Y') }}</div>
+                <div class="medium merlot column">{{ reservatie.startdatum | date('j-m') }} tot {{ reservatie.einddatum | date('j-m') }}</div>
+
                 <div class="max column">{{ reservatie.groep }}</div>
+                {% if reservatie.goedgekeurd is sameas(true) %}
+                     <div class="large merlot column">{% if not reservatie.waarborg_betaald %}Waarborg niet betaald{% endif %}</div>
+                {% endif %}
+
                 <div class="last column">
-                    <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken / aanpassen</a>
+                    <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken</a>
                 </div>
             </article>
         {% endfor %}

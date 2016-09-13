@@ -131,7 +131,7 @@ class Edit extends Page {
             if (count($errors) == 0) {
                 if ($reservatie->save()) {
                     $success = true;
-                    //header("Location: https://".$_SERVER['SERVER_NAME']."/admin/verhuur");
+                    header("Location: https://".$_SERVER['SERVER_NAME']."/admin/verhuur");
                 }
                 else
                     $errors[] = 'Probleem bij opslaan';

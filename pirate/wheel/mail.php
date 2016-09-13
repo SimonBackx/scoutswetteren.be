@@ -3,6 +3,7 @@ namespace Pirate\Mail;
 use Pirate\Template\Template;
 use SendGrid\Personalization;
 use SendGrid\Email;
+use SendGrid\ReplyTo;
 
 class Mail {
     private $sendgrid_mail = null;
@@ -25,7 +26,7 @@ class Mail {
         $this->sendgrid_mail->setFrom($email);
     }
 
-    function addTo($email, $substitutions = array(), $name = null) {
+    function addTo($email, $substitutions = array(), $name = null, $bcc = array()) {
         $personalization = new Personalization();
         $email = new Email($name, $email);
         $personalization->addTo($email);
@@ -34,7 +35,17 @@ class Mail {
             $personalization->addSubstitution("%$key%", $value);
         }
 
+        foreach ($bcc as $value) {
+            $personalization->addBcc(new Email($value['name'], $value['email']));
+        }
+
+
         $this->sendgrid_mail->addPersonalization($personalization);
+    }
+
+    function setReplyTo($email) {
+        $reply_to = new ReplyTo($email);
+        $this->sendgrid_mail->setReplyTo($reply_to);
     }
 
     function send() {

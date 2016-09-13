@@ -15,7 +15,11 @@ $admin_pages = array(
     'verhuur' => array(
          array('priority' => true, 'name' => 'Verhuur', 'url' => 'verhuur')
     ),
-    /*'groepsleiding' => array(
+    'groepsleiding' => array(
         array('name' => 'Leiding', 'url' => 'leiding')
-    )*/
+    )
+    ,
+    'webmaster' => array(
+        array('name' => 'Leiding', 'url' => 'leiding')
+    )
 );
