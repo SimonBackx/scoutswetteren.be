@@ -17,9 +17,8 @@ $admin_pages = array(
     ),
     'groepsleiding' => array(
         array('name' => 'Leiding', 'url' => 'leiding')
-    )
-    ,
-    'webmaster' => array(
-        array('name' => 'Leiding', 'url' => 'leiding')
+    ),
+    'financieel' => array(
+        array('priority' => true, 'name' => 'Afrekeningen', 'url' => 'afrekeningen')
     )
 );

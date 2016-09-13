@@ -35,7 +35,7 @@ class Validator extends Model {
     }
 
     static function isValidPrice($phone) {
-        $pattern = '/^[0-9,.€   ]+$/';
+        $pattern = '/^[\-0-9,.€   ]+$/';
         if (!(preg_match($pattern, $phone) === 1)) {
             return false;
         }
@@ -256,7 +256,7 @@ class Validator extends Model {
         return false;
     }
 
-    static function validatePrice(&$in, &$out, &$errors) {
+    static function validatePrice(&$in, &$out, &$errors, $allow_negative = false) {
         if (empty($in)) {
             $in = '€ 0,00';
             $out = 0;
@@ -278,14 +278,27 @@ class Validator extends Model {
         }
 
         // Alles buiten de komma en de getallen laten staan
-        $output = preg_replace('/[^0-9'.$separator.']/', '', $in);
+        $output = preg_replace('/[^0-9'.$separator.'\-]/', '', $in);
 
         $price = 0;
         $strlen = strlen( $output );
         $comma = -1;
+        $sign = 1;
 
         for( $i = 0; $i < $strlen; $i++ ) {
             $char = substr( $output, $i, 1 );
+            if ($char == '-') {
+                if ($i != 0) {
+                    $errors[] = 'Ongeldige prijs';
+                    return false;
+                } else {
+                    if (!$allow_negative) {
+                        $errors[] = 'Negatieve prijzen zijn niet toegelaten';
+                        return false;
+                    }
+                    $sign = -1;
+                }
+            }
             if ($char != $separator) {
                 if ($comma == -1) {
                     $price = $price*10 + intval($char);
@@ -297,9 +310,9 @@ class Validator extends Model {
             }
         }
 
-        $out = $price;
+        $out = $price*$sign;
 
-        $in = '€ '.money_format('%!.2n', $price);
+        $in = '€ '.money_format('%!.2n', $out);
 
         return false;
     }

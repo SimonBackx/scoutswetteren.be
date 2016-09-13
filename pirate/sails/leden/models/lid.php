@@ -21,7 +21,7 @@ class Lid extends Model {
     static private $scoutsjaar = null;
 
 
-    function __construct($row = array()) {
+    function __construct($row = array(), $inschrijving_object = null) {
         if (count($row) == 0) {
             return;
         }
@@ -40,7 +40,10 @@ class Lid extends Model {
         $this->geboortedatum = new \DateTime($row['geboortedatum']);
         $this->gsm = $row['gsm'];
 
-        if (!empty($row['inschrijving_id'])) {
+        if (!is_null($inschrijving_object)) {
+            $this->inschrijving = $inschrijving_object;
+        }
+        elseif (!empty($row['inschrijving_id'])) {
             $this->inschrijving = new Inschrijving($row, $this);
         } else {
             $this->inschrijving = null;
@@ -111,8 +114,8 @@ class Lid extends Model {
                 left join steekkaarten s on s.lid = l.id
                 left join gezinnen g on g.gezin_id = l.gezin
                 left join inschrijvingen i on i.lid = l.id
-                left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-            where i.scoutsjaar = "'.$scoutsjaar.'" and i.tak = "'.$tak.'" and i2.inschrijving_id is null';
+            where i.scoutsjaar = "'.$scoutsjaar.'" and i.tak = "'.$tak.'"';
+
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -121,6 +124,7 @@ class Lid extends Model {
                 }
             }
         }
+        
         return $leden;
     }
 

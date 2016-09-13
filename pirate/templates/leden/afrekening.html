@@ -40,7 +40,7 @@
                             </tr>
                             <tr>
                                 <td>Bedrag</td>
-                                <td>{{ afrekening.getTeBetalen() }}</td>
+                                <td>{{ afrekening.getNogTeBetalen() }}</td>
                             </tr>
                         </table>
                     </div>
@@ -55,15 +55,33 @@
                                 {% endfor %}
                             </tbody>
                             <tfoot>
-                                {% if afrekening.betaald_scouts > 0 %}
-                                <tr>
-                                    <td>Verminderd lidgeld</td>
-                                    <td>- {{ afrekening.getBetaaldScouts() }}</td>
-                                </tr>
-                                {% endif %}
                                 <tr>
                                     <td>Totaal</td>
-                                    <td>{{ afrekening.getTeBetalen() }}</td>
+                                    <td>{{ afrekening.getTotaal() }}</td>
+                                </tr>
+
+                                {% if afrekening.betaald_scouts > 0 %}
+                                    <tr>
+                                        <td>Verminderd lidgeld</td>
+                                        <td>- {{ afrekening.getBetaaldScouts() }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if afrekening.betaald_overschrijving > 0 %}
+                                    <tr>
+                                        <td>Overgeschreven</td>
+                                        <td>- {{ afrekening.getBetaaldOverschrijving() }}</td>
+                                    </tr>
+                                {% endif %}
+                                {% if afrekening.betaald_cash > 0 %}
+                                    <tr>
+                                        <td>Cash betaald</td>
+                                        <td>- {{ afrekening.getBetaaldCash() }}</td>
+                                    </tr>
+                                {% endif %}
+
+                                <tr>
+                                    <td>Te betalen</td>
+                                    <td>{{ afrekening.getNogTeBetalen() }}</td>
                                 </tr>
                             </tfoot>
                         </table>

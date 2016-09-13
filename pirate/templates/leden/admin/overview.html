@@ -3,12 +3,21 @@
     <h1>Inschrijvingen</h1>
     <p>Binnenkort wordt het ook mogelijk om steekkaarten en ledenlijsten af te drukken.</p>
 
-    <h2>Betalen van het lidgeld</h2>
-    <p>Alle ouders kregen zelf duidelijke instructies bij het inschrijven hoe ze het lidgeld kunnen betalen. Als ze dit niet meer vinden: ze kregen dit ook via e-mail. Ze kunnen dit doen door over te schrijven (enkel met juiste mededeling) of door aan de takleiding cash te betalen.</p><p>De takleiding moet dit hieronder <strong>meteen</strong> aanduiden. Bij overschrijvingen doet de financieel verantwoordelijke dit.</p>
+    <form>
+        <input id="info_tonen" type="checkbox" value="1">
+        <label for="info_tonen">Toon meer info</label>
 
-    <h2>Verminderd lidgeld</h2>
-    <p>Bij leden met verminderd lidgeld, moet via een huisbezoek worden bekeken tot hoever de steun van de scouts reikt. Dit moet altijd discreet gebeuren. De scouts betaalt in dat geval sowieso voor het inschrijvingsgeld. Verplicht te lezen voor deze leiding: <a href="https://www.scoutsengidsenvlaanderen.be/publicatie/scouting-op-maat">Scouting op maat</a></p>
-    
+        <div class="checkbox-controllable">
+            <div class="visible-when-checked">
+                <h2>Betalen van het lidgeld</h2>
+                <p>Alle ouders kregen zelf duidelijke instructies bij het inschrijven hoe ze het lidgeld kunnen betalen. Als ze dit niet meer vinden: ze kregen dit ook via e-mail. Ze kunnen dit doen door over te schrijven (enkel met juiste mededeling) of door aan de takleiding cash te betalen.</p><p>De takleiding moet dit hieronder <strong>meteen</strong> aanduiden. Bij overschrijvingen doet de financieel verantwoordelijke dit.</p>
+
+                <h2>Verminderd lidgeld</h2>
+                <p>Bij leden met verminderd lidgeld, moet via een huisbezoek worden bekeken tot hoever de steun van de scouts reikt. Dit moet altijd discreet gebeuren. De scouts betaalt in dat geval sowieso voor het inschrijvingsgeld. Verplicht te lezen voor deze leiding: <a href="https://www.scoutsengidsenvlaanderen.be/publicatie/scouting-op-maat">Scouting op maat</a></p>
+            </div>
+        </div>
+       
+    </form>
     <h1>Ingeschreven {{ tak }}</h1>
     <div class="list-bundle">
     {% for lid in leden %}
@@ -18,8 +27,8 @@
                 {% if lid.gezin.scouting_op_maat %}
                     Lid met verminderd lidgeld - ga op huisbezoek!
                 {% else %}
-                    {% if lid.inschrijving.betaald < lid.inschrijving.prijs and lid.inschrijving.betaald_door_scouts < lid.inschrijving.prijs %}
-                            Lidgeld nog niet betaald
+                    {% if not lid.inschrijving.isBetaald %}
+                            Lidgeld nog niet betaald ({{ lid.inschrijving.getTeBetalen }})
                     {% else %}
                         {% if lid.steekkaart.laatst_nagekeken is empty %}
                             Steekkaart nog niet ingevuld
@@ -28,6 +37,10 @@
                 {% endif %}
             </div>
             <div class="last column">
+                {% if lid.inschrijving.betaald < lid.inschrijving.prijs and lid.inschrijving.betaald_door_scouts < lid.inschrijving.prijs %}
+                    <a href="/admin/inschrijvingen/betalen/{{ lid.id }}" class="aubergine button noborder">cash betalen</a>
+
+                {% endif %}
                 <a href="/admin/inschrijvingen/lid/{{ lid.id }}" class="button noborder">Steekkaart</a>
             </div>
         </article>

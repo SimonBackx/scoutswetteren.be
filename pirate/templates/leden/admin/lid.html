@@ -15,6 +15,9 @@
             <p>Gezinssituatie: {% if lid.gezin.gezinssituatie | length > 0 %}{{ lid.gezin.gezinssituatie }}{% else %}/{% endif %}</p>
         </div>
     </div>
+    <h1>Lidgeld</h1>
+    <p>Je kan een overzicht vinden van het betaalde lidgeld via onderstaande knop.</p>
+    <div><a href="/admin/afrekeningen/{{ lid.inschrijving.afrekening }}?inschrijvingen" class="aubergine button">Betalingsoverzicht</a></div>
     <h1>Ouders</h1>
     {% for ouder in ouders %}
         <h2>{{ouder.voornaam}} {{ouder.achternaam}} ({{ouder.titel}})</h2>

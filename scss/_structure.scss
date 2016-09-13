@@ -353,10 +353,10 @@ table.details {
         tr {
             td {
                 padding-top: 15px;
+                font-weight: bold;
             }
             td:first-child{
                 text-transform: uppercase;
-                text-align: right;
             }
         }
     }
@@ -366,9 +366,18 @@ table.details {
                 text-align: right;
             }
             td:first-child {
+
                 @media screen and (max-width: $width-stop-splitted), print {
                     text-align: left;
                 }
+            }
+        }
+    }
+
+    &.last-right {
+        tr {
+            td:last-child {
+                text-align: right;
             }
         }
     }

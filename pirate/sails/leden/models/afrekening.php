@@ -10,6 +10,7 @@ class Afrekening extends Model {
     public $id;
     public $gezin; //id
     public $betaald_cash;
+
     public $betaald_scouts;
     public $betaald_overschrijving;
     public $totaal;
@@ -34,11 +35,92 @@ class Afrekening extends Model {
         $this->inschrijvingen = array();
     }
 
-    function getTeBetalen() {
-        return '€ '.money_format('%!.2n', $this->totaal - $this->betaald_scouts);
+    function getTotaal() {
+        return '€ '.money_format('%!.2n', $this->totaal);
     }
     function getBetaaldScouts() {
         return '€ '.money_format('%!.2n', $this->betaald_scouts);
+    }
+    
+    function getBetaaldOverschrijving() {
+        return '€ '.money_format('%!.2n', $this->betaald_overschrijving);
+    }
+
+    function getBetaaldCash() {
+        return '€ '.money_format('%!.2n', $this->betaald_cash);
+    }
+
+    function isBetaald() {
+        return 
+        (   $this->totaal 
+            - $this->getBetaaldTakken()
+            - $this->betaald_cash 
+            - $this->betaald_overschrijving 
+            - $this->betaald_scouts) 
+        < 0.005;
+    }
+
+    function getBetaaldTakken() {
+        $betaald_cash_takken = 0;
+        foreach ($this->inschrijvingen as $inschrijving) {
+            $betaald_cash_takken += $inschrijving->betaald_cash;
+        }
+        return $betaald_cash_takken;
+    }
+
+    function getNogTeBetalenFloat() {
+        return $this->totaal - $this->getBetaaldTakken() - $this->betaald_cash - $this->betaald_overschrijving - $this->betaald_scouts;
+    }
+
+    function getNogTeBetalen() {
+        return '€ '.money_format('%!.2n', $this->getNogTeBetalenFloat());
+    }
+
+    // True on success
+    function betaalMetOverschrijving(string &$bedrag, &$message, &$errors, $cash = false) {
+        $out = 0;
+        Validator::validatePrice($bedrag, $out, $errors, true);
+
+        if (count($errors) == 0) {
+            // Alle te betalen leden overlopen, en gaten zo goed mogelijk proberen op te vullen
+
+            if ($cash) {
+                $this->betaald_cash += $out;
+            } else {
+                $this->betaald_overschrijving += $out;
+            }
+
+            $betaald_totaal = $this->betaald_overschrijving + $this->betaald_scouts + $this->getBetaaldTakken() + $this->betaald_cash;
+            $te_veel = $betaald_totaal - $this->totaal;
+
+
+            // terugstorting
+            if ($out < 0) {
+                if ($betaald_totaal < 0) {
+                    $errors[] = 'Je kan niet meer terugstorten dan en betaald is geweest.';
+                    return false;
+                }
+            }
+            
+            $okay = $this->save();
+
+            if (!$okay) {
+                $errors[] = 'Er ging iets mis bij het registreren van de betaling bij de inschrijvingen';
+                return false;
+            }
+
+            if ($te_veel > 0) {
+                $message = 'Er werd in totaal te veel lidgeld betaald door dit gezin. Gelieve dit te corrigeren en terug te storten en de ouders te verwittigen.';
+                
+            } elseif ($te_veel == 0){
+                $message = 'Hoera, de afrekening is in orde.';
+            } else {
+                $message = 'Het lidgeld is nog niet volledig betaald door de ouders.';
+            }
+            return true;
+        }
+
+        return false;
     }
 
     function setGezin(Gezin $gezin) {
@@ -67,12 +149,44 @@ class Afrekening extends Model {
                 $afrekening = new Afrekening($row);
                 $result->data_seek(0);
                 while ($row = $result->fetch_assoc()) {
-                    $afrekening->addInschrijving(new Inschrijving($row));
+                    $afrekening->addInschrijving(new Inschrijving($row, null));
                 }
                 return $afrekening;
             }
         }
         return null;
+    }
+
+    // enkel onbetaalde of in huidge scoutsjaar (geordend op onbetaald)
+    static function getAfrekeningen() {
+        $jaar = self::getDb()->escape_string(Lid::getScoutsjaar());
+
+        $query = '
+            SELECT a.*, i.*, l.* from afrekeningen a
+                left join inschrijvingen i on i.afrekening = a.afrekening_id
+                left join leden l on i.lid = l.id
+            where i.scoutsjaar = "'.$jaar.'"';
+
+        $afrekeningen = array();
+        
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows >= 1){
+                $last_id = -1;
+
+                while ($row = $result->fetch_assoc()) {
+                    $afrekening = new Afrekening($row);
+
+                    if ($afrekening->id != $last_id) {
+                        $last_id = $afrekening->id;
+                        $afrekeningen[] = $afrekening;
+                    } else {
+                        $afrekening = $afrekeningen[count($afrekeningen) - 1];
+                    }
+                    $afrekening->addInschrijving(new Inschrijving($row, null));
+                }
+            }
+        }
+        return $afrekeningen;
     }
 
     function getMededeling() {
@@ -154,6 +268,54 @@ class Afrekening extends Model {
         self::getDb()->autocommit(true);
 
         return null;
+    }
+
+    function save() {
+        if (!isset($this->id)) {
+            self::getDb()->autocommit(true); // nodig voor aanroep in inschrijving->save()
+            return false;
+        }
+
+        $id = self::getDb()->escape_string($this->id);
+
+        $betaald_scouts = self::getDb()->escape_string($this->betaald_scouts);
+        $betaald_overschrijving = self::getDb()->escape_string($this->betaald_overschrijving);
+        $betaald_cash = self::getDb()->escape_string($this->betaald_cash);
+
+
+        $query = "UPDATE afrekeningen 
+                SET 
+                 `betaald_cash` = '$betaald_cash',
+                 `betaald_overschrijving` = '$betaald_overschrijving',
+                 `betaald_scouts` = '$betaald_scouts'
+                 where `afrekening_id` = '$id'
+            ";
+
+        self::getDb()->autocommit(false);
+        if (!self::getDb()->query($query)) {
+             self::getDb()->autocommit(true);
+            return false;
+        }
+
+        $oke = 0;
+        if ($this->isBetaald()) {
+            $oke = 1;
+        }
+        $query = "UPDATE inschrijvingen 
+                SET 
+                 `afrekening_oke` = $oke
+                 where `afrekening` = '$id'
+            ";
+
+        if (!self::getDb()->query($query)) {
+            self::getDb()->rollback();
+            self::getDb()->autocommit(true);
+            return false;
+        }
+
+        self::getDb()->commit();
+        self::getDb()->autocommit(true);
+        return true;
     }
 
 }

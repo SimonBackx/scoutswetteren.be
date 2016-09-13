@@ -1,0 +1,67 @@
+ <div class="text">
+    <h1>Afrekening {{ afrekening.id }}</h1>
+    <p>{{ afrekening.mededeling }}</p>
+    
+    <table class="details last-right">
+        <tbody>
+            {% for inschrijving in afrekening.inschrijvingen %}
+                <tr>
+                    <td>{{ inschrijving.lid.voornaam }} {{ inschrijving.lid.achternaam }} ({{inschrijving.tak}})</td>
+                    <td>
+                        {% if inschrijving.isBetaald %}
+                            (ok)
+                        {% endif %}
+                        {{ inschrijving.getPrijs() }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>Totaal</td>
+                <td>{{ afrekening.getTotaal() }}</td>
+            </tr>
+
+            {% if afrekening.betaald_scouts > 0 %}
+                <tr>
+                    <td>Verminderd lidgeld</td>
+                    <td>- {{ afrekening.getBetaaldScouts() }}</td>
+                </tr>
+            {% endif %}
+            {% if afrekening.betaald_overschrijving > 0 %}
+                <tr>
+                    <td>Overgeschreven</td>
+                    <td>- {{ afrekening.getBetaaldOverschrijving() }}</td>
+                </tr>
+            {% endif %}
+            {% for inschrijving in afrekening.inschrijvingen %}
+                {% if inschrijving.betaald_cash > 0 %}
+                    <tr>
+                        <td>Cash {{ inschrijving.lid.voornaam }} {{ inschrijving.lid.achternaam }}</td>
+                        <td>- {{ inschrijving.getBetaaldCash() }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% if afrekening.betaald_cash > 0 %}
+                <tr>
+                    <td>Cash betaald</td>
+                    <td>- {{ afrekening.getBetaaldCash() }}</td>
+                </tr>
+            {% endif %}
+
+            <tr>
+                <td>Te betalen</td>
+                <td>{{ afrekening.getNogTeBetalen() }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <footer>
+        {% if from_inschrijvingen %}
+            <a href="/admin/inschrijvingen" class="merlot button">Terug</a>
+        {% else %}
+            <a href="/admin/afrekeningen/betalen/{{ afrekening.id }}" class="fill merlot button">Betalen</a>
+            <a href="/admin/afrekeningen" class="merlot button">Terug</a>
+        {% endif %}
+    </footer>
+</div>

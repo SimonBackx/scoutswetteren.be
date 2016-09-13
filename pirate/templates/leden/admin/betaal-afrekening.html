@@ -1,0 +1,39 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+             <header>
+                <h1>Overschrijving opgeslagen</h1>
+                <h2>{{ message }}</h2>
+            </header>
+            <footer>
+                <a href="/admin/afrekeningen/{{ afrekening.id | e('html_attr') }}" class="button merlot">Terug</a>
+            </footer>
+        {% else %}
+             <header>
+                <h1>Met welk bedrag werd er overgeschreven?</h1>
+                <h2>{{ afrekening.mededeling }}</h2>
+            </header>
+            <p>Geef negatief getal op voor terugstorting.</p>
+
+            {% if errors|length > 0 %}
+                <ul class="error">
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <label>Bedrag</label>
+            <input type="text" name="price" value="{{ prijs }}" placeholder="Vul het bedrag in">
+
+            <input id="cash_betaald" type="checkbox" value="1" name="cash">
+            <label for="cash_betaald">Cash betaald aan scouts (niet aan takleiding!)</label>
+
+
+            <footer>
+                <input type="submit" class="aubergine fill" value="Opslaan">
+                <a href="/admin/afrekeningen/{{ afrekening.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+            </footer>
+        {% endif %}
+    </div>
+</form>

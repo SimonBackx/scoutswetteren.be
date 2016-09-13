@@ -217,6 +217,10 @@ class Ouder extends Model {
                 $row = $result->fetch_assoc();
                 $hash = $row['password'];
 
+                if (!isset($hash)) {
+                    return false;
+                }
+
                 // hash_equals kijkt of beide argumenten gelijk zijn
                 // Maar hash_equals is time safe, het duurt dus even lang om gelijke 
                 // en ongelijke argumenten te vergelijken
