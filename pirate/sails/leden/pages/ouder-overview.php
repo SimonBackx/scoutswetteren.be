@@ -94,7 +94,7 @@ class OuderOverview extends Page {
                 $this->redirect = "ouders/afrekening/".$afrekening->id.'/?klaar';
                 return 302;
             } else {
-                echo 'afrekenen mislukt';
+                echo 'Het afrekenen is mislukt. Neem contact op met website@scoutswetteren.be om de afrekening in orde te maken (voor het betalen van het lidgeld).';
             }
         }
 
@@ -118,11 +118,14 @@ class OuderOverview extends Page {
         }
         $user = Ouder::getUser();
         $ouders = Ouder::getOudersForGezin($user->gezin);
+        $afrekeningen = Afrekening::getAfrekeningenForGezin($user->gezin);
+
         
         return Template::render('leden/ouder-overview', array(
             'leden' => $leden_ingeschreven,
             'niet_ingeschreven_aantal' => $niet_ingeschreven_aantal,
             'ouder' => $user,
+            'afrekeningen' => $afrekeningen,
             'gezin' => $user->gezin,
             'ouders' => $ouders
         ));

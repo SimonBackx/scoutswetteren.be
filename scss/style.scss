@@ -53,11 +53,13 @@ body, html {
     left: 0;
     right: 0;
     top: 60px;
-    z-index: 1000;
     background: $merlot;
     padding: 20px;
     text-align: center;
     color: white;
+}
+noscript .ie-only {
+    display: block;
 }
 
 // Voor sticky footer

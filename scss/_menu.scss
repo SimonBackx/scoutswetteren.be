@@ -171,6 +171,7 @@
         height: 60px;
         padding: 0 20px;
         line-height: 60px;
+        cursor: pointer;
 
         .admin-menu {
             display: none;
@@ -180,6 +181,7 @@
             top: 50px;
             padding: 10px;
             line-height: normal;
+            cursor: default;
 
             .content {
                 width: 350px;
@@ -225,7 +227,7 @@
             }
         }
 
-        &:hover {
+        &.open {
             .admin-menu {
                 display: block;
             }

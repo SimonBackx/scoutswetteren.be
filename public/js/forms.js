@@ -1,4 +1,24 @@
+var did_click_popup = false;
+
 $( document ).ready(function() {
+    $(document).mouseup(function() {
+        if (!did_click_popup) {
+             $('#menu .admin').removeClass('open');
+        }
+        did_click_popup = false;
+    });
+
+    $('#menu .admin').on('mousedown touch', function(event) {
+        if (!did_click_popup) {
+            did_click_popup = true;
+            $(this).toggleClass('open');
+        }
+    });
+
+    $('#menu .admin .admin-menu').mousedown(function() {
+        did_click_popup = true;
+    });
+
     $('#smartphone-menu-button').on('click touch', function(event) {
         event.preventDefault();
         $('#smartphone-menu-items').html($('#menu .items .visible').html());

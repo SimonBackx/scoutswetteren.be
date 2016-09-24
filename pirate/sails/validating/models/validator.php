@@ -4,12 +4,12 @@ use Pirate\Model\Model;
 
 class Validator extends Model {
     static function isValidFirstname($firstname) {
-        $pattern = '/^[A-zÀ-ÿ ]+$/';
+        $pattern = '/^[A-zÀ-ÿ\'\- ]+$/';
         return (preg_match($pattern, $firstname) === 1);
     }
 
     static function isValidName($firstname) {
-        $pattern = '/^[A-zÀ-ÿ ]+$/';
+        $pattern = '/^[A-zÀ-ÿ\'\- ]+$/';
         return (preg_match($pattern, $firstname) === 1);
     }
 
@@ -20,22 +20,22 @@ class Validator extends Model {
     }
 
     static function isValidLastname($lastname) {
-        $pattern = '/^[A-zÀ-ÿ ]+$/';
+        $pattern = '/^[A-zÀ-ÿ\'\- ]+$/';
         return (preg_match($pattern, $lastname) === 1);
     }
 
     static function isValidTotem($totem) {
-        $pattern = '/^[A-zÀ-ÿ ]+$/';
+        $pattern = '/^[A-zÀ-ÿ\'\- ]+$/';
         return (preg_match($pattern, $totem) === 1);
     }
 
     static function isValidPhone($phone) {
-        $pattern = '/^[0-9  +().\/]+$/';
+        $pattern = '/^[0-9  +().\/\']+$/';
         return (preg_match($pattern, $phone) === 1);
     }
 
     static function isValidPrice($phone) {
-        $pattern = '/^[\-0-9,.€   ]+$/';
+        $pattern = '/^[\-0-9,.€\'   ]+$/';
         if (!(preg_match($pattern, $phone) === 1)) {
             return false;
         }

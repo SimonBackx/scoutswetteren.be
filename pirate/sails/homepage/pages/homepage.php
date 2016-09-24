@@ -22,13 +22,13 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
-                    'title' => 'Startdag 2016',
-                    'text' => 'Zondag 11 september vliegen we er weer in vanaf 14 uur! En vrijdag 9 september om 19 uur kan je komen genieten van lekkere streekbieren of frisdranken op onze streekbieravond.'
-                ),
-                array(
                     'title' => 'Een nieuwe huisstijl!',
                     'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning vind je nu altijd terug op de startpagina',
                     'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/09/09/nieuwe-huisstijl-en-online-inschrijven')
+                ),
+                array(
+                    'title' => 'Startdag 2016',
+                    'text' => 'Zondag 11 september vliegen we er weer in vanaf 14 uur! En vrijdag 9 september om 19 uur kan je komen genieten van lekkere streekbieren of frisdranken op onze streekbieravond.'
                 )
             ),
             'call_to_action' => array(

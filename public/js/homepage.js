@@ -3,7 +3,6 @@ var maandTekst = ["Januari", "Februari", "Maart", "April", "Mei", "Juni",
 ];
 
 var search_timeout = null;
-var did_click_popup = false;
 
 $( document ).ready(function() {
     bindMaandplanning();
@@ -67,9 +66,7 @@ $( document ).ready(function() {
         }
     });
 
-    $(document).mouseup(function() {
-        did_click_popup = false;
-    });
+
 
     $('.search-box').mousedown(function() {
         did_click_popup = true;

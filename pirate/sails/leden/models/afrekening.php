@@ -165,7 +165,8 @@ class Afrekening extends Model {
             SELECT a.*, i.*, l.* from afrekeningen a
                 left join inschrijvingen i on i.afrekening = a.afrekening_id
                 left join leden l on i.lid = l.id
-            where i.scoutsjaar = "'.$jaar.'"';
+             where a.oke = 0 or i.scoutsjaar = "'.$jaar.'"
+             order by a.oke, a.afrekening_id';
 
         $afrekeningen = array();
         
@@ -189,8 +190,41 @@ class Afrekening extends Model {
         return $afrekeningen;
     }
 
+    static function getAfrekeningenForGezin(Gezin $gezin) {
+        $gezin = self::getDb()->escape_string($gezin->id);
+
+        $query = '
+            SELECT a.*, i.*, l.* from afrekeningen a
+                left join inschrijvingen i on i.afrekening = a.afrekening_id
+                left join leden l on i.lid = l.id
+            where a.gezin = "'.$gezin.'" 
+            order by i.scoutsjaar desc, a.afrekening_id';
+
+        $afrekeningen = array();
+        
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows >= 1){
+                $last_id = -1;
+
+                while ($row = $result->fetch_assoc()) {
+                    $afrekening = new Afrekening($row);
+
+                    if ($afrekening->id != $last_id) {
+                        $last_id = $afrekening->id;
+                        $afrekeningen[] = $afrekening;
+                    } else {
+                        $afrekening = $afrekeningen[count($afrekeningen) - 1];
+                    }
+                    $afrekening->addInschrijving(new Inschrijving($row, null));
+                }
+            }
+        }
+
+        return $afrekeningen;
+    }
+
     function getMededeling() {
-        return strtoupper('Lidgeld '.$this->id.' '.$this->mededeling);
+        return mb_strtoupper('Lidgeld '.$this->id.' '.$this->mededeling, 'UTF-8');
     }
 
     static function createForInschrijvingen($inschrijvingen) {
@@ -202,6 +236,7 @@ class Afrekening extends Model {
         $ids = array();
         $achternamen = array();
         $betaald_scouts = 0;
+        $jaar = -1;
 
         foreach ($inschrijvingen as $inschrijving) {
             $ids[] = "'".self::getDb()->escape_string($inschrijving->id)."'";
@@ -209,17 +244,31 @@ class Afrekening extends Model {
             if (!in_array($inschrijving->lid->achternaam, $achternamen)) {
                 $achternamen[] = $inschrijving->lid->achternaam;
             }
-            $betaald_scouts += $inschrijving->betaald_door_scouts;
+
+            if ($jaar == -1) {
+                $jaar = $inschrijving->scoutsjaar;
+            }
+            if ($jaar != $inschrijving->scoutsjaar) {
+                return null;
+            }
 
             if (is_null($gezin)) {
-                $gezin = $inschrijving->lid->gezin->id;
+                $gezin = $inschrijving->lid->gezin;
             } else {
-                if ($gezin != $inschrijving->lid->gezin->id) {
+                if ($gezin->id != $inschrijving->lid->gezin->id) {
                     // gezinnen verschillend van de inschrijving
                     // onmogelijk!
                     return null;
                 }
             }
+        }
+
+        if (is_null($gezin)) {
+            return null;
+        }
+
+        if ($gezin->scouting_op_maat) {
+            $betaald_scouts = $totaal;
         }
 
         $mededeling = implode('/', $achternamen);
@@ -235,8 +284,9 @@ class Afrekening extends Model {
         $betaald_scouts = self::getDb()->escape_string($betaald_scouts);
 
         $afrekening->gezin = $gezin;
-        $gezin = self::getDb()->escape_string($gezin);
+        $gezin = self::getDb()->escape_string($gezin->id);
         $afrekening->totaal = $totaal;
+        $totaal = self::getDb()->escape_string($totaal);
         
         $query = "INSERT INTO 
                 afrekeningen (`mededeling`, `betaald_scouts`, `totaal`,  `gezin`)
@@ -282,12 +332,17 @@ class Afrekening extends Model {
         $betaald_overschrijving = self::getDb()->escape_string($this->betaald_overschrijving);
         $betaald_cash = self::getDb()->escape_string($this->betaald_cash);
 
+        $oke = 0;
+        if ($this->isBetaald()) {
+            $oke = 1;
+        }
 
         $query = "UPDATE afrekeningen 
                 SET 
                  `betaald_cash` = '$betaald_cash',
                  `betaald_overschrijving` = '$betaald_overschrijving',
-                 `betaald_scouts` = '$betaald_scouts'
+                 `betaald_scouts` = '$betaald_scouts',
+                 `oke` = $oke
                  where `afrekening_id` = '$id'
             ";
 
@@ -297,10 +352,7 @@ class Afrekening extends Model {
             return false;
         }
 
-        $oke = 0;
-        if ($this->isBetaald()) {
-            $oke = 1;
-        }
+
         $query = "UPDATE inschrijvingen 
                 SET 
                  `afrekening_oke` = $oke

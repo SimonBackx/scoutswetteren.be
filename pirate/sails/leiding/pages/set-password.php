@@ -48,8 +48,8 @@ class SetPassword extends Page {
                 } elseif ($_POST['password'] != $_POST['password-repeated']) {
                     $errors[] = 'Wachtwoorden komen niet overeen, probeer het opnieuw.';
                 } else {
-                    if (strlen($_POST['password']) < 10) {
-                        $errors[] = 'Wachtwoord moet minimum 10 lang zijn.';
+                    if (strlen($_POST['password']) < 8) {
+                        $errors[] = 'Wachtwoord moet minimum 8 lang zijn.';
                     } else {
                         if (!$leiding->changePassword($_POST['password'])) {
                             $errors[] = 'Er ging iets mis. Contacteer de webmaster';

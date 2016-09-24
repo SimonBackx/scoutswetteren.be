@@ -6,7 +6,7 @@
                 <h2>{{ message }}</h2>
             </header>
             <footer>
-                <a href="/admin/afrekeningen/{{ afrekening.id | e('html_attr') }}" class="button merlot">Terug</a>
+                <a href="/admin/afrekeningen" class="button merlot">Terug</a>
             </footer>
         {% else %}
              <header>
@@ -32,7 +32,7 @@
 
             <footer>
                 <input type="submit" class="aubergine fill" value="Opslaan">
-                <a href="/admin/afrekeningen/{{ afrekening.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+                <a href="/admin/afrekeningen" class="button merlot">Annuleren</a>
             </footer>
         {% endif %}
     </div>

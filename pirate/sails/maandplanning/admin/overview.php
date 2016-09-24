@@ -83,7 +83,7 @@ class Overview extends Page {
             $months = 1;
 
             // Eerste 2 maand
-            while ($months <= 2) {
+            while ($months <= 3) {
                 $has_events = false;
 
                 // Kijken of we evenementen hebben voor $day die we nog niet hebben gefiltert

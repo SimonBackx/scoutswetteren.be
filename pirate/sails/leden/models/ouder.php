@@ -66,14 +66,14 @@ class Ouder extends Model {
         }
 
         if (Validator::isValidFirstname($data['voornaam'])) {
-            $this->voornaam = ucwords($data['voornaam']);
+            $this->voornaam = ucwords(mb_strtolower($data['voornaam']));
             $data['voornaam'] = $this->voornaam;
         } else {
             $errors[] = 'Ongeldige voornaam';
         }
 
         if (Validator::isValidLastname($data['achternaam'])) {
-            $this->achternaam = ucwords($data['achternaam']);
+            $this->achternaam = ucwords(mb_strtolower($data['achternaam']));
             $data['achternaam'] = $this->achternaam;
         } else {
             $errors[] = 'Ongeldige achternaam';
@@ -90,7 +90,7 @@ class Ouder extends Model {
 
 
         if (Validator::isValidAddress($data['adres'])) {
-            $this->adres = ucwords($data['adres']);
+            $this->adres = ucwords(mb_strtolower($data['adres']));
             $data['adres'] = $this->adres;
         } else {
             $errors[] = 'Ongeldig adres';
@@ -174,8 +174,7 @@ class Ouder extends Model {
 
     private function passwordEncrypt($password){
         // Voor de eerste keer password hash maken
-        $salt = '$2y$10$' . strtr(base64_encode(\mcrypt_create_iv(16, MCRYPT_DEV_RANDOM)), '+', '.'). '$';
-        return crypt($password, $salt);
+        return password_hash($password, PASSWORD_BCRYPT);
     }
 
     private static function generateToken() {
@@ -225,7 +224,7 @@ class Ouder extends Model {
                 // Maar hash_equals is time safe, het duurt dus even lang om gelijke 
                 // en ongelijke argumenten te vergelijken
                 // Meer info: http://blog.ircmaxell.com/2014/11/its-all-about-time.html
-                if (hash_equals(crypt($password, $hash), $hash)) {
+                if (password_verify($password, $hash)) {
 
                     // Inloggen is gelukt, dat stellen we in zodat
                     // volgende calls dit object kunnen gebruiken
@@ -263,7 +262,7 @@ class Ouder extends Model {
 
     // returns if password is correct
     function confirmPassword($password) {
-        if (hash_equals(crypt($password, $this->password), $this->password)) {
+        if (password_verify($password, $this->password)) {
             return true;
         }
         return false;
@@ -282,7 +281,7 @@ class Ouder extends Model {
 
         // Geldigheid controleren
         
-        if (strlen($new) < 10) {
+        if (strlen($new) < 8) {
             return false;
         }
         
@@ -293,6 +292,7 @@ class Ouder extends Model {
         if (!self::getDb()->query($query)) {
             return false;
         }
+
         self::$currentToken = null;
         self::createToken();
 

@@ -140,7 +140,7 @@
                             </div>
                         {% endfor %}
                         <button class="icon-button delete delete-count"{% if leden | length <= 1 %} style="display: none;"{% endif %}>Lid verwijderen</button>
-                        <button class="icon-button plus add-count" data-field="leden" data-move="achternaam" data-max="10"{% if leden | length >= 10 %} style="display: none;"{% endif %}>Broer of zus inschrijven</button>
+                        <button class="icon-button plus add-count" data-field="leden" data-move="achternaam" data-max="10"{% if max(1, leden | length) >= 10 %} style="display: none;"{% endif %}>Broer of zus inschrijven</button>
 
                         <h1>Ouders of voogd</h1>
 
@@ -202,8 +202,8 @@
                             </div>
                         {% endfor %}
 
-                        <button class="icon-button delete delete-count" data-field="ouders"{% if ouders | length <= 1 %} style="display: none;"{% endif %}>Ouder verwijderen</button>
-                        <button class="icon-button plus add-count" data-field="ouders" data-move="adres,gemeente,postcode,telefoon" data-max="4"{% if ouders | length >= 4 %} style="display: none;"{% endif %}>Ouder toevoegen</button>
+                        <button class="icon-button delete delete-count" data-field="ouders"{% if aantal <= 1 %} style="display: none;"{% endif %}>Ouder verwijderen</button>
+                        <button class="icon-button plus add-count" data-field="ouders" data-move="adres,gemeente,postcode,telefoon" data-max="4"{% if aantal >= 4 %} style="display: none;"{% endif %}>Ouder toevoegen</button>
 
                         <h1>Gezin</h1>
                         <label>Belangrijke afspraken vanuit de gezinssituatie</label>

@@ -77,6 +77,11 @@ class NieuwLid extends Page {
                 $leden[] = $data;
             }
 
+            if (count($leden_models) < 1) {
+                $errors[] = 'Er ging iets mis. Controleer of javascript ingeschakeld is en of het formulier dat u heeft doorgestuurd niet door malware werd aangepast. Controleer ook of u een moderne browser gebruikt.';
+                $fail = true;
+            }
+
             // Alle ouders overlopen
             $aantal_ouders = count($_POST['ouder-voornaam']) - 1;
             for ($i=0; $i < $aantal_ouders; $i++) { 
@@ -105,6 +110,11 @@ class NieuwLid extends Page {
                 $ouders[] = $data;
             }
 
+            if (count($ouder_models) < 1) {
+                $errors[] = 'Er ging iets mis. Controleer of javascript ingeschakeld is en of het formulier dat u heeft doorgestuurd niet door malware werd aangepast. Controleer ook of u een moderne browser gebruikt.';
+                $fail = true;
+            }
+
             // Gezin
             $gezin = new Gezin();
             $data = array(
@@ -124,7 +134,7 @@ class NieuwLid extends Page {
                 $success = $gezin->save();
 
                 if (!$success) {
-                             $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
+                    $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
                 } else {
 
                     // Leden aan gezin toevoegen

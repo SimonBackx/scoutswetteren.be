@@ -42,19 +42,24 @@ class Router {
             }
         } else {
             $redirects = array(
-                'index.php/verhuur' => 'verhuur',
-                'index.php/takken' => 'info',
-                'index.php/info' => 'info',
-                'index.php/takken/kapoenen' => 'info/kapoenen',
-                'index.php/takken/wouters' => 'info/wouters',
-                'index.php/takken/jonggivers' => 'info/jonggivers',
-                'index.php/takken/givers' => 'info/givers',
-                'index.php/takken/jin' => 'info/jin',
-                'index.php/contact' => 'contact'
+                'index.php/verhuur' => '/verhuur',
+                'index.php/takken' => '',
+                'index.php/info' => '/info',
+                'index.php/takken/kapoenen' => '/info/kapoenen',
+                'index.php/takken/wouters' => '/info/wouters',
+                'index.php/takken/jonggivers' => '/info/jonggivers',
+                'index.php/takken/givers' => '/info/givers',
+                'index.php/takken/jin' => '/info/jin',
+                'index.php/contact' => '/contact',
+                'index.php/info/leiding/kapoenen' => '/info/kapoenen',
+                'index.php/info/leiding/wouters' => '/info/wouters',
+                'index.php/info/leiding/jonggivers' => '/info/jonggivers',
+                'index.php/info/leiding/givers' => '/info/givers',
+                'index.php/info/leiding/jin' => '/info/jin',
+                'index.php/foto-s' => '/fotos'
             );
             if (in_array($url, array_keys($redirects))) {
-                header( "HTTP/1.1 301 Moved Permanently");
-                header("Location: https://".$_SERVER['SERVER_NAME']."/".$redirects[$url]);
+                header("Location: https://".$_SERVER['SERVER_NAME'].$redirects[$url]);
                 return new Page301();
             }
 

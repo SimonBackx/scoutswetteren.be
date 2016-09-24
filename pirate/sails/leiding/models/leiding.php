@@ -88,7 +88,9 @@ class Leiding extends Model {
         left join permissions p2 on p2.permissionId = _pl2._permissionId
         
         $permission_code
-        group by l.id";
+        group by l.id
+        order by l.tak
+        ";
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -167,7 +169,7 @@ class Leiding extends Model {
                 // Maar hash_equals is time safe, het duurt dus even lang om gelijke 
                 // en ongelijke argumenten te vergelijken
                 // Meer info: http://blog.ircmaxell.com/2014/11/its-all-about-time.html
-                if (hash_equals(crypt($password, $hash), $hash)) {
+                if (password_verify($password, $hash)) {
 
                     // Inloggen is gelukt, dat stellen we in zodat
                     // volgende calls dit object kunnen gebruiken
@@ -184,7 +186,7 @@ class Leiding extends Model {
 
     // returns if password is correct
     function confirmPassword($password) {
-        if (hash_equals(crypt($password, $this->password), $this->password)) {
+        if (password_verify($password, $this->password)) {
             return true;
         }
         return false;
@@ -202,7 +204,7 @@ class Leiding extends Model {
 
         // Geldigheid controleren
         
-        if (strlen($new) < 10) {
+        if (strlen($new) < 8) {
             return false;
         }
         
@@ -226,7 +228,8 @@ class Leiding extends Model {
 
         $query = "UPDATE leiding 
             SET 
-             password = '$password'
+             password = '$password',
+             set_password_key = NULL
              where id = '$id' 
         ";
 
@@ -423,8 +426,7 @@ class Leiding extends Model {
     // TODO: private maken
     private function passwordEncrypt($password){
         // Voor de eerste keer password hash maken
-        $salt = '$2y$10$' . strtr(base64_encode(\mcrypt_create_iv(16, MCRYPT_DEV_RANDOM)), '+', '.'). '$';
-        return crypt($password, $salt);
+        return password_hash($password, PASSWORD_BCRYPT);
     }
 
     // empty array on success

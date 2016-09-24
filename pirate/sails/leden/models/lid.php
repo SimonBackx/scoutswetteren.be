@@ -187,14 +187,14 @@ class Lid extends Model {
         $errors = array();
 
         if (Validator::isValidFirstname($data['voornaam'])) {
-            $this->voornaam = ucwords($data['voornaam']);
+            $this->voornaam = ucwords(mb_strtolower($data['voornaam']));
             $data['voornaam'] = $this->voornaam;
         } else {
             $errors[] = 'Ongeldige voornaam';
         }
 
         if (Validator::isValidLastname($data['achternaam'])) {
-            $this->achternaam = ucwords($data['achternaam']);
+            $this->achternaam = ucwords(mb_strtolower($data['achternaam']));
             $data['achternaam'] = $this->achternaam;
         } else {
             $errors[] = 'Ongeldige achternaam';
@@ -218,7 +218,7 @@ class Lid extends Model {
         }
 
         if (is_numeric($data['geboortedatum_jaar'])) {
-            $tak = self::getTak($data['geboortedatum_jaar']);
+            $tak = self::getTak(intval($data['geboortedatum_jaar']));
 
             if ($tak === false) {
                 $errors[] = 'Uw zoon is te oud  / jong voor de scouts. Kinderen zijn toegelaten vanaf 6 jaar.';
@@ -239,7 +239,7 @@ class Lid extends Model {
     }
 
     function save() {
-        if (is_null($this->gsm)) {
+        if (!isset($this->gsm)) {
             $gsm = "NULL";
         } else {
             $gsm = "'".self::getDb()->escape_string($this->gsm)."'";
@@ -251,8 +251,8 @@ class Lid extends Model {
         $geslacht = self::getDb()->escape_string($this->geslacht);
         $geboortedatum = self::getDb()->escape_string($this->geboortedatum->format('Y-m-d'));
 
-        if (empty($this->id)) {
-            if (empty($this->gezin)) {
+        if (!isset($this->id)) {
+            if (!isset($this->gezin)) {
                 return false;
             }
             $gezin = self::getDb()->escape_string($this->gezin->id);
@@ -274,7 +274,7 @@ class Lid extends Model {
         }
 
         if (self::getDb()->query($query)) {
-            if (empty($this->id)) {
+            if (!isset($this->id)) {
                 $this->id = self::getDb()->insert_id;
             }
             return true;

@@ -16,7 +16,7 @@ class Gezin extends Model {
 
         $this->id = $row['gezin_id'];
         $this->gezinssituatie = $row['gezinssituatie'];
-        $this->scouting_op_maat = intval($row['scouting_op_maat']);
+        $this->scouting_op_maat = (intval($row['scouting_op_maat']) == 1);
     }
 
     // empty array on success

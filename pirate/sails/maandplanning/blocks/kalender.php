@@ -37,6 +37,29 @@ class Kalender extends Block {
 
             $end_date = intval($event->enddate->format('Ymd'));
 
+            $location_js = array(
+                '@type' => 'Place',
+                "name" => "Scouts Prins Boudewijn Wetteren",
+                "url" => "https://www.scoutswetteren.be",
+                "address" => array(
+                      "@type" => "PostalAddress",
+                      "addressCountry" => "BE",
+                      "addressLocality" => "Wetteren",
+                      "addressRegion" => "Oost-Vlaanderen",
+                      "postalCode" => "9230",
+                      "streetAddress" => "Groene Wegel 2"
+                ),
+            );
+
+            if (!empty($event->location)) {
+                $location_js = array(
+                    '@type' => 'Place',
+                    "name" => $event->location
+                );
+            }
+
+            $location_js = json_encode($location_js);
+
             // Als einddatum zelfde dag is:
             if ($end_date == $date) {
                 // Einduur toevoegen
@@ -70,7 +93,12 @@ class Kalender extends Block {
                         'group' => $event->group,
                         'time' => $end_time,
                         'time_raw' => $event->enddate->format('Y-m-d H:i:s'),
-                        'description' => $end_description
+                        'description' => $end_description,
+                        'name_js' => json_encode($event->name),
+                        'location_js' => $event->location,
+                        'time_start_js' => $event->startdate->format('c'),
+                        'time_end_js' => $event->enddate->format('c'),
+                        'location_js' => $location_js
                     );
                 }
 
@@ -98,7 +126,12 @@ class Kalender extends Block {
                 'group' => $event->group,
                 'time' => $time,
                 'time_raw' => $event->startdate->format('Y-m-d H:i:s'),
-                'description' => $description
+                'description' => $description,
+                'name_js' => json_encode($event->name),
+                'location_js' => $event->location,
+                'time_start_js' => $event->startdate->format('c'),
+                'time_end_js' => $event->enddate->format('c'),
+                'location_js' => $location_js
             );
         }
 
