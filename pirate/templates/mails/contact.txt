@@ -1,0 +1,11 @@
+Dag {{naam}},
+
+Het contactformulier op de website werd ingevuld.
+
+Naam: {{ data.name }}
+E-mail: {{ data.email }}
+Onderwerp: {{ data.subject }}
+
+Bericht:
+
+{{ data.message }}

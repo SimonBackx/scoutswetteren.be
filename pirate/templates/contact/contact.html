@@ -1,0 +1,164 @@
+{% set title = 'Contact' %}
+{% set description = 'Wie geeft er leiding? Met onze contactpagina kan je ons ook contacteren via een handig formulier.' %}
+{% extends "base.html" %}
+
+
+{% block javascript %}
+    <script type="text/javascript">
+        
+        var map;
+        var initMap = function() {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: 51.0026835, lng: 3.9018309},
+              mapTypeControl: false,
+              scrollwheel: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              zoom: 15
+            });
+            var marker_scouts = new google.maps.Marker({
+                position: {lat: 51.0026835, lng: 3.9018309},
+                map: map,
+                icon: '{{ http }}/images/pin.svg',
+                title: 'Scouts Prins Boudewijn'
+            });
+        }
+
+        $( document ).ready(function() {
+            $("#form_select").change(function() {
+                $('.form_select_message').hide();
+                $("#form_"+$(this).val()+"_message").show();
+            });
+        });
+
+        
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"
+    async defer></script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <form method="POST">
+        <article class="white block" id="locatie">
+            {% if success %}
+                <div class="part text">
+                    <header>
+                        <h1>Bedankt voor jouw bericht!</h1>
+                        <h2>We proberen zo snel mogelijk te reageren.</h2>
+                    </header>
+                </div>
+            {% else %}
+                <div class="splitted">
+                    <div class="part map">
+                        <div id="map"></div>
+                    </div>
+                    <div class="part text">
+                         <header>
+                            <h1>Contacteer ons via e-mail</h1>
+                        </header>
+
+                        {% if errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        <label>Wie wilt u contacteren?</label>
+                        <label class="select-box">
+                            <select name="wie" id="form_select">
+                                <option value="" selected>Maak een keuze</option>
+                                {% for key, value in wie %}
+                                    <option value="{{ key | e('html_attr') }}"{% if data.wie == key %} selected{% endif %}>{{ value.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <p class="form_select_message" style="display: none" id="form_oudercomite_message">Het oudercomité mengt zich niet in de pedagogische werking van de scouts of andere zaken waar de leidingsploeg verantwoordelijk voor is.</p>
+                        <p class="form_select_message" style="display: none" id="form_kapoenen_message">De kapoenleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.kapoenen }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_wouters_message">De wouterleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.wouters }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_jonggivers_message">De jonggiverleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.jonggivers }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_givers_message">De giverleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.givers }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_jin_message">De jinleiding is verantwoordelijk voor de leden geboren in {{ takkenverdeling.jin }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_groepsleiding_message">De groepsleiding is verantwoordelijk voor de algemene werking van de scouts. Heb je vragen of problemen voor een bepaalde tak, gelieve deze dan hierboven te selecteren.</p>
+
+                        <label>Uw naam</label>
+                        <input type="text" name="name" placeholder="Vul uw voor- en achternaam hier in" value="{{ data.name | e('html_attr') }}">
+
+                        <label>Uw e-mailadres</label>
+                        <input type="text" name="email" placeholder="Vul uw e-mailadres hier in" value="{{ data.email | e('html_attr') }}">
+
+                        <label>Onderwerp</label>
+                        <input type="text" name="subject" placeholder="Korte beschrijving" value="{{ data.subject | e('html_attr') }}">
+
+                        <label>Bericht</label>
+                        <textarea type="text" name="message" placeholder="Uw vraag of bericht">{{ data.message }}</textarea>
+
+                        <input type="text" style="color: white; display: none;" name="nickname">
+
+                        <footer>
+                            <input type="submit" class="aubergine fill" value="Versturen">
+                        </footer>
+                    </div>
+                </div>
+            {% endif %} 
+        </article>
+        </form>
+
+         <article class="white block" id="takverdeling">
+            {% if leiding | length == 0 %}
+                <div class="part text">
+                    <header>
+                        <h1>Contactgegevens</h1>
+                        <h2>Voor dringende communicatie</h2>
+                    </header>
+                    <p>We tonen telefoonnummers enkel aan ingeschreven leden om de privacy van de leidingsploeg te beschermen. Login om de telefoonnummers zichtbaar te maken.</p>
+                    <p>De telefoonnummers van de verhuurverantwoordelijken worden altijd meegedeeld bij aanvang van het verhuur.</p>
+                    <footer>
+                        <a href="/ouders/login" class="merlot button">Inloggen als ouder</a>
+                    </footer>
+                </div>
+            {% else %}
+                  <div class="splitted">
+                    <div class="part text">
+                        <header>
+                            <h1>Contactgegevens</h1>
+                            <h2>Voor dringende communicatie</h2>
+                        </header>
+                        <p>Rechts vind je alle telefoonnummers van onze leiding. Gelieve deze enkel te gebruiken voor dringendere gevallen en ons anders te contacteren via het formulier hierboven.</p>
+                    </div>
+                    <div class="part text">
+                        <div class="splitted questions">
+                            <div class="part column first">
+                                {% for tak, leiders in leiding %}
+                                    {% if loop.index is odd %}
+                                        <h2>{{ tak | capitalize}}</h2>
+                                        <p>
+                                            {% for leider in leiders %}
+                                                {{ leider.firstname }}: {{ leider.phone }}<br>
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="part column last">
+                                {% for tak, leiders in leiding %}
+                                    {% if loop.index is even %}
+                                        <h2>{{ tak | capitalize}}</h2>
+                                        <p>
+                                            {% for leider in leiders %}
+                                                {{ leider.firstname }}: {{ leider.phone }}<br>
+                                            {% endfor %}
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </article>
+    </main>
+{% endblock %}

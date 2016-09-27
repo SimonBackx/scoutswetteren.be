@@ -52,6 +52,9 @@ class Validator extends Model {
     }
 
     static function validateGemeente(&$inGemeente, &$inPostcode, &$outGemeente, &$outPostcode, &$errors) {
+        $inGemeente = trim($inGemeente);
+        $inPostcode = trim($inPostcode);
+        
         if (empty($inGemeente)) {
             $errors[] = 'Vul een gemeente in.';
             return false;
