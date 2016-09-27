@@ -45,15 +45,16 @@ class Contact extends Page {
             ),
             'jin' => array(
                 'name' => 'Jinleiding',
-                'mail' => 'jin@scoutswetteren.be'
+                'permission' => 'leiding',
+                'tak' => 'jin'
             ),
             'verhuur' => array(
                 'name' => 'Verhuur verantwoordelijke',
-                'mail' => 'groepsleiding@scoutswetteren.be'
+                'permission' => 'verhuur'
             ),
             'oudercomite' => array(
                 'name' => 'Oudercomité',
-                'mail' => 'groepsleiding@scoutswetteren.be'
+                'permission' => 'contactpersoon_oudercomite'
             )
         );
 
@@ -95,27 +96,27 @@ class Contact extends Page {
             if (strlen($data['subject']) < 4) {
                 $errors[] = 'Onderwerp te kort';
             }
-            if (strlen($data['message']) < 15) {
+            if (strlen($data['message']) < 30) {
                 $errors[] = 'Uw bericht is te kort. Voorzie voldoende informatie.';
             }
             if (count($errors) == 0) {
                 $contact_data = $wie[$data['wie']];
-                $contactpersoon_email = $contact_data['mail'];
                 $contactpersoon_naam = null;
+                $contactpersoon_email = 'website@scoutswetteren.be';
 
-                if ($data['wie'] == 'verhuur') {
-                    $leiding = Leiding::getLeiding('verhuur');
+                if (!isset($contact_data['mail'])) {
+                    if (isset($contact_data['tak'])) {
+                        $leiding = Leiding::getLeiding($contact_data['permission'], $contact_data['tak']);
+                    } else {
+                        $leiding = Leiding::getLeiding($contact_data['permission']);
+                    }
+                    
                     if (count($leiding) > 0) {
                         $contactpersoon_email = $leiding[0]->mail;
                         $contactpersoon_naam = $leiding[0]->firstname.' '.$leiding[0]->lastname;
                     }
-                }
-                if ($data['wie'] == 'oudercomite') {
-                    $leiding = Leiding::getLeiding('contactpersoon_oudercomite');
-                    if (count($leiding) > 0) {
-                        $contactpersoon_email = $leiding[0]->mail;
-                        $contactpersoon_naam = $leiding[0]->firstname.' '.$leiding[0]->lastname;
-                    }
+                } else {
+                    $contactpersoon_email = $contact_data['mail'];
                 }
 
                 $success = true;
@@ -168,6 +169,10 @@ class Contact extends Page {
                     $leiding_data[$value->tak] = array();
                 }
                 $leiding_data[$value->tak][] = $value;
+            }
+
+            foreach ($leiding_data as $key => $value) {
+                shuffle($leiding_data[$key]);
             }
 
 

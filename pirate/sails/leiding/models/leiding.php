@@ -68,13 +68,17 @@ class Leiding extends Model {
         return $permissions;
     }
 
-    static function getLeiding($permission = null) {
+    static function getLeiding($permission = null, $tak = null) {
         $permission_code = '';
         if (!is_null($permission)) {
             $permission_code = "WHERE p2.permissionCode = '".self::getDb()->escape_string($permission)."'";
         } else {
             $permission_code = "WHERE p2.permissionId = p.permissionId";
             // TODO: Kan versneld worden als persmission = null -> dan dubbele joins weglaten
+        }
+
+        if (!is_null($tak)) {
+            $permission_code .= " AND l.tak = '".self::getDb()->escape_string($tak)."'";
         }
 
         $leiding = array();
