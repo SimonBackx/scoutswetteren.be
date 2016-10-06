@@ -19,8 +19,14 @@ class Admin extends Page {
     }
 
     function getContent() {
+        $content = $this->adminPage->getContent();
+        $layout = $this->adminPage->hasOwnLayout();
+
+        if ($layout) {
+            return $content;
+        }
         return Template::render('leiding/admin', array(
-            'content' => $this->adminPage->getContent(),
+            'content' => $content,
             'admin' => array(
                 'selected' => $this->selected
             )

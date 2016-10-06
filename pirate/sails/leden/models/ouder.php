@@ -26,6 +26,33 @@ class Ouder extends Model {
     private static $currentToken = null;
     private static $user = null;
 
+    public static $filters = array(
+        'all' => array(
+            'name' => 'Alle ouders',
+            'where' => ''
+        ),
+        'inschrijvingsgeld' => array(
+            'name' => 'Inschrijvingsgeld niet betaald',
+            'where' => 'i.afrekening_oke = 0'
+        ),
+        'inschrijvingsgeld_in_orde' => array(
+            'name' => 'Inschrijvingsgeld betaald',
+            'where' => 'i.afrekening_oke = 1'
+        ),
+        'steekkaart' => array(
+            'name' => 'Steekkaart niet ingevuld',
+            'where' => 's.laatst_nagekeken is null'
+        ),
+        'verminderd_lidgeld' => array(
+            'name' => 'Leden met verminderd lidgeld',
+            'where' => 'g.scouting_op_maat = 1'
+        ),
+        'in_orde' => array(
+            'name' => 'Inschrijving volledig in orde',
+            'where' => 's.laatst_nagekeken is not null and i.afrekening_oke = 1'
+        )
+    );
+
     function __construct($row = array()) {
         if (count($row) == 0) {
             return;
@@ -209,7 +236,7 @@ class Ouder extends Model {
         $query = "SELECT o.*, g.*
         from ouders o
         left join gezinnen g on g.gezin_id = o.id
-        where email = '$mail'";
+        where email = '$mail' and password is not null";
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows == 1){
@@ -241,14 +268,54 @@ class Ouder extends Model {
         return false;
     }
 
-    static function getOudersForGezin(Gezin $gezin) {
-        $gezin = self::getDb()->escape_string($gezin->id);
+    static function getOudersForGezin($gezin_id) {
+        $gezin = self::getDb()->escape_string($gezin_id);
 
         $ouders = array();
         $query = '
             SELECT o.*, g.* from ouders o
                 left join gezinnen g on g.gezin_id = o.gezin
             where o.gezin = "'.$gezin.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $ouders[] = new Ouder($row);
+                }
+            }
+        }
+        return $ouders;
+    }
+
+    static function getOuders($filter = null, $tak = null) {
+        $where = '';
+
+        if (!is_null($filter)) {
+            if (isset(self::$filters[$filter])) {
+                $filter = self::$filters[$filter];
+                $where = $filter['where'];
+            }
+        }
+        if (!is_null($tak)) {
+            if (strlen($where) > 0)
+                $where .= ' AND ';
+            $where .= 'i.tak = "'.self::getDb()->escape_string($tak).'"';
+        }
+
+        if (strlen($where) > 0)
+            $where = 'WHERE '.$where;
+
+        $scoutsjaar = intval(Lid::getScoutsjaar());
+
+        $ouders = array();
+        $query = '
+            SELECT o.*, g.* from ouders o
+                left join gezinnen g on g.gezin_id = o.gezin
+                join leden l on l.gezin = o.gezin
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.'
+                left join steekkaarten s on s.lid = l.id
+            '.$where.'
+            GROUP BY o.id, g.gezin_id';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){

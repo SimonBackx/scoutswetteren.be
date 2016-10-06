@@ -8,6 +8,10 @@ use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Inschrijving;
 
 class Overview extends Page {
+    public $tak = '';
+    function __construct($tak = '') {
+        $this->tak = $tak;
+    }
     function getStatusCode() {
         return 200;
     }
@@ -15,16 +19,20 @@ class Overview extends Page {
     function getContent() {
         $user = Leiding::getUser();
 
-        $tak = '';
-        if (!empty($user->tak)) {
+        $tak = $this->tak;
+        $takken = Inschrijving::$takken;
+
+        if (empty($tak) && !empty($user->tak)) {
             $tak = $user->tak;
-        } 
+        }
 
         // TODO: aanpassen zodat evenementen uit de huidige week, VOOR vandaag ook worden meegegeven
         $leden = Lid::getLedenForTak($tak);
 
+
         return Template::render('leden/admin/overview', array(
             'leden' => $leden,
+            'takken' => $takken,
             'tak' => $tak
         ));
     }

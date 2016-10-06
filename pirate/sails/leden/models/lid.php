@@ -20,6 +20,8 @@ class Lid extends Model {
 
     static private $scoutsjaar = null;
 
+    public $ouders = array(); // wordt enkel door speciale toepassingen gebruikt, niet automatisch opgevuld
+    
 
     function __construct($row = array(), $inschrijving_object = null) {
         if (count($row) == 0) {
@@ -91,7 +93,8 @@ class Lid extends Model {
                 left join gezinnen g on g.gezin_id = l.gezin
                 left join inschrijvingen i on i.lid = l.id
                 left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-            where o.id = "'.$ouder.'" and i2.inschrijving_id is null';
+            where o.id = "'.$ouder.'" and i2.inschrijving_id is null
+            order by year(l.geboortedatum) desc, l.voornaam';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -113,8 +116,50 @@ class Lid extends Model {
             SELECT l.*, i.*, s.*, g.* from leden l
                 left join steekkaarten s on s.lid = l.id
                 left join gezinnen g on g.gezin_id = l.gezin
-                left join inschrijvingen i on i.lid = l.id
-            where i.scoutsjaar = "'.$scoutsjaar.'" and i.tak = "'.$tak.'"';
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
+            where i.tak = "'.$tak.'"
+            order by year(l.geboortedatum) desc, l.voornaam';
+
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $leden[] = new Lid($row);
+                }
+            }
+        }
+        
+        return $leden;
+    }
+
+    static function getLeden($filter = null, $tak = null) {
+        $where = '';
+
+        if (!is_null($filter)) {
+            if (isset(Ouder::$filters[$filter])) {
+                $filter = Ouder::$filters[$filter];
+                $where = $filter['where'];
+            }
+        }
+        if (!is_null($tak)) {
+            if (strlen($where) > 0)
+                $where .= ' AND ';
+            $where .= 'i.tak = "'.self::getDb()->escape_string($tak).'"';
+        }
+
+        if (strlen($where) > 0)
+            $where = 'WHERE '.$where;
+
+        $scoutsjaar = self::getDb()->escape_string(self::getScoutsjaar());
+
+        $leden = array();
+        $query = '
+            SELECT l.*, i.*, s.*, g.* from leden l
+                left join steekkaarten s on s.lid = l.id
+                left join gezinnen g on g.gezin_id = l.gezin
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
+            '.$where.'
+            order by year(l.geboortedatum) desc, l.voornaam';
 
 
         if ($result = self::getDb()->query($query)){

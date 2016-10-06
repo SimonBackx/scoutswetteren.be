@@ -2,19 +2,19 @@ Dag verhuurmeester,
 
 Op de website werd een nieuwe aanvraag gedaan voor een reservatie. Onderaan deze e-mail vindt u de details.
 
-U kan nu de aanvraag beantwoorden en goed- of afkeuren door op volgende link te drukken (of te kopieëren in uw adresbalk):
+U kan nu de aanvraag vastleggen in de kalender door op volgende link te drukken (of te kopieëren in uw adresbalk):
 {{ http }}/admin/verhuur/reservatie/{{reservatie.id}}
-
-Als u eerst nog enkele vragen heeft over de reservatie, kan u eerst contact opnemen met de verantwoordelijke (zie hieronder) en daarna de reservatie goedkeuren op de website. Pas als de reservatie op de website is goedgekeurd, wordt er een contractnummer toegekend en wordt het contract samen met instructies automatisch via e-mail verzonden. Zodra u het contract heeft ontvangen kan u dit op de website aanpassen en zal het op de verhuurkalender in het rood verschijnen.
 
 Details van aanvraag:
 
+Contractnummer: {{ reservatie.contract_nummer }}
 Van {{ reservatie.startdatum | date('d-m-Y') }} tot {{ reservatie.einddatum | date('d-m-Y') }}
 
 Groepsnaam: {{ reservatie.groep }}
 Naam verantwoordelijke: {{ reservatie.contact_naam }}
 GSM verantwoordelijke: {{ reservatie.contact_gsm }}
 E-mailadres verantwoordelijke: {{ reservatie.contact_email }}
+Adres verantwoordelijke: {{ reservatie.contact_adres }}, {{ reservatie.contact_postcode }} {{ reservatie.contact_gemeente }} ({{ reservatie.contact_land }})
 
 Info: 
 {{ reservatie.info }}

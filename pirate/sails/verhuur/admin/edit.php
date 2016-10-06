@@ -34,22 +34,27 @@ class Edit extends Page {
             'contact_naam' => '',
             'contact_email' => '',
             'contact_gsm' => '',
+            'contact_adres' => '',
+            'contact_gemeente' => '',
+            'contact_postcode' => '',
+            'contact_land' => '',
             'info' => '',
             'opmerkingen' => '',
             'waarborg' => '',
             'huur' => '',
-            'waarborg_ingetrokken' => '',
-            'goedgekeurd' => null
+            'door_leiding_reden' => ''
         );
 
         $data_checkbox = array(
             'ligt_vast' => false,
-            'contract_ondertekend' => false,
             'waarborg_betaald' => false,
             'huur_betaald' => false,
+            'door_leiding' => false
         );
 
-
+        if (isset($_GET['scouts'])) {
+            $data_checkbox['door_leiding'] = true;
+        }
 
         if (!is_null($this->id)) {
             $reservatie = Reservatie::getReservatie($this->id);
@@ -67,19 +72,23 @@ class Edit extends Page {
                     'contact_naam' => $reservatie->contact_naam,
                     'contact_email' => $reservatie->contact_email,
                     'contact_gsm' => $reservatie->contact_gsm,
+                    'contact_adres' => $reservatie->contact_adres,
+                    'contact_gemeente' => $reservatie->contact_gemeente,
+                    'contact_postcode' => $reservatie->contact_postcode,
+                    'contact_land' => $reservatie->contact_land,
                     'info' => $reservatie->info,
                     'opmerkingen' => $reservatie->opmerkingen,
                     'waarborg' => $reservatie->getWaarborg(),
                     'huur' => $reservatie->getHuur(),
-                    'waarborg_ingetrokken' => $reservatie->getWaarborgIngetrokken(),
-                    'goedgekeurd' => $reservatie->goedgekeurd
+                    'door_leiding_reden' => $reservatie->groep
                 );
 
                 $data_checkbox = array(
                     'ligt_vast' => $reservatie->ligt_vast,
-                    'contract_ondertekend' => $reservatie->contract_ondertekend,
                     'waarborg_betaald' => $reservatie->waarborg_betaald,
-                    'huur_betaald' => $reservatie->huur_betaald
+                    'huur_betaald' => $reservatie->huur_betaald,
+                    'door_leiding' => (isset($reservatie->door_leiding) && $reservatie->door_leiding === true)
+
                 );
 
                 //$data['id'] = $reservatie->id; // irnogen ook toevoegen heirna!
@@ -118,13 +127,6 @@ class Edit extends Page {
 
         // Als alles geset is
         if ($allset) {
-
-            if ($data['goedgekeurd'] !== '') {
-                $data['goedgekeurd'] = ($data['goedgekeurd'] == 1);
-            } else {
-                $data['goedgekeurd'] = null;
-            }
-
             // Nu één voor één controleren
             $errors = $reservatie->setProperties($data);
 
@@ -138,6 +140,9 @@ class Edit extends Page {
             }
         }
 
+        if (!is_null($this->id)) {
+            $data['id'] = $this->id;
+        }
 
 
         return Template::render('verhuur/admin/edit', array(

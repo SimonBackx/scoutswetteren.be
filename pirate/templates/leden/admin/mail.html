@@ -1,0 +1,62 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+            <h1>De e-mail is verstuurd</h1>
+            <p>Er is ook een kopie verstuurd naar {{ data.sender }}.</p>
+            <footer>
+                <a href="/admin/inschrijvingen" class="aubergine button">Terug</a>
+            </footer>
+        {% else %}
+            <h1>Mail versturen</h1>
+
+            {% if errors|length > 0 %}
+                <ul class="error">
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <label>Sturen vanaf (of antwoorden aan)</label>
+            <label class="select-box">
+                <select name="sender">
+                    <option>Maak een keuze</option>
+                    {% for sender in senders %}
+                        <option value="{{ sender }}"{% if sender == data.sender %} selected{% endif %}>{{ sender }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>Naar wie?</label>
+            <label class="select-box">
+                <select name="tak">
+                    <option>Maak een keuze</option>
+                    {% for tak in takken %}
+                        <option value="{{ tak }}"{% if tak == data.tak %} selected{% endif %}>{{ tak | capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>Filter</label>
+            <label class="select-box">
+                <select name="filter">
+                    <option>Maak een keuze</option>
+                    {% for filter, value in filters %}
+                        <option value="{{ filter }}"{% if filter == data.filter %} selected{% endif %}>{{ value.name }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            <label>Onderwerp</label>
+            <input type="text" name="subject" value="{{ data.subject | e('html_attr') }}" placeholder="Onderwerp van de e-mail">
+
+            <label>Bericht</label>
+            <textarea type="text" name="message" class="big" placeholder="Typ hier het bericht">{{ data.message }}</textarea>
+
+            <footer>
+                <input type="submit" class="aubergine fill" value="Versturen">
+                <a href="/admin/inschrijvingen" class="aubergine button">Annuleren</a>
+            </footer>
+        {% endif %}
+    </div>
+</form>

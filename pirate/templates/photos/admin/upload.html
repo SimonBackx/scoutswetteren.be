@@ -1,0 +1,104 @@
+<form method="post">
+    <div class="text">
+        <header>
+            <h1>Foto's uploaden</h1>
+        </header>
+
+        <label>Foto's van welke tak?</label>
+        <label class="select-box">
+            <select name="group">
+                <option>Maak een keuze</option>
+                {% for group in groups %}
+                    <option value="{{ group }}"{% if group == event.group %} selected{% endif %}>{{ group }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Selecteer foto's</label>
+        <input type="file" multiple="multiple" id="file" />
+
+        <div id="upload-progress"><div></div></div>
+
+        <div id="output"></div>
+
+        <div id="photos"></div>
+        <div style="clear: both;"></div>
+
+        <footer>
+            <input type="submit" class="aubergine fill" value="Album aanmaken">
+            <a href="/admin/maandplanning" class="button merlot">Annuleren</a>
+        </footer>
+
+    </div>
+</form>
+
+<script src="/js/upload5.js"></script>
+<script src="/js/photos.js"></script>
+<script type="text/javascript">
+    var grid = new photos.Grid({});
+    grid.trackWidth(document.getElementById('photos'));
+
+    var element = grid.toDOM();
+    document.getElementById('photos').appendChild(element);
+
+    var totalFiles = 0;
+    var totalDownloaded = 0;
+
+    var $lis = {};
+
+    var uploader = new bitcandies.FileUploader({
+        url: '/api/photos/upload',
+        maxconnections: 4,
+        enqueued: function (item) {
+        },
+        start: function (item) {
+        },
+        aborted: function (item) {
+        },
+        progress: function (item, loaded, total) {
+            if (item.oldProgress) {
+                totalDownloaded -= item.oldProgress;
+            }
+
+            item.oldProgress = loaded;
+            totalDownloaded += loaded;
+
+            console.log(totalDownloaded+' / '+totalFiles);
+            $('#upload-progress div').css({width: Math.round(totalDownloaded / totalFiles * 100)+'%'});
+        },
+        success: function (item, xhr) {
+            if (item.oldProgress) {
+                totalDownloaded -= item.oldProgress;
+            }
+            totalDownloaded += item.getSize();
+
+            try {
+                var data = JSON.parse(xhr.responseText);
+                var sources = data.sources;
+                var photo = new photos.Photo(data.width, data.height);
+                photo.sources = sources;
+                grid.add(photo);
+            } catch ( error ) {
+                console.error(error);
+            }
+
+        },
+        error: function (item, xhr) {
+            try {
+                var errors = JSON.parse(xhr.responseText);
+
+            } catch ( error ) {
+
+            }
+        }
+    });
+    $('#file').change(function () {
+        totalFiles = 0;
+        var files = document.getElementById('file').files;
+        for (var i = 0; i < files.length; ++i) {
+            totalFiles += files[i].size;
+            uploader.add(files[i]);
+        }
+        return false;
+    });
+</script>

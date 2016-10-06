@@ -10,6 +10,11 @@ class Page {
     function getContent() {
         return 'getContent method not implemented';
     }
+    
+    function hasOwnLayout() {
+        return false;
+    }
+
     final function execute() {
         http_response_code($this->getStatusCode());
         echo $this->getContent();

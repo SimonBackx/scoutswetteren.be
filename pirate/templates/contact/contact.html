@@ -1,5 +1,5 @@
 {% set title = 'Contact' %}
-{% set description = 'Wie geeft er leiding? Met onze contactpagina kan je ons ook contacteren via een handig formulier.' %}
+{% set description = 'Op onze contactpagina kan je ons contacteren via een handig formulier, of je kan ons telefoneren in dringende gevallen.' %}
 {% extends "base.html" %}
 
 
@@ -45,8 +45,7 @@
         });
    
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"
-    async defer></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
 {% endblock %}
 
 {% block main %}
@@ -78,7 +77,7 @@
                             </ul>
                         {% endif %}
 
-                        <label>Wie wilt u contacteren?</label>
+                        <label>Wie wil je contacteren?</label>
                         <label class="select-box">
                             <select name="wie" id="form_select">
                                 <option value="" selected>Maak een keuze</option>
@@ -95,17 +94,17 @@
                         <p class="form_select_message" style="display: none" id="form_jin_message">De jinleiding is verantwoordelijk voor de leden geboren in {{ takkenverdeling.jin }}.</p>
                         <p class="form_select_message" style="display: none" id="form_groepsleiding_message">De groepsleiding is verantwoordelijk voor de algemene werking van de scouts. Heb je vragen of problemen voor een bepaalde tak, gelieve deze dan hierboven te selecteren.</p>
 
-                        <label>Uw naam</label>
-                        <input type="text" name="name" placeholder="Vul uw voor- en achternaam hier in" value="{{ data.name | e('html_attr') }}">
+                        <label>Jouw naam</label>
+                        <input type="text" name="name" placeholder="Vul je voor- en achternaam hier in" value="{{ data.name | e('html_attr') }}">
 
-                        <label>Uw e-mailadres</label>
-                        <input type="text" name="email" placeholder="Vul uw e-mailadres hier in" value="{{ data.email | e('html_attr') }}">
+                        <label>Jouw e-mailadres</label>
+                        <input type="text" name="email" placeholder="Vul je e-mailadres hier in" value="{{ data.email | e('html_attr') }}">
 
                         <label>Onderwerp</label>
                         <input type="text" name="subject" placeholder="Korte beschrijving" value="{{ data.subject | e('html_attr') }}">
 
                         <label>Bericht</label>
-                        <textarea type="text" name="message" placeholder="Uw vraag of bericht">{{ data.message }}</textarea>
+                        <textarea type="text" name="message" placeholder="Je vraag of bericht">{{ data.message }}</textarea>
 
                         <input type="text" style="color: white; display: none;" name="nickname">
 

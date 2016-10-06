@@ -13,7 +13,7 @@ class VerhuurReserveren extends Page {
     function getContent() {
         $error = false;
         $errors = array();
-        $data = array();
+        $data = array('contact_land' => 'België');
 
         if (!isset($_POST['startdatum'], $_POST['einddatum'], $_POST['personen'], $_POST['personen_tenten'])) {
             $errors[] = 'Hmmm.... Er ging iets mis. Je hebt vast deze pagina herladen. Ga terug naar de verhuurpagina en maak je datum selectie en kom nog eens terug.';
@@ -28,7 +28,7 @@ class VerhuurReserveren extends Page {
 
             $reservatie = new Reservatie();
 
-            if (isset($_POST['groep'], $_POST['contact_naam'], $_POST['contact_gsm'], $_POST['contact_email'], $_POST['info'], $_POST['opmerkingen'])) {
+            if (isset($_POST['groep'], $_POST['contact_naam'], $_POST['contact_gsm'], $_POST['contact_email'], $_POST['contact_adres'], $_POST['contact_gemeente'], $_POST['contact_land'], $_POST['contact_postcode'], $_POST['info'], $_POST['opmerkingen'])) {
 
                 $data['groep'] = $_POST['groep'];
                 $data['contact_naam'] = $_POST['contact_naam'];
@@ -36,6 +36,10 @@ class VerhuurReserveren extends Page {
                 $data['contact_email'] = $_POST['contact_email'];
                 $data['info'] = $_POST['info'];
                 $data['opmerkingen'] = $_POST['opmerkingen'];
+                $data['contact_adres'] = $_POST['contact_adres'];
+                $data['contact_gemeente'] = $_POST['contact_gemeente'];
+                $data['contact_postcode'] = $_POST['contact_postcode'];
+                $data['contact_land'] = $_POST['contact_land'];
                 
                 $errors = $reservatie->setProperties($data); // basic controle zonder naam, gsm etc...
                 if (count($errors) == 0) {

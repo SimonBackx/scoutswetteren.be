@@ -21,9 +21,12 @@ class ViewAfrekening extends Page {
     }
 
     function getContent() {
+        $ouders = Ouder::getOudersForGezin($this->afrekening->gezin);
+
         return Template::render('leden/admin/afrekening', array(
             'afrekening' => $this->afrekening,
-            'from_inschrijvingen' => isset($_GET['inschrijvingen'])
+            'from_inschrijvingen' => isset($_GET['inschrijvingen']),
+            'ouders' => $ouders
         ));
     }
 }

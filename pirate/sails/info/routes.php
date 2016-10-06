@@ -10,6 +10,10 @@ class InfoRouter extends Route {
         if ($url == 'info') {
             return true;
         }
+        if (!isset($parts[0]) || $parts[0] != 'info') {
+            return false;
+        }
+
         if (count($parts) == 2) {
             if ($parts[1] == 'kapoenen') {
                 return true;

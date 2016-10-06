@@ -47,6 +47,76 @@ class Leiding extends Model {
         $this->permissions = explode('±', $row['permissions']);
     }
 
+    // Geeft lijst van contact personen (array(key -> name))
+    static function getContacts() {
+        // Default van alle publieke contact personen
+        // 
+        return array(
+            'groepsleiding' => array(
+                'name' => 'Groepsleiding',
+                'mail' => 'groepsleiding@scoutswetteren.be'
+            ), 
+            'kapoenen' => array(
+                'name' => 'Kapoenleiding',
+                'mail' => 'kapoenen@scoutswetteren.be'
+            ),
+            'wouters' => array(
+                'name' => 'Wouterleiding',
+                'mail' => 'wouters@scoutswetteren.be'
+            ),
+            'jonggivers' => array(
+                'name' => 'Jonggiverleiding',
+                'mail' => 'jonggivers@scoutswetteren.be'
+            ),
+            'givers' => array(
+                'name' => 'Giverleiding',
+                'mail' => 'givers@scoutswetteren.be'
+            ),
+            'jin' => array(
+                'name' => 'Jinleiding',
+                'permission' => 'leiding',
+                'tak' => 'jin'
+            ),
+            'verhuur' => array(
+                'name' => 'Verhuur verantwoordelijke',
+                'permission' => 'verhuur'
+            ),
+            'oudercomite' => array(
+                'name' => 'Oudercomité',
+                'permission' => 'contactpersoon_oudercomite'
+            )
+        );
+    }
+
+    // Geeft e-mailadres voor een bepaalde contactpersoon
+    static function getContactEmail($contact_key, &$email, &$naam) {
+        $contacts = self::getContacts();
+        if (!isset($contacts[$contact_key])) {
+            return false;
+        }
+
+        $contact_data = $contacts[$contact_key];
+        $naam = null;
+        $email = 'website@scoutswetteren.be';
+
+        if (!isset($contact_data['mail'])) {
+            if (isset($contact_data['tak'])) {
+                $leiding = Leiding::getLeiding($contact_data['permission'], $contact_data['tak']);
+            } else {
+                $leiding = Leiding::getLeiding($contact_data['permission']);
+            }
+            
+            if (count($leiding) > 0) {
+                $email = $leiding[0]->mail;
+                $naam = $leiding[0]->firstname.' '.$leiding[0]->lastname;
+            }
+        } else {
+            $email = $contact_data['mail'];
+            $naam = $contact_data['name'];
+        }
+        return true;
+    }
+
     static function getPossiblePermissions() {
         if (isset(self::$allPermissions)) {
             return self::$allPermissions;
@@ -375,12 +445,12 @@ class Leiding extends Model {
 
         // Momenteel niet helemaal time safe, maar performance primeert hier
         if ($result = self::getDb()->query($query)) {
-            if ($result->num_rows > 0) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
 
                 $date = new \DateTime($row['time']);
                 $now = new \DateTime();
-                $interval = $now->diff($date);
+                $interval = $date->diff($now);
 
                 // Als het vervallen is: verwijderen
                 if ($interval->days > 60) {
@@ -401,6 +471,7 @@ class Leiding extends Model {
                 
             }
         }
+
         return self::$user;
     }
 

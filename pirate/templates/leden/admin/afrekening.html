@@ -56,6 +56,11 @@
         </tfoot>
     </table>
 
+    <h2>Contactgegevens</h2>
+    {% for ouder in ouders %}
+        <p>{{ouder.voornaam}} {{ouder.achternaam}}, {{ouder.gsm}}, {{ouder.email}}</p>
+    {% endfor %}
+
     <footer>
         {% if from_inschrijvingen %}
             <a href="/admin/inschrijvingen" class="merlot button">Terug</a>

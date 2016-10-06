@@ -14,13 +14,13 @@
         {% endif %}
 
         <h2>Algemeen</h2>
+        {% if data.contract_nummer is not empty %}
+            <label>Contract nummer</label>
+            <input type="text" name="contract_nummer" value="{{ data.contract_nummer }}" readonly="readonly">
+        {% endif %}
+
         <div class="splitted">
             <div class="part column first">
-                {% if data.contract_nummer is not empty %}
-                    <label>Contract nummer</label>
-                    <input type="text" name="contract_nummer" value="{{ data.contract_nummer }}" readonly="readonly">
-                {% endif %}
-
                 <label>Aankomst datum</label>
                 <input type="text" class="datepicker" name="startdatum" value="{{ data.startdatum }}" placeholder="Startdatum van het verhuur">
             </div>
@@ -30,106 +30,102 @@
             </div>
         </div>
 
-        <h2>Huurder</h2>
-        <div class="splitted">
-            <div class="part column first">
-                <label>Groepsnaam</label>
-                <input type="text" name="groep" value="{{ data.groep | e('html_attr') }}" placeholder="Naam van de jeugdbeweging / organisatie">
-
-                <label>Naam verantwoordelijke</label>
-                <input type="text" name="contact_naam" value="{{ data.contact_naam | e('html_attr') }}" placeholder="Naam contactpersoon">
-
-                <label>GSM verantwoordelijke</label>
-                <input type="text" name="contact_gsm" value="{{ data.contact_gsm | e('html_attr') }}" placeholder="GSM-nummer contactpersoon">
-
-                <label>E-mailadres verantwoordelijke</label>
-                <input type="email" name="contact_email" value="{{ data.contact_email | e('html_attr') }}" placeholder="E-mailadres contactpersoon">
-
-            </div>
-            <div class="part column last">
-                <label>Info</label>
-                <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="info">{{ data.info }}</textarea>
-
-                <label>Opmerkingen</label>
-                <textarea placeholder="Eventuele vragen of opmerkingen" name="opmerkingen">{{ data.opmerkingen }}</textarea>
-            </div>
-        </div>
-
-        <h2>Personen</h2>
-        <div class="splitted">
-            <div class="part column first">
-                <label>In gebouw</label>
-                <input type="text" name="personen" value="{{ data.personen | e('html_attr') }}" placeholder="Personen die in hoofdgebouw overnachten">
-            </div>
-            <div class="part column last">
-                <label>In tenten</label>
-                <input type="text" name="personen_tenten" value="{{ data.personen_tenten | e('html_attr') }}" placeholder="Personen extra in tenten">
-            </div>
-        </div>
-
-        <h2>Prijs</h2>
-        <div class="splitted">
-            <div class="part column first">
-                <label>Huurprijs</label>
-                <input type="text" name="huur" value="{{ data.huur | e('html_attr') }}" placeholder="Huurprijs">
-            </div>
-            <div class="part column last">
-                <label>Waarborg</label>
-                <input type="text" name="waarborg" value="{{ data.waarborg | e('html_attr') }}" placeholder="Waarborg">
-            </div>
-        </div>
-
-
-        <h2>Goedkeuren</h2>
-        {% if data.goedgekeurd is not sameas(true) %}
-            <p>Als u de reservatie markeert als goedgekeurd, krijgt de verantwoordelijke hiervan automatisch een e-mail (u ontvangt hiervan een kopie), tenzij het contract al is ingevuld. Daarin staat ook het contract, contract nummer, prijs, waarborg en instructies.</p>
-        {% endif %}
-        <input id="onbeslist" type="radio" name="goedgekeurd" value=""{% if data.goedgekeurd is null %} checked{% endif %}>
-        <label for="onbeslist">Onbeslist</label>
-
-        <input id="goedkeuren" type="radio" name="goedgekeurd" value="1"{% if data.goedgekeurd is sameas(true) %} checked{% endif %}>
-        <label for="goedkeuren">Goedgekeurd</label>
+        <input id="door_leiding" type="checkbox" name="door_leiding" value="1" {% if data.door_leiding %} checked{% endif %}>
+        <label for="door_leiding">Enkel vrijhouden in kalender (bv. voor eigen leefweek)</label>
 
         <div class="checkbox-controllable">
-            <input id="afkeuren" type="radio" name="goedgekeurd" value="0"{% if data.goedgekeurd is sameas(false) %} checked{% endif %}>
-            <label for="afkeuren">Afgekeurd</label>
-
             <div class="visible-when-checked">
+                <label>Reden van vrijhouden</label>
+                <input type="text" name="door_leiding_reden" value="{{ data.door_leiding_reden | e('html_attr') }}" placeholder="Bv. leefweek givers">
+            </div>
+            <div class="hidden-when-checked">
 
-                <h2>Status</h2>
-                <input id="contract_ondertekend" type="checkbox" name="contract_ondertekend" value="1" {% if data.contract_ondertekend %} checked{% endif %}>
-                <label for="contract_ondertekend">Contract ondertekend</label>
+                <h2>Huurder</h2>
+                <div class="splitted">
+                    <div class="part column first">
+                        <label>Groepsnaam</label>
+                        <input type="text" name="groep" value="{{ data.groep | e('html_attr') }}" placeholder="Naam van de jeugdbeweging / organisatie">
 
-                <div class="checkbox-controllable">
-                    <div class="visible-when-checked">
+                        <label>Naam verantwoordelijke</label>
+                        <input type="text" name="contact_naam" value="{{ data.contact_naam | e('html_attr') }}" placeholder="Naam contactpersoon">
 
-                        <input id="ligt_vast" type="checkbox" name="ligt_vast" value="1" {% if data.ligt_vast %} checked{% endif %}>
-                        <label for="ligt_vast">Vastleggen in verhuurkalender</label>
+                        <label>GSM verantwoordelijke</label>
+                        <input type="text" name="contact_gsm" value="{{ data.contact_gsm | e('html_attr') }}" placeholder="GSM-nummer contactpersoon">
 
-                        <input id="waarborg_betaald" type="checkbox" name="waarborg_betaald" value="1" {% if data.waarborg_betaald %} checked{% endif %}>
-                        <label for="waarborg_betaald">Waarborg betaald</label>
+                        <label>E-mailadres verantwoordelijke</label>
+                        <input type="email" name="contact_email" value="{{ data.contact_email | e('html_attr') }}" placeholder="E-mailadres contactpersoon">
 
-                        <div class="checkbox-controllable">
-                            <div class="visible-when-checked">
-                                <input id="huur_betaald" type="checkbox" name="huur_betaald" value="1" {% if data.huur_betaald %} checked{% endif %}>
-                                <label for="huur_betaald">Huur betaald</label>
+                        <label>Info</label>
+                        <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="info">{{ data.info }}</textarea>
 
-                                <h2>Schade en waarborg</h2>
-                                <label>Waarborg ingetrokken</label>
-                                <input type="text" name="waarborg_ingetrokken" value="{{ data.waarborg_ingetrokken | e('html_attr') }}" placeholder="Geen waarborg ingetrokken">
-                            </div>
+                    </div>
+
+                    <div class="part column last">
+                        <label>Adres verantwoordelijke</label>
+                        <input type="email" name="contact_adres" value="{{ data.contact_adres | e('html_attr') }}" placeholder="Straat en huisnummer">
+
+                        <label>Gemeente</label>
+                        <input type="email" name="contact_gemeente" value="{{ data.contact_gemeente | e('html_attr') }}" placeholder="Gemeente">
+
+                        <label>Postcode</label>
+                        <input type="email" name="contact_postcode" value="{{ data.contact_postcode | e('html_attr') }}" placeholder="Postcode">
+
+                        <label>Land</label>
+                        <input type="email" class="dropdown" name="contact_land" value="{{ data.contact_land | e('html_attr') }}" placeholder="Land">
+                        <div class="dropdown-list">
+                            <div class="option">België</div>
+                            <div class="option">Nederland</div>
                         </div>
+
+                        <label>Opmerkingen</label>
+                        <textarea placeholder="Eventuele vragen of opmerkingen" name="opmerkingen">{{ data.opmerkingen }}</textarea>
                     </div>
                 </div>
+
+                <h2>Personen</h2>
+                <div class="splitted">
+                    <div class="part column first">
+                        <label>In gebouw</label>
+                        <input type="text" name="personen" value="{{ data.personen | e('html_attr') }}" placeholder="Personen die in hoofdgebouw overnachten">
+                    </div>
+                    <div class="part column last">
+                        <label>In tenten</label>
+                        <input type="text" name="personen_tenten" value="{{ data.personen_tenten | e('html_attr') }}" placeholder="Personen extra in tenten">
+                    </div>
+                </div>
+
+                <h2>Prijs</h2>
+                <div class="splitted">
+                    <div class="part column first">
+                        <label>Huurprijs</label>
+                        <input type="text" name="huur" value="{{ data.huur | e('html_attr') }}" placeholder="Huurprijs">
+                    </div>
+                    <div class="part column last">
+                        <label>Waarborg</label>
+                        <input type="text" name="waarborg" value="{{ data.waarborg | e('html_attr') }}" placeholder="Waarborg">
+                    </div>
+                </div>
+
+
+                <h2>Status</h2>
+
+                <input id="ligt_vast" type="checkbox" name="ligt_vast" value="1" {% if data.ligt_vast %} checked{% endif %}>
+                <label for="ligt_vast">Vastleggen in verhuurkalender (= geen nieuwe aanvragen toestaan)</label>
+
+                <input id="waarborg_betaald" type="checkbox" name="waarborg_betaald" value="1" {% if data.waarborg_betaald %} checked{% endif %}>
+                <label for="waarborg_betaald">Waarborg betaald</label>
+
+                <input id="huur_betaald" type="checkbox" name="huur_betaald" value="1" {% if data.huur_betaald %} checked{% endif %}>
+                <label for="huur_betaald">Huur betaald</label>
             </div>
         </div>
 
-
-        
-
         <footer>
-            <input type="submit" class="merlot fill" value="Opslaan">
-            <a href="/admin/verhuur" class="button merlot">Annuleren</a>
+            <input type="submit" class="aubergine fill" value="Opslaan">
+            {% if not new %}
+                <a href="/admin/verhuur/delete/{{ data.id }}" class="button aubergine">Verwijderen</a>
+            {% endif %}
+            <a href="/admin/verhuur" class="aubergine button">Annuleren</a>
         </footer>
 
     </div>

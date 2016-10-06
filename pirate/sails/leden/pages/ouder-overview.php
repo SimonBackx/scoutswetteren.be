@@ -117,7 +117,7 @@ class OuderOverview extends Page {
             }
         }
         $user = Ouder::getUser();
-        $ouders = Ouder::getOudersForGezin($user->gezin);
+        $ouders = Ouder::getOudersForGezin($user->gezin->id);
         $afrekeningen = Afrekening::getAfrekeningenForGezin($user->gezin);
 
         

@@ -73,7 +73,11 @@ class Afrekening extends Model {
     }
 
     function getNogTeBetalen() {
-        return '€ '.money_format('%!.2n', $this->getNogTeBetalenFloat());
+        $nog = $this->getNogTeBetalenFloat();
+        if ($nog < 0) {
+           return '- € '.money_format('%!.2n', -$nog); 
+        }
+        return '€ '.money_format('%!.2n', $nog);
     }
 
     // True on success
@@ -270,6 +274,9 @@ class Afrekening extends Model {
         if ($gezin->scouting_op_maat) {
             $betaald_scouts = $totaal;
         }
+        $afrekening->betaald_scouts = $betaald_scouts;
+        $afrekening->gezin = $gezin;
+        $afrekening->totaal = $totaal;
 
         $mededeling = implode('/', $achternamen);
 
@@ -282,10 +289,7 @@ class Afrekening extends Model {
 
         $mededeling = self::getDb()->escape_string($mededeling);
         $betaald_scouts = self::getDb()->escape_string($betaald_scouts);
-
-        $afrekening->gezin = $gezin;
         $gezin = self::getDb()->escape_string($gezin->id);
-        $afrekening->totaal = $totaal;
         $totaal = self::getDb()->escape_string($totaal);
         
         $query = "INSERT INTO 
@@ -298,10 +302,16 @@ class Afrekening extends Model {
             $afrekening->id = self::getDb()->insert_id;
             $afrekening_id = self::getDb()->escape_string($afrekening->id);
 
+            $oke = 0;
+            if ($afrekening->isBetaald()) {
+                $oke = 1;
+            }
+
             $ids = implode(', ', $ids);
             $query = "UPDATE inschrijvingen 
                 SET 
-                 `afrekening` = '$afrekening_id'
+                 `afrekening` = '$afrekening_id',
+                 `afrekening_oke` = $oke
                  where `inschrijving_id` IN ($ids)
             ";
             if (!self::getDb()->query($query)) {

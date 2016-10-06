@@ -53,17 +53,34 @@
                             <label>E-mailadres verantwoordelijke</label>
                             <input type="email" name="contact_email" value="{{ data.contact_email | e('html_attr') }}" placeholder="Uw e-mailadres">
 
-                        </div>
-                        <div class="part column last">
                             <label>Info</label>
                             <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="info">{{ data.info }}</textarea>
 
                             <label>Opmerkingen</label>
                             <textarea placeholder="Eventuele vragen of opmerkingen" name="opmerkingen">{{ data.opmerkingen }}</textarea>
+
+                        </div>
+                        <div class="part column last">
+                            <label>Adres verantwoordelijke</label>
+                            <input type="email" name="contact_adres" value="{{ data.contact_adres | e('html_attr') }}" placeholder="Straat en huisnummer">
+
+                            <label>Gemeente</label>
+                            <input type="email" name="contact_gemeente" value="{{ data.contact_gemeente | e('html_attr') }}" placeholder="Gemeente">
+
+                            <label>Postcode</label>
+                            <input type="email" name="contact_postcode" value="{{ data.contact_postcode | e('html_attr') }}" placeholder="Postcode">
+
+                            <label>Land</label>
+                            <input type="email" class="dropdown" name="contact_land" value="{{ data.contact_land | e('html_attr') }}" placeholder="Land">
+                            <div class="dropdown-list">
+                                <div class="option">België</div>
+                                <div class="option">Nederland</div>
+                            </div>
+                           
                         </div>
                     </div>
 
-                    <p>Na het indienen ontvang je een e-mail met het huurcontract. Zodra dat ingevuld en doorgestuurd is, leggen we de reservatie vast. Als we alles eenmaal hebben goedgekeurd moet de waarborg onmiddelijk gestort worden, of we zijn genoodzaakt om de reservatie terug vrij te geven.</p>
+                    <p>Na goedkeuren ontvang je een e-mail met het huurcontract. Zodra de waarborg gestort is, leggen we de reservatie vast.</p>
                   
                     <footer>
                         <input type="submit" name="submit" value="Indienen" class="fill merlot">

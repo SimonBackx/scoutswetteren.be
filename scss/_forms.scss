@@ -120,6 +120,10 @@ form {
         height: auto;
         overflow: auto;
         -ms-overflow-style: none;
+
+        &.big {
+            max-width: 800px;
+        }
     }
 
     input[type=checkbox], input[type=radio] {

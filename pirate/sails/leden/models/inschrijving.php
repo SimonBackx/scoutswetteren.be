@@ -17,6 +17,7 @@ class Inschrijving extends Model {
     public $afrekening_oke;
 
     public static $lidgeld_per_tak = array('kapoenen' => 42, 'wouters' => 32, 'jonggivers' => 32, 'givers' => 32, 'jin' => 32);
+    public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
     function __construct($row = array(), $lid_object = null) {
         if (count($row) == 0) {
@@ -62,6 +63,23 @@ class Inschrijving extends Model {
 
     function getBetaaldCash() {
         return '€ '.money_format('%!.2n', $this->betaald_cash);
+    }
+
+    function getTakJaar() {
+        $verdeling = Lid::getTakkenVerdeling(Lid::getScoutsjaar());
+        $jaar = intval($this->lid->geboortedatum->format('Y'));
+        $min = 0;
+
+        foreach ($verdeling as $geboortejaar => $tak) {
+            if ($tak == $this->tak) {
+                if ($geboortejaar > $min) {
+                    $min = $geboortejaar;
+                }
+            }
+        }
+
+        return $min - $jaar + 1;
+
     }
 
     // Inschrijvingen vanaf juni verbieden

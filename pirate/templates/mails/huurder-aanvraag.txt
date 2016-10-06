@@ -1,6 +1,6 @@
 Dag {{ reservatie.contact_naam }},
 
-We hebben je aanvraag voor het huren van ons lokaal + terrein goed ontvangen. Onze verhuur verantwoordelijke heeft hiervan een bericht ontvangen en zal je binnenkort beantwoorden, met eventuele goedkeuring / weigering en antwoorden op je vragen. Zodra we de aanvraag goedkeuren, ontvang je het verhuurcontract die je ingevuld en ondertekend terug moet sturen. Daarna leggen we de aanvraag vast in de verhuurkalender.
+We hebben je aanvraag voor het huren van ons lokaal + terrein goed ontvangen. Onze verhuur verantwoordelijke heeft hiervan een bericht ontvangen en zal je binnenkort beantwoorden.
 
 Hieronder vind je een overzicht van je aanvraag.
 
@@ -10,6 +10,7 @@ Groepsnaam: {{ reservatie.groep }}
 Naam verantwoordelijke: {{ reservatie.contact_naam }}
 GSM verantwoordelijke: {{ reservatie.contact_gsm }}
 E-mailadres verantwoordelijke: {{ reservatie.contact_email }}
+Adres verantwoordelijke: {{ reservatie.contact_adres }}, {{ reservatie.contact_postcode }} {{ reservatie.contact_gemeente }} ({{ reservatie.contact_land }})
 
 Info: 
 {{ reservatie.info }}

@@ -34,6 +34,7 @@ class Delete extends Page {
 
             } else {
                 $fail = true;
+                header("Location: https://".$_SERVER['SERVER_NAME']."/admin/maandplanning");
             }
         } else {
             // Bestaat niet!

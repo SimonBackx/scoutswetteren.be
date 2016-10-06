@@ -27,6 +27,10 @@ class Mail {
     }
 
     function addTo($email, $substitutions = array(), $name = null, $bcc = array()) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return;
+        }
+
         $personalization = new Personalization();
         $email = new Email($name, $email);
         $personalization->addTo($email);
@@ -54,6 +58,8 @@ class Mail {
         $sg = new \SendGrid($config['sendgrid']['key']);
         $response = $sg->client->mail()->send()->post($this->sendgrid_mail);
         $status = intval($response->statusCode());
+
+        echo $response->body();
         return ($status >= 200 && $status < 300);
     }
 }

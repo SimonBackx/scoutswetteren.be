@@ -18,24 +18,31 @@
         </div>
        
     </form>
-    <h1>Ingeschreven {{ tak }}</h1>
+
+    <h1>Acties</h1>
+    <div><a href="/admin/inschrijvingen/mail" class="aubergine fill button">Mail sturen</a>
+    <a href="/admin/inschrijvingen/exporteren" class="aubergine button">Exporteren</a></div>
+
+    <h1>Ingeschreven {{ tak }} ({{ leden | length }})</h1>
     <div class="list-bundle">
     {% for lid in leden %}
         <article class="list">
-            <div class="medium merlot column">{{ lid.voornaam }} {{ lid.achternaam }}</div>
-            <div class="max column">
-                {% if lid.gezin.scouting_op_maat %}
-                    Lid met verminderd lidgeld - ga op huisbezoek!
+            <div class="small column">{{ lid.inschrijving.getTakJaar() }}e jaar</div>
+
+            <div class="max merlot column">{{ lid.voornaam }} {{ lid.achternaam }}</div>
+            {% if lid.gezin.scouting_op_maat %}
+                <div class="large merlot column">
+                    Verminderd lidgeld
+                </div>
+            {% else %}
+                {% if not lid.inschrijving.isBetaald %}
+                        <div class="large merlot column">Lidgeld niet betaald ({{ lid.inschrijving.getTeBetalen }})</div>
                 {% else %}
-                    {% if not lid.inschrijving.isBetaald %}
-                            Lidgeld nog niet betaald ({{ lid.inschrijving.getTeBetalen }})
-                    {% else %}
-                        {% if lid.steekkaart.laatst_nagekeken is empty %}
-                            Steekkaart nog niet ingevuld
-                        {% endif %}
+                    {% if lid.steekkaart.laatst_nagekeken is empty %}
+                        <div class="large merlot column">Steekkaart nog niet ingevuld</div>
                     {% endif %}
                 {% endif %}
-            </div>
+            {% endif %}
             <div class="last column">
                 {% if lid.inschrijving.betaald < lid.inschrijving.prijs and lid.inschrijving.betaald_door_scouts < lid.inschrijving.prijs %}
                     <a href="/admin/inschrijvingen/betalen/{{ lid.id }}" class="aubergine button noborder">cash betalen</a>
@@ -46,5 +53,9 @@
         </article>
     {% endfor %}
     </div>
+    <h1>Andere tak bekijken</h1>
+    {% for tak in takken %}
+        <a href="/admin/inschrijvingen/{{ tak }}" class="icon-button">{{ tak }}</a>
+    {% endfor %}
 </div>
 

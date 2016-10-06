@@ -18,6 +18,10 @@ class Overview extends Page {
 
         $reservaties = Reservatie::getReservatiesOverview();
         foreach ($reservaties as $reservatie) {
+            if ($reservatie->door_leiding) {
+                continue;
+            }
+            
             $group = array(
                 'name' => '',
                 'reservaties' => array()
@@ -29,11 +33,7 @@ class Overview extends Page {
             $difference = $today->diff($reservatie->aanvraag_datum);
             $days_aanvraag = $difference->days;
 
-            if ($reservatie->goedgekeurd === null) {
-                $group['name'] = 'Nieuwe aanvraag';
-            } elseif (!$reservatie->contract_ondertekend) {
-                $group['name'] = 'Contract niet ondertekend';
-            } elseif (!$reservatie->ligt_vast) {
+            if (!$reservatie->ligt_vast) {
                 $group['name'] = 'Ligt niet vast in kalender';
             } elseif (($days_aanvraag > 14 || $days < 14) && $reservatie->waarborg_betaald === false) {
                 $group['name'] = 'Waarborg nog niet betaald';

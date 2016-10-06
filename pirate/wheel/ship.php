@@ -6,6 +6,7 @@ use Pirate\Model\Model;
 class Ship {
     function sail() {
         global $config;
+        global $FILES_DIRECTORY;
 
         $url = strtok($_SERVER["REQUEST_URI"],'?');
         $url = substr($url, 1);
