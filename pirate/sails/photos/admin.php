@@ -2,12 +2,26 @@
 namespace Pirate\Sail\Photos;
 use Pirate\Page\Page;
 use Pirate\Route\Route;
+use Pirate\Model\Files\Album;
 
 class PhotosAdminRouter extends Route {
-    private $id = null;
+    private $album = null;
 
     function doMatch($url, $parts) {
         if ($url == 'photos/upload') {
+            return true;
+        }
+
+        if (count($parts) == 3 && $parts[0] == 'photos' && $parts[1] == 'edit') {
+            $id = $parts[2];
+            $this->album = Album::getAlbum($id);
+            if (isset($this->album)) {
+                return true;
+            }
+            return false;
+        }
+
+        if ($url == 'photos') {
             return true;
         }
 
@@ -15,6 +29,16 @@ class PhotosAdminRouter extends Route {
     }
 
     function getPage($url, $parts) {
+        if ($url == 'photos') {
+            require(__DIR__.'/admin/overview.php');
+            return new Admin\Overview();
+        }
+
+        if (isset($this->album)) {
+            require(__DIR__.'/admin/edit.php');
+            return new Admin\Edit($this->album);
+        }
+
         require(__DIR__.'/admin/upload.php');
         return new Admin\Upload();
     }

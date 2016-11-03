@@ -52,6 +52,7 @@ class Event extends Model {
 
         $events = array();
         $query = 'SELECT *, case when startdate < CURDATE() then 1 else 0 end as in_past FROM events WHERE (startdate >= "'.$startdate.'" AND startdate < "'.$enddate.'") OR (enddate >= "'.$startdate.'" AND enddate < "'.$enddate.'") OR (startdate <= "'.$startdate.'" AND enddate >= "'.$enddate.'") ORDER BY startdate, group_order LIMIT 30';
+
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
                 while ($row = $result->fetch_assoc()) {

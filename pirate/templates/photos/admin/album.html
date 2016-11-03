@@ -1,52 +1,76 @@
 <form method="post">
     <div class="text">
-        <header>
-            <h1>Foto's uploaden</h1>
-        </header>
+        {% if success %}
 
-        {% if errors|length > 0 %}
-            <ul class="error">
-                {% for error in errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
+            <header>
+                {% if new %}
+                    <h1>Album "{{ data.album_name }}" is toegevoegd</h1>
+                {% else %}
+                    <h1>De wijzigingen aan album "{{ data.album_name }}" zijn opgeslagen</h1>
+                {% endif %}
+            </header>
+            <footer>
+                <a href="/admin/photos" class="fill button aubergine">Terug</a>
+            </footer>
+        {% else %}
+            <header>
+                {% if new %}
+                    <h1>Album aanmaken</h1>
+                {% else %}
+                    <h1>Album "{{ data.album_name }}" aanpassen</h1>
+                {% endif %}
+            </header>
+
+            {% if errors|length > 0 %}
+                <ul class="error">
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <label>Naam album</label>
+            <input type="text" name="album_name" value="{{ data.album_name }}" placeholder="Vul de naam van het album in">
+
+            <label>Foto's van welke tak?</label>
+            <label class="select-box">
+                <select name="group">
+                    <option>Maak een keuze</option>
+                    {% for group in groups %}
+                        <option value="{{ group }}"{% if group == data.group %} selected{% endif %}>{{ group | capitalize}}</option>
+                    {% endfor %}
+                </select>
+            </label>
+
+            {% if not new %}
+                <label>Foto's toevoegen</label>
+
+                <div id="photos" class="preview"></div>
+                <div style="clear: both;"></div>
+                <div id="upload-progress" style="display: none;"><div></div></div>
+                <div id="output"></div>
+                <input type="file" multiple="multiple" id="file" />
+                <label for="file">
+                    <svg width="12px" height="12px" viewBox="1502 -655 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <g id="plus" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1503.000000, -654.000000)" stroke-linecap="round">
+                            <path d="M5,0.5 L5,10" id="Path-3" stroke="#FFFFFF" stroke-width="2"></path>
+                            <path d="M9.75,5.25 L0.25,5.25" id="Path-3-Copy" stroke="#FFFFFF" stroke-width="2"></path>
+                        </g>
+                    </svg>
+                    Uploaden
+                </label>
+            {% endif %}
+
+            <footer>
+                <input type="submit" class="aubergine fill" value="Opslaan">
+                <a href="/admin/photos" class="button aubergine">Annuleren</a>
+            </footer>
         {% endif %}
-
-        <label>Upload foto's</label>
-
-        <div id="photos" class="preview"></div>
-        <div style="clear: both;"></div>
-        <div id="upload-progress" style="display: none;"><div></div></div>
-        <div id="output"></div>
-        <input type="file" multiple="multiple" id="file" />
-        <label for="file">
-            <svg width="12px" height="12px" viewBox="1502 -655 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <g id="plus" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1503.000000, -654.000000)" stroke-linecap="round">
-                    <path d="M5,0.5 L5,10" id="Path-3" stroke="#FFFFFF" stroke-width="2"></path>
-                    <path d="M9.75,5.25 L0.25,5.25" id="Path-3-Copy" stroke="#FFFFFF" stroke-width="2"></path>
-                </g>
-            </svg>
-            Uploaden
-        </label>
-
-        <label>Foto's van welke tak?</label>
-        <label class="select-box">
-            <select name="group">
-                <option>Maak een keuze</option>
-                {% for group in groups %}
-                    <option value="{{ group }}"{% if group == data.group %} selected{% endif %}>{{ group | capitalize}}</option>
-                {% endfor %}
-            </select>
-        </label>
-
-
-        <footer>
-            <input type="submit" class="aubergine fill" value="Album aanmaken">
-            <a href="/admin/photos" class="button merlot">Annuleren</a>
-        </footer>
 
     </div>
 </form>
+
+{% if not new %}
 
 <script src="/js/upload5.js"></script>
 <script src="/js/photos.js"></script>
@@ -87,7 +111,7 @@
     }
 
     var uploader = new bitcandies.FileUploader({
-        url: '/api/photos/upload',
+        url: '/api/photos/upload/{{ data.id }}',
         maxconnections: 4,
         enqueued: function (item) {
         },
@@ -182,3 +206,4 @@
     });
 
 </script>
+{% endif %}

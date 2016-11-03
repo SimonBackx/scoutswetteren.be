@@ -373,7 +373,7 @@ class Reservatie extends Model {
                 $this->contact_email = strtolower($data['contact_email']);
                 $data['contact_email'] = $this->contact_email;
             } else {
-                $errors[] = 'Contactpersoon e-mailadres is ongeldig';
+                $errors[] = 'Contactpersoon e-mailadres is ongeldig. Kijk het letter per letter na a.u.b. (komma\'s ipv punten...)';
             }
 
             Validator::validateBothPhone($data['contact_gsm'], $this->contact_gsm, $errors);

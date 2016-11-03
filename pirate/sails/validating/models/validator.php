@@ -47,7 +47,7 @@ class Validator extends Model {
     }
 
     static function isValidAddress($adres) {
-        $pattern = '/^.* [0-9]+.*?$/';
+        $pattern = '/^.+[0-9]+.*$/';
         return (preg_match($pattern, $adres) === 1);
     }
 

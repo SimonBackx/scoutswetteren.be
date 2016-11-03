@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Model\Files;
 use Pirate\Model\Model;
+use Imagick;
 
 class GDImage extends Model {
     private $extension = '';
@@ -8,13 +9,10 @@ class GDImage extends Model {
     private $width;
     private $height;
 
-    public $quality = 75;
-
-    public $current_image_is_reused = false;
+    public $quality = 60;
 
     static function createFromGDImage(GDImage $image) {
-        $gd = new GDImage($image->image, $image->extension, $image->width, $image->height);
-        $gd->current_image_is_reused = true;
+        $gd = new GDImage(clone $image->image, $image->extension, $image->width, $image->height);
         return $gd;
     }
 
@@ -27,38 +25,25 @@ class GDImage extends Model {
             return null;
         }
 
+        Imagick::setResourceLimit(imagick::RESOURCETYPE_MEMORY, 20*1000*1000); // Maximum ±20 megabyte
+        $image = new Imagick($path);
+
         $width = $data[0];
         $height = $data[1];
         $ext = strtolower(substr(strrchr(basename($path),'.'),1));
 
-        switch($ext){
-            case 'jpg':
-                $image = imagecreatefromjpeg($path);
-                break;
-            case 'jpeg':
-                $image = imagecreatefromjpeg($path);
-                break;
-            case 'png': 
-                $image = imagecreatefrompng($path);
-                imagesavealpha($image, true);
-                imagealphablending($image, false);
-                break;
-            case 'gif': 
-                $image = imagecreatefromgif($path);
-                break;
-            default: 
-                return null;
-        }
-
         $gd = new GDImage($image, $ext, $width, $height);
 
         if ($ext == 'jpg' || $ext == 'jpeg') {
-            $exif = @exif_read_data($path);
-            if (isset($exif['Orientation'])){
-                $gd->correct($exif['Orientation']);
-            }
+            $image->setImageCompression(Imagick::COMPRESSION_JPEG); 
+            $image->setImageCompressionQuality($gd->quality);
         }
 
+        $orientation = $image->getImageOrientation(); 
+        if ($orientation != imagick::ORIENTATION_TOPLEFT && $orientation != imagick::ORIENTATION_UNDEFINED){
+            $gd->correct($orientation);
+        }
+        
         return $gd;
     }
 
@@ -68,6 +53,10 @@ class GDImage extends Model {
 
     function getHeight() {
         return $this->height;
+    }
+
+    function getSize() {
+        return array('width' => $this->width, 'height' => $this->height);
     }
 
     function getExtension() {
@@ -83,142 +72,140 @@ class GDImage extends Model {
 
     private function correct($orientation) {
         switch($orientation){
-            case 2:
+            case imagick::ORIENTATION_TOPRIGHT:
                 $this->mirrorH();
                 return;
-            case 3:
+            case imagick::ORIENTATION_BOTTOMRIGHT:
                 $this->rotate(180);
                 return;
-            case 4:
+            case imagick::ORIENTATION_BOTTOMLEFT:
                 $this->mirrorV();
                 return;
-            case 5:
+            case imagick::ORIENTATION_LEFTTOP:
                 $this->mirrorV();
                 $this->rotate(270);
                 return;
-            case 6:
+            case imagick::ORIENTATION_RIGHTTOP:
                 $this->rotate(270);
                 return;
-            case 7:
+            case imagick::ORIENTATION_RIGHTBOTTOM:
                 $this->mirrorH();
                 $this->rotate(270);
                 return;
-            case 8:
+            case imagick::ORIENTATION_LEFTBOTTOM:
                 $this->rotate(90);
                 return;
         }
+
+        $this->image->setImageOrientation(imagick::ORIENTATION_TOPLEFT); 
     }
 
     function mirrorH() {
-        $image = imageflip ( $this->image , IMG_FLIP_HORIZONTAL );
-        $this->destroy();
-
-        $this->image = $image;
+        $this->image->flopImage();
     }
 
     function mirrorV() {
-        $image = imageflip ( $this->image , IMG_FLIP_VERTICAL );
-        $this->destroy();
-        $this->image = $image;
+        $this->image->flipImage();
     }
 
+    // tegen de klok draaien
     function rotate($dir = 90){
-        // Tegen de klok in draaien
-        
-        if (floor($dir/180) != $dir/180) {
-            $width_temp = $this->width;
-            $this->width = $this->height;
-            $this->height = $width_temp;
-        }
-        $image = imagerotate ($this->image, $dir, 0);
-        $this->destroy();
 
-        $this->image = $image;
+        if (floor($dir / 180) != $dir / 180) {
+            $new_width = $this->height;
+            $this->height = $this->width;
+            $this->width = $new_width;
+        }
+        $this->image->rotateimage("#000", -$dir);
     }
 
     function crop($size) {
-        $img = imagecreatetruecolor($size['width'], $size['height']);
         $x = floor( ( $this->width - $size['width'] ) / 2 );
         $y = floor( ( $this->height - $size['height'] ) / 2 );
 
-        imagecopyresampled( $img , $this->image, 0, 0, $x, $y, $size['width'], $size['height'] , $size['width'], $size['height']);
+        $this->image->cropImage($size['width'], $size['height'], $x, $y);
 
-        $this->destroy();
-        $this->image = $img;
+        $this->width = $size['width'];
+        $this->height = $size['height'];
+    }
 
+    static function getExpectedSize($original, $size) {
+
+        if (isset($size['width']) && $original->width < $size['width']) {
+            $size['width'] = $original->width;
+            $size['height'] = $original->height;
+            return $size;
+        }
+        if (isset($size['height']) && $original->height < $size['height']) {
+            $size['width'] = $original->width;
+            $size['height'] = $original->height;
+            return $size;
+        }
+
+        if (isset($size['width']) && isset($size['height'])) {
+            return $size;
+        }
+
+        $new_width = $original->width;
+        $new_height = $original->height;
+
+        if (isset($size['width']) && $original->width > $size['width']) {
+            $new_height = round($original->height / $original->width * $size['width']);
+            $new_width = $size['width'];
+        }
+
+        if (isset($size['height']) && $original->height > $size['height']) {
+            $new_width = round($original->width/$original->height*$size['height']);
+            $new_height = $size['height'];
+        }
+
+        return array('width' => $new_width, 'height' => $new_height);
     }
 
     // scale + crop
     function fit($size) {
-        $this->scale($size);
-        $this->crop($size);
+        $this->image->cropThumbnailImage($size['width'], $size['height']);
+
+        $this->width = $size['width'];
+        $this->height = $size['height'];
     }
 
     // scale with aspect ratio
     function scale($size) {
-        $new_width = $this->width;
-        $new_height = $this->height;
+        $new_width = $size['width'];
+        $new_height = $size['height'];
 
-        if (isset($size['width']) && $this->width > $size['width']) {
-            $new_height = round($this->height / $this->width * $size['width']);
-            $new_width = $size['width'];
-        }
+        $this->image->thumbnailImage($new_width, $new_height);
 
-        if (isset($size['height']) && $this->height > $size['height']) {
-            $new_width = round($this->width/$this->height*$size['height']);
-            $new_height = $size['height'];
-        }
-        
-        $image = imagecreatetruecolor($new_width, $new_height);
-        
-        if ($this->extension == 'png') {
-            imagesavealpha($image, true);
-            imagealphablending($image, false);
-        }
-        
-        imagecopyresampled($image, $this->image, 0, 0, 0, 0, $new_width, $new_height, $this->width, $this->height);
-        $this->destroy();
-
-        $this->image = $image;
         $this->width = $new_width;
         $this->height = $new_height;
 
     }
 
-    function save($path) {
+    function save($path, &$errors) {
         global $FILES_DIRECTORY;
         $path = $FILES_DIRECTORY.'/'.$path;
 
+        $error_reporting = error_reporting();
+        error_reporting(0);
+
         $dir = dirname($path);
-        if (!is_dir($dir) && !@mkdir($dir, 755, true)) {
+        if (!is_dir($dir) && !mkdir($dir, 755, true)) {
+            $errors[] = 'Kon mapstructuur niet aanmaken van thumbnail afbeelding.';
+            error_reporting($error_reporting);
             return false;
-        }        
+        }
         $result = false;
 
-        switch($this->extension){
-            case 'jpg': $result = imagejpeg($this->image, $path, $this->quality); 
-
-            break;
-            case 'jpeg': $result = imagejpeg($this->image, $path, $this->quality); 
-
-            break;
-            case 'png': $result = imagepng($this->image, $path, 9); 
-
-            break;
-            case 'gif': $result = imagegif($this->image, $path); 
-
-            break;
-        }
-
+        $result = $this->image->writeImage($path);
         $this->destroy();
 
+        error_reporting($error_reporting);
         return $result;
     }
 
     function destroy() {
-        if (!$this->current_image_is_reused) {
-            imagedestroy($this->image);
-        }
-        $this->current_image_is_reused = false;
+        $this->image->clear();
     }
+
 }

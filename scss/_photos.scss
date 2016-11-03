@@ -6,25 +6,31 @@
         padding: 0;
         clear: both;
 
-        img {
+        img, .preview {
             margin: 0 8px 8px 0;
             display: block;
             float: left;
         }
-        img:last-child {
+        img:last-child, .preview:last-child {
             margin-right: 0;
         }
+
+        .preview {
+            background: $gray;
+        }
     }   
+
 }
 
 #upload-progress {
     width: auto;
-    height: 4px;
-    border-radius: 3px;
-    margin: 10px 0;
+    height: 2px;
+    border-radius: 2px;
     position: relative;
     overflow: hidden;
     background: $gray;
+    max-width: 500px;
+    margin-top: 10px;
 
     div {
         position: absolute;
@@ -33,5 +39,19 @@
         bottom: 0;
         width: 0%;
         background: $merlot;
+    }
+}
+
+#photos {
+    max-width: 500px;
+    margin-top: 10px;
+
+    &.preview {
+        max-height: 300px;
+        overflow: auto;
+        
+        .photo-grid .photo-row img, .photo-grid .photo-row .preview {
+            margin: 0 3px 3px 0;
+        }
     }
 }

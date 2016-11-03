@@ -6,6 +6,7 @@ $admin_pages = array(
     '' => array(
         array('priority' => true, 'name' => 'Mijn gegevens', 'url' => ''),
         array('name' => 'Maandplanning', 'url' => 'maandplanning'),
+        array('name' => 'Foto\'s', 'url' => 'photos')
        //array('name' => 'Blog', 'url' => 'blog'),
         //array('name' => 'Foto\'s', 'url' => 'fotos'),
     ),

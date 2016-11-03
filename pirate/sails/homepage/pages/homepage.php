@@ -22,6 +22,12 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
+                    'title' => 'Wafelbak wordt uitgesteld',
+                    'text' => 'Door omstandigheden wordt de wafelbak uitgesteld naar het 2e semester. De werkvergadering voor de ouders en leiding gaat wel nog steeds door op 12 november. Zondag 13 november is het dus gewoon scouts.'//,
+                    /*'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/10/15/wafelverkoop-12-november-2016'),
+                    'extra_button' => array('text' => 'Bestelformulier', 'url' => '/files/wafelverkoop2016.pdf')*/
+                ),
+                array(
                     'title' => 'Een nieuwe huisstijl!',
                     'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning vind je nu altijd terug op de startpagina',
                     'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/09/09/nieuwe-huisstijl-en-online-inschrijven')

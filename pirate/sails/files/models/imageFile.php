@@ -5,39 +5,35 @@ use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Files\File;
 use Pirate\Model\Files\Image;
 use Pirate\Model\Files\GDImage;
+use Pirate\Model\Files\Album;
 
 class ImageFile extends Model {
     public $id;
     public $file; // object
-    public $image; // object
+    public $image; // id 
 
     public $width;
     public $height;
 
-    function __construct($row = null, $image = null) {
+    function __construct($row = null) {
         if (!isset($row)) {
             return;
         }
 
         $this->id = $row['imagefile_id'];
         $this->file = new File($row);
-        $this->image = $image;
+        $this->image = $row['imagefile_image'];
         $this->width = intval($row['imagefile_width']);
         $this->height = intval($row['imagefile_height']);
     }
 
     // Nieuwe aanmaken vanaf gdImage
     // False on failure, object on success
-    static function create(Image $image, GDImage $gdImage, &$errors) {
-        $path = 'images/';
-
-        if (isset($image->date_taken)) {
-            $path = 'images/'.$image->date_taken->format('Y/m/d').'/';
-        }
+    static function create(Image $image, GDImage $gdImage, &$errors, $path = 'images/') {
         $path .= $gdImage->getWidth().'x'.$gdImage->getHeight().'/';
         $path .= $image->id.'.'.$gdImage->getExtension();
 
-        if (!$gdImage->save($path)) {
+        if (!$gdImage->save($path, $errors)) {
             $errors[] = 'Fout bij opslaan herschaalde afbeelding.';
             return false;
         }
@@ -53,7 +49,7 @@ class ImageFile extends Model {
 
         $imageFile = new ImageFile();
         $imageFile->file = $file;
-        $imageFile->image = $image;
+        $imageFile->image = $image->id;
         $imageFile->width = $gdImage->getWidth();
         $imageFile->height = $gdImage->getHeight();
 
@@ -70,7 +66,7 @@ class ImageFile extends Model {
     static function createFromOriginal(Image $image, File $file, &$errors) {
         $imageFile = new ImageFile();
         $imageFile->file = $file;
-        $imageFile->image = $image;
+        $imageFile->image = $image->id;
 
         $data = getimagesize($file->getPath());
 
@@ -95,7 +91,7 @@ class ImageFile extends Model {
         }
 
         $file = self::getDb()->escape_string($this->file->id);
-        $image = self::getDb()->escape_string($this->image->id);
+        $image = self::getDb()->escape_string($this->image);
         $width = self::getDb()->escape_string($this->width);
         $height = self::getDb()->escape_string($this->height);
 

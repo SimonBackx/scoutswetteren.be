@@ -1,0 +1,25 @@
+<div class="text">
+
+    <h1>Foto's</h1>
+    <p>Hier kan je heel gemakkelijk foto albums aanmaken. Foto's verwijderen doe je op de openbare foto pagina.</p>
+
+    {% if concept_images | length == 0 %}
+        <a href="/admin/photos/upload/" class="icon-button plus">Nieuw album aanmaken</a>
+    {% else %}
+        <a href="/admin/photos/upload/" class="icon-button plus">Nieuw album aanmaken - {{ concept_images | length }} foto('s) geüpload</a>
+    {% endif %}
+    
+    <div class="list-bundle">
+        {% for album in albums %}
+            <article class="list">
+                <div class="medium merlot column">{{ album.date | date("d/m/Y") }}</div>
+                <div class="max column">{{ album.name }}</div>
+                <div class="large merlot column">{{ album.image_count }} foto's </div>
+                <div class="last column">
+                    <a href="/admin/photos/edit/{{ album.id }}" class="button noborder">Aanpassen</a>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+</div>
+

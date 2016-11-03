@@ -59,7 +59,7 @@ class OuderOverview extends Page {
         // Mailen én
         //  dan doorverwijzen naar de info pagina van deze afrekening
         
-        // Alle nog niet ingeschreven leden (nieuwe leden), nu pas inschrijven (nadat hun steekkaart dus is ingevuld)
+        // Alle nog nooit ingeschreven leden (nieuwe leden), nu pas inschrijven (nadat hun steekkaart dus is ingevuld)
         
         foreach ($leden as $lid) {
             if (empty($lid->inschrijving)) {

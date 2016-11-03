@@ -19,8 +19,14 @@ nav.buttons {
             font-weight: bold;
         }
     }
+
+    @media screen and (max-width: 1024px) {
+        display: none;
+    }
 }
 
-.block.withButtons{
-    margin-top: 0;
+@media screen and (min-width: 1025px) {
+    .block.withButtons{
+        margin-top: 0;
+    }
 }

@@ -62,8 +62,10 @@ bitcandies.FileUploader.QueuedFile = function (uploader, file, params, id) {
     this.uploader = uploader;
     this.file = file;
     this.params = params || {};
+    this.variables = {};
     this.id = id;
     this.status = bitcandies.FileUploader.Statuses.QUEUED;
+    this.oldProgress = null;
 }
 
 bitcandies.FileUploader.QueuedFile.prototype = {
@@ -158,6 +160,13 @@ bitcandies.FileUploader.prototype = {
     },
 
     onComplete: function (item, xhr) {
+        for (var i in this.running) {
+            if (this.running[i].id === item.id) {
+                this.running.splice(i, 1);
+                break;
+            }
+        }
+
         if (item.status !== bitcandies.FileUploader.Statuses.ABORTED) {
             item.status = bitcandies.FileUploader.Statuses.COMPLETED;
             this.options.progress.call(this, item, item.getSize(), item.getSize(), xhr);
@@ -173,12 +182,6 @@ bitcandies.FileUploader.prototype = {
             delete item.xhr;
         }
 
-        for (var i in this.running) {
-            if (this.running[i].id === item.id) {
-                this.running.splice(i, 1);
-                break;
-            }
-        }
         this.run();
     },
 

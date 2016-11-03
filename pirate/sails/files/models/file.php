@@ -11,12 +11,13 @@ class File extends Model {
     public $size; // bytes
     public $upload_date;
     public $author;
+    public $is_source;
 
     private $new = false;
 
     static private $restrictedExtensions = array('exe', 'pif', 'application', 'gadget', 'msi', 'jar', 'msc', 'bat', 'cmd', 'vb', 'vbs', 'vbe', 'ps1', 'ps1xml', 'ps2', 'ps2xml', 'psc1', 'psc2', 'msh', 'msh1', 'msh2', 'mshxml', 'msh1xml', 'msh2xml', 'scf', 'lnk', 'inf', 'reg', 'php', 'cgi', 'torrent', 'js', 'app', 'pif', 'vbscript', 'wsf', 'asp', 'cer', 'csr', 'jsp', 'drv', 'sys', 'ade', 'adp', 'htaccess', 'sh');
 
-    static private $max_size = 20000000; // in bytes
+    static public $max_size = 20000000; // in bytes
 
     function __construct($row = null) {
         if (!isset($row)) {
@@ -31,6 +32,7 @@ class File extends Model {
         $this->size = $row['file_size'];
         $this->upload_date = new \DateTime($row['file_upload_date']);
         $this->author = $row['file_author'];
+        $this->is_source = $row['file_is_source'];
     }
 
     function getPath() {
@@ -44,7 +46,8 @@ class File extends Model {
     }
 
     // Kan zowel nieuw uploaden als bestaand bestand overschrijven
-    function upload($form_name, &$errors) {        
+    // use_name = sla op met deze naam (excl extensie)
+    function upload($form_name, &$errors, $file_types = null, $use_name = null) {
         if (!$this->new) {
             $errors[] = 'Kan bestand niet overschrijven.';
             return false;
@@ -55,9 +58,30 @@ class File extends Model {
             return false;
         }
 
+
         $name = $_FILES[$form_name]['name'];
+        $name = trim($name);
         $ext = strtolower(substr(strrchr($name,'.'),1));
         $name = strtolower($name);
+
+        if (isset($use_name)) {
+            $name = $use_name.'.'.$ext;
+        }
+
+        if (isset($file_types)) {
+            $found = false;
+            foreach ($file_types as $value) {
+                if ($value == $ext) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $errors[] = 'Bestandstype "'.$ext.'" niet toegelaten.';
+                return false;
+            }
+        }
 
         $size = $_FILES[$form_name]['size'];
         $error = $_FILES[$form_name]['error'];
@@ -110,9 +134,8 @@ class File extends Model {
             return false;
         }
 
-        if (preg_match('/^[-0-9A-z_\. ]+$/', $name) !== 1) {
-            $errors[] = 'Ongeldige bestandsnaam';
-            return false;
+        if (preg_match('/^[-0-9A-z_\.@ ]+$/', $name) !== 1) {
+            $name = preg_replace('/[^0-9A-z_\.@]+/', '-', $name);
         }
 
         foreach (self::$restrictedExtensions as $value) {
@@ -160,7 +183,11 @@ class File extends Model {
         
         $this->upload_date = $date;
         $this->size = $size;
+        $this->is_source = true;
 
+        // Error reporting tijdelijk uitzetten
+        $error_reporting = error_reporting();
+        error_reporting(0);
 
         $prelocation = $this->location;
         $num = 1;
@@ -172,14 +199,17 @@ class File extends Model {
         // Opslaan in mysql en rollback als verplaatsen mislukt
         self::getDb()->autocommit(false);
         if (!$this->save()) {
+            self::getDb()->rollback(); // voor als we al in autocommit zaten voor het aanroepen van deze functie
             self::getDb()->autocommit(true);
             $errors[] = 'Opslaan in database mislukt';
+            error_reporting($error_reporting);
             return false;
         }
 
         $dir = dirname($this->getPath());
-        if (!is_dir($dir) && !@mkdir($dir, 755, true)) {
-            $errors[] = 'Kon mapstructuur niet aanmaken.';
+        if (!is_dir($dir) && !mkdir($dir, 755, true)) {
+            $errors[] = 'Kon mapstructuur niet aanmaken: '.$dir;
+            error_reporting($error_reporting);
             return false;
         }
 
@@ -187,12 +217,14 @@ class File extends Model {
         if (!move_uploaded_file($_FILES[$form_name]['tmp_name'], $this->getPath())) {
             self::getDb()->rollback();
             self::getDb()->autocommit(true);
-            $errors[] = 'Opslaan mislukt';
+            $errors[] = 'Opslaan mislukt naar '.$this->getPath();
+            error_reporting($error_reporting);
             return false;
         }
 
         self::getDb()->commit();
         self::getDb()->autocommit(true);
+        error_reporting($error_reporting);
         return true;
     }
 
@@ -209,7 +241,9 @@ class File extends Model {
         $this->extension = $ext;
         $date = new \DateTime();
 
-        $this->author = Leiding::getUser()->id;
+        if (Leiding::isLoggedIn()) {
+            $this->author = Leiding::getUser()->id;
+        }
         $this->upload_date = $date;
         $this->size = filesize($this->getPath());
 
@@ -217,6 +251,8 @@ class File extends Model {
             $errors[] = 'Bestand bestaat niet';
             return false;
         }
+
+        $this->is_source = false;
      
         // Opslaan in mysql en rollback als verplaatsen mislukt
         if (!$this->save()) {
@@ -233,6 +269,11 @@ class File extends Model {
         $location = self::getDb()->escape_string($this->location);
         $size = self::getDb()->escape_string($this->size);
         $upload_date = self::getDb()->escape_string($this->upload_date->format('Y-m-d H:i:s'));
+
+        $is_source = 0;
+        if ($this->is_source) {
+            $is_source = 1;
+        }
 
         if (!isset($this->author)) {
             $author = 'NULL';
@@ -252,13 +293,14 @@ class File extends Model {
                  file_location = '$location,
                  file_size = '$size',
                  file_upload_date = '$upload_date',
-                 file_author = $author
+                 file_author = $author,
+                 file_is_source = '$is_source'
                  where file_id = '$id' 
             ";
         } else {
             $query = "INSERT INTO 
-                files (`file_name`, `file_extension`, `file_location`, `file_size`, `file_upload_date`, `file_author`)
-                VALUES ('$name', '$extension', '$location', '$size', '$upload_date', $author)";
+                files (`file_name`, `file_extension`, `file_location`, `file_size`, `file_upload_date`, `file_author`, `file_is_source`)
+                VALUES ('$name', '$extension', '$location', '$size', '$upload_date', $author, '$is_source')";
         }
 
         if (self::getDb()->query($query)) {

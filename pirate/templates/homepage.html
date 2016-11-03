@@ -72,9 +72,9 @@
                         <h1>{{ slideshows[0].title }}</h1>
                         <p>{{ slideshows[0].text }}</p>
                         {% if slideshows[0].button is defined %}
-                            <a href="{{ slide.button.url }}" class="button">{{ slideshows[0].button.text }}</a>
+                            <a href="{{ slideshows[0].button.url | e('html_attr') }}" class="button">{{ slideshows[0].button.text }}</a>
                             {% if slideshows[0].extra_button is defined %}
-                                <a href="{{ slide.extra_button.url }}" class="button noborder">{{ slideshows[0].extra_button.text }}</a>
+                                <a href="{{ slideshows[0].extra_button.url | e('html_attr') }}" class="button noborder">{{ slideshows[0].extra_button.text }}</a>
                             {% endif %}
                         {% endif %}
                     </article>
@@ -91,9 +91,9 @@
                         <h1>{{ slide.title }}</h1>
                         <p>{{ slide.text }}</p>
                         {% if slide.button is defined %}
-                            <a href="{{ slide.button.url }}" class="button">{{ slide.button.text }}</a>
+                            <a href="{{ slide.button.url | e('html_attr') }}" class="button">{{ slide.button.text }}</a>
                             {% if slide.extra_button is defined %}
-                                <a href="{{ slide.extra_button.url }}" class="button noborder">{{ slide.extra_button.text }}</a>
+                                <a href="{{ slide.extra_button.url | e('html_attr') }}" class="button noborder">{{ slide.extra_button.text }}</a>
                             {% endif %}
                         {% endif %}
                     </article>

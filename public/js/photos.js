@@ -5,11 +5,13 @@ photos.Photo = function(width, height) {
     this.sources = [];
     this.width = 0;
     this.height = 0;
+    this.grid = null;
 
     this.source_width = width;
     this.source_height = height;
 
     this.element = null;
+    this.isPlaceholder = true;
 };
 
 photos.Photo.prototype = {
@@ -40,36 +42,65 @@ photos.Photo.prototype = {
         this.element.style.height = this.height+'px';
     },
 
-    toDOM: function() {
+    setSources: function(width, height, sources) {
+        this.source_width = width;
+        this.source_height = height;
+        this.sources = sources;
+
         if (this.element) {
+            this.setHeight(this.height);
+            this.toDOM();
+            grid.needsRecalculate = true;
+            grid.refresh();
+        }
+    },
+
+    toDOM: function() {
+        if (this.element && !(this.isPlaceholder && this.sources.length > 0)) {
             return this.element;
         }
 
-        var element = document.createElement('img');
+        if (this.sources.length == 0) {
+            this.isPlaceholder = true;
+            var element = document.createElement('div');
+            element.className = 'preview';
+        } else {
 
-        // Calculate the best source file (without using dpi)
-        var src;
-        var srcset = '';
+            this.isPlaceholder = false;
+            var element = document.createElement('img');
 
-        this.sources.sort(function(a, b){return a.width - b.width });
+            // Calculate the best source file (without using dpi)
+            var src;
+            var srcset = '';
 
-        for (var i = 0; i < this.sources.length; i++) {
-            if (!src || (this.sources[i].height > src.height && src.height < this.height) || (this.sources[i].height < src.height && src.height >= this.height)) {
-                src = this.sources[i];
+            this.sources.sort(function(a, b){return a.width - b.width });
+
+            for (var i = 0; i < this.sources.length; i++) {
+                if (!src || (this.sources[i].height > src.height && src.height < this.height) || (this.sources[i].height < src.height && src.height >= this.height)) {
+                    src = this.sources[i];
+                }
+                if (i > 0) {
+                    srcset += ', ';
+                }
+                srcset += this.sources[i].url + ' ' + this.sources[i].width + 'w';
             }
-            if (i > 0) {
-                srcset += ', ';
-            }
-            srcset += this.sources[i].url + ' ' + this.sources[i].width + 'w';
-        }
+            
+            /*element.setAttribute('srcset', srcset);
+            element.setAttribute('sizes', this.width+'px');*/
+            element.setAttribute('src', src.url);
+
+            element.setAttribute('alt', "");
         
-        /*element.setAttribute('srcset', srcset);
-        element.setAttribute('sizes', this.width+'px');*/
-        element.setAttribute('src', src.url);
+        }
 
-        element.setAttribute('alt', "");
         element.style.width = this.width+'px';
         element.style.height = this.height+'px';
+
+        if (this.element) {
+            // replace
+            this.element.parentNode.insertBefore(element, this.element);
+            this.element.parentNode.removeChild(this.element);
+        }
 
         this.element = element;
         return element;
@@ -93,6 +124,20 @@ photos.Row = function(grid) {
 photos.Row.prototype = {
     getWidth() {
         return Math.ceil(this.width_on_max_height + this.margin_width);
+    },
+
+    recalculate: function() {
+        this.margin_width = 0;
+        this.width_on_max_height = 0;
+
+        for (var i = 0; i < this.photos.length; i++) {
+            var photo = this.photos[i];
+
+            if (i > 0) {
+                this.margin_width += this.grid.margin;
+            }
+            this.width_on_max_height += photo.widthForHeight(this.grid.max_height);
+        }
     },
 
     add: function(photo) {
@@ -263,10 +308,14 @@ photos.Grid = function(options) {
     this.trackWidthElement = null;
 
     this.element = null;
+
+    this.needsRecalculate = false;
 };
 
 photos.Grid.prototype = {
     add: function(photo) {
+        photo.grid = this;
+
         if (this.rows.length == 0 || !this.rows[this.rows.length - 1].add(photo)) {
             var row = new photos.Row(this);
             row.add(photo);
@@ -299,10 +348,19 @@ photos.Grid.prototype = {
 
         this.width = this.trackWidthElement.offsetWidth;
 
+        this.refresh();
+    },
+
+    refresh: function() {
         var dropped = [];
 
         for (var i = 0; i < this.rows.length; i++) {
+            if (this.needsRecalculate) {
+                this.rows[i].recalculate();
+            }
+
             dropped = this.rows[i].prepend(dropped);
+
             if (dropped.length == 0) {
                 while (!this.rows[i].isFull && i < this.rows.length - 1) {
                     var next = this.rows[i+1];
@@ -320,6 +378,8 @@ photos.Grid.prototype = {
         for (var i = 0; i < dropped.length; i++) {
             this.add(dropped[i]);
         }
+
+        this.needsRecalculate = false;
     },
 
     trackWidth: function(trackWidthElement) {
@@ -332,4 +392,3 @@ photos.Grid.prototype = {
         };
     }
 };
-
