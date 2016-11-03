@@ -207,11 +207,14 @@ class File extends Model {
         }
 
         $dir = dirname($this->getPath());
-        if (!is_dir($dir) && !mkdir($dir, 755, true)) {
+        $old = umask(0);
+        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
+            umask($old);
             $errors[] = 'Kon mapstructuur niet aanmaken: '.$dir;
             error_reporting($error_reporting);
             return false;
         }
+        umask($old);
 
         // Verplaatsen
         if (!move_uploaded_file($_FILES[$form_name]['tmp_name'], $this->getPath())) {

@@ -21,6 +21,15 @@ class PhotosAdminRouter extends Route {
             return false;
         }
 
+        if (count($parts) == 3 && $parts[0] == 'photos' && $parts[1] == 'delete') {
+            $id = $parts[2];
+            $this->album = Album::getAlbum($id);
+            if (isset($this->album)) {
+                return true;
+            }
+            return false;
+        }
+
         if ($url == 'photos') {
             return true;
         }
@@ -35,6 +44,11 @@ class PhotosAdminRouter extends Route {
         }
 
         if (isset($this->album)) {
+            if ($parts[1] == 'delete') {
+                require(__DIR__.'/admin/delete.php');
+                return new Admin\Delete($this->album);
+            }
+            
             require(__DIR__.'/admin/edit.php');
             return new Admin\Edit($this->album);
         }

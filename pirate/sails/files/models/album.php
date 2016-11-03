@@ -234,7 +234,7 @@ class Album extends Model {
         return true;
     }
 
-    static function getPathForAlbum($album = null) {
+    static function getPathForAlbum($album = null, $deletePath = false) {
         $path = 'images/';
 
         if (isset($album) && isset($album->id)) {
@@ -242,7 +242,11 @@ class Album extends Model {
                 $leiding_id = Leiding::getUser()->id;
                 $path = 'albums/queue/'.$leiding_id.'/';
             } else {
-                $path = 'albums/'.$album->id.'/'.$album->getSlug().'/';
+                if ($deletePath) {
+                    $path = 'albums/'.$album->id.'/';
+                } else {
+                    $path = 'albums/'.$album->id.'/'.$album->getSlug().'/';
+                }
             }
         }
 
@@ -295,10 +299,15 @@ class Album extends Model {
             $error_reporting = error_reporting();
             //error_reporting(0);
             $dir = $FILES_DIRECTORY.'/'.Self::getPathForAlbum($this);
-            if (!is_dir($dir) && !mkdir($dir, 755, true)) {
+
+            $old = umask(0);
+            if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
+                umask($old);
                 error_reporting($error_reporting);
                 return false;
             }
+            umask($old);
+
             rename($FILES_DIRECTORY.'/'.Self::getPathForAlbum(Self::getQueueAlbum()), $dir);
             error_reporting($error_reporting);
 
@@ -306,6 +315,38 @@ class Album extends Model {
         }
 
         return false;
+    }
+
+    function delete() {
+        global $FILES_DIRECTORY;
+
+        if (!isset($this->id)) {
+            return false;
+        }
+        if ($this->id != Self::$QUEUE_ID) {
+            $id = self::getDb()->escape_string($this->id);
+            $query = "DELETE files FROM albums
+                left join images on images.image_album = albums.album_id
+                left join image_files on image_files.imagefile_image = images.image_id
+                left join files on files.file_id = image_files.imagefile_file
+                WHERE albums.album_id = '$id'";
+
+            if (!self::getDb()->query($query)) {
+                return false;
+            }
+
+            $query = "DELETE FROM albums
+                WHERE albums.album_id = '$id'";
+
+            if (!self::getDb()->query($query)) {
+                return false;
+            }
+        }
+
+        $path = $FILES_DIRECTORY.'/'.Album::getPathForAlbum($this, true);
+        exec("rm -rf \"$path\"", $output, $response);
+
+        return ($response === 0);
     }
 
 }

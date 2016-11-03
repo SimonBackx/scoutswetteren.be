@@ -63,6 +63,9 @@
 
             <footer>
                 <input type="submit" class="aubergine fill" value="Opslaan">
+                {% if not new %}
+                <a href="/admin/photos/delete/{{ data.id }}" class="button aubergine">Verwijderen</a>
+                {% endif %}
                 <a href="/admin/photos" class="button aubergine">Annuleren</a>
             </footer>
         {% endif %}

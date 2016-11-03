@@ -1,0 +1,29 @@
+<form method="post">
+    <div class="text">
+        {% if failed %}
+            <header>
+                <h1>Verwijderen mislukt!</h1>
+                <footer>
+                    <input type="submit" class="aubergine fill" name="confirm-delete" value="Opnieuw proberen">
+                    <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+                </footer>
+            </header>
+        {% else %}
+            {% if success %}
+                 <header>
+                    <h1>Verwijderen gelukt!</h1>
+                </header>
+            {% else %}
+                 <header>
+                    <h1>Ben je zeker dat je dit album wilt verwijderen?</h1>
+                    <h2>"{{ album.name }} met {{ album.image_count }} foto's"</h2>
+                </header>
+
+                <footer>
+                    <input type="submit" class="aubergine fill" name="confirm-delete" value="Ja, verwijderen">
+                    <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+                </footer>
+            {% endif %}
+        {% endif %}
+    </div>
+</form>

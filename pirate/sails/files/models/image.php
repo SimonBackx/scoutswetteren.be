@@ -171,13 +171,11 @@ class Image extends Model {
 
             $original->destroy();
         }
-
-        
-
         // Hier nog resize toevoegen
 
         return true;
     }
+    
 
     static function getImagesFromAlbum($album_id = null) {
         $where = '';

@@ -190,11 +190,15 @@ class GDImage extends Model {
         error_reporting(0);
 
         $dir = dirname($path);
-        if (!is_dir($dir) && !mkdir($dir, 755, true)) {
+        $old = umask(0);
+        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
+            umask($old);
             $errors[] = 'Kon mapstructuur niet aanmaken van thumbnail afbeelding.';
             error_reporting($error_reporting);
             return false;
         }
+
+        umask($old);
         $result = false;
 
         $result = $this->image->writeImage($path);
