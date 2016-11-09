@@ -27,6 +27,8 @@ class Leiding extends Model {
     private static $allPermissions;
     private static $adminMenu;
 
+    private static $login_days = 60;
+
     function __construct($row = null) {
         if (is_null($row)) {
             return;
@@ -365,8 +367,10 @@ class Leiding extends Model {
         }
 
         $token = self::getDb()->escape_string(self::generateToken());
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
         $client = intval(self::$user->id);
-        $query = "INSERT INTO tokens (client, token) VALUES ($client, '$token')";
+        $query = "INSERT INTO tokens (client, token, `time`) VALUES ($client, '$token', '$time')";
 
         if (self::getDb()->query($query)) {
             self::setCookies($client, $token);
@@ -384,7 +388,10 @@ class Leiding extends Model {
         // Token die bij de huidige sessie hoort verwijderen
         $token = self::getDb()->escape_string($token);
 
-        $query = "DELETE FROM tokens WHERE token = '$token'";
+        $now = new \DateTime();
+        $now->sub(new \DateInterval('P'.Self::$login_days.'D'));
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        $query = "DELETE FROM tokens WHERE token = '$token' OR `time` < '$time'";
 
         if (self::getDb()->query($query)) {
             if ($removeCookies)
@@ -420,19 +427,19 @@ class Leiding extends Model {
      * @return Leiding Geeft leiding object van bezoeker terug indien de gebruiker ingelogd is. NULL indien niet ingelogd
      */
     private static function checkLogin() {
-        if (self::$didCheckLogin) {
-            return self::$user;
+        if (Self::$didCheckLogin) {
+            return Self::$user;
         }
         // Usertoken controleren in cookies
         // en als succesvol ingelogd: self::$user setten!
-        self::$didCheckLogin = true;
-        self::$user = null;
+        Self::$didCheckLogin = true;
+        Self::$user = null;
 
         if (!isset($_COOKIE['client'], $_COOKIE['token'])) {
             return null;
         }
 
-        $client = intval($_COOKIE['client']);
+        $client = self::getDb()->escape_string($_COOKIE['client']);
         $token = self::getDb()->escape_string($_COOKIE['token']);
         $query = "SELECT l.*, t.token, t.time,
             group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
@@ -453,7 +460,7 @@ class Leiding extends Model {
                 $interval = $date->diff($now);
 
                 // Als het vervallen is: verwijderen
-                if ($interval->days > 60) {
+                if ($interval->days > Self::$login_days) {
                     self::deleteToken($token, true);
                     return null;
                 }
@@ -461,14 +468,13 @@ class Leiding extends Model {
                 self::$currentToken = $row['token'];
                 self::$user = new Leiding($row);
 
-                if ($interval->days >= 1 || $interval->h >= 1) {
-                    // Token vernieuwen als hij al een uur oud is
-                    // Zodat het moeilijk wordt voor mensen om de token 
-                    // fysiek op de computer te stelen als de gebruiker
-                    // na een uur opnieuw op de website komt.
+                if ($interval->days >= 1) {
+                    // Token vernieuwen als hij al een dag oud is
                     self::createToken();
                 }
                 
+            } else {
+
             }
         }
 

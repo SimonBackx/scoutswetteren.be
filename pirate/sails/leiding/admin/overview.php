@@ -36,7 +36,6 @@ class Overview extends Page {
             
         }
 
-
         return Template::render('leiding/admin/overview', array(
             'groups' => $data
         ));

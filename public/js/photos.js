@@ -185,41 +185,43 @@ photos.Photo.prototype = {
         } else {
             element = document.createElement('figure');
 
-            var box = document.createElement('aside');
-            var del = document.createElement('div');
-            del.className = 'del';
-            del.setAttribute('title', 'Deze foto verwijderen');
-            
-            var me = this;
-            del.onclick = function(event) {
-                if (event) {
-                    event.stopPropagation();
-                } else {
-                    window.event.cancelBubble = true;
-                }
-                me.delete();
+            if (is_admin) {
+                var box = document.createElement('aside');
+                var del = document.createElement('div');
+                del.className = 'del';
+                del.setAttribute('title', 'Deze foto verwijderen');
+                
+                var me = this;
+                del.onclick = function(event) {
+                    if (event) {
+                        event.stopPropagation();
+                    } else {
+                        window.event.cancelBubble = true;
+                    }
+                    me.delete();
 
-                return false;
-            };
-            
-            var cov = document.createElement('cov');
-            cov.className = 'cov';
-            cov.setAttribute('title', 'Instellen als cover foto');
-            cov.onclick = function(event) {
-                if (event) {
-                    event.stopPropagation();
-                } else {
-                    window.event.cancelBubble = true;
-                }
-                me.setCover();
+                    return false;
+                };
+                
+                var cov = document.createElement('cov');
+                cov.className = 'cov';
+                cov.setAttribute('title', 'Instellen als cover foto');
+                cov.onclick = function(event) {
+                    if (event) {
+                        event.stopPropagation();
+                    } else {
+                        window.event.cancelBubble = true;
+                    }
+                    me.setCover();
 
-                return false;
-            };
+                    return false;
+                };
 
-            box.appendChild(cov);
-            box.appendChild(del);
+                box.appendChild(cov);
+                box.appendChild(del);
 
-            element.appendChild(box);
+                element.appendChild(box);
+            }
 
             has_img = false;
         }

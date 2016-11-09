@@ -1,0 +1,18 @@
+<div class="text">
+
+    <h1>Dependencies</h1>
+
+    <ul>
+    {% for d in output %}
+        <li{% if not d.success %} style="color: #E02545;"{% endif %}>
+        {{d.msg}} 
+        {% if d.success %}
+            (ok)
+        {% else %}
+            (failed)
+        {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+

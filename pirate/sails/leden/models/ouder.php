@@ -25,6 +25,7 @@ class Ouder extends Model {
     private static $didCheckLogin = false;
     private static $currentToken = null;
     private static $user = null;
+    private static $login_days = 60;
 
     public static $filters = array(
         'all' => array(
@@ -408,7 +409,9 @@ class Ouder extends Model {
 
         $token = self::getDb()->escape_string(self::generateToken());
         $client = intval(self::$user->id);
-        $query = "INSERT INTO ouder_tokens (client, token) VALUES ($client, '$token')";
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        $query = "INSERT INTO ouder_tokens (client, token, `time`) VALUES ($client, '$token', '$time')";
 
         if (self::getDb()->query($query)) {
             self::setCookies($client, $token);
@@ -426,7 +429,10 @@ class Ouder extends Model {
         // Token die bij de huidige sessie hoort verwijderen
         $token = self::getDb()->escape_string($token);
 
-        $query = "DELETE FROM ouder_tokens WHERE token = '$token'";
+        $now = new \DateTime();
+        $now->sub(new \DateInterval('P'.Self::$login_days.'D'));
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        $query = "DELETE FROM ouder_tokens WHERE token = '$token' OR `time` < '$time'";
 
         if (self::getDb()->query($query)) {
             if ($removeCookies)
@@ -482,7 +488,7 @@ class Ouder extends Model {
                 $interval = $now->diff($date);
 
                 // Als het vervallen is: verwijderen
-                if ($interval->days > 60) {
+                if ($interval->days > Self::$login_days) {
                     self::deleteToken($token, true);
                     return null;
                 }
@@ -490,8 +496,8 @@ class Ouder extends Model {
                 self::$currentToken = $row['token'];
                 self::$user = new Ouder($row);
 
-                if ($interval->days >= 1 || $interval->h >= 1) {
-                    // Token vernieuwen als hij al een uur oud is
+                if ($interval->days >= 1) {
+                    // Token vernieuwen als hij al een dag oud is
                     // Zodat het moeilijk wordt voor mensen om de token 
                     // fysiek op de computer te stelen als de gebruiker
                     // na een uur opnieuw op de website komt.
@@ -505,11 +511,11 @@ class Ouder extends Model {
     }
 
     static function isLoggedIn() {
-        return !is_null(self::checkLogin());
+        return !is_null(Self::checkLogin());
     }
 
     static function getUser() {
-        return self::$user;
+        return Self::$user;
     }
     
 }

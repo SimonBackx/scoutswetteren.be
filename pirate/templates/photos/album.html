@@ -28,7 +28,7 @@
                         <defs></defs>
                         <polyline id="back" stroke="#470A14" stroke-width="2" stroke-linecap="round" fill="none" transform="translate(859.000000, 30.500000) scale(-1, 1) translate(-859.000000, -30.500000) " points="855 23 863 30.5 855 38"></polyline>
                     </svg>Alle albums</a>
-                  <a href="/fotos/download/{{ album.getUrl }}" class="button aubergine noborder">Download originele bestanden</a>
+                  <a href="/fotos/download/{{ album.getUrl }}" class="button aubergine noborder" rel="nofollow">Download</a>
                   <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}/fotos/album/{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button aubergine noborder">Deel op facebook</a>
                   {% if general.logged_in %}
                     <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
@@ -110,6 +110,8 @@
     grid.trackWidth(document.getElementById('album_container'));
     grid.margin = 8;
     grid.max_height = 300;
+
+    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
 
     {% for image in images %}
         var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});

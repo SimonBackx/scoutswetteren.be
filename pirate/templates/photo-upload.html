@@ -44,6 +44,8 @@
     grid.margin = 3;
     grid.max_height = 100;
 
+    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+
     {% for image in images %}
         var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
         photo.sources = {{ image.getSourcesJSON | raw }};
