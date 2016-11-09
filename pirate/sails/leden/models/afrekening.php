@@ -287,14 +287,19 @@ class Afrekening extends Model {
             $mededeling = substr(implode('/', $achternamen), 0, 21);
         }
 
+        $oke = 0;
+        if ($afrekening->isBetaald()) {
+            $oke = 1;
+        }
+
         $mededeling = self::getDb()->escape_string($mededeling);
         $betaald_scouts = self::getDb()->escape_string($betaald_scouts);
         $gezin = self::getDb()->escape_string($gezin->id);
         $totaal = self::getDb()->escape_string($totaal);
         
         $query = "INSERT INTO 
-                afrekeningen (`mededeling`, `betaald_scouts`, `totaal`,  `gezin`)
-                VALUES ('$mededeling', '$betaald_scouts', '$totaal', '$gezin')";
+                afrekeningen (`mededeling`, `betaald_scouts`, `totaal`,  `gezin`, `oke`)
+                VALUES ('$mededeling', '$betaald_scouts', '$totaal', '$gezin', '$oke')";
 
         self::getDb()->autocommit(false);
 
@@ -302,16 +307,12 @@ class Afrekening extends Model {
             $afrekening->id = self::getDb()->insert_id;
             $afrekening_id = self::getDb()->escape_string($afrekening->id);
 
-            $oke = 0;
-            if ($afrekening->isBetaald()) {
-                $oke = 1;
-            }
 
             $ids = implode(', ', $ids);
             $query = "UPDATE inschrijvingen 
                 SET 
                  `afrekening` = '$afrekening_id',
-                 `afrekening_oke` = $oke
+                 `afrekening_oke` = '$oke'
                  where `inschrijving_id` IN ($ids)
             ";
             if (!self::getDb()->query($query)) {
