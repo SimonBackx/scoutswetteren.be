@@ -11,10 +11,14 @@ class Album extends Model {
     public $id;
     public $name;
     public $date;
+    public $date_taken;
+
     public $author;
     public $hidden;
 
     public $group;
+    public $slug;
+    public $zip_file; // id van file of null
     public $cover = null;
     public $image_count = 0;
     public static $QUEUE_ID = 0;
@@ -27,8 +31,12 @@ class Album extends Model {
         }
 
         $this->id = $row['album_id'];
+        $this->slug = $row['album_slug'];
         $this->name = $row['album_name'];
         $this->date = new \DateTime($row['album_date']);
+        $this->date_taken = new \DateTime($row['album_date_taken']);
+
+        $this->zip_file = $row['album_zip_file'];
         $this->group = $row['album_group'];
         $this->author = $row['album_author'];
         $this->hidden = ($row['album_hidden'] == 1);
@@ -50,7 +58,11 @@ class Album extends Model {
         return $album;
     }
 
-    function getSlug() {
+    function isQueue() {
+        return $this->id == Self::$QUEUE_ID;
+    }
+
+    function generateSlug() {
         $string = $this->name;
 
         $string = iconv( "utf-8", "us-ascii//translit//ignore", $string ); // transliterate
@@ -65,6 +77,16 @@ class Album extends Model {
         return $string;
     }
 
+    function getSlug() {
+        if (!isset($this->slug)) {
+            return $this->generateSlug();
+        }
+        return $this->slug;
+    }
+
+    function getUrl() {
+        return $this->date->format('Y/m/d').'/'.$this->getSlug();
+    }
 
     static function getAlbum($id) {
         $id = self::getDb()->escape_string($id);
@@ -79,12 +101,33 @@ class Album extends Model {
             }
         }
 
-        echo self::getDb()->error;
+        return null;
+    }
+
+    static function getAlbumBySlug($year, $month, $day, $slug) {
+        $slug = self::getDb()->escape_string($slug);
+        $day = self::getDb()->escape_string($day);
+        $month = self::getDb()->escape_string($month);
+        $year = self::getDb()->escape_string($year);
+
+        $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count from albums a join images i on i.image_album = a.album_id left join images c on c.image_id = a.album_cover 
+        WHERE a.album_slug = "'.$slug.'" 
+        AND MONTH(a.album_date) = "'.$month.'"
+         AND YEAR(a.album_date) = "'.$year.'"
+          AND DAY(a.album_date) = "'.$day.'"
+        group by a.album_id, c.image_id';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Album($row);
+            }
+        }
 
         return null;
     }
 
-    static function getAlbums($group = null, $page = 1) {
+    static function getAlbums($group = null, $page = 1, $with_cover = false) {
         $page = intval($page);
 
         $limit = 'LIMIT '.(($page-1)*4).', 50';
@@ -98,15 +141,54 @@ class Album extends Model {
         }
 
         $albums = array();
-        $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count from albums a join images i on i.image_album = a.album_id left join images c on c.image_id = a.album_cover '.$where.' group by a.album_id, c.image_id order by a.album_date desc '.$limit;
 
+        if (!$with_cover) {
+            $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count 
+                    from albums a 
+                    join images i on i.image_album = a.album_id 
+                    left join images c on c.image_id = a.album_cover
+                    '.$where.' 
+                    group by a.album_id, c.image_id 
+                    order by a.album_date desc '.$limit;
+
+            if ($result = self::getDb()->query($query)){
+                if ($result->num_rows>0){
+                    while ($row = $result->fetch_assoc()) {
+                        $albums[] = new Album($row);
+                    }
+                }
+            }
+            return $albums;
+        }
+
+        // Ook cover sources uit database halen
+        $query = 'SELECT a.*, c.*, i_f.*, f.*
+                from albums a 
+                join images c on c.image_id = a.album_cover
+                join image_files i_f on i_f.imagefile_image = c.image_id
+                join files f on f.file_id = i_f.imagefile_file
+                 '.$where.' 
+                order by YEAR(a.album_date_taken) desc, a.album_date desc, a.album_id desc '.$limit;
+        
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
+                $last_album = null;
                 while ($row = $result->fetch_assoc()) {
-                    $albums[] = new Album($row);
+
+                    $a = new Album($row);
+                    if (!isset($last_album) || $a->id != $last_album->id) {
+                        $albums[] = $a;
+                        $last_album = $a;
+                    } else {
+                        $a = $last_album;
+                    }
+
+                    $imagefile = new ImageFile($row);
+                    $a->cover->addSource($imagefile);
                 }
             }
         }
+        
         return $albums;
     }
 
@@ -154,6 +236,8 @@ class Album extends Model {
     function save() {
         $name = self::getDb()->escape_string($this->name);
         $date = self::getDb()->escape_string($this->date->format('Y-m-d H:i:s'));
+        $date_taken = self::getDb()->escape_string($this->date_taken->format('Y-m-d'));
+
         $group = self::getDb()->escape_string($this->group);
 
         $author = "NULL";
@@ -166,15 +250,23 @@ class Album extends Model {
             $cover = "'".self::getDb()->escape_string($this->cover->id)."'";
         }
 
+        $zip_file = "NULL";
+        if (isset($this->zip_file)) {
+            $zip_file = "'".self::getDb()->escape_string($this->zip_file)."'";
+        }
+
         $hidden = 0;
         if ($this->hidden) {
             $hidden = 1;
         }
 
         if (empty($this->id)) {
+            $this->slug = $this->generateSlug();
+            $slug = self::getDb()->escape_string($this->slug);
+
             $query = "INSERT INTO 
-                albums (`album_name`,  `album_author`, `album_date`, `album_group`, `album_cover`, `album_hidden`)
-                VALUES ('$name', $author, '$date', '$group', $cover, '$hidden')";
+                albums (`album_name`, `album_slug`, `album_author`, `album_date`, `album_date_taken`, `album_group`, `album_cover`, `album_hidden`, `album_zip_file`)
+                VALUES ('$name', '$slug', $author, '$date', '$date_taken', '$group', $cover, '$hidden', $zip_file)";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE albums 
@@ -182,9 +274,11 @@ class Album extends Model {
                  `album_name` = '$name',
                  `album_author` = $author,
                  `album_date` = '$date',
+                 `album_date_taken` = '$date_taken',
                  `album_group` = '$group',
                  `album_cover` = $cover,
-                 `album_hidden` = '$hidden'
+                 `album_hidden` = '$hidden',
+                 `album_zip_file` = $zip_file
                  where album_id = '$id' 
             ";
         }
@@ -231,6 +325,15 @@ class Album extends Model {
             $this->date = new \DateTime();
         }
 
+        if (!isset($this->id)) {
+            $album = Self::getAlbumBySlug(intval($this->date->format('Y')), intval($this->date->format('m')), intval($this->date->format('j')), $this->getSlug());
+
+            if (isset($album)) {
+                $errors[] = 'Er bestaat al een album met deze naam, die je op deze dag hebt aangemaakt. Je kan er beter foto\'s aan toevoegen i.p.v. een nieuw album aan te maken.';
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -261,6 +364,14 @@ class Album extends Model {
                 return false; // Geen foto's toe te voegen, en cover niet oke
             }
             $this->cover = $images[0];
+            $this->date_taken = $this->date;
+
+            foreach ($images as $image) {
+                if (isset($image->date_taken)) {
+                    $this->date_taken = $image->date_taken;
+                    break;
+                }
+            }
 
         }
         if ($this->save() == false) {
@@ -324,6 +435,9 @@ class Album extends Model {
             return false;
         }
         if ($this->id != Self::$QUEUE_ID) {
+
+            // Verwijdert alle files + image_files
+            // Images blijven bestaan
             $id = self::getDb()->escape_string($this->id);
             $query = "DELETE files FROM albums
                 left join images on images.image_album = albums.album_id
@@ -335,8 +449,34 @@ class Album extends Model {
                 return false;
             }
 
+            // Verwijder de albums + images
             $query = "DELETE FROM albums
                 WHERE albums.album_id = '$id'";
+
+            if (!self::getDb()->query($query)) {
+                return false;
+            }
+        } else {
+
+            // Verwijdert alle files + image_files
+            // Images blijven bestaan
+            $author = self::getDb()->escape_string(Leiding::getUser()->id);
+            $id = self::getDb()->escape_string($this->id);
+            $query = "DELETE files FROM albums
+                left join images on images.image_album = albums.album_id
+                left join image_files on image_files.imagefile_image = images.image_id
+                left join files on files.file_id = image_files.imagefile_file
+                WHERE albums.album_id = '$id' and files.file_author = '$author'";
+
+            if (!self::getDb()->query($query)) {
+                return false;
+            }
+
+            // Verwijder de images
+            $query = "DELETE images FROM images
+                join albums on albums.album_id = images.image_album
+                left join image_files on image_files.imagefile_image = images.image_id
+                WHERE albums.album_id = '$id' and image_files.imagefile_id is null";
 
             if (!self::getDb()->query($query)) {
                 return false;
@@ -347,6 +487,61 @@ class Album extends Model {
         exec("rm -rf \"$path\"", $output, $response);
 
         return ($response === 0);
+    }
+
+    function deleteZip() {
+        // Zip updaten
+        if (!isset($this->zip_file)) {
+            return true;
+        }
+
+        $file = File::getFile($this->zip_file);
+        if (isset($file)) {
+            return $file->delete();
+        }
+
+        return false;
+    }
+
+    function updateZip() {
+        // Zip updaten
+        if (!isset($this->zip_file)) {
+            return true;
+        }
+
+        $location = Album::getPathForAlbum($this);
+        $name = $this->getSlug().'.zip';
+        $file_path = $FILES_DIRECTORY.'/'.$location.$name;
+        $path = $FILES_DIRECTORY.'/'.$location.'sources';
+
+        // File sync here (= -FS)
+        exec("zip -FSjr \"$file_path\" \"$path\"", $output, $response);
+
+        return ($response === 0);
+    }
+
+    function createZip() {
+        global $FILES_DIRECTORY;
+        if (isset($this->zip_file)) {
+            return true;
+        }
+
+        $location = Album::getPathForAlbum($this);
+        $name = $this->getSlug().'.zip';
+        $file_path = $FILES_DIRECTORY.'/'.$location.$name;
+        $path = $FILES_DIRECTORY.'/'.$location.'sources';
+        exec("zip -FSjr \"$file_path\" \"$path\"", $output, $response);
+
+        if ($response === 0) {     
+            $errors = array();       
+            $file = new File();
+            if (!$file->from_file($location, $name, $errors)) {
+                return false;
+            }
+            $this->zip_file = $file->id;
+            return $this->save();
+        }
+        return false;
     }
 
 }

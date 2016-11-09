@@ -12,23 +12,6 @@
             </ul>
         {% endif %}
 
-        <label>Upload foto's</label>
-
-        <div id="photos" class="preview"></div>
-        <div style="clear: both;"></div>
-        <div id="upload-progress" style="display: none;"><div></div></div>
-        <div id="output"></div>
-        <input type="file" multiple="multiple" id="file" />
-        <label for="file">
-            <svg width="12px" height="12px" viewBox="1502 -655 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                <g id="plus" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1503.000000, -654.000000)" stroke-linecap="round">
-                    <path d="M5,0.5 L5,10" id="Path-3" stroke="#FFFFFF" stroke-width="2"></path>
-                    <path d="M9.75,5.25 L0.25,5.25" id="Path-3-Copy" stroke="#FFFFFF" stroke-width="2"></path>
-                </g>
-            </svg>
-            Uploaden
-        </label>
-
         <label>Foto's van welke tak?</label>
         <label class="select-box">
             <select name="group">
@@ -39,146 +22,32 @@
             </select>
         </label>
 
+        <div id="photos" class="preview"></div>
+        <div style="clear: both;"></div>
 
         <footer>
-            <input type="submit" class="aubergine fill" value="Album aanmaken">
-            <a href="/admin/photos" class="button merlot">Annuleren</a>
+            <input type="file" multiple="multiple" id="file" />
+            <label for="file">
+                <svg width="12px" height="12px" viewBox="1502 -655 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g id="plus" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1503.000000, -654.000000)" stroke-linecap="round">
+                        <path d="M5,0.5 L5,10" id="Path-3" stroke="#FFFFFF" stroke-width="2"></path>
+                        <path d="M9.75,5.25 L0.25,5.25" id="Path-3-Copy" stroke="#FFFFFF" stroke-width="2"></path>
+                    </g>
+                </svg>
+                Uploaden
+            </label>
+
+            <input type="submit" class="aubergine fill display_only_more_photo" value="Album aanmaken" {% if images | length == 0 %}style="display: none"{%endif%}>
+            <input type="submit" name="delete_queue" class="display_only_more_photo aubergine" value="Wis alles" {% if images | length == 0 %}style="display: none"{%endif%}>
+
+            <a href="/admin/photos" class="button aubergine">Annuleren</a>
         </footer>
+
+        <div id="upload-progress" style="display: none;"><div></div></div>
+        <div id="upload-progress-text">100%</div>
+        <div id="output"></div>
 
     </div>
 </form>
 
-<script src="/js/upload5.js"></script>
-<script src="/js/photos.js"></script>
-<script type="text/javascript">
-    var grid = new photos.Grid({});
-    grid.trackWidth(document.getElementById('photos'));
-    grid.margin = 3;
-    grid.max_height = 50;
-
-    {% for image in images %}
-        var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}});
-        photo.sources = {{ image.getSourcesJSON | raw }};
-        grid.add(photo);
-    {% endfor %}
-
-    var max_upload_size = {{ max_upload_size }};
-
-    var element = grid.toDOM();
-    document.getElementById('photos').appendChild(element);
-
-    var totalFiles = 0;
-    var totalDownloaded = 0;
-
-    var $lis = {};
-
-    function handleError(filename, errorString) {
-        $('#output').append($('<li>Uploaden mislukt: '+filename+errorString+'</li>'));
-    }
-
-    function updateProgress() {
-        $('#upload-progress div').css({width: Math.round(totalDownloaded / totalFiles * 100)+'%'});
-
-        if (!uploader.isRunning()) {
-            $('#upload-progress').hide();
-        } else {
-            $('#upload-progress').show();
-        }
-    }
-
-    var uploader = new bitcandies.FileUploader({
-        url: '/api/photos/upload',
-        maxconnections: 4,
-        enqueued: function (item) {
-        },
-        start: function (item) {
-        },
-        aborted: function (item) {
-            if (item.oldProgress) {
-                totalDownloaded -= item.oldProgress;
-            }
-            totalFiles -= item.getSize();
-            updateProgress();
-        },
-
-        progress: function (item, loaded, total) {
-            if (item.oldProgress) {
-                totalDownloaded -= item.oldProgress;
-            }
-
-            item.oldProgress = loaded;
-            totalDownloaded += loaded;
-
-            updateProgress();
-        },
-
-        success: function (item, xhr) {
-            try {
-                var data = JSON.parse(xhr.responseText);
-                var sources = data.sources;
-
-                if (!item.variables.photo) {
-                    item.variables.photo = new photos.Photo(data.width, data.height);
-                    item.variables.photo.sources = sources;
-                    grid.add(item.variables.photo);
-                }
-                else {
-                    item.variables.photo.setSources(data.width, data.height, sources)
-                }
-            } catch ( error ) {
-                // Php error opvangen
-                handleError(item.getFilename(), ' - '+xhr.responseText);
-            }
-        },
-        error: function (item, xhr) {
-            var errors;
-            try {
-                errors = JSON.parse(xhr.responseText);
-
-            } catch ( error ) {
-                errors = ["Onbekende fout"];
-            }
-
-            var errorString = '';
-            for (var i = 0; i < errors.length; i++) {
-                errorString += ' - '+errors[i];
-            }
-
-            handleError(item.getFilename(), errorString);
-
-            if (item.oldProgress) {
-                totalDownloaded -= item.oldProgress;
-            }
-            totalFiles -= item.getSize();
-            updateProgress();
-
-        }
-    });
-
-    $('#file').change(function () {
-        if (totalFiles <= totalDownloaded ) {
-            totalFiles = 0;
-            totalDownloaded = 0;
-        }
-
-        var files = document.getElementById('file').files;
-        for (var i = 0; i < files.length; ++i) {
-            var size = files[i].fileSize ? files[i].fileSize : files[i].size;
-            var name = files[i].fileName ? files[i].fileName : files[i].name;
-
-            if (size > max_upload_size) {
-                handleError(name, " - Bestand te groot");
-                continue;
-            }
-
-            totalFiles += size;
-            uploader.add(files[i]);
-        }
-
-        updateProgress();
-
-        $('#upload-progress div').css({width: '0%'});
-        return false;
-    });
-
-</script>
+{% include 'photo-upload.html' %}

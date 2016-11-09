@@ -487,6 +487,10 @@ class Leiding extends Model {
     }
 
     static function getUser() {
+        if (!Self::isLoggedIn()) {
+            return null;
+        }
+        
         return self::$user;
     }
 

@@ -21,11 +21,10 @@ class UploadPhoto extends Page {
     function getStatusCode() {
         $image = new Image();
         $sizes = array(
-            array('height' => 50),
-            array('height' => 300),
-            array('height' => 600),
-            array('width' => 1080),
-            array('width' => 2560)
+            array('height' => 100),
+            array('height' => 300, 'height' => 300),
+            array('height' => 600, 'width' => 600),
+            array('height' => 720)
         );
 
         $id = Album::$QUEUE_ID;
@@ -38,6 +37,10 @@ class UploadPhoto extends Page {
         $image->setAlbum($id);
         if ($image->upload('file', $sizes, $this->errors, $this->album)) {
             $this->image = $image;
+
+            if (!$this->album->isQueue()) {
+                $this->album->deleteZip();
+            }
             return 200;
         }
         return 400;
@@ -53,7 +56,7 @@ class UploadPhoto extends Page {
             );
 
             foreach ($this->image->sources as $source) {
-                $data['sources'][] = array('id' => $source->id, 'width' => $source->width, 'height' => $source->height, 'url' => $source->file->getPublicPath());
+                $data['sources'][] = array('id' => $source->id, 'w' => $source->width, 'h' => $source->height, 'url' => $source->file->getPublicPath());
             }
             return json_encode($data);
         }

@@ -27,6 +27,17 @@ class ImageFile extends Model {
         $this->height = intval($row['imagefile_height']);
     }
 
+    function isLessThan(ImageFile $imagefile) {
+        if ($imagefile->width > $this->width || $imagefile->height > $this->height) {
+            return true;
+        }
+        return false;
+    }
+
+    function isGreaterThan(ImageFile $imagefile) {
+        return !$this->isLessThan($imagefile);
+    }
+
     // Nieuwe aanmaken vanaf gdImage
     // False on failure, object on success
     static function create(Image $image, GDImage $gdImage, &$errors, $path = 'images/') {

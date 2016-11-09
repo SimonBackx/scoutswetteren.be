@@ -35,6 +35,20 @@ class File extends Model {
         $this->is_source = $row['file_is_source'];
     }
 
+    static function getFile($id) {
+        $id = self::getDb()->escape_string($id);
+        $query = 'SELECT * FROM files WHERE file_id = "'.$id.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                $row = $result->fetch_assoc();
+                return new File($row);
+            }
+        }
+
+        return null;
+    }
+
     function getPath() {
         global $FILES_DIRECTORY;
 
@@ -118,7 +132,7 @@ class File extends Model {
                     break;
 
                 default:
-                    $errors[] = 'Onbekende fout';
+                    $errors[] = 'Onbekende fout.';
                 break;
             }
             return false;
@@ -130,7 +144,7 @@ class File extends Model {
         }
 
         if (preg_match('/^[A-z]+$/', $ext) !== 1) {
-            $errors[] = 'Ongeldig bestandstype';
+            $errors[] = 'Ongeldig bestandstype.';
             return false;
         }
 
@@ -146,7 +160,7 @@ class File extends Model {
         }
 
         if($size == 0) {
-            $errors[] = 'Geen bestand geselecteerd';
+            $errors[] = 'Geen bestand geselecteerd.';
             return false;
         }
 
@@ -158,7 +172,7 @@ class File extends Model {
         $len = mb_strlen($name, "UTF-8");
 
         if ($len < 1 && $len > 255) {
-            $errors[] = 'Ongeldige bestandsnaam';
+            $errors[] = 'Ongeldige bestandsnaam.';
             return false;
         }
 
@@ -196,6 +210,9 @@ class File extends Model {
             $this->location = $prelocation.'v'.$num.'/';
         }
 
+        // Vanaf nu willen we niet meer stoppen, en gaan we gewoon verder. Tenzij het echt te lang duurt.
+        ignore_user_abort(true);
+
         // Opslaan in mysql en rollback als verplaatsen mislukt
         self::getDb()->autocommit(false);
         if (!$this->save()) {
@@ -206,15 +223,28 @@ class File extends Model {
             return false;
         }
 
-        $dir = dirname($this->getPath());
+        // Om één of andere reden moet we dit soms 2 keer proberen voor het werkt...?
         $old = umask(0);
-        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
-            umask($old);
+        $dir = dirname($this->getPath());
+
+        $try = 0;
+        $failed = true;
+        while($try < 2) {
+            $try++;
+            
+            if (is_dir($dir) || mkdir($dir, 0777, true)) {
+                $failed = false;
+                break;
+            }
+        }
+        umask($old);
+
+        if ($failed) {
             $errors[] = 'Kon mapstructuur niet aanmaken: '.$dir;
             error_reporting($error_reporting);
             return false;
         }
-        umask($old);
+
 
         // Verplaatsen
         if (!move_uploaded_file($_FILES[$form_name]['tmp_name'], $this->getPath())) {
@@ -316,5 +346,27 @@ class File extends Model {
         }
 
         return false;
+    }
+
+    function delete() {
+        if (!isset($this->id)) {
+            return false;
+        }
+
+        $id = self::getDb()->escape_string($this->id);
+
+        $query = "DELETE FROM files WHERE file_id = '$id'";
+
+        if (!self::getDb()->query($query)) {
+            $errors[] = 'Er ging iets mis bij het aanpassen van de database.';
+            return false;
+        }
+
+        if (unlink(realpath($this->getPath())) === false) {
+            $errors[] = 'De foto is verwijderd uit de database, maar niet volledig uit het bestandssysteem (door een interne fout).';
+            return false;
+       }
+
+       return true;
     }
 }

@@ -172,6 +172,7 @@
                 font-size: $size-text;
             }
 
+
             &.selected {
                 background: $heath url(../images/calendar-arrow.png) no-repeat left center;
                 margin: -5px -50px;
@@ -214,6 +215,12 @@
         #calendar-weeks {
             .row {
                 cursor: pointer;
+
+                &:hover {
+                    background: $heath;
+                    margin: -5px -50px;
+                    padding: 5px 66px;
+                }
             }
         }
         #verhuur-calendar-weeks {

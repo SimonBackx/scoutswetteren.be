@@ -22,9 +22,9 @@ class Ship {
             return;
         }
 
-        if ($_SERVER['SERVER_PORT'] != 443) {
+        /*if ($_SERVER['SERVER_PORT'] != 443) {
            die('Er is een probleem ontstaan waardoor de website geen beveiligde verbinding gebruikt. Neem conact met ons op (website@scoutswetteren.be) als dit probleem zich blijft voordoen.');
-        }
+        }*/
 
         date_default_timezone_set('Europe/Brussels');
         setlocale(LC_MONETARY, 'nl_BE.UTF-8', 'nl_BE');
@@ -56,6 +56,7 @@ class Ship {
         $page = $router->route($url);
 
         } catch (\Error $e) {
+            http_response_code(500);
             echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>'.$e->getFile().' line '.$e->getLine().' '.$e->getMessage().'</pre>';
             exit;
         }

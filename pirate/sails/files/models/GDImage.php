@@ -4,15 +4,22 @@ use Pirate\Model\Model;
 use Imagick;
 
 class GDImage extends Model {
-    private $extension = '';
-    private $image = null;
-    private $width;
-    private $height;
+    protected $extension = '';
+    protected $image = null;
+    protected $width;
+    protected $height;
 
     public $quality = 60;
 
-    static function createFromGDImage(GDImage $image) {
+    static function createFromGDImage(GDImage $image, $quality = null) {
         $gd = new GDImage(clone $image->image, $image->extension, $image->width, $image->height);
+        if (isset($quality)) {
+            $gd->quality = $quality;
+            if ($gd->extension == 'jpg' || $gd->extension == 'jpeg') {
+                $gd->image->setImageCompression(Imagick::COMPRESSION_JPEG); 
+                $gd->image->setImageCompressionQuality($gd->quality);
+            }
+        }
         return $gd;
     }
 
@@ -129,7 +136,7 @@ class GDImage extends Model {
         $this->height = $size['height'];
     }
 
-    static function getExpectedSize($original, $size) {
+    static function getExpectedSize($original, $size, $allow_crop = false) {
 
         if (isset($size['width']) && $original->width < $size['width']) {
             $size['width'] = $original->width;
@@ -142,7 +149,7 @@ class GDImage extends Model {
             return $size;
         }
 
-        if (isset($size['width']) && isset($size['height'])) {
+        if ($allow_crop && isset($size['width']) && isset($size['height'])) {
             return $size;
         }
 
@@ -152,11 +159,16 @@ class GDImage extends Model {
         if (isset($size['width']) && $original->width > $size['width']) {
             $new_height = round($original->height / $original->width * $size['width']);
             $new_width = $size['width'];
-        }
 
-        if (isset($size['height']) && $original->height > $size['height']) {
-            $new_width = round($original->width/$original->height*$size['height']);
-            $new_height = $size['height'];
+            if (isset($size['height']) && $new_height < $size['height']) {
+                $new_width = round($original->width/$original->height*$size['height']);
+                $new_height = $size['height'];
+            }
+        } else {
+            if (isset($size['height']) && $original->height > $size['height']) {
+                $new_width = round($original->width/$original->height*$size['height']);
+                $new_height = $size['height'];
+            }
         }
 
         return array('width' => $new_width, 'height' => $new_height);

@@ -21,6 +21,10 @@ class Edit extends Page {
         return 200;
     }
 
+    function getHead() {
+        return '<link rel="stylesheet" href="/css/photoswipe.css"><script src="/js/photoswipe.min.js"></script>';
+    }
+
     function getContent() {
         $images = Image::getImagesFromAlbum($this->album->id);
         $errors = array();

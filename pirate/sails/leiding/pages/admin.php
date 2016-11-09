@@ -27,6 +27,7 @@ class Admin extends Page {
         }
         return Template::render('leiding/admin', array(
             'content' => $content,
+            'head' => $this->adminPage->getHead(),
             'admin' => array(
                 'selected' => $this->selected
             )

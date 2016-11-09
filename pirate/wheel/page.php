@@ -7,6 +7,10 @@ class Page {
         return 200;
     }
 
+    function getHead() {
+        return '';
+    }
+
     function getContent() {
         return 'getContent method not implemented';
     }

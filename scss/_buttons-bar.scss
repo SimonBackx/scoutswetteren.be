@@ -11,12 +11,17 @@ nav.buttons {
         padding: 12px 2px;
         margin: 20px 15px;
 
+        &:hover {
+            opacity: 0.6;
+        }
+
         &.selected {
             color: white;
             background: $aubergine;
             padding: 10px 30px;
             margin: 20px 0;
             font-weight: bold;
+            opacity: 1;
         }
     }
 

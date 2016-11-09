@@ -30,10 +30,37 @@ class Image extends Model {
         $sources = array();
 
         foreach ($this->sources as $source) {
-            $sources[] = array('width' => $source->width, 'height' => $source->height, 'url' => $source->file->getPublicPath());
+            if ($source->file->is_source) {
+                continue;
+            }
+            
+            $sources[] = array('w' => $source->width, 'h' => $source->height, 'url' => $source->file->getPublicPath());
         }
 
         return json_encode($sources);
+    }
+
+    function getBestfit($width, $height) {
+        if (count($this->sources) == 0) {
+            return null;
+        }
+
+        $bestfit = null;
+        for ($i=0; $i < count($this->sources); $i++) { 
+            $source = $this->sources[$i];
+            if (!$source->file->is_source && $width <= $source->width && $height <= $source->height && (!isset($bestfit) || $source->isLessThan($bestfit))) {
+                $bestfit = $source;
+            }
+        }
+
+        if (!isset($bestfit)) {
+            for ($i=0; $i < count($this->sources); $i++) { 
+                if (!$source->file->is_source && (!isset($bestfit) || $source->isGreaterThan($bestfit))) {
+                    $bestfit = $source;
+                }
+            }
+        }
+        return $bestfit;
     }
 
     /**
@@ -106,7 +133,6 @@ class Image extends Model {
         if (!$source->upload($form_name, $errors, array('jpeg', 'jpg', 'png', 'gif', 'bmp'), $this->id)) {
             self::getDb()->rollback();
             self::getDb()->autocommit(true);
-            $errors[] = 'Upload failed';
 
             return false;
         }
@@ -152,7 +178,15 @@ class Image extends Model {
                 }
                 $previousSize = $actual_size;
 
-                $gdImage = GDImage::createFromGDImage($original);
+                $quality = 40;
+                if ($actual_size["width"] < 400 || $actual_size["height"] < 400) {
+                    $quality = 60;
+                }
+                if ($actual_size["width"] <= 100 || $actual_size["height"] <= 100) {
+                    $quality = 40;
+                }
+
+                $gdImage = GDImage::createFromGDImage($original, $quality);
 
                 if (isset($size['width'], $size['height'])) {
                     $gdImage->fit($actual_size);
@@ -216,6 +250,33 @@ class Image extends Model {
         return null;
     }
 
+    static function getImage($id) {
+        $id = self::getDb()->escape_string($id);
+
+        $query = "
+            SELECT * FROM images i
+                JOIN image_files i_f on i_f.imagefile_image = i.image_id
+                JOIN files f on f.file_id = i_f.imagefile_file
+                LEFT JOIN albums a on i.image_album = a.album_id
+            WHERE i.image_id = '$id'
+            ORDER BY i.image_id
+        ";
+
+        if ($result = self::getDb()->query($query)) {
+            $image = null;
+            while ($row = $result->fetch_assoc()) {
+                if (!isset($image)) {
+                    $image = new Image($row);
+                }
+                $imageFile = new ImageFile($row);
+                $image->addSource($imageFile);
+            }
+            return $image;
+        }
+
+        return null;
+    }
+
     function save() {
 
         if (!isset($this->date_taken)) {
@@ -255,5 +316,58 @@ class Image extends Model {
         }
 
         return false;
+    }
+
+    function delete(&$errors = array()) {
+        if (!isset($this->id)) {
+            $errors[] = 'Deze foto bestaat niet.';
+            return false;
+        }
+
+        if (isset($this->album)) {
+
+            $images = Self::getImagesFromAlbum($this->album);
+            if (count($images) == 1) {
+                $errors[] = 'Je kan de laatste foto van dit album niet verwijderen.';
+                return false;
+            }
+
+            // Coverfoto wijzigen indien verwijderd
+            $album = Album::getAlbum($this->album);
+            if ($album->cover->id == $this->id) {
+                $i = 0;
+                while ($album->cover->id == $this->id && $i < count($images)) {
+                    $album->cover = $images[$i];
+                    $i++;
+                }
+                $album->save();
+            }
+        }
+
+        $id = self::getDb()->escape_string($this->id);
+
+        $query = "DELETE files FROM images left join image_files on image_files.imagefile_image = images.image_id left join files on files.file_id = image_files.imagefile_file WHERE images.image_id = '$id'";
+
+        if (!self::getDb()->query($query)) {
+            $errors[] = 'Er ging iets mis bij het aanpassen van de database.';
+            return false;
+        }
+
+        $query = "DELETE FROM images WHERE images.image_id = '$id'";
+
+        if (!self::getDb()->query($query)) {
+            $errors[] = 'Er ging iets mis bij het aanpassen van de database.';
+            return false;
+        }
+
+        foreach ($this->sources as $source) {
+           if (unlink(realpath($source->file->getPath())) === false) {
+                $errors[] = 'De foto is verwijderd uit de database, maar niet volledig uit het bestandssysteem (door een interne fout).';
+                return false;
+           }
+        }
+
+
+        return true;
     }
 }

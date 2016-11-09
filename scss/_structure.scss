@@ -32,6 +32,11 @@ main {
     @media screen and (max-width: $width-reduce-padding) {
         padding: 10px 0;
         padding-top: 70px;
+
+        &.keep-padding {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
     }
 
     .block {
@@ -65,6 +70,32 @@ main {
 }
 
 .block {
+    &.album_block {
+        header {
+            h1 {
+                padding: 0;
+                margin: 0;
+                text-align: center;
+                color: $aubergine;
+            }
+            h2 {
+                padding: 0;
+                margin: 0;
+                color: $merlot;
+                text-align: center;
+            }
+            margin-bottom: 30px;
+
+            @media screen and (max-width: $width-reduce-padding) {
+                margin-bottom: 10px;
+            }
+        }
+       .button-bar {
+            text-align: left;
+            margin: 0;
+        }
+    }
+
     > .map {
         height: 600px;
         height: 60vh;
@@ -456,6 +487,30 @@ table.details {
                 &.small {
                     width: auto;
                 }
+            }
+        }
+    }
+}
+
+#sponsors {
+    text-align: center;
+    margin-bottom: 20px;
+
+    a, div {
+        display: inline-block;
+        padding: 1.333%;
+        height: 80px;
+        max-width: 12%;
+        line-height: 80px;
+
+        img {
+            max-height: 100px;
+            max-width: 100%;
+            opacity: 0.5;
+            vertical-align: middle;
+
+            &:hover {
+                opacity: 0.8;
             }
         }
     }

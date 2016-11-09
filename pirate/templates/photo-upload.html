@@ -1,0 +1,202 @@
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="pswp__bg"></div>
+    <div class="pswp__scroll-wrap">
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/upload5.js"></script>
+<script src="/js/photos.js"></script>
+<script type="text/javascript">
+    var grid = new photos.Grid({});
+    grid.scrollBox = document.getElementById('photos');
+    grid.trackWidth(document.getElementById('photos'));
+    grid.margin = 3;
+    grid.max_height = 100;
+
+    {% for image in images %}
+        var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+        photo.sources = {{ image.getSourcesJSON | raw }};
+        grid.add(photo);
+    {% endfor %}
+
+    var max_upload_size = {{ max_upload_size }};
+
+    var element = grid.toDOM();
+    document.getElementById('photos').appendChild(element);
+
+    grid.enablePhotoSwipe();
+    grid.updateVisiblePhotos();
+
+    var totalFiles = 0;
+    var totalDownloaded = 0;
+
+    var $lis = {};
+    var disableQuit = false;
+
+    function handleError(filename, errorString) {
+        $('#output').append($('<li>'+filename+': Uploaden mislukt ('+errorString+')</li>'));
+    }
+
+    function shouldQuit() {
+        return 'Ben je zeker dat je het uploaden wilt annuleren?';
+    }
+
+    function updateProgress() {
+        // Forceer 99% -> verwerking van afbeelding neemt ook nog wat tijd in beslag -> voorkom skippen
+        $('#upload-progress div').css({width: Math.round(totalDownloaded / totalFiles * 99)+'%'});
+        $('#upload-progress-text').text(Math.round(totalDownloaded / totalFiles * 99)+'%');
+
+        if (!uploader.isRunning()) {
+            if (disableQuit) {
+                disableQuit = false;
+                window.removeEventListener("beforeunload", shouldQuit);
+            }
+            if (grid.photo_count > 0) {
+                $('.display_only_more_photo').show();
+            } else {
+                $('.display_only_more_photo').hide();
+            }
+            $('#upload-progress, #upload-progress-text').hide();
+        } else {
+            if (!disableQuit) {
+                disableQuit = true;
+                window.addEventListener("beforeunload", shouldQuit);
+            }
+            $('.display_only_more_photo').hide();
+            $('#upload-progress, #upload-progress-text').show();
+        }
+    }
+
+    var uploader = new bitcandies.FileUploader({
+        {% if data.id is defined %}
+            url: '/api/photos/upload/{{ data.id }}',
+        {% else %}
+            url: '/api/photos/upload',
+        {% endif %}
+        enqueued: function (item) {
+        },
+        start: function (item) {
+        },
+        aborted: function (item) {
+            if (item.oldProgress) {
+                totalDownloaded -= item.oldProgress;
+            }
+            totalFiles -= item.getSize();
+            updateProgress();
+        },
+
+        progress: function (item, loaded, total) {
+            if (item.oldProgress) {
+                totalDownloaded -= item.oldProgress;
+            }
+
+            item.oldProgress = loaded;
+            totalDownloaded += loaded;
+
+            updateProgress();
+        },
+
+        success: function (item, xhr) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                var sources = data.sources;
+
+                if (!item.variables.photo) {
+                    item.variables.photo = new photos.Photo(data.width, data.height, data.id);
+                    item.variables.photo.sources = sources;
+                    grid.add(item.variables.photo);
+                }
+                else {
+                    item.variables.photo.setSources(data.width, data.height, sources)
+                }
+            } catch ( error ) {
+                // Php error opvangen
+                handleError(item.getFilename(), ' - '+xhr.responseText);
+            }
+        },
+        error: function (item, xhr) {
+            var errors;
+            try {
+                errors = JSON.parse(xhr.responseText);
+
+            } catch ( error ) {
+                errors = ["Onbekende fout"];
+            }
+
+            var errorString = '';
+            for (var i = 0; i < errors.length; i++) {
+                if (errorString != '') {
+                    errorString += ', ';
+                }
+                errorString += errors[i];
+            }
+
+            handleError(item.getFilename(), errorString);
+
+            if (item.oldProgress) {
+                totalDownloaded -= item.oldProgress;
+            }
+            totalFiles -= item.getSize();
+            updateProgress();
+
+        }
+    });
+
+    $('#file').change(function () {
+        if (totalFiles <= totalDownloaded ) {
+            totalFiles = 0;
+            totalDownloaded = 0;
+        }
+
+        var files = document.getElementById('file').files;
+        for (var i = 0; i < files.length; ++i) {
+            var size = files[i].fileSize ? files[i].fileSize : files[i].size;
+            var name = files[i].fileName ? files[i].fileName : files[i].name;
+
+            if (size > max_upload_size) {
+                handleError(name, " - Bestand te groot");
+                continue;
+            }
+
+            totalFiles += size;
+            uploader.add(files[i]);
+        }
+
+        updateProgress();
+
+        $('#upload-progress div').css({width: '0%'});
+        return false;
+    });
+
+</script>

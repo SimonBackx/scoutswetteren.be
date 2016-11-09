@@ -15,11 +15,26 @@ class Upload extends Page {
         return 200;
     }
 
-    function getContent() {
-        $images = Image::getImagesFromAlbum(null);
-        $errors = array();
+    function getHead() {
+        return '<link rel="stylesheet" href="/css/photoswipe.css"><script src="/js/photoswipe.min.js"></script>';
+    }
 
-        if (isset($_POST['group'])) {
+    function getContent() {
+        $errors = array();
+        $data = array();
+        
+        if (isset($_POST['delete_queue'])) {
+            if (!Album::getQueueAlbum()->delete()) {
+                $errors[] = 'Wissen mislukt.';
+            }
+
+            if (isset($_POST['group'])) {
+                $data['group'] = $_POST['group'];
+            }
+        }
+        $images = Image::getImagesFromAlbum(null);
+
+        if (isset($_POST['group']) && !isset($_POST['delete_queue'])) {
             if (isset($_POST['album_name'])) {
                 if (count($images) > 0) {
                     $data = array(
@@ -70,6 +85,7 @@ class Upload extends Page {
             'errors' => $errors,
             'max_upload_size' => File::$max_size,
             'images' => $images,
+            'data' => $data,
             'groups' => Album::$groups
         ));
     }

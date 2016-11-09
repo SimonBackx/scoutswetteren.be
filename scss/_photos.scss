@@ -6,21 +6,174 @@
         padding: 0;
         clear: both;
 
-        img, .preview {
+        figure {
             margin: 0 8px 8px 0;
             display: block;
             float: left;
+            cursor: pointer;
+            background: $gray;
+            position: relative;
+
+            img {
+               width: 100%;
+               height: 100%;
+               position: absolute;
+            }
+
+            aside {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1;
+                text-align: right;
+                display: none;
+
+                .del, .cov {
+                    background: rgba($aubergine,0.8) url('/images/delete-photo.png') no-repeat center center;
+                    width: 15px;
+                    height: 15px;
+                    display: inline-block;
+                    padding: 8px;
+
+                    &:hover {
+                        background-color: $merlot;
+                    }
+                }
+                .cov {
+                    background-image: url('/images/cover-button.png');
+                    width: 15px;
+                    height: 15px;
+                }
+            }
+
+            &:hover {
+                img {
+                    opacity: 0.8;
+                }
+                aside {
+                    display: block;
+                }
+            }
+
+            
         }
-        img:last-child, .preview:last-child {
+
+
+        
+        figure:last-child {
             margin-right: 0;
         }
-
-        .preview {
-            background: $gray;
-        }
     }   
-
 }
+
+#output {
+    ul, li {
+        color: $heath;
+        list-style: none;
+    }
+}
+
+.albums {
+    h1 {
+        clear: both;
+        font-size: 24pt;
+        color: $aubergine;
+        margin: 0.5%;
+        padding-top: 30px;
+    }
+    figure {
+        width: 24%;
+        margin: 0.5%;
+        padding-bottom: 24%;
+        float: left;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+
+        .image {
+            background: transparent no-repeat center center;
+            background-size: cover;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            cursor: pointer;
+            transition: left 0.2s ease, right 0.2s ease, top 0.2s ease, bottom 0.2s ease;
+        }
+
+        img {
+            display: none;
+
+        }
+
+        figcaption {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            text-align: center;
+            background: rgba(33, 4, 9, 0.9);
+            padding: 20px 10px;
+
+            h1 {
+                font-size: 18pt;
+                color: white;
+                text-transform: uppercase;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        &:hover, &:focus {
+            .image {
+                left: -20px;
+                right: -20px;
+                top: -20px;
+                bottom: -20px;
+            }
+        }
+
+        @media screen and (max-width: 1200px) {
+            figcaption { 
+                h1 {
+                    font-size: 14pt;
+                }
+            }
+        }
+
+        @media screen and (max-width: 1000px) {
+            width: 31.333%;
+            margin: 1%;
+            padding-bottom: 31.333%;
+
+            figcaption { 
+                padding: 15px 10px;
+
+                h1 {
+                    font-size: 11pt;
+                    font-size: 2vw;
+                }
+            }
+        }
+
+        @media screen and (max-width: 600px) {
+            width: 47%;
+            margin: 1.5%;
+            padding-bottom: 47%;
+
+            figcaption { 
+                padding: 15px 10px;
+
+                h1 {
+                    font-size: 3vw;
+                }
+            }
+        }
+    }  
+}
+
 
 #upload-progress {
     width: auto;
@@ -42,6 +195,14 @@
     }
 }
 
+#upload-progress-text {
+    max-width: 500px;
+    text-align: right;
+    color: $aubergine;
+    margin: 10px 0;
+    display: none;
+}
+
 #photos {
     max-width: 500px;
     margin-top: 10px;
@@ -50,8 +211,12 @@
         max-height: 300px;
         overflow: auto;
         
-        .photo-grid .photo-row img, .photo-grid .photo-row .preview {
+        .photo-grid .photo-row figure {
             margin: 0 3px 3px 0;
+
+            &:last-child {
+                margin-right: 0;
+            }
         }
     }
 }

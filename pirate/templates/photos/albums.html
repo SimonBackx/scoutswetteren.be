@@ -1,0 +1,58 @@
+{% set description = 'Al onze foto\'s van onze activiteiten doorheen het jaar vind je hier op deze pagina.' %}
+{% extends "base.html" %}
+
+{% block head %}
+    <style type="text/css">
+        {% for data in albums %}
+            {% for album in data %}
+                #album_{{album.id}} {
+                    background-image: url("{{ album.cover.getBestfit(300, 300).file.getPublicPath() }}");
+                }
+            {% endfor %}
+        {% endfor %}
+
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+             {% for data in albums %}
+                {% for album in data %}
+                    #album_{{album.id}} {
+                        background-image: url("{{ album.cover.getBestfit(600, 600).file.getPublicPath() }}");
+                    }
+                {% endfor %}
+            {% endfor %}
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <main class="keep-padding">
+        <nav class="buttons">
+            <a href="/fotos/" class="{% if tak is null %}selected {% endif %}button">Alles</a>
+            <a href="/fotos/kapoenen" class="{% if tak == 'kapoenen' %}selected {% endif %}button">Kapoenen</a>
+            <a href="/fotos/wouters" class="{% if tak == 'wouters' %}selected {% endif %}button">Wouters</a>
+            <a href="/fotos/jonggivers" class="{% if tak == 'jonggivers' %}selected {% endif %}button">Jonggivers</a>
+            <a href="/fotos/givers" class="{% if tak == 'givers' %}selected {% endif %}button">Givers</a>
+            <a href="/fotos/jin" class="{% if tak == 'jin' %}selected {% endif %}button">Jin</a>
+            <a href="/fotos/algemeen" class="{% if tak == 'algemeen' %}selected {% endif %}button">Algemeen</a>
+        </nav>
+        <section class="block withButtons">
+            <div class="albums">
+                {% for y, data in albums %}
+                    {% if y != year %}<h1>{{ y }}</h1>{% endif %}
+                    {% for album in data %}
+                        <a href="/fotos/album/{{ album.getUrl }}"><figure class="album">
+                            <div class="image" id="album_{{album.id}}"></div>
+                            <figcaption><h1>{{ album.name }}</h1></figcaption>
+                        </figure></a>
+                    {% endfor %}
+                {% else %}
+                    <p>Jammer! We hebben nog geen albums toegevoegd in deze categorie.</p>
+                {% endfor %}
+                <div class="clear"></div>
+            </div>
+
+        </section>
+    </main>
+    <script type="text/javascript">
+        document.addEventListener("touchstart", function(){}, true);
+    </script>
+{% endblock %}
