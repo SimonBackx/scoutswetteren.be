@@ -7,9 +7,9 @@ use Pirate\Model\Files\Album;
 
 class Albums extends Page {
     private $tak = null;
-    private $page = 1;
+    private $page = 0;
 
-    function __construct($tak = null, $page = 1) {
+    function __construct($tak = null, $page = 0) {
         $this->tak = $tak;
         $this->page = $page;
     }

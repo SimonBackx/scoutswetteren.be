@@ -19,7 +19,12 @@ class Image extends Model {
         }
 
         $this->id = $row['image_id'];
-        $this->date_taken = new \DateTime($row['image_date_taken']);
+
+        if (isset($row['image_date_taken'])) {
+            $this->date_taken = new \DateTime($row['image_date_taken']);
+        } else {
+            $this->date_taken = null;
+        }
 
         $this->album = $row['image_album'];
         
@@ -40,6 +45,22 @@ class Image extends Model {
         return json_encode($sources);
     }
 
+    function getBiggestSource() {
+        if (count($this->sources) == 0) {
+            return null;
+        }
+
+        $bestfit = null;
+
+        for ($i=0; $i < count($this->sources); $i++) { 
+            $source = $this->sources[$i];
+            if (!$source->file->is_source && (!isset($bestfit) || $source->isGreaterThan($bestfit))) {
+                $bestfit = $source;
+            }
+        }
+        return $bestfit;
+    }
+
     function getBestfit($width, $height) {
         if (count($this->sources) == 0) {
             return null;
@@ -54,11 +75,7 @@ class Image extends Model {
         }
 
         if (!isset($bestfit)) {
-            for ($i=0; $i < count($this->sources); $i++) { 
-                if (!$source->file->is_source && (!isset($bestfit) || $source->isGreaterThan($bestfit))) {
-                    $bestfit = $source;
-                }
-            }
+            return $this->getBiggestSource();
         }
         return $bestfit;
     }

@@ -110,17 +110,29 @@ class Album extends Model {
         $month = self::getDb()->escape_string($month);
         $year = self::getDb()->escape_string($year);
 
-        $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count from albums a join images i on i.image_album = a.album_id left join images c on c.image_id = a.album_cover 
+        $query = 'SELECT a.*, c.*, i_f.*, f.*
+        from albums a 
+        join images c on c.image_id = a.album_cover 
+        join image_files i_f on i_f.imagefile_image = c.image_id
+        join files f on f.file_id = i_f.imagefile_file
         WHERE a.album_slug = "'.$slug.'" 
         AND MONTH(a.album_date) = "'.$month.'"
          AND YEAR(a.album_date) = "'.$year.'"
-          AND DAY(a.album_date) = "'.$day.'"
-        group by a.album_id, c.image_id';
+          AND DAY(a.album_date) = "'.$day.'"';
 
         if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
-                $row = $result->fetch_assoc();
-                return new Album($row);
+            if ($result->num_rows > 0){
+                $album = null;
+                while ($row = $result->fetch_assoc()) {
+                    if (!isset($album)) {
+                        $album = new Album($row);
+                    }
+
+                    $imagefile = new ImageFile($row);
+                    $album->cover->addSource($imagefile);
+                }
+
+                return $album;
             }
         }
 
@@ -130,10 +142,11 @@ class Album extends Model {
     static function getAlbums($group = null, $page = 1, $with_cover = false) {
         $page = intval($page);
 
-        $limit = 'LIMIT '.(($page-1)*4).', 50';
+        /*$limit = 'LIMIT '.(($page-1)*4).', 50';
         if ($page < 1) {
-            $limit = 'limit 150';
-        }
+            $limit = '';
+        }*/
+        $limit = '';
 
         $where = 'WHERE a.album_hidden = 0 ';
         if (isset($group)) {
@@ -210,16 +223,19 @@ class Album extends Model {
 
         if (isset($mindate, $maxdate)) {
             $events = Event::getEvents($mindate->format('Y-m-d H:i:s'), $maxdate->format('Y-m-d H:i:s'));
+
             $event_max = null;
             $overlap_max = 0;
+
             foreach ($events as $event) {
                 if (strtolower($event->group) != $group && !($group == 'algemeen' && !in_array($event->group, self::$groups)) ) {
                     continue;
                 }
+
                 // Overlap berekenen
                 $overlap = $event->enddate->getTimestamp() - $event->startdate->getTimestamp();
 
-                if ($overlap >= $overlap_max) {
+                if ($overlap >= $overlap_max || (isset($event_max) && ($event_max->enddate  < $maxdate || $event_max->startdate > $mindate))) {
                     $overlap_max = $overlap;
                     $event_max = $event;
                 }
@@ -228,6 +244,15 @@ class Album extends Model {
             if (isset($event_max)) {
                 return $event_max->name;
             }
+
+            $date = datetimeToDateString($mindate);
+            $date2 = datetimeToDateString($maxdate);
+
+            if ($date == $date2) {
+                return $date;
+            }
+
+            return $date.' tot '.$date2;
         }
 
         return '';

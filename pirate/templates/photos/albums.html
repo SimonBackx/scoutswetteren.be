@@ -1,4 +1,12 @@
-{% set description = 'Al onze foto\'s van onze activiteiten doorheen het jaar vind je hier op deze pagina.' %}
+{% set description = 'Al onze foto\'s van onze activiteiten doorheen het jaar vind je op deze pagina.' %}
+{% set title = "Foto's" %}
+
+ {% if albums | length > 0 %}
+     {% if albums | first | length > 0 %}
+        {% set social_image = (albums | first | first).cover.getBiggestSource().file.getPublicPath() %}
+    {% endif %}
+{% endif %}
+
 {% extends "base.html" %}
 
 {% block head %}

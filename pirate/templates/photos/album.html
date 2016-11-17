@@ -1,5 +1,6 @@
-{% set description = '' %}
-{% set description = album.name %}
+{% set description = "Bekijk hier de foto\'s van het album " ~ album.name %}
+{% set title = album.name ~ " - Foto's" %}
+{% set social_image = album.cover.getBiggestSource().file.getPublicPath() %}
 {% extends "base.html" %}
 
 {% block head %}

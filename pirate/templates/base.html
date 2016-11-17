@@ -17,7 +17,7 @@
 
     <meta property="og:description" content="{{ description }}">
 
-    <meta property="og:image" content="{{ http }}/images/background.jpg">      
+    <meta property="og:image" content="{% if social_image %}{{ social_image }}{% else %}{{ http }}/images/background.jpg{% endif %}">      
     <meta property="og:type" content="website">
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">

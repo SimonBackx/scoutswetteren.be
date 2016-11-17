@@ -32,7 +32,7 @@ class GDImage extends Model {
             return null;
         }
 
-        Imagick::setResourceLimit(imagick::RESOURCETYPE_MEMORY, 20*1000*1000); // Maximum ±20 megabyte
+        Imagick::setResourceLimit(imagick::RESOURCETYPE_MEMORY, 50*1000*1000); // Maximum ±50 megabyte
         $image = new Imagick($path);
 
         $width = $data[0];
@@ -201,16 +201,28 @@ class GDImage extends Model {
         $error_reporting = error_reporting();
         error_reporting(0);
 
-        $dir = dirname($path);
+        
         $old = umask(0);
-        if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
-            umask($old);
+        $dir = dirname($path);
+
+        $try = 0;
+        $failed = true;
+        while($try < 2) {
+            $try++;
+            
+            if (is_dir($dir) || mkdir($dir, 0777, true)) {
+                $failed = false;
+                break;
+            }
+        }
+        umask($old);
+
+        if ($failed) {
             $errors[] = 'Kon mapstructuur niet aanmaken van thumbnail afbeelding.';
             error_reporting($error_reporting);
             return false;
         }
 
-        umask($old);
         $result = false;
 
         $result = $this->image->writeImage($path);
