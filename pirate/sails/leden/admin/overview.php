@@ -26,7 +26,6 @@ class Overview extends Page {
             $tak = $user->tak;
         }
 
-        // TODO: aanpassen zodat evenementen uit de huidige week, VOOR vandaag ook worden meegegeven
         $leden = Lid::getLedenForTak($tak);
 
 

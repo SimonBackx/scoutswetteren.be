@@ -19,6 +19,8 @@ class Album extends Model {
     public $group;
     public $slug;
     public $zip_file; // id van file of null
+    public $sources_available; // true / false
+
     public $cover = null;
     public $image_count = 0;
     public static $QUEUE_ID = 0;
@@ -40,6 +42,7 @@ class Album extends Model {
         $this->group = $row['album_group'];
         $this->author = $row['album_author'];
         $this->hidden = ($row['album_hidden'] == 1);
+        $this->sources_available = ($row['album_sources_available'] == 1);
 
         $this->cover = null;
         if (isset($row['image_id'])) {
@@ -60,6 +63,10 @@ class Album extends Model {
 
     function isQueue() {
         return $this->id == Self::$QUEUE_ID;
+    }
+
+    function canDownload() {
+        return $this->sources_available || isset($this->zip_file);
     }
 
     function generateSlug() {
@@ -280,6 +287,11 @@ class Album extends Model {
             $zip_file = "'".self::getDb()->escape_string($this->zip_file)."'";
         }
 
+        $sources_available = 0;
+        if ($this->sources_available) {
+            $sources_available = 1;
+        }
+
         $hidden = 0;
         if ($this->hidden) {
             $hidden = 1;
@@ -290,8 +302,8 @@ class Album extends Model {
             $slug = self::getDb()->escape_string($this->slug);
 
             $query = "INSERT INTO 
-                albums (`album_name`, `album_slug`, `album_author`, `album_date`, `album_date_taken`, `album_group`, `album_cover`, `album_hidden`, `album_zip_file`)
-                VALUES ('$name', '$slug', $author, '$date', '$date_taken', '$group', $cover, '$hidden', $zip_file)";
+                albums (`album_name`, `album_slug`, `album_author`, `album_date`, `album_date_taken`, `album_group`, `album_cover`, `album_hidden`, `album_zip_file`, `album_sources_available`)
+                VALUES ('$name', '$slug', $author, '$date', '$date_taken', '$group', $cover, '$hidden', $zip_file, $sources_available)";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE albums 
@@ -303,7 +315,8 @@ class Album extends Model {
                  `album_group` = '$group',
                  `album_cover` = $cover,
                  `album_hidden` = '$hidden',
-                 `album_zip_file` = $zip_file
+                 `album_zip_file` = $zip_file,
+                 `album_sources_available` = $sources_available
                  where album_id = '$id' 
             ";
         }
@@ -549,6 +562,10 @@ class Album extends Model {
         global $FILES_DIRECTORY;
         if (isset($this->zip_file)) {
             return true;
+        }
+
+        if (!$this->canDownload()) {
+            return false;
         }
 
         $location = Album::getPathForAlbum($this);

@@ -227,6 +227,21 @@ class Image extends Model {
         return true;
     }
     
+    static function getImagesFromHiddenAlbum($album_name) {
+        $name = self::getDb()->escape_string($album_name);
+        $where = "WHERE a.album_name = '$name' AND a.album_hidden = 1";
+
+        $query = "
+            SELECT * FROM images i
+                JOIN image_files i_f on i_f.imagefile_image = i.image_id
+                JOIN files f on f.file_id = i_f.imagefile_file
+                LEFT JOIN albums a on i.image_album = a.album_id
+            $where
+            ORDER BY i.image_id
+        ";
+
+        return self::getImagesForQuery($query);
+    }
 
     static function getImagesFromAlbum($album_id = null) {
         $where = '';
@@ -251,6 +266,10 @@ class Image extends Model {
             ORDER BY i.image_id
         ";
 
+        return self::getImagesForQuery($query);
+    }
+
+    private static function getImagesForQuery($query) {
         if ($result = self::getDb()->query($query)) {
             $images = array();
             while ($row = $result->fetch_assoc()) {

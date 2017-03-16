@@ -67,8 +67,13 @@ $( document ).ready(function() {
 
     $('textarea').bind("propertychange change click keyup input paste focus", function(event){
         var min = $(this).css('min-height');
-        $(this).css({'height': 'auto', 'min-height': 0});
-        $(this).css({'height': $(this)[0].scrollHeight + 20, 'min-height': min});
+
+        var clone = $(this).clone();
+        $(this).after(clone);
+        clone.val($(this).val());
+        clone.css({'height': '0', 'min-height': 0});
+        $(this).css({'height': clone[0].scrollHeight + 20, 'min-height': min});
+        clone.remove();
     });
 
     // Alle selects met 1e optie geselecteerd = gray maken
@@ -78,6 +83,31 @@ $( document ).ready(function() {
 
     $('select').bind("propertychange change click keyup input paste focus", function(event){
         checkSelect.call(this);
+    });
+
+    $('input.file_upload').change(function () {
+        var files = document.getElementById('file').files;
+        var names = "";
+        for (var i = 0; i < files.length; ++i) {
+            var name = files[i].fileName ? files[i].fileName : files[i].name;
+            if (names != "") {
+                names += ", ";
+            }
+
+            names += name;
+        }
+
+        var info = $(this).nextAll(".file_info:first");
+        if (files.length == 0) {
+            info.text("");
+        } 
+        if (files.length == 1) {
+            info.text("Eén bestand geselecteerd: "+names);
+        } 
+        if (files.length > 1) {
+            info.text(files.length+" bestanden geselecteerd: "+names);
+        } 
+        return false;
     });
     
 });

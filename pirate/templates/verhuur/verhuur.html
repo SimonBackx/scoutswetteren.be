@@ -3,7 +3,8 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <style type="text/css">
+    <link rel="stylesheet" href="/css/photoswipe.css"> 
+        <style type="text/css">
         #terrein-image {
             background-image: url(/images/part/terrein.jpg);
         }
@@ -17,38 +18,11 @@
             font-size: 28pt;
             font-weight: bold;
         }
-        #image-bos {
-            background-image: url(/images/verhuur/default/bos.jpg);
-        }
-        #image-voorkant {
-            background-image: url(/images/verhuur/default/voorkant.jpg);
-        }
-        #image-achter-terrein {
-            background-image: url(/images/verhuur/default/achter-terrein.jpg);
-        }
-        #image-avond {
-            background-image: url(/images/verhuur/default/avond.jpg);
-        }
-        #image-douches {
-            background-image: url(/images/verhuur/default/douches.jpg);
-        }
-        #image-leefruimte1 {
-            background-image: url(/images/verhuur/default/leefruimte1.jpg);
-        }
-        #image-boven {
-            background-image: url(/images/verhuur/default/boven.jpg);
-        }
-        #image-leefruimte2 {
-            background-image: url(/images/verhuur/default/leefruimte2.jpg);
-        }
-        #image-slaapzaaltje {
-            background-image: url(/images/verhuur/default/slaapzaaltje.jpg);
-        }
-
     </style>
 {% endblock %}
 
 {% block javascript %}
+    <script src="/js/photoswipe.min.js"></script> 
     <script type="text/javascript">
         function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten) {
             {{ calculate_huurprijs | raw }}
@@ -130,7 +104,7 @@
 
                     <p>Het hoofdgebouw (maximaal 40 personen) wordt samen met één chalet verhuurd. In deze chalet mag niet geslapen worden. Deze worden enkel verhuurd aan jeugdbewegingen, scholen, sportclubs en socio-culturele organisaties, geen fuifverhuur. </p>
 
-                    <p>De huurprijs bedraagt € 95 /nacht voor verblijven in 2016 (voor 2017: €98 en 2018: €100). Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € 15 / nacht + € 2 / extra persoon / nacht (max. 20 personen extra).  </p>
+                    <p>De huurprijs bedraagt € 98 /nacht voor verblijven in 2017 (2018: €100). Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € 15 / nacht + € 2 / extra persoon / nacht (max. 20 personen extra).  </p>
 
                     <p>De waarborg bedraagt 400 euro voor een verblijf van 2 nachten of minder en 750 euro vanaf 3 overnachtingen.</p>
 
@@ -171,7 +145,7 @@
                     <div id="verhuur-calendar-weeks">
                         {{ kalender | raw }}
                     </div>
-                    <p>Alle dagen aangeduid in het wit zijn nog vrij of nog niet bevestigd.</p>
+                    <p>Alle dagen aangeduid met een rode cirkel zijn niet meer vrij.</p>
                 </div>
 
                 <div class="part text">
@@ -243,46 +217,104 @@
             </div>
         </section>
 
+
         <section class="block" id="fotos">
-            <div class="photo-bar">
-                <div class="table">
-                    <figure class="small" id="image-bos"></figure>
-                    <figure id="image-voorkant"></figure>
+            <div id="album_container"></div>
+            <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
+            {% if general.logged_in %}
+                <div class="button-bar">
+                    <a href="/admin/photos/edit/{{ images[0].album }}" class="button aubergine noborder">Foto's toevoegen</a>
                 </div>
-            </div>
-
-            <div class="photo-bar">
-                <div class="table full">
-                    <figure id="image-achter-terrein"></figure>
-                </div>
-            </div>
-
-            <div class="photo-bar">
-                 <div class="table">
-                    <figure id="image-leefruimte1"></figure>
-                    <figure class="small" id="image-avond"></figure>
-                </div>
-            </div>
-
-            <div class="photo-bar">
-                <div class="table">
-                    <figure class="small" id="image-boven"></figure>
-                    <figure id="image-leefruimte2"></figure>
-                </div>
-            </div>
-
-            <div class="photo-bar">
-                <div class="table">
-                    <figure id="image-douches"></figure>
-                    <figure class="small" id="image-slaapzaaltje"></figure>
-                </div>
-            </div>
+            {% endif %}
         </section>
-
-        <script type="text/javascript">
-
-
-        </script>
-
     </main>
+
+<script src="/js/photos.js"></script>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    var grid = new photos.Grid({});
+    grid.trackWidth(document.getElementById('album_container'));
+    grid.margin = 8;
+    grid.max_height = 300;
+
+    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+
+    {% for image in images %}
+        var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+        photo.sources = {{ image.getSourcesJSON | raw }};
+        grid.add(photo);
+    {% endfor %}
+    
+    var element = grid.toDOM();
+    document.getElementById('album_container').appendChild(element);
+    grid.updateVisiblePhotos();
+
+    grid.enablePhotoSwipe();
+</script>
 {% endblock %}

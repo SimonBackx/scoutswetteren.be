@@ -21,8 +21,8 @@ class LedenRouter extends Route {
         }
 
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
-            // Beveiligde sectie
-            if (count($parts) == 3 && ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-herstellen')) {
+            // Onbeveiligde sectie
+            if (count($parts) == 3 && ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-vergeten')) {
                 // Key controleren en tijdelijk inloggen
                 if (Ouder::temporaryLoginWithPasswordKey($parts[2])) {
                     return true;
@@ -30,20 +30,31 @@ class LedenRouter extends Route {
                 return false;
             }
 
-            // Beveiligde sectie
+            // Onbeveiligde sectie
             if (!Ouder::isLoggedIn()) {
                 if (count($parts) == 1) {
                     return true;
                 }
+                // Volgende paigna's geven altijd een login scherm (daarna overgaan op beveiligde sectie)
+
                 if (count($parts) == 2 && $parts[1] == 'login') {
                     return true;
                 }
+
                 if (count($parts) == 3 && $parts[1] == 'afrekening') {
                     return true;
                 }
+
+                // Wachtwoord-vergeten zonder loginkey (dus e-mailadres vragen voor key te versturen)
+                if (count($parts) == 2 && $parts[1] == 'wachtwoord-vergeten') {
+                    return true;
+                }
+
+
                 return false;
             }
 
+            // Beveiligde sectie
             if (count($parts) == 1) {
                 return true;
             }
@@ -97,10 +108,19 @@ class LedenRouter extends Route {
         }
 
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
+
+            // Niet ingelogd
              if (!Ouder::isLoggedIn()) {
+                if ($parts[1] == 'wachtwoord-vergeten') {
+                    require(__DIR__.'/pages/wachtwoord-vergeten.php');
+                    return new Pages\WachtwoordVergeten();
+                }
+
                 require(__DIR__.'/pages/login.php');
                 return new Pages\Login();
             }
+
+            // Ingelogd
             if (count($parts) == 2) {
                 if ($parts[1] == 'uitloggen') {
                     require(__DIR__.'/pages/logout.php');
@@ -124,7 +144,6 @@ class LedenRouter extends Route {
                     require(__DIR__.'/pages/verleng-inschrijving.php');
                     return new Pages\VerlengInschrijving();
                 }
-                
             }
 
             // Beveiligde sectie: reeds authenticatie gedaan
@@ -138,7 +157,7 @@ class LedenRouter extends Route {
                     return new Pages\ViewAfrekening($this->afrekening);
                 }
 
-                if ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-herstellen') {
+                if ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-vergeten') {
                     require(__DIR__.'/pages/set-password.php');
                     return new Pages\SetPassword();
                 }

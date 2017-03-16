@@ -32,7 +32,13 @@ class PhotosRouter extends Route {
         if (count($parts) == 6 && $parts[0] == 'fotos' && $parts[1] == 'download') {
             $album = Album::getAlbumBySlug($parts[2], $parts[3], $parts[4], $parts[5]);
 
+
             if (isset($album)) {
+                // Downloaden enkel toestaan als sources beschikbaar zijn, of er een zip file bestaat
+                if (!$album->sources_available && !isset($album->zip_file)) {
+                    return false;
+                }
+                
                 $this->album = $album;
                 return true;
             }

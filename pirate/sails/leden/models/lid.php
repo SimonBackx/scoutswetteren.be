@@ -58,6 +58,30 @@ class Lid extends Model {
         }
     }
 
+    function getAddress() {
+        $map = array();
+        foreach ($this->ouders as $ouder) {
+            $adres = $ouder->getAddress();
+            $map[$adres] = true; 
+        }
+
+        return array_keys($map);
+    }
+
+    function getTelefoon() {
+        $map = array();
+        foreach ($this->ouders as $ouder) {
+            if (isset($ouder->telefoon)) {
+                $telefoon = $ouder->telefoon;
+                if (count($telefoon) > 0) {
+                    $map[$telefoon] = true; 
+                }
+            }
+        }
+
+        return array_keys($map);
+    }
+
     static function getLid($id) {
         if (!is_numeric($id)) {
             return null;
@@ -125,6 +149,35 @@ class Lid extends Model {
             if ($result->num_rows>0){
                 while ($row = $result->fetch_assoc()) {
                     $leden[] = new Lid($row);
+                }
+            }
+        }
+        
+        return $leden;
+    }
+
+    // Geeft ook ouders mee
+    static function getLedenForTakFull($tak) {
+        $tak = self::getDb()->escape_string($tak);
+
+        $scoutsjaar = self::getDb()->escape_string(self::getScoutsjaar());
+
+        $leden = array();
+        $query = '
+            SELECT l.*, i.*, s.*, g.* from leden l
+                left join steekkaarten s on s.lid = l.id
+                left join gezinnen g on g.gezin_id = l.gezin
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
+            where i.tak = "'.$tak.'"
+            order by l.voornaam, l.achternaam';
+
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $lid = new Lid($row);
+                    $lid->ouders = Ouder::getOudersForGezin($lid->gezin->id);
+                    $leden[] = $lid;
                 }
             }
         }

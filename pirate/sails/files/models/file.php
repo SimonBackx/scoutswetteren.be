@@ -59,19 +59,23 @@ class File extends Model {
         return "https://".str_replace('www.','files.',$_SERVER['SERVER_NAME'])."/".$this->location.$this->name;
     }
 
-    // Kan zowel nieuw uploaden als bestaand bestand overschrijven
-    // use_name = sla op met deze naam (excl extensie)
-    function upload($form_name, &$errors, $file_types = null, $use_name = null) {
-        if (!$this->new) {
-            $errors[] = 'Kan bestand niet overschrijven.';
+    static function isFileSelected($form_name) {
+        if (!isset($_FILES[$form_name])) {
             return false;
         }
 
+        $error = $_FILES[$form_name]['error'];
+        if ($error == UPLOAD_ERR_NO_FILE) {
+            return false;
+        }
+        return true;
+    }
+
+    static function getUploaded($form_name, &$ext, &$name, &$size, &$errors, $max_size, $file_types = null, $use_name = null) {
         if (!isset($_FILES[$form_name])) {
             $errors[] = 'Er werd geen bestand gevraagd in het formulier.';
             return false;
         }
-
 
         $name = $_FILES[$form_name]['name'];
         $name = trim($name);
@@ -80,21 +84,6 @@ class File extends Model {
 
         if (isset($use_name)) {
             $name = $use_name.'.'.$ext;
-        }
-
-        if (isset($file_types)) {
-            $found = false;
-            foreach ($file_types as $value) {
-                if ($value == $ext) {
-                    $found = true;
-                    break;
-                }
-            }
-
-            if (!$found) {
-                $errors[] = 'Bestandstype "'.$ext.'" niet toegelaten.';
-                return false;
-            }
         }
 
         $size = $_FILES[$form_name]['size'];
@@ -128,7 +117,7 @@ class File extends Model {
                     break;
 
                 case UPLOAD_ERR_EXTENSION:
-                    $errors[] = 'Er ging iets mis bij het uploaden (extensie verhinderde upload). Contacteer de webmaster.';
+                    $errors[] = 'Er ging iets mis bij het uploaden (php extensie verhinderde upload). Contacteer de webmaster.';
                     break;
 
                 default:
@@ -136,6 +125,21 @@ class File extends Model {
                 break;
             }
             return false;
+        }
+
+        if (isset($file_types)) {
+            $found = false;
+            foreach ($file_types as $value) {
+                if ($value == $ext) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $errors[] = 'Bestandstype "'.$ext.'" niet toegelaten.';
+                return false;
+            }
         }
 
         if ($ext == '') {
@@ -164,7 +168,7 @@ class File extends Model {
             return false;
         }
 
-        if ($size > self::$max_size) {
+        if ($size > $max_size) {
             $errors[] = 'Het bestand dat je wilt uploaden is te groot.';
             return false;
         }
@@ -176,6 +180,20 @@ class File extends Model {
             return false;
         }
 
+        return true;
+    }
+
+    // Kan zowel nieuw uploaden als bestaand bestand overschrijven
+    // use_name = sla op met deze naam (excl extensie)
+    function upload($form_name, &$errors, $file_types = null, $use_name = null) {
+        if (!$this->new) {
+            $errors[] = 'Kan bestand niet overschrijven.';
+            return false;
+        }
+
+        if (!self::getUploaded($form_name, $ext, $name, $size, $errors, self::$max_size, $file_types, $use_name)) {
+            return false;
+        }
 
         // Alles oké
         $this->name = $name;

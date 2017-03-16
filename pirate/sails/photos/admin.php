@@ -3,6 +3,7 @@ namespace Pirate\Sail\Photos;
 use Pirate\Page\Page;
 use Pirate\Route\Route;
 use Pirate\Model\Files\Album;
+use Pirate\Model\Leiding\Leiding;
 
 class PhotosAdminRouter extends Route {
     private $album = null;
@@ -10,6 +11,13 @@ class PhotosAdminRouter extends Route {
     function doMatch($url, $parts) {
         if ($url == 'photos/upload') {
             return true;
+        }
+
+        if ($url == 'photos/remove-sources') {
+            if (Leiding::hasPermission('webmaster')) {
+               return true; 
+            }
+            return false;
         }
 
         if (count($parts) == 3 && $parts[0] == 'photos' && $parts[1] == 'edit') {
@@ -41,6 +49,11 @@ class PhotosAdminRouter extends Route {
         if ($url == 'photos') {
             require(__DIR__.'/admin/overview.php');
             return new Admin\Overview();
+        }
+
+        if ($url == 'photos/remove-sources') {
+            require(__DIR__.'/admin/remove-sources.php');
+            return new Admin\RemoveSources();
         }
 
         if (isset($this->album)) {

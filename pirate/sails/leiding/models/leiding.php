@@ -79,6 +79,18 @@ class Leiding extends Model {
                 'permission' => 'leiding',
                 'tak' => 'jin'
             ),
+            'kerstactiviteit' => array(
+                'name' => 'Kerstactiviteit',
+                'mail' => 'kerstactiviteit@scoutswetteren.be'
+            ),
+            'wafelbak' => array(
+                'name' => 'Wafelbak',
+                'mail' => 'wafels@scoutswetteren.be'
+            ),
+            'webmaster' => array(
+                'name' => 'Webmaster',
+                'mail' => 'website@scoutswetteren.be'
+            ),
             'verhuur' => array(
                 'name' => 'Verhuur verantwoordelijke',
                 'permission' => 'verhuur'
@@ -91,7 +103,7 @@ class Leiding extends Model {
     }
 
     // Geeft e-mailadres voor een bepaalde contactpersoon
-    static function getContactEmail($contact_key, &$email, &$naam) {
+    static function getContactEmail($contact_key, &$email, &$naam, &$send_from) {
         $contacts = self::getContacts();
         if (!isset($contacts[$contact_key])) {
             return false;
@@ -99,9 +111,11 @@ class Leiding extends Model {
 
         $contact_data = $contacts[$contact_key];
         $naam = null;
+        $send_from = true;
         $email = 'website@scoutswetteren.be';
 
         if (!isset($contact_data['mail'])) {
+            $send_from = false;
             if (isset($contact_data['tak'])) {
                 $leiding = Leiding::getLeiding($contact_data['permission'], $contact_data['tak']);
             } else {
@@ -115,6 +129,7 @@ class Leiding extends Model {
         } else {
             $email = $contact_data['mail'];
             $naam = $contact_data['name'];
+            $send_from = true;
         }
         return true;
     }

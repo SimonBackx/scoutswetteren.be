@@ -1,0 +1,9 @@
+Dag {{naam}},
+
+Je kan een nieuw wachtwoord instellen op www.scoutswetteren.be door de onderstaande link te openen of te plakken in je adresbalk.
+
+{{url}}
+
+Bedankt voor het vertrouwen in onze scouts,
+
+Leiding Scouts Prins Boudewijn

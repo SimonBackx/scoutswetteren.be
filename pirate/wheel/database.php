@@ -7,7 +7,12 @@ class Database {
 
     static public function init() {
         try {
-            self::$mysqli = new mysqli('127.0.0.1', 'root', 'root', 'scouts');
+            if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
+                self::$mysqli = new mysqli('db', 'root', 'root', 'scouts');
+            } else {
+                self::$mysqli = new mysqli('127.0.0.1', 'root', 'root', 'scouts');
+            }
+
             if (self::$mysqli->connect_errno){
                 header('Location: /oops/database.html');
                 die();

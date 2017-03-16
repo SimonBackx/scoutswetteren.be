@@ -82,6 +82,10 @@ class Ouder extends Model {
         $this->set_password_key = $row['set_password_key'];
     }
 
+    function getAddress() {
+        return $this->adres.', '.$this->gemeente;
+    }
+
     // empty array on success
     // array of errors on failure
     function setProperties(&$data) {
@@ -140,11 +144,29 @@ class Ouder extends Model {
     }
 
     function getSetPasswordUrl() {
+        if ($this->hasPassword()) {
+            return "https://".$_SERVER['SERVER_NAME']."/ouders/wachtwoord-vergeten/".$this->set_password_key;
+        }
         return "https://".$_SERVER['SERVER_NAME']."/ouders/account-aanmaken/".$this->set_password_key;
     }
 
     function hasPassword() {
         return !empty($this->password);
+    }
+
+    function generatePasswordRecoveryKey() {
+        // Generate and put in $this->set_password_key
+        $old = $this->set_password_key;
+        $key = self::generateKey();
+        $this->set_password_key = $key;
+
+        // Opslaan
+        if ($this->save()) {
+            return true;
+        } else {
+            $this->set_password_key = $old;
+            return false;
+        }
     }
 
     function save() {
@@ -162,6 +184,12 @@ class Ouder extends Model {
         $gsm = self::getDb()->escape_string($this->gsm);
         $email = self::getDb()->escape_string($this->email);
         $titel = self::getDb()->escape_string($this->titel);
+        
+        if (isset($this->set_password_key)) {
+            $key = "'".self::getDb()->escape_string($this->set_password_key)."'";
+        } else {
+            $key = "NULL";
+        }
 
         if (empty($this->id)) {
             if (empty($this->gezin)) {
@@ -186,7 +214,8 @@ class Ouder extends Model {
                  `postcode` = '$postcode',
                  `email` = '$email',
                  `telefoon` = $telefoon,
-                 `gsm` = $gsm
+                 `gsm` = '$gsm',
+                 `set_password_key` = $key
                  where id = '$id' 
             ";
         }
@@ -267,6 +296,23 @@ class Ouder extends Model {
             }
         }
         return false;
+    }
+
+    static function getOuderForEmail($email) {
+        $email = self::getDb()->escape_string($email);
+
+        $query = '
+            SELECT o.*, g.* from ouders o
+                left join gezinnen g on g.gezin_id = o.gezin
+            where o.email = "'.$email.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Ouder($row);
+            }
+        }
+        return null;
     }
 
     static function getOudersForGezin($gezin_id) {

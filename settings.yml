@@ -1,0 +1,11 @@
+folder: "scoutswetteren.be"
+server: "root@188.166.15.176"
+e-mail: "simon.backx@scoutswetteren.be"
+mysql:
+  username: root
+  password: root
+  database: scouts
+letsencrypt:
+  - "scoutswetteren.be"
+  - "www.scoutswetteren.be"
+  - "files.scoutswetteren.be"

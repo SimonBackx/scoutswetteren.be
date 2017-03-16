@@ -27,11 +27,11 @@ class DownloadAlbum extends Page {
             $file = File::getFile($this->album->zip_file);
             if (isset($file)) {
                 header('Location: '.$file->getPublicPath());
-                return 'Doorverwijzen...';
+                return 'Doorverwijzen naar '.$file->getPublicPath();
             } else {
-                return 'Fatale fout';
+                return 'Dit album kan niet (meer) gedownload worden.';
             }
         }
-        return '';
+        return 'Dit album kan niet (meer) gedownload worden.';
     }
 }

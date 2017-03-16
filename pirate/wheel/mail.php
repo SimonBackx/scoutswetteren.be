@@ -4,9 +4,11 @@ use Pirate\Template\Template;
 use SendGrid\Personalization;
 use SendGrid\Email;
 use SendGrid\ReplyTo;
+use SendGrid\Attachment;
 
 class Mail {
     private $sendgrid_mail = null;
+    private $totalAttachmentSize = 0;
 
     function __construct($subject, $template, $data = array()) {
         $this->sendgrid_mail = new \SendGrid\Mail();
@@ -47,6 +49,26 @@ class Mail {
         $this->sendgrid_mail->addPersonalization($personalization);
     }
 
+    function addAttachment($fileLocation, $fileName) {
+        $size = @filesize($fileLocation);
+        $output = @file_get_contents($fileLocation);
+
+        $this->totalAttachmentSize += $size;
+        if ($output === false || $this->totalAttachmentSize > 10000000) {
+            return false;
+        }
+
+        $file_encoded = base64_encode($output);
+        $attachment = new Attachment();
+        $attachment->setContent($file_encoded);
+        $attachment->setType(mime_content_type($fileLocation));
+        $attachment->setDisposition("attachment");
+        $attachment->setFilename($fileName);
+
+        $this->sendgrid_mail->addAttachment($attachment);
+        return true;
+    }
+
     function setReplyTo($email) {
         $reply_to = new ReplyTo($email);
         $this->sendgrid_mail->setReplyTo($reply_to);
@@ -59,7 +81,6 @@ class Mail {
         $response = $sg->client->mail()->send()->post($this->sendgrid_mail);
         $status = intval($response->statusCode());
 
-        echo $response->body();
         return ($status >= 200 && $status < 300);
     }
 }

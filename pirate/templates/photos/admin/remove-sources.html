@@ -1,0 +1,40 @@
+<form method="post">
+<div class="text">
+
+    <h1>Ben je zeker dat je de oorspronkelijke bestanden wil wissen?</h1>
+    <p>De foto's blijven wel beschikbaar op de website, maar de oorspronkelijke bestanden gaan verloren. Hierdoor kunnen de albums niet meer gedownload worden en verdwijnt de download knop. Op deze manier maak je kostbare schijfruimte vrij.</p>
+
+    <h2>Op toepassing van</h2>
+    <ul>
+        {% for album in albums_with_sources %}
+            <li>
+                {{ album.name }}
+                {% if %}
+            </li>
+        {% else %}
+            <li>Er zijn geen albums die nog oorspronkelijke bestanden bevatten.</li>
+        {% endfor %}
+    </ul>
+
+    <input id="delete_zip" type="checkbox" name="delete_zip" value="1">
+    <label for="delete_zip">Verwijder ook .zip (archief) bestanden</label>
+
+    <div class="checkbox-controllable">
+        <div class="visible-when-checked">
+            <h2>Volgende zip bestanden zullen verwijderd worden</h2>
+            <ul>
+                {% for album in albums_with_zip %}
+                    <li>{{ album.name }}.zip</li>
+                {% else %}
+                    <li>Er zijn geen albums die nog .zip bestanden bevatten.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <input type="submit" class="aubergine fill" name="confirm" value="Ja, verwijderen">
+        <a href="/admin/photos/overview" class="button merlot">Annuleren</a>
+    </footer>
+</div>
+</form>

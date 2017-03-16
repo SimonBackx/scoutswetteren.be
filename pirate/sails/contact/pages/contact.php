@@ -49,7 +49,7 @@ class Contact extends Page {
         if ($allSet) {
             $data['subject'] = trim($data['subject']);
 
-            if (!Leiding::getContactEmail($data['wie'], $contactpersoon_email, $contactpersoon_naam)) {
+            if (!Leiding::getContactEmail($data['wie'], $contactpersoon_email, $contactpersoon_naam, $send_from)) {
                 $errors[] = 'Je moet selecteren wie je wilt contacteren.';
             }
 

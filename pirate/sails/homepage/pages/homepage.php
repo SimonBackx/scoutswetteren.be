@@ -70,6 +70,24 @@ adp.png
             'sponsors' => $sponsors,
             'slideshows' => array(
                 array(
+                    'title' => 'WI WA Wafelbak 2017!',
+                    'text' => 'Op zondag 26 maart gaan we weer heerlijke wafeltjes verkopen! Plaats op voorhand uw bestelling + We zoeken nog naar behulpzame ouders die ons willen helpen bakken.',
+                    'button' => array('text' => 'Meer info', 'url' => '/blog/2017/03/26/wafelbak-2017'),
+                    'extra_button' => array('text' => 'Bestellen', 'url' => 'https://files.scoutswetteren.be/manueel/wafels-bestellen.pdf')
+                ),
+
+                array(
+                    'title' => 'Winterfeest: 12 februari',
+                    'text' => 'We nodigen iedereen uit voor ons jaarlijks eetfestijn met dit jaar als thema: "Prinsjes Got Talent". Inschrijven is verplicht.',
+                    'button' => array('text' => 'Inschrijven + meer info', 'url' => '/blog/2017/01/09/winterfeest-2017')
+                ),
+
+                array(
+                    'title' => 'Kerstactiviteit 16 december',
+                    'text' => 'Zoals ieder jaar organiseren we dan onze fameuze fakkel- en sneukeltocht met na de tocht de mogelijkheid om iets te drinken op het scoutsterrein. Inschrijven verplicht.',
+                    'button' => array('text' => 'Inschrijven + meer info', 'url' => '/blog/2016/11/27/kerstactiviteit-2016')
+                ),
+                array(
                     'title' => 'Gloednieuwe foto pagina',
                     'text' => 'We hebben de foto pagina afgewerkt. Daar vind je de recentste foto\'s van je lieve spruit.',
                     'button' => array('text' => 'Foto\'s bekijken', 'url' => '/fotos')
@@ -77,15 +95,6 @@ adp.png
                 array(
                     'title' => 'Wafelbak wordt uitgesteld',
                     'text' => 'Door omstandigheden wordt de wafelbak uitgesteld naar het 2e semester. De werkvergadering voor de ouders en leiding gaat wel nog steeds door op 12 november. Zondag 13 november is het dus gewoon scouts.'//,
-                ),
-                array(
-                    'title' => 'Een nieuwe huisstijl!',
-                    'text' => 'Met onze nieuwe website en huisstijl kan je vanaf nu ook online inschrijven. En de maandplanning vind je nu altijd terug op de startpagina',
-                    'button' => array('text' => 'Meer lezen', 'url' => '/blog/2016/09/09/nieuwe-huisstijl-en-online-inschrijven')
-                ),
-                array(
-                    'title' => 'Startdag 2016',
-                    'text' => 'Zondag 11 september vliegen we er weer in vanaf 14 uur! En vrijdag 9 september om 19 uur kan je komen genieten van lekkere streekbieren of frisdranken op onze streekbieravond.'
                 )
             ),
             'call_to_action' => array(

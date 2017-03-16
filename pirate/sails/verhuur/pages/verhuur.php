@@ -4,6 +4,7 @@ use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
 use Pirate\Model\Verhuur\Reservatie;
+use Pirate\Model\Files\Image;
 
 class Verhuur extends Page {
 
@@ -18,6 +19,8 @@ class Verhuur extends Page {
 
         $kalender = $verhuurkalender_block->getContent();
 
+        $images = Image::getImagesFromHiddenAlbum("verhuur");
+
         return Template::render('verhuur/verhuur', array(
             'calendar' => array(
                 'month' => ucfirst($config['months'][$month-1]),
@@ -27,11 +30,7 @@ class Verhuur extends Page {
             'calculate_huurprijs' => Reservatie::js_calculateHuur(),
             'calculate_borg' => Reservatie::js_calculateBorg(),
             'kalender' => $kalender,
-            'call_to_action' => array(
-                'title' => 'Volg je kapoen',
-                'subtitle' => 'Doorheen het jaar en tijdens weekends en kampen posten we geregeld foto\'s en updates op onze facebook pagina.',
-                'button' => array('text' => 'Like onze pagina', 'url' => 'https://www.facebook.com/scoutsprinsboudewijn/')
-            )
+            'images' => $images
         ));
     }
 }

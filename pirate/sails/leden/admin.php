@@ -50,9 +50,11 @@ class LedenAdminRouter extends Route {
 
             if (count($parts) == 1) {
                 return true;
+
             } elseif(count($parts) == 2 && ($parts[1] == 'mail' || $parts[1] == 'exporteren')) {
                 return true;
-            } elseif (isset($parts[1]) && ($parts[1] == 'lid' || $parts[1] == 'betalen') && count($parts) == 3) {
+
+            } elseif (count($parts) == 3 && ($parts[1] == 'lid' || $parts[1] == 'betalen')) {
                 if (!is_numeric($parts[2])) {
                     return false;
                 }
@@ -62,13 +64,21 @@ class LedenAdminRouter extends Route {
                     return true;
                 }
                 return false;
+
+            } elseif (count($parts) == 3 && $parts[1] == 'steekkaart') {
+                $takken = Inschrijving::$takken;
+                if (in_array($parts[2], $takken)) {
+                    $this->tak = $parts[2];
+                    return true;
+                }
+                return false;
+
             } elseif(isset($parts[1])) {
                 $takken = Inschrijving::$takken;
                 if (in_array($parts[1], $takken)) {
                     $this->tak = $parts[1];
                     return true;
                 }
-
             }
         }
 
@@ -81,6 +91,11 @@ class LedenAdminRouter extends Route {
             return new Admin\Afrekeningen();
         }
         
+        if (count($parts) == 3 && $parts[1] == 'steekkaart') {
+            require(__DIR__.'/admin/steekkaart-overzicht.php');
+            return new Admin\SteekkaartOverzicht($this->tak);
+        }
+
         if (count($parts) == 1 || isset($this->tak)) {
             require(__DIR__.'/admin/overview.php');
             if (is_null($this->tak)) {
