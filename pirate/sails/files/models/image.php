@@ -114,7 +114,7 @@ class Image extends Model {
         $this->album = $id;
     }
 
-    function upload($form_name, $sizes, &$errors, Album $album_object = null) {
+    function upload($form_name, $sizes, &$errors, Album $album_object = null, $sponsorify = false) {
         
         if (isset($this->album) && !isset($album_object)) {
             if ($this->album == Album::$QUEUE_ID) {
@@ -186,6 +186,11 @@ class Image extends Model {
 
         if (count($sizes) > 0) {
             $original = GDImage::createFromFile($source->getPath());
+            if ($sponsorify) {
+                $original->blackAndWhite();
+                $original->level();
+                $original->trim();
+            }
 
             $previousSize = array();
             foreach ($sizes as $size) {
@@ -202,6 +207,9 @@ class Image extends Model {
                 if ($actual_size["width"] <= 100 || $actual_size["height"] <= 100) {
                     $quality = 40;
                 }
+                if ($sponsorify) {
+                    $quality = 100;
+                }
 
                 $gdImage = GDImage::createFromGDImage($original, $quality);
 
@@ -210,6 +218,8 @@ class Image extends Model {
                 } else {
                     $gdImage->scale($actual_size);
                 }
+                
+                
 
                 $img = ImageFile::create($this, $gdImage, $errors, $path);
                 if ($img === false) {

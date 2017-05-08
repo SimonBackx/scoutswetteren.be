@@ -1,0 +1,57 @@
+<form method="post" enctype="multipart/form-data">
+    <div class="text">
+        {% if success %}
+        <header>
+            <h1>Sponsor opgeslagen</h1>
+        </header>
+
+        <footer>
+            <a href="/admin/sponsors/sponsor" class="button aubergine">Nieuw</a>
+            <a href="/admin/sponsors" class="aubergine button">Terug</a>
+        </footer>
+
+        {% else %}
+        <header>
+            <h1>Sponsor {% if new %}aanmaken{% else %}aanpassen{% endif %}</h1>
+        </header>
+
+         {% if errors|length > 0 %}
+            <ul class="error">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <label>Naam</label>
+        <input type="text" name="name" value="{{ data.name }}" placeholder="Naam van de sponsor">
+
+        <label>Website</label>
+        <input type="text" name="url" value="{{ data.url }}" placeholder="Website van de sponsor">
+
+        <input type="file" name="logo" id="file" class="file_upload"/>
+        <label for="file">
+            <svg width="12px" height="12px" viewBox="1502 -655 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="plus" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1503.000000, -654.000000)" stroke-linecap="round">
+                    <path d="M5,0.5 L5,10" id="Path-3" stroke="#FFFFFF" stroke-width="2"></path>
+                    <path d="M9.75,5.25 L0.25,5.25" id="Path-3-Copy" stroke="#FFFFFF" stroke-width="2"></path>
+                </g>
+            </svg>
+             {% if new %}
+                Logo kiezen
+            {% else %}
+                Logo vervangen
+            {% endif %}
+        </label>
+
+        <footer>
+            <input type="submit" class="aubergine fill" value="Opslaan">
+            {% if not new %}
+                <a href="/admin/sponsors/delete/{{ data.id }}" class="button aubergine">Verwijderen</a>
+            {% endif %}
+            <a href="/admin/sponsors" class="aubergine button">Annuleren</a>
+        </footer>
+        {% endif %}
+
+    </div>
+</form>

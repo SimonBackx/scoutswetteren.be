@@ -6,32 +6,28 @@
     <a href="/admin/verhuur/reservatie" class="icon-button plus">Reservatie manueel toevoegen</a>
     <a href="/admin/verhuur/reservatie?scouts" class="icon-button plus">Vrijhouden in kalender (bv. leefweek)</a>
 
-    <h1>Na te kijken</h1>
+    <h1>Aanvragen</h1>
     {% if in_behandeling | length > 0 %}
         <div class="list-bundle">
-            {% for group in in_behandeling %}
-                {% for reservatie in group.reservaties %}
-                    <article class="list">
-                        <div class="medium merlot column">{{ reservatie.startdatum | date('j-m') }} tot {{ reservatie.einddatum | date('j-m-Y') }}</div>
+            {% for reservatie in in_behandeling %}
+                <article class="list">
+                    <div class="medium merlot column">{{ reservatie.startdatum | date('j-m') }} tot {{ reservatie.einddatum | date('j-m-Y') }}</div>
 
-                        <div class="max column">{{reservatie.contract_nummer}}: {{ reservatie.groep }}</div>
+                    <div class="max column">{{ reservatie.getTitle() }}</div>
+                    <div class="large merlot column">{{ reservatie.getDescription() }}</div>
 
-                        <div class="large merlot column">{{ group.name }}</div>
-
-                        <div class="last column">
-                            <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken</a>
-                        </div>
-                    </article>
-                {% endfor %}
-            {% endfor %}   
+                    <div class="last column">
+                        <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken</a>
+                    </div>
+                </article>
+            {% endfor %}
         </div>
     {% else %}
-        <p>Alles is in orde!</p>
+        <p>Geen aanvragen.</p>
     {% endif %}
-    
+
 
     <h1>Ligt vast</h1>
-    <p></p>
 
     {% for group in groups %}
         <h2>{{ group.name }}</h2>
@@ -40,13 +36,8 @@
             <article class="list">
                 <div class="medium merlot column">{{ reservatie.startdatum | date('j-m') }} tot {{ reservatie.einddatum | date('j-m') }}</div>
 
-                {% if reservatie.door_leiding %}
-                     <div class="max column">Vrijgehouden: {{ reservatie.groep }}</div>
-                {% else %}
-                    <div class="max column">{{reservatie.contract_nummer}}: {{ reservatie.groep }}</div>
-                    
-                    {% if not reservatie.waarborg_betaald %}<div class="large merlot column">Waarborg niet betaald</div>{% endif %}
-                {% endif %}
+                <div class="max column">{{ reservatie.getTitle() }}</div>
+                <div class="large merlot column">{{ reservatie.getDescription() }}</div>
 
                 <div class="last column">
                     <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken / bewerken</a>
@@ -55,5 +46,9 @@
         {% endfor %}
         </div>
     {% endfor %}
+
+     {% if future_only %}
+    <div><a href="/admin/verhuur/geschiedenis" class="aubergine fill button">Oudere reservaties tonen</a></div>
+    {% endif %}
 </div>
 

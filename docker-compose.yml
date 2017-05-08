@@ -16,13 +16,13 @@ services:
     php:
         links:
          - db
-        image: php7fpm-mysql
+        image: php7fpm-imagick
         restart: always
         volumes:
          - ./files:/var/www/scoutswetteren.dev/files
          - ./pirate:/var/www/scoutswetteren.dev/pirate
          - ./public:/var/www/scoutswetteren.dev/public
-         - ./php.ini:/etc/php/7.0/fpm/php.ini
+         - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
         environment:
          - DEBUG=1
     nginx:

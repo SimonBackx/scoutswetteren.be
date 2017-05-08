@@ -54,6 +54,59 @@ class GDImage extends Model {
         return $gd;
     }
 
+    function trim() {
+        $this->image->trimImage(0);
+        $this->image->setImagePage(0, 0, 0, 0); 
+        $this->width = $this->image->getImageWidth();
+        $this->height = $this->image->getImageHeight();
+    }
+
+    function blackAndWhite() {
+        if ($this->image->getImagePixelColor(0,0)->getHSL()['luminosity'] < 0.1) {
+            $this->image->negateImage(false);
+        }
+        //$this->image->modulateImage(100,0,100);
+        //$this->image = $this->image->fxImage('intensity');
+    }
+
+    function level() {
+        $background = $this->image->getImagePixelColor(0,0)->getHSL()['luminosity'];
+        $darkest = $background;
+
+        $iterator = $this->image->getPixelIterator();
+        foreach ($iterator as $row=>$pixels) {
+          foreach ( $pixels as $col=>$pixel ){
+            $lum = $pixel->getHSL()['luminosity'];
+            if ($lum < $darkest) {
+                $darkest = $lum;
+             }
+          }
+          $iterator->syncIterator();
+        }
+
+        // darkest moet volledig zwart worden
+        $width = $background - $darkest;
+        if ($width == 0) {
+            return;
+        }
+
+        $iterator = $this->image->getPixelIterator();
+        foreach ($iterator as $row=>$pixels) {
+          foreach ( $pixels as $col=>$pixel ){
+            $lum = $pixel->getHSL()['luminosity'];
+            $lum = ($lum - $darkest) / $width;
+            if ($lum < 0) {
+                $lum = -$lum;
+            }
+            // Nu nog bijstellen naar background (maxium 0.96)
+            $lum *= 0.98;
+
+            $pixel->setHSL(0, 0, $lum);
+          }
+          $iterator->syncIterator();
+        }
+    }
+
     function getWidth() {
         return $this->width;
     }

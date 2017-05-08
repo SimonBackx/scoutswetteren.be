@@ -18,10 +18,12 @@
        
     </form>
 
-    <h1>Acties</h1>
-    <div><a href="/admin/inschrijvingen/mail" class="aubergine fill button">Mail sturen</a>
-    <a href="/admin/inschrijvingen/exporteren" class="aubergine button">Exporteren</a>
-    <a href="/admin/inschrijvingen/steekkaart/{{tak}}" class="aubergine button">Samenvatting afdrukken</a>
+    <div>
+        <a href="/admin/inschrijvingen/mail" class="aubergine fill button">Mailen</a>
+        <a href="/admin/inschrijvingen/sms" class="aubergine button">Sms'en</a>
+        •
+        <a href="/admin/inschrijvingen/steekkaart/{{tak}}" class="aubergine button">Steekkaart</a>
+        <a href="/admin/inschrijvingen/exporteren" class="aubergine button">Excel</a>
     </div>
 
     <h1>Ingeschreven {{ tak }} ({{ leden | length }})</h1>

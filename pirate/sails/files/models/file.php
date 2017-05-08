@@ -359,8 +359,6 @@ class File extends Model {
                 $this->id = self::getDb()->insert_id;
             }
             return true;
-        } else {
-            echo $query;
         }
 
         return false;
@@ -375,6 +373,9 @@ class File extends Model {
 
         $query = "DELETE FROM files WHERE file_id = '$id'";
 
+        // Todo errors doorgeven
+        $errors = array();
+        
         if (!self::getDb()->query($query)) {
             $errors[] = 'Er ging iets mis bij het aanpassen van de database.';
             return false;

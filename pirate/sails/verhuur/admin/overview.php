@@ -6,6 +6,11 @@ use Pirate\Template\Template;
 use Pirate\Model\Verhuur\Reservatie;
 
 class Overview extends Page {
+    public $future_only = true;
+
+    function __construct($future_only) {
+        $this->future_only = $future_only;
+    }
 
     function getStatusCode() {
         return 200;
@@ -16,39 +21,19 @@ class Overview extends Page {
 
         $data_behandeling = array();
 
-        $reservaties = Reservatie::getReservatiesOverview();
+
+        $reservaties = Reservatie::getReservatiesOverview($this->future_only);
+
         foreach ($reservaties as $reservatie) {
             if ($reservatie->door_leiding) {
                 continue;
             }
-            
-            $group = array(
-                'name' => '',
-                'reservaties' => array()
-            );
-            $today = new \DateTime();
-            $difference = $reservatie->startdatum->diff($today);
-            $days = $difference->days;
 
-            $difference = $today->diff($reservatie->aanvraag_datum);
-            $days_aanvraag = $difference->days;
-
-            if (!$reservatie->ligt_vast) {
-                $group['name'] = 'Ligt niet vast in kalender';
-            } elseif (($days_aanvraag > 14 || $days < 14) && $reservatie->waarborg_betaald === false) {
-                $group['name'] = 'Waarborg nog niet betaald';
-            } elseif (!$reservatie->huur_betaald && $days < 30) {
-                $group['name'] = 'Huur nog niet betaald';
-            } else {
+            if ($reservatie->ligt_vast) {
                 continue;
             }
 
-            if (!isset($data_behandeling[count($data_behandeling)-1]) || $data_behandeling[count($data_behandeling)-1]['name'] !== $group['name']) {
-                $data_behandeling[] = $group;
-            }
-
-            $data_behandeling[count($data_behandeling)-1]['reservaties'][] = $reservatie;
-            
+            $data_behandeling[] = $reservatie;
         }
 
         foreach ($reservaties as $reservatie) {
@@ -74,7 +59,8 @@ class Overview extends Page {
 
         return Template::render('verhuur/admin/overview', array(
             'groups' => $data,
-            'in_behandeling' => $data_behandeling
+            'in_behandeling' => $data_behandeling,
+            'future_only' => $this->future_only
         ));
     }
 }

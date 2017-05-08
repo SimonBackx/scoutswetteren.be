@@ -1,7 +1,7 @@
 <?php
 
 // Lijst met modules die de admin.php hebben met een AdminRouter
-$admin_routes = array('leiding', 'maandplanning', 'leden', 'blog', 'verhuur', 'photos', 'dependencies');
+$admin_routes = array('leiding', 'maandplanning', 'leden', 'blog', 'verhuur', 'photos', 'dependencies', 'sponsors');
 $admin_pages = array(
     '' => array(
         array('priority' => true, 'name' => 'Mijn gegevens', 'url' => ''),

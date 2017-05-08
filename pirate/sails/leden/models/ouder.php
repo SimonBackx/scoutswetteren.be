@@ -3,6 +3,7 @@ namespace Pirate\Model\Leden;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
+use Pirate\Model\Leden\Lid;
 
 class Ouder extends Model {
     public $id;
@@ -334,7 +335,7 @@ class Ouder extends Model {
         return $ouders;
     }
 
-    static function getOuders($filter = null, $tak = null) {
+    static function getOuders($filter = null, $tak = null, $return_leden = false) {
         $where = '';
 
         if (!is_null($filter)) {
@@ -355,7 +356,18 @@ class Ouder extends Model {
         $scoutsjaar = intval(Lid::getScoutsjaar());
 
         $ouders = array();
-        $query = '
+
+        if ($return_leden) {
+            $query = '
+            SELECT l.*, g.* from ouders o
+                left join gezinnen g on g.gezin_id = o.gezin
+                join leden l on l.gezin = o.gezin
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.'
+                left join steekkaarten s on s.lid = l.id
+            '.$where.'
+            GROUP BY l.id, g.gezin_id';
+        } else {
+            $query = '
             SELECT o.*, g.* from ouders o
                 left join gezinnen g on g.gezin_id = o.gezin
                 join leden l on l.gezin = o.gezin
@@ -363,11 +375,19 @@ class Ouder extends Model {
                 left join steekkaarten s on s.lid = l.id
             '.$where.'
             GROUP BY o.id, g.gezin_id';
+        }
+        
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
-                while ($row = $result->fetch_assoc()) {
-                    $ouders[] = new Ouder($row);
+                if (!$return_leden) {
+                    while ($row = $result->fetch_assoc()) {
+                        $ouders[] = new Ouder($row);
+                    }
+                } else {
+                    while ($row = $result->fetch_assoc()) {
+                        $ouders[] = new Lid($row);
+                    }
                 }
             }
         }

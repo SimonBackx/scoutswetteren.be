@@ -6,6 +6,7 @@ use Pirate\Model\Leiding\Leiding;
 
 class VerhuurAdminRouter extends Route {
     private $id = null;
+    private $future_only = true;
 
     function doMatch($url, $parts) {
         if (!Leiding::hasPermission('verhuur') && !Leiding::hasPermission('oudercomite')) {
@@ -13,7 +14,10 @@ class VerhuurAdminRouter extends Route {
         }
         
         if (isset($parts[0]) && $parts[0] == 'verhuur') {
-            if (count($parts) == 1) {
+            if (count($parts) == 2 && $parts[1] == 'geschiedenis') {
+                $this->future_only = false;
+                return true;
+            } elseif (count($parts) == 1) {
                 return true;
             } elseif ($parts[1] == 'reservatie' && count($parts) <= 3) {
                 if (count($parts) == 3) {
@@ -38,15 +42,17 @@ class VerhuurAdminRouter extends Route {
     }
 
     function getPage($url, $parts) {
-        if (count($parts) == 1) {
-            require(__DIR__.'/admin/overview.php');
-            return new Admin\Overview();
+        if (isset($parts[1]) && $parts[1] == 'reservatie') {
+            require(__DIR__.'/admin/edit.php');
+            return new Admin\Edit($this->id);
         }
-        if ($parts[1] == 'delete') {
+
+        if (isset($parts[1]) && $parts[1] == 'delete') {
             require(__DIR__.'/admin/delete.php');
             return new Admin\Delete($this->id);  
         }
-        require(__DIR__.'/admin/edit.php');
-        return new Admin\Edit($this->id);
+        
+        require(__DIR__.'/admin/overview.php');
+        return new Admin\Overview($this->future_only);
     }
 }

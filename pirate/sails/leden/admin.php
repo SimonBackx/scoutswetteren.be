@@ -51,7 +51,7 @@ class LedenAdminRouter extends Route {
             if (count($parts) == 1) {
                 return true;
 
-            } elseif(count($parts) == 2 && ($parts[1] == 'mail' || $parts[1] == 'exporteren')) {
+            } elseif(count($parts) == 2 && ($parts[1] == 'mail' || $parts[1] == 'sms' || $parts[1] == 'exporteren')) {
                 return true;
 
             } elseif (count($parts) == 3 && ($parts[1] == 'lid' || $parts[1] == 'betalen')) {
@@ -121,6 +121,11 @@ class LedenAdminRouter extends Route {
         if ($parts[1] == 'mail') {
             require(__DIR__.'/admin/mail.php');
             return new Admin\MailPage();
+        }
+
+        if ($parts[1] == 'sms') {
+            require(__DIR__.'/admin/sms.php');
+            return new Admin\SmsPage();
         }
 
         if ($parts[1] == 'exporteren') {

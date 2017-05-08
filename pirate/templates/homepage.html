@@ -131,7 +131,6 @@
                 </div>
             </div>
         </article>
-        <section id="sponsors-small">{% for sponsor in sponsors %}{% if sponsor.url is defined %}<a href="{{sponsor.url}}" rel="nofollow">{% else %}<div>{%endif%}<img src="/images/sponsors/{{sponsor.src}}">{% if sponsor.url is defined%}</a>{% else %}</div>{%endif%}{% endfor %}</section>
 
         {{ blog | raw }}
 

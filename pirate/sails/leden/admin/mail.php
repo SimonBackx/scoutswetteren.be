@@ -126,7 +126,7 @@ class MailPage extends Page {
                 }
 
                 if (count($ouders) == 0) {
-                    $errors[] = 'Er werden geen ouders gevonden die aan de criteria voldoen.';
+                    $errors[] = 'Er zijn geen ouders die aan de criteria voldoen.';
                 }  else {
 
                     $mail = new Mail($data['subject'], 'mail', array('message' => $data['message']));

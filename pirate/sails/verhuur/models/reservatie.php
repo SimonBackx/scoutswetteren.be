@@ -176,9 +176,14 @@ class Reservatie extends Model {
         return $reservaties;
     }
 
-    static function getReservatiesOverview() {
+    static function getReservatiesOverview($future_only = true) {
         $reservaties = array();
-        $query = 'SELECT * FROM verhuur ORDER BY (huur_betaald = 0 and DATEDIFF(startdatum, now()) < 30) desc, (ligt_vast = 0) desc, startdatum';
+
+        if ($future_only) {
+            $query = 'SELECT * FROM verhuur WHERE einddatum >= DATE_FORMAT(CURDATE(),\'%Y-%m-01\') ORDER BY startdatum';
+        } else {
+            $query = 'SELECT * FROM verhuur ORDER BY startdatum';
+        }
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -633,5 +638,28 @@ class Reservatie extends Model {
                 verhuur WHERE id = '$id' ";
 
         return self::getDb()->query($query);
+    }
+
+    function getTitle() {
+        if ($this->door_leiding) {
+            return "[Vrijgehouden] ".$this->groep;
+        }
+        return "[".$this->contract_nummer."] ".$this->groep;
+    }
+
+    function getDescription() {
+        if ($this->door_leiding) {
+            return "Vrijgehouden voor scouts";
+        }
+        if (!$this->waarborg_betaald && !$this->huur_betaald) {
+            return "Huur + waarborg niet betaald";
+        }
+        if (!$this->huur_betaald) {
+            return "Huur niet betaald";
+        }
+        if (!$this->waarborg_betaald) {
+            return "Waarborg niet betaald";
+        }
+        return "";
     }
 }

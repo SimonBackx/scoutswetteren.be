@@ -3,6 +3,7 @@ namespace Pirate\Sail\Homepage\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
+use Pirate\Model\Sponsors\Sponsor;
 
 class Sponsors extends Page {
 
@@ -16,7 +17,17 @@ class Sponsors extends Page {
         $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
         $blog = Block::getBlock('Blog', 'Overview')->getContent();
 
-        $sponsors = array(
+        $sponsors = Sponsor::getSponsors();
+        $sponsors_data = array();
+
+        foreach($sponsors as $sponsor ){
+            $data = array('src' => $sponsor->image->getBiggestSource()->file->getPublicPath(), 'name' => $sponsor->name);
+            if (strlen($sponsor->url) > 0) {
+                $data['url'] = 'http://'.$sponsor->url;
+            }
+            $sponsors_data[] = $data;
+        }
+        /*$sponsors_data = array(
             array('src' => 'yves-baeyens.png'),
             array('src' => 'wynants.png'),
             array('src' => 'vsf-verzekeringen.png', 'url' => 'http://www.vsfbvba.be'),
@@ -37,13 +48,13 @@ class Sponsors extends Page {
             array('src' => 'brickplanet.png', 'url' => 'https://www.jolico.be'),
             array('src' => 'bracke.png', 'url' => 'http://www.patisseriebracke.be'),
             array('src' => 'adp.png', 'url' => 'http://www.handelsgids.be/wetteren/adp-baetens-nv/')
-        );
+        );*/
 
 
         shuffle($sponsors);
 
         return Template::render('sponsors', array(
-            'sponsors' => $sponsors,
+            'sponsors' => $sponsors_data,
             'call_to_action' => array(
                 'title' => 'Volg je kapoen',
                 'subtitle' => 'Doorheen het jaar en tijdens weekends en kampen posten we geregeld foto\'s en updates op onze facebook pagina.',
