@@ -22,6 +22,12 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
+                    'title' => 'Kampdata 2017',
+                    'text' => '(Jong)giverkamp is van 1 tot 11 augustus, kapoenenkamp van 1 tot 5 augustus en wouterkamp van 5 tot 11 augustus.',
+                    'button' => array('text' => 'Meer info', 'url' => '/info')
+                ),
+
+                array(
                     'title' => 'Algemene vergadering VZW',
                     'text' => 'Op donderdag 20 april om 20u vindt de algemene vergadering van de VZW plaats in onze scoutslokalen. Alle ouders en leiding zijn welkom.',
                     'button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/algemene-vergadering-vzw-2017.pdf')

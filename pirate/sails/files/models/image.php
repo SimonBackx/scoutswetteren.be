@@ -373,14 +373,14 @@ class Image extends Model {
         if (isset($this->album)) {
 
             $images = Self::getImagesFromAlbum($this->album);
-            if (count($images) == 1) {
+            if (count($images) == 1 && $this->album != Album::$QUEUE_ID) {
                 $errors[] = 'Je kan de laatste foto van dit album niet verwijderen.';
                 return false;
             }
 
             // Coverfoto wijzigen indien verwijderd
             $album = Album::getAlbum($this->album);
-            if ($album->cover->id == $this->id) {
+            if (isset($album) && isset($album->cover) && $album->cover->id == $this->id) {
                 $i = 0;
                 while ($album->cover->id == $this->id && $i < count($images)) {
                     $album->cover = $images[$i];

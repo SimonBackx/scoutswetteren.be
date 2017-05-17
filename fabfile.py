@@ -176,7 +176,7 @@ def deploy():
     print('--')
     uploadApp()
     print('--')
-    letsencrypt()
+    #letsencrypt()
     #print('--')
     #mysql()
     print('--')
