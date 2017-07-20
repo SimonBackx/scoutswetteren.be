@@ -15,9 +15,18 @@ class Inschrijving extends Model {
     public $prijs;
     public $afrekening; // id
     public $afrekening_oke;
+    public $halfjaarlijks;
 
     public static $lidgeld_per_tak = array('kapoenen' => 42, 'wouters' => 32, 'jonggivers' => 32, 'givers' => 32, 'jin' => 32);
+    public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 21, 'wouters' => 16, 'jonggivers' => 16, 'givers' => 16, 'jin' => 16);
+
     public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
+
+    public static $inschrijvings_start_maand = 9;
+    public static $inschrijvings_einde_maand = 7;
+    public static $inschrijvings_halfjaar_maand = 3; // Vanaf maart halfjaarlijks lidgeld
+
+    static private $scoutsjaar_cache = null; // cache
 
     function __construct($row = array(), $lid_object = null) {
         if (count($row) == 0) {
@@ -41,6 +50,7 @@ class Inschrijving extends Model {
         $this->afrekening_oke = ($row['afrekening_oke'] == 1);
 
         $this->prijs = $row['prijs'];
+        $this->halfjaarlijks = $row['halfjaarlijks'];
     }
 
     function isBetaald() {
@@ -66,7 +76,7 @@ class Inschrijving extends Model {
     }
 
     function getTakJaar() {
-        $verdeling = Lid::getTakkenVerdeling(Lid::getScoutsjaar());
+        $verdeling = Lid::getTakkenVerdeling(self::getScoutsjaar());
         $jaar = intval($this->lid->geboortedatum->format('Y'));
         $min = 0;
 
@@ -82,22 +92,59 @@ class Inschrijving extends Model {
 
     }
 
-    // Inschrijvingen vanaf juni verbieden
+    // Inschrijvingen vanaf juli verbieden
     static function isInschrijvingsPeriode() {
         $maand = intval(date('n'));
-        if ($maand < 9 && $maand >= 6) {
+        if ($maand < self::$inschrijvings_start_maand && $maand > self::$inschrijvings_einde_maand) {
             return false;
         }
         return true;
     }
 
+    static function isHalfjaarlijksLidgeld() {
+        $maand = intval(date('n'));
+        if (self::$inschrijvings_halfjaar_maand >= self::$inschrijvings_start_maand) {
+            // Halfjaar ligt nog voor januari
+            if ($maand >= self::$inschrijvings_halfjaar_maand) {
+                return true;
+            }
+        }
+        elseif ($maand >= self::$inschrijvings_halfjaar_maand && $maand <= self::$inschrijvings_einde_maand) {
+            return true;
+        }
+        return false;
+    }
+
+    static function getScoutsjaar() {
+        if (is_null(self::$scoutsjaar_cache)) {
+            $jaar = intval(date('Y'));
+            $maand = intval(date('n'));
+            if ($maand >= self::$inschrijvings_start_maand) {
+                self::$scoutsjaar_cache = $jaar;
+            } else {
+                self::$scoutsjaar_cache = $jaar - 1;
+            }
+        }
+        return self::$scoutsjaar_cache;
+    }
+
+
+    // UPDATE inschrijvingen set halfjaarlijks = 0
+
     static function schrijfIn(Lid $lid) {
-        $scoutsjaar = Lid::getScoutsjaar();
+        $scoutsjaar = self::getScoutsjaar();
 
         $jaar = self::getDb()->escape_string($scoutsjaar);
         $tak = self::getDb()->escape_string(Lid::getTak(intval($lid->geboortedatum->format('Y'))));
 
-        $lidgeld = self::getLidgeld($tak);
+        $halfjaarlijks = self::isHalfjaarlijksLidgeld();
+        $lidgeld = self::getLidgeld($tak, $halfjaarlijks);
+
+        $halfjaarlijks_string = '0';
+        if ($halfjaarlijks) {
+            $halfjaarlijks_string = '1';
+        }
+
         $prijs = self::getDb()->escape_string($lidgeld);
 
         $inschrijving = new Inschrijving();
@@ -105,8 +152,8 @@ class Inschrijving extends Model {
         $lid_id = self::getDb()->escape_string($lid->id);
 
         $query = "INSERT INTO 
-                inschrijvingen (`lid`,  `scoutsjaar`, `tak`, `prijs`)
-                VALUES ('$lid_id', '$jaar', '$tak', '$prijs')";
+                inschrijvingen (`lid`,  `scoutsjaar`, `tak`, `prijs`, `halfjaarlijks`)
+                VALUES ('$lid_id', '$jaar', '$tak', '$prijs', '$halfjaarlijks_string')";
 
         if (self::getDb()->query($query)) {
             $inschrijving->id = self::getDb()->insert_id;
@@ -114,6 +161,7 @@ class Inschrijving extends Model {
             $inschrijving->datum = new \DateTime();
             $inschrijving->scoutsjaar = $scoutsjaar;
             $inschrijving->tak = $tak;
+            $inschrijving->halfjaarlijks = $halfjaarlijks;
 
             $inschrijving->prijs = $lidgeld;
 
@@ -123,12 +171,22 @@ class Inschrijving extends Model {
         return false;
     }
 
-    private static function getLidgeld($tak) {
+    private static function getLidgeld($tak, $halfjaarlijks = false) {
         $tak = strtolower($tak);
+
         if (!isset(self::$lidgeld_per_tak[$tak])) {
             // Fatale fout!
             return 0;
         }
+
+        if ($halfjaarlijks) {
+            if (!isset(self::$lidgeld_per_tak_halfjaar[$tak])) {
+                // Fatale fout!
+                return 0;
+            }
+            return self::$lidgeld_per_tak_halfjaar[$tak];
+        }
+        
         return self::$lidgeld_per_tak[$tak];
     }
 

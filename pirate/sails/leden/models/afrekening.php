@@ -163,7 +163,7 @@ class Afrekening extends Model {
 
     // enkel onbetaalde of in huidge scoutsjaar (geordend op onbetaald)
     static function getAfrekeningen() {
-        $jaar = self::getDb()->escape_string(Lid::getScoutsjaar());
+        $jaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
 
         $query = '
             SELECT a.*, i.*, l.* from afrekeningen a

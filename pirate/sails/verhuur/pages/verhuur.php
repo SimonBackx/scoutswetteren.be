@@ -29,6 +29,13 @@ class Verhuur extends Page {
             ),
             'calculate_huurprijs' => Reservatie::js_calculateHuur(),
             'calculate_borg' => Reservatie::js_calculateBorg(),
+            'max_gebouw' => Reservatie::$max_gebouw,
+            'max_tenten' => Reservatie::$max_tenten,
+            'prijzen' => Reservatie::getPrijzenString(),
+            'waarborg_weekend' => Reservatie::$waarborg_weekend,
+            'waarborg_kamp' => Reservatie::$waarborg_kamp,
+            'prijs_tent_dag' => Reservatie::$prijs_tent_dag,
+            'prijs_tent_persoon' => Reservatie::$prijs_tent_persoon,
             'kalender' => $kalender,
             'images' => $images
         ));

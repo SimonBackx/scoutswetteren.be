@@ -3,6 +3,7 @@ namespace Pirate\Sail\Info\Pages;
 use Pirate\Page\Page;
 use Pirate\Template\Template;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Inschrijving;
 
 class Info extends Page {
     private $page = null;
@@ -16,7 +17,7 @@ class Info extends Page {
     }
 
     function getContent() {
-        $scoutsjaar = Lid::getScoutsjaar();
+        $scoutsjaar = Inschrijving::getScoutsjaar();
         $takkenverdeling = Lid::getTakkenVerdeling($scoutsjaar);
         $jaar_verdeling = array();
         foreach ($takkenverdeling as $jaar => $tak) {

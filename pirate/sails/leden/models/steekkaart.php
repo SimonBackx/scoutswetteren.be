@@ -4,6 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Inschrijving;
 
 class Steekkaart extends Model {
     public $id;
@@ -279,26 +280,34 @@ class Steekkaart extends Model {
         return !empty($this->nagekeken_door);
     }
 
-    // Inschrijvingen vanaf juni verbieden
+    // Moet verplicht nagekeken worden
     function moetNagekekenWorden() {
-        if (!$this->isIngevuld()) {
+        if (!$this->lid->isIngeschreven()) {
             return false;
         }
 
+        if (!$this->isIngevuld()) {
+            $now = new \DateTime();
+            $interval = $now->diff($this->lid->inschrijving->datum);
+            if ($interval->days > 30) {
+                return true;
+            }
+        }
+
         if (empty($this->laatst_nagekeken)) {
-            return true;
+            return false;
         }
         
         $jaar = intval($this->laatst_nagekeken->format('Y'));
         $maand = intval($this->laatst_nagekeken->format('n'));
-        if ($maand < 9) {
+        if ($maand < Inschrijving::$inschrijvings_start_maand) {
             $jaar--;
         }
 
         $now = new \DateTime();
         $interval = $now->diff($this->laatst_nagekeken);
 
-        if ($jaar != Lid::getScoutsjaar() && $interval->days > 30) {
+        if ($jaar != Inschrijving::getScoutsjaar() && $interval->days > 30) {
             return true;
         }
 

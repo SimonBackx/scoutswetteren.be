@@ -74,7 +74,7 @@
                     </header>
 
 
-                    <p>Het hoofdgebouw bestaat uit een uitgeruste inoxkeuken met professioneel gasvuur met oven, frigo, diepvriezer, microgolf en koffiezet. Bestek, borden, pannen en potten zijn aanwezig voor 40 personen. Handdoeken, afwasmiddel, toiletpapier en kuisproduct zijn niet aanwezig. Borstels, dweilen en emmers wel.  </p>
+                    <p>Het hoofdgebouw bestaat uit een uitgeruste inoxkeuken met professioneel gasvuur met oven, frigo, diepvriezer, microgolf en koffiezet. Bestek, borden, pannen en potten zijn aanwezig voor {{ max_gebouw }} personen. Handdoeken, afwasmiddel, toiletpapier en kuisproduct zijn niet aanwezig. Borstels, dweilen en emmers wel.  </p>
 
                     <p>Op het gelijkvloers bevinden zich de toiletten, douches, een grote leefruimte (inclusief tafels, stoelen en banken) en de keuken. De bovenverdieping bestaat uit een grote slaapzaal en kleiner slaapzaaltje (of vergaderzaaltje).  </p>
 
@@ -102,11 +102,11 @@
                         <h1>Huurprijs</h1>
                     </header>
 
-                    <p>Het hoofdgebouw (maximaal 40 personen) wordt samen met één chalet verhuurd. In deze chalet mag niet geslapen worden. Deze worden enkel verhuurd aan jeugdbewegingen, scholen, sportclubs en socio-culturele organisaties, geen fuifverhuur. </p>
+                    <p>Het hoofdgebouw (maximaal {{ max_gebouw }} personen) wordt samen met één chalet verhuurd. In deze chalet mag niet geslapen worden. Deze worden enkel verhuurd aan jeugdbewegingen, scholen, sportclubs en socio-culturele organisaties, geen fuifverhuur. </p>
 
-                    <p>De huurprijs bedraagt € 98 /nacht voor verblijven in 2017 (2018: €100). Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € 15 / nacht + € 2 / extra persoon / nacht (max. 20 personen extra).  </p>
+                    <p>{{ prijzen }}. Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € {{ prijs_tent_dag }} / nacht + € {{ prijs_tent_persoon }} / persoon / nacht (max. {{ max_tenten }} personen in tenten).  </p>
 
-                    <p>De waarborg bedraagt 400 euro voor een verblijf van 2 nachten of minder en 750 euro vanaf 3 overnachtingen.</p>
+                    <p>De waarborg bedraagt {{ waarborg_weekend }} euro voor een verblijf van 2 nachten of minder en {{ waarborg_kamp }} euro vanaf 3 overnachtingen.</p>
 
                 </div>
             </div>
@@ -145,7 +145,7 @@
                     <div id="verhuur-calendar-weeks">
                         {{ kalender | raw }}
                     </div>
-                    <p>Alle dagen aangeduid met een rode cirkel zijn niet meer vrij.</p>
+                    <p>Alle dagen aangeduid met een rode cirkel zijn niet meer beschikbaar.</p>
                 </div>
 
                 <div class="part text">
@@ -167,7 +167,7 @@
                         <div class="splitted">
                             <div class="part column first">
                                 <label>Aantal personen in hoofdgebouw</label>
-                                <div class="slider" data-max="40" data-min="1">
+                                <div class="slider" data-max="{{ max_gebouw }}" data-min="1">
                                     <input type="hidden" name="personen" value="1" id="aantal-personen">
                                     <div class="bar">
                                         <div class="progress"></div>
@@ -181,7 +181,7 @@
                             <div class="part column last">
                                 <div id="aantal-personen-tenten-box" style="display: none;">
                                     <label>Aantal personen in tenten</label>
-                                    <div class="slider" data-max="20" data-min="0">
+                                    <div class="slider" data-max="{{ max_tenten }}" data-min="0">
                                         <input type="hidden" name="personen_tenten" value="0" id="aantal-personen-tenten">
                                         <div class="bar">
                                             <div class="progress"></div>

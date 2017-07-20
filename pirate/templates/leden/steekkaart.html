@@ -5,16 +5,26 @@
         <div class="white block">
                 <form method="post" class="questions">
                     <div class="text">
-                        {% if new %}
-                            <h1>Vul de individuele steekkaart van {{ lid.voornaam }} in</h1>
-                            <p>De individuele steekkaart vul je het best meteen in, maar moet sowieso binnen 3 weken ingevuld worden.</p>
-                        {% else %}
-                            <h1>Individuele steekkaart van {{ lid.voornaam }}</h1>
-                            <p>Kijk de gegevens na.</p>
-                        {% endif %}
 
-                        {% if kan_overslaan %}
-                        <input type="submit" class="aubergine fill" name="overslaan" value="Overslaan">
+                        {% if moetNagekekenWorden %}
+                            {% if new %}
+                                <h1>Vul de individuele steekkaart van {{ lid.voornaam }} in</h1>
+                                <p>De individuele steekkaart is nog niet ingevuld, dit moet binnen 3 weken na inschrijven gebeuren.</p>
+                            {% else %}
+                                <h1>Kijk de individuele steekkaart van {{ lid.voornaam }} na.</h1>
+                                <p>Pas eventuele wijzigingen aan en bevestig onderaan dat je de steekkaart hebt nagekeken (laatst nagekeken op {{ nagekekenString }}).</p>
+                            {% endif %}
+
+                        {% else %}
+                            {% if new %}
+                                <h1>Vul de individuele steekkaart van {{ lid.voornaam }} in</h1>
+                                <p>De individuele steekkaart vul je het best meteen in, maar moet sowieso binnen 3 weken ingevuld worden.</p>
+                                <input type="submit" class="aubergine fill" name="overslaan" value="Overslaan">
+                            {% else %}
+                                <h1>Individuele steekkaart van {{ lid.voornaam }}</h1>
+                                <p>Laatst nagekeken op {{ nagekekenString }}.</p>
+                                <input type="submit" class="aubergine fill" name="overslaan" value="Terug">
+                            {% endif %}
                         {% endif %}
 
                         {% if fail %}

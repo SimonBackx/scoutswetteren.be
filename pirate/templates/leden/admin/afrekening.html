@@ -12,6 +12,7 @@
                             (ok)
                         {% endif %}
                         {{ inschrijving.getPrijs() }}
+                        {% if inschrijving.halfjaarlijks == 1 %}(halfjaarlijkse vermindering){% endif %}
                     </td>
                 </tr>
             {% endfor %}

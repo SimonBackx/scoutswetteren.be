@@ -3,6 +3,10 @@ namespace Pirate\Page;
 use Pirate\Template\Template;
 
 class Page {
+    function customHeaders() {
+        return false;
+    }
+
     function getStatusCode() {
         return 200;
     }
@@ -20,7 +24,9 @@ class Page {
     }
 
     final function execute() {
-        http_response_code($this->getStatusCode());
+        if (!$this->customHeaders()) {
+            http_response_code($this->getStatusCode());
+        }
         echo $this->getContent();
     }
 

@@ -4,6 +4,7 @@ use Pirate\Page\Page;
 use Pirate\Template\Template;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Mail\Mail;
 use Pirate\Model\Leden\Ouder;
@@ -84,7 +85,7 @@ class Contact extends Page {
             }
         }
 
-        $scoutsjaar = Lid::getScoutsjaar();
+        $scoutsjaar = Inschrijving::getScoutsjaar();
         $takkenverdeling = Lid::getTakkenVerdeling($scoutsjaar);
         $jaar_verdeling = array();
         foreach ($takkenverdeling as $jaar => $tak) {
@@ -99,9 +100,9 @@ class Contact extends Page {
             $min = min($jaren);
             $max = max($jaren);
             if ($min == $max) {
-                $verdeling_string[$tak] = $min;
+                $verdeling_string[$tak] = 'in '.$min;
             } else {
-                $verdeling_string[$tak] = $min.' en '.$max;
+                $verdeling_string[$tak] = 'in het jaar '. $min.' tot '.$max;
             }
         }
 

@@ -17,7 +17,7 @@ class OuderOverview extends Page {
         // Controle of alles in orde is, anders doorverwijzen
         $leden = Lid::getLedenForOuder(Ouder::getUser()->id);
         $this->leden = $leden;
-        $scoutsjaar = Lid::getScoutsjaar();
+        $scoutsjaar = Inschrijving::getScoutsjaar();
 
         // Eerst: controleren of er leden ingeschreven zijn in huidig scoutsjaar, anders inschrijfpagina tonen
         $ingeschreven_aantal = 0;

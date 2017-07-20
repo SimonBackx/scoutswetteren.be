@@ -4,6 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Inschrijving;
 
 class Ouder extends Model {
     public $id;
@@ -353,7 +354,7 @@ class Ouder extends Model {
         if (strlen($where) > 0)
             $where = 'WHERE '.$where;
 
-        $scoutsjaar = intval(Lid::getScoutsjaar());
+        $scoutsjaar = intval(Inschrijving::getScoutsjaar());
 
         $ouders = array();
 

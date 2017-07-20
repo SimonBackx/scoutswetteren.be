@@ -18,7 +18,6 @@ class Lid extends Model {
     public $inschrijving; // Inschrijving object
     public $steekkaart; // Steekkaart object
 
-    static private $scoutsjaar = null;
 
     public $ouders = array(); // wordt enkel door speciale toepassingen gebruikt, niet automatisch opgevuld
     
@@ -133,7 +132,7 @@ class Lid extends Model {
     static function getLedenForTak($tak) {
         $tak = self::getDb()->escape_string($tak);
 
-        $scoutsjaar = self::getDb()->escape_string(self::getScoutsjaar());
+        $scoutsjaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
 
         $leden = array();
         $query = '
@@ -160,7 +159,7 @@ class Lid extends Model {
     static function getLedenForTakFull($tak) {
         $tak = self::getDb()->escape_string($tak);
 
-        $scoutsjaar = self::getDb()->escape_string(self::getScoutsjaar());
+        $scoutsjaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
 
         $leden = array();
         $query = '
@@ -203,7 +202,7 @@ class Lid extends Model {
         if (strlen($where) > 0)
             $where = 'WHERE '.$where;
 
-        $scoutsjaar = self::getDb()->escape_string(self::getScoutsjaar());
+        $scoutsjaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
 
         $leden = array();
         $query = '
@@ -230,7 +229,7 @@ class Lid extends Model {
         if (empty($this->inschrijving)) {
             return false;
         }
-        return $this->inschrijving->scoutsjaar == self::getScoutsjaar();
+        return $this->inschrijving->scoutsjaar == Inschrijving::getScoutsjaar();
     }
 
     function heeftSteekkaart() {
@@ -238,19 +237,6 @@ class Lid extends Model {
             return false;
         }
         return $this->steekkaart->isIngevuld();
-    }
-
-    static function getScoutsjaar() {
-        if (is_null(self::$scoutsjaar)) {
-            $jaar = intval(date('Y'));
-            $maand = intval(date('n'));
-            if ($maand >= 9) {
-                self::$scoutsjaar = $jaar;
-            } else {
-                self::$scoutsjaar = $jaar - 1;
-            }
-        }
-        return self::$scoutsjaar;
     }
 
     static function getTakkenVerdeling($scoutsjaar) {
@@ -264,7 +250,7 @@ class Lid extends Model {
     }
 
     static function getTak($geboortejaar) {
-        $verdeling = self::getTakkenVerdeling(self::getScoutsjaar());
+        $verdeling = self::getTakkenVerdeling(Inschrijving::getScoutsjaar());
         if (isset($verdeling[$geboortejaar])) {
             return $verdeling[$geboortejaar];
         }

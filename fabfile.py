@@ -141,9 +141,7 @@ def letsencrypt():
     print("[LETSENCRYPT] Configuring letsencrypt...")
 
     with settings(hide('warnings', 'running', 'stdout')):
-        run("sudo add-apt-repository --yes ppa:certbot/certbot")
-        run("sudo apt-get --yes --force-yes update")
-        run("sudo apt-get --yes --force-yes install certbot")
+        run("sudo apt-get install letsencrypt")
     directory = "/var/www/maintenance"
     
     try:
@@ -165,9 +163,10 @@ def letsencrypt():
     print("[LETSENCRYPT] Renewing certificates if needed. Serving from "+directory+" for authentication.")
 
     with settings(hide('warnings', 'running')):
-        run("certbot certonly --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --webroot -w "+directory+domains)
+        run("letsencrypt certonly --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --webroot -w "+directory+domains)
 
     print("[LETSENCRYPT] Done.")
+
 
 def deploy():
     compileSass()
@@ -176,7 +175,7 @@ def deploy():
     print('--')
     uploadApp()
     print('--')
-    #letsencrypt()
+    letsencrypt()
     #print('--')
     #mysql()
     print('--')

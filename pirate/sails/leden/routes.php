@@ -111,7 +111,7 @@ class LedenRouter extends Route {
 
             // Niet ingelogd
              if (!Ouder::isLoggedIn()) {
-                if ($parts[1] == 'wachtwoord-vergeten') {
+                if (isset($parts[1]) && $parts[1] == 'wachtwoord-vergeten') {
                     require(__DIR__.'/pages/wachtwoord-vergeten.php');
                     return new Pages\WachtwoordVergeten();
                 }

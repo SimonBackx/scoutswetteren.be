@@ -8,6 +8,7 @@ use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Database\Database;
 use Pirate\Mail\Mail;
+use Pirate\Model\Leden\Inschrijving;
 
 class BroerZusToevoegen extends Page {
 
@@ -71,7 +72,7 @@ class BroerZusToevoegen extends Page {
                 }
             }
         }
-        $jaar = Lid::getScoutsjaar();
+        $jaar = Inschrijving::getScoutsjaar();
         $verdeling = Lid::getTakkenVerdeling($jaar);
         $keys = array_keys($verdeling);
         sort($keys);

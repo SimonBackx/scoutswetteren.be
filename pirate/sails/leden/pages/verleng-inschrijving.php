@@ -20,7 +20,7 @@ class VerlengInschrijving extends Page {
         $leden_allemaal = Lid::getLedenForOuder(Ouder::getUser()->id);
         $leden = array();
         $this->leden = $leden;
-        $scoutsjaar = Lid::getScoutsjaar();
+        $scoutsjaar = Inschrijving::getScoutsjaar();
         $success = false;
         $errors = array();
 
