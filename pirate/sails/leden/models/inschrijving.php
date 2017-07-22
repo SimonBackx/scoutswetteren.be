@@ -23,7 +23,7 @@ class Inschrijving extends Model {
     public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
     public static $inschrijvings_start_maand = 9;
-    public static $inschrijvings_einde_maand = 7;
+    public static $inschrijvings_einde_maand = 6;
     public static $inschrijvings_halfjaar_maand = 3; // Vanaf maart halfjaarlijks lidgeld
 
     static private $scoutsjaar_cache = null; // cache

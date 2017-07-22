@@ -6,7 +6,7 @@
             <div class="text">
 
                 <h1>Mijn inschrijvingen</h1>
-                <p>Je bent ingelogd als {{ ouder.voornaam }}. Nu je ingelogd bent kan je gemakkelijk de inschrijvingen van je zonen of dochters aanpassen. Vergeet niet om de steekkaart(en) regelmatig na te kijken.</p>
+                <p>Je bent ingelogd als {{ ouder.voornaam }}. Nu je ingelogd bent kan je gemakkelijk de inschrijvingen van je kinderen aanpassen. Vergeet niet om de steekkaart(en) regelmatig na te kijken.</p>
 
                 <h1>Ingeschreven leden</h1>
                 <div class="list-bundle">
@@ -24,9 +24,9 @@
                         <div class="last column">
                             <a href="/ouders/steekkaart/{{ lid.id | e('html_attr')}}" class="{% if lid.heeftSteekkaart() %}button noborder{% else %}icon-button plus{% endif %}">
                             {% if not lid.heeftSteekkaart() %}
-                                Invullen
+                                Steekkaart invullen
                             {% else %}
-                                Nakijken
+                                Steekkaart nakijken
                             {% endif %}
                             </a>
                         </div>
@@ -37,7 +37,7 @@
                 </div>
                 <a href="{% if niet_ingeschreven_aantal > 0 %}/ouders/verleng-inschrijving{% else %}/ouders/broer-zus-toevoegen{% endif %}" class="icon-button plus">Broer of zus toevoegen</a>
 
-                <h1>Ouders</h1>
+                <h1>Gegevens van ouders</h1>
                 {% for ouder in ouders %}
                     <h2>{{ouder.voornaam}} {{ouder.achternaam}} ({{ouder.titel}})</h2>
                     <p>{{ouder.adres}}, {{ouder.postcode}} {{ouder.gemeente}}</p>

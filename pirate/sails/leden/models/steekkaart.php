@@ -98,6 +98,14 @@ class Steekkaart extends Model {
         return datetimeToDateString($this->laatst_nagekeken);
     }
 
+    function isEmpty($text) {
+        $text = strtolower(trim($text));
+        if ($text == 'geen' || $text == 'geen.' || $text == '/' || $text == 'nee' || $text == 'neen' || $text == 'nvt') {
+            return true;
+        }
+        return false;
+    }
+
     // $data is een array met alle data die nagekeken moet worden
     // en indien goed, overgezet moet worden op het huidige object
     // $errors bevat een lijst met fouten
@@ -149,16 +157,32 @@ class Steekkaart extends Model {
             $this->deelname_reden = null;
         }
 
-        $this->deelname_sporten = ucsentence($data['deelname_sporten']);
+        if ($this->isEmpty($data['deelname_sporten'])) {
+            $this->deelname_sporten = '';
+        } else {
+            $this->deelname_sporten = ucsentence($data['deelname_sporten']);
+        }
         $data['deelname_sporten'] = $this->deelname_sporten;
 
-        $this->deelname_hygiene = ucsentence($data['deelname_hygiene']);
+        if ($this->isEmpty($data['deelname_hygiene'])) {
+            $this->deelname_hygiene = '';
+        } else {
+            $this->deelname_hygiene = ucsentence($data['deelname_hygiene']);
+        }
         $data['deelname_hygiene'] = $this->deelname_hygiene;
 
-        $this->deelname_sociaal = ucsentence($data['deelname_sociaal']);
+        if ($this->isEmpty($data['deelname_sociaal'])) {
+            $this->deelname_sociaal = '';
+        } else {
+            $this->deelname_sociaal = ucsentence($data['deelname_sociaal']);
+        }
         $data['deelname_sociaal'] = $this->deelname_sociaal;
 
-        $this->deelname_andere = ucsentence($data['deelname_andere']);
+        if ($this->isEmpty($data['deelname_andere'])) {
+            $this->deelname_andere = '';
+        } else {
+            $this->deelname_andere = ucsentence($data['deelname_andere']);
+        }
         $data['deelname_andere'] = $this->deelname_andere;
         
         // Medische gegevens ------------------------------------------------------
@@ -250,10 +274,20 @@ class Steekkaart extends Model {
             $this->toestemming_fotos = $data['toestemming_fotos'];
         }
 
-        $this->aanvullend_voeding = ucsentence($data['aanvullend_voeding']);
+
+
+        if ($this->isEmpty($data['aanvullend_voeding'])) {
+            $this->aanvullend_voeding = '';
+        } else {
+            $this->aanvullend_voeding = ucsentence($data['aanvullend_voeding']);
+        }
         $data['aanvullend_voeding'] = $this->aanvullend_voeding;
 
-        $this->aanvullend_andere = ucsentence($data['aanvullend_andere']);
+        if ($this->isEmpty($data['aanvullend_andere'])) {
+            $this->aanvullend_andere = '';
+        } else {
+            $this->aanvullend_andere = ucsentence($data['aanvullend_andere']);
+        }
         $data['aanvullend_andere'] = $this->aanvullend_andere;
 
         if (Validator::isValidName($data['nagekeken_door'])) {

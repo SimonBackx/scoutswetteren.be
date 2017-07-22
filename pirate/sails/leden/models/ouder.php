@@ -246,6 +246,24 @@ class Ouder extends Model {
         return bin2hex($bytes);
     }
 
+    private static function generateLongKey() {
+        $bytes = openssl_random_pseudo_bytes(32);
+        return bin2hex($bytes);
+    }
+
+    function createMagicToken() {
+        $token = self::getDb()->escape_string(self::generateLongKey());
+        $client = intval($this->id);
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        $query = "INSERT INTO ouder_magic_tokens (client, token, `expires`) VALUES ($client, '$token', '$time')";
+
+        if (self::getDb()->query($query)) {
+            return $token;
+        }
+        return null;
+    }
+
     static function temporaryLoginWithPasswordKey($key) {
         $key = self::getDb()->escape_string($key);
         $query = "SELECT *
@@ -295,6 +313,32 @@ class Ouder extends Model {
                     // Indien gelukt:  redirecten naar steekkaart-controle indien nodig!
                     return self::createToken();
                 }
+            }
+        }
+        return false;
+    }
+
+    static function loginWithMagicToken($mail, $magicToken) {
+        $mail = self::getDb()->escape_string($mail);
+        $magicToken = self::getDb()->escape_string($magicToken);
+
+        $query = "SELECT o.*, g.*, t.expires
+        from ouders o
+        left join gezinnen g on g.gezin_id = o.gezin
+        join ouder_magic_tokens t on t.client = o.id
+        where o.email = '$mail' and o.password is not null and t.token = '$magicToken'";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                
+                $expires = $row['expires'];
+                // todo: validate magic token
+                
+                self::$user = new Ouder($row);
+                self::$didCheckLogin = true;
+
+                return self::createToken();
             }
         }
         return false;
@@ -459,7 +503,6 @@ class Ouder extends Model {
         self::$user = null;
         self::$didCheckLogin = true;
     }
-
 
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies
     // Indien al token op huidige sessie, dan verwijdert hij die eerst

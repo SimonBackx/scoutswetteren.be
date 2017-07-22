@@ -10,6 +10,7 @@ use Pirate\Model\Leden\Inschrijving;
 class LedenRouter extends Route {
     private $lid = null;
     private $afrekening = null;
+    private $magicLink = false;
 
     function doMatch($url, $parts) {
         if ($url == 'inschrijven' && !Ouder::isLoggedIn()) {
@@ -30,8 +31,24 @@ class LedenRouter extends Route {
                 return false;
             }
 
+
+
             // Onbeveiligde sectie
             if (!Ouder::isLoggedIn()) {
+                // magic token
+                if (count($parts) == 4 && ($parts[1] == 'login')) {
+
+                    $this->magicLink = true;
+                    // magic token controleren en inloggen
+                    if (Ouder::loginWithMagicToken($parts[2], $parts[3])) {
+                        return true;
+                    } else {
+                        // ongeldig -> doorverwijzen naar andere pagina
+                        return true;
+                    }
+                    return false;
+                }
+
                 if (count($parts) == 1) {
                     return true;
                 }
@@ -50,8 +67,13 @@ class LedenRouter extends Route {
                     return true;
                 }
 
-
                 return false;
+            } else {
+                // Als magic link -> gewoon doorverwijzen
+                if (count($parts) == 4 && ($parts[1] == 'login')) {
+                    $this->magicLink = true;
+                    return true;
+                }
             }
 
             // Beveiligde sectie
@@ -107,6 +129,11 @@ class LedenRouter extends Route {
             return new Pages\Overview();
         }
 
+        if ($this->magicLink) {
+            require(__DIR__.'/pages/magic-link.php');
+            return new Pages\MagicLinkPage();
+        }
+
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
 
             // Niet ingelogd
@@ -120,7 +147,6 @@ class LedenRouter extends Route {
                 return new Pages\Login();
             }
 
-            // Ingelogd
             if (count($parts) == 2) {
                 if ($parts[1] == 'uitloggen') {
                     require(__DIR__.'/pages/logout.php');
