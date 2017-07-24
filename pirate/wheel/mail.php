@@ -9,16 +9,21 @@ use SendGrid\Attachment;
 class Mail {
     private $sendgrid_mail = null;
     private $totalAttachmentSize = 0;
+    private $error_message = null;
 
     function __construct($subject, $template, $data = array()) {
         $this->sendgrid_mail = new \SendGrid\Mail();
         $this->sendgrid_mail->setSubject($subject);
 
-        $text = Template::render('mails/'.$template, $data, 'txt');
-        //$html = Template::render('mails/'.$template, $data, 'html');
-
+        $text = Template::render('mails/txt/'.$template, $data, 'txt');
         $this->sendgrid_mail->addContent(array('type' => 'text/plain', 'value' => $text));
-        //$this->sendgrid_mail->addContent(array('type' => 'text/html', 'value' => $html));
+
+        $file = __DIR__.'/../templates/mails/html/'.$template.'.html';
+
+        if (file_exists($file)) {
+            $html = Template::render('mails/html/'.$template, $data, 'html');
+            $this->sendgrid_mail->addContent(array('type' => 'text/html', 'value' => $html));
+        }
 
         $this->setFrom('website@scoutswetteren.be', 'Scouts Prins Boudewijn');
     }
@@ -74,12 +79,17 @@ class Mail {
         $this->sendgrid_mail->setReplyTo($reply_to);
     }
 
+    function getErrorMessage() {
+        return $this->error_message;
+    }
+
     function send() {
         global $config;
 
         $sg = new \SendGrid($config['sendgrid']['key']);
         $response = $sg->client->mail()->send()->post($this->sendgrid_mail);
         $status = intval($response->statusCode());
+        $this->error_message = $response->body();
 
         return ($status >= 200 && $status < 300);
     }

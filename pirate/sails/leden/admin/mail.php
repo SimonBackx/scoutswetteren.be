@@ -129,7 +129,15 @@ class MailPage extends Page {
                     $errors[] = 'Er zijn geen ouders die aan de criteria voldoen.';
                 }  else {
 
-                    $mail = new Mail($data['subject'], 'mail', array('message' => $data['message']));
+                    $mail = new Mail(
+                            $data['subject'], 
+                            'mail', 
+                            array(
+                                'message' => $data['message'],
+                                'subject' => $data['subject'],
+                                'magic_url' => true
+                            )
+                        );
 
                     if ($sender_send_from) {
                         $mail->setFrom($data['sender'], $sender_name);
@@ -137,31 +145,45 @@ class MailPage extends Page {
                         $mail->setReplyTo($data['sender']);
                     }
 
-                    foreach ($ouders as $ouder) {
-                        $mail->addTo(
-                            $ouder->email, 
-                            array('reason' => 'Dit bericht werd naar je verstuurd omdat je geregistreerd staat als ouder van één van onze leden. Je kan het e-mailadres wijzigen door naar onze website te surfen en daar in te loggen als ouder (knop \'Mijn inschrijvingen\' of \'Inschrijven\').'),
-                            $ouder->voornaam.' '.$ouder->achternaam
-                        );
-                    }
-
-                    $mail->addTo( $data['sender'] , array('reason' => 'Dit bericht is een kopie van het bericht dat naar ouders ('.$data['tak'].') is verzonden via de website door '.$user->firstname.' '.$user->lastname));
-
                     if (isset($attachment)) {
                         if (!$mail->addAttachment($attachment["location"], $attachment["name"])) {
-                            $errors[] = 'Er ging iets mis bij het versturen van de bijlage.';
+                            $errors[] = 'Er ging iets mis bij het versturen van de bijlage. Er werd geen e-mail verzonden.';
                         }
+                    }
+
+                    if (count($errors) == 0 && !Ouder::createMagicTokensFor($ouders)) {
+                        $errors[] = 'Kon geen link genereren om ouders automatisch in te loggen. Contacteer webmaster.';
                     }
 
                     if (count($errors) == 0) {
+                        foreach ($ouders as $ouder) {
+                            $mail->addTo(
+                                $ouder->email, 
+                                array(
+                                    'magic_url' => $ouder->getMagicTokenUrl(),
+                                    'voornaam' => $ouder->voornaam,
+                                    'reason' => ''
+                                ),
+                                $ouder->voornaam.' '.$ouder->achternaam
+                            );
+                        }
+
+                        $mail->addTo( 
+                            $data['sender'],
+                            array(
+                                'magic_url' => "https://".$_SERVER['SERVER_NAME'],
+                                'voornaam' => '<voornaam van ouder>',
+                                'reason' => 'Dit bericht is een kopie van het bericht dat naar ouders ('.$data['tak'].') is verzonden via de website door '.$user->firstname.' '.$user->lastname
+                            )
+                        );
+
                         $success = $mail->send();
 
                         if (!$success) {
-                            $errors[] = 'Er ging iets mis bij het versturen van de e-mails. Probeer het later opnieuw.';
+                            $errors[] = 'Er ging iets mis bij het versturen van de e-mails. Probeer het later opnieuw. ('.$mail->getErrorMessage().')';
                         }
                     }
                 }
-
             }
         }
 

@@ -56,6 +56,8 @@ class Ouder extends Model {
         )
     );
 
+    private $temporaryMagicToken = null;
+
     function __construct($row = array()) {
         if (count($row) == 0) {
             return;
@@ -251,7 +253,11 @@ class Ouder extends Model {
         return bin2hex($bytes);
     }
 
-    function createMagicToken() {
+    function getMagicToken() {
+        if (isset($this->temporaryMagicToken)) {
+            return $this->temporaryMagicToken;
+        }
+
         $token = self::getDb()->escape_string(self::generateLongKey());
         $client = intval($this->id);
         $now = new \DateTime();
@@ -259,9 +265,58 @@ class Ouder extends Model {
         $query = "INSERT INTO ouder_magic_tokens (client, token, `expires`) VALUES ($client, '$token', '$time')";
 
         if (self::getDb()->query($query)) {
+            $this->temporaryMagicToken = $token;
             return $token;
         }
         return null;
+    }
+
+    function getMagicTokenUrl() {
+        $mail = $this->email;
+        $token = $this->getMagicToken();
+        return "https://".$_SERVER['SERVER_NAME']."/ouders/login/$mail/$token";
+    }
+
+    // Multiple ouders
+    static function createMagicTokensFor($ouders) {
+        $query = '';
+        $query = "";
+
+        // Bijhouden welke we hebben gegenereerd
+        // zodat we weten wanneer het fout loopt
+        $ouders_copy = array();
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        
+        foreach ($ouders as $ouder) {
+            if (!isset($ouder->temporaryMagicToken)) {
+                $token = self::getDb()->escape_string(self::generateLongKey());
+                $client = intval($ouder->id);
+                
+                if ($query != '') {
+                    $query .= ', ';
+                }
+                $query .= "($client, '$token', '$time')";
+
+                $ouder->temporaryMagicToken = $token;
+                $ouders_copy[] = $ouder;
+            }
+        }
+
+        if (count($ouders_copy) == 0) {
+            return true;
+        }
+        
+        $query = 'INSERT INTO ouder_magic_tokens (client, token, `expires`) VALUES '.$query;
+
+        if (self::getDb()->query($query)) {
+            return true;
+        } else {
+            foreach ($ouders_copy as $ouder) {
+                $ouder->temporaryMagicToken = null;
+            }
+        }
+        return false;
     }
 
     static function temporaryLoginWithPasswordKey($key) {
