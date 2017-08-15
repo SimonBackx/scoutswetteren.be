@@ -22,6 +22,12 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
+                    'title' => 'Startdag op 10/09',
+                    'text' => 'Iedereen welkom van 14u tot 17u, ook nieuwe leden! Kom ook zeker naar onze streekbieravond op 9/09 met diavoorstelling van de kampen.',
+                    'button' => array('text' => 'Meer info', 'url' => '/blog/2017/08/15/startdag-2017')
+                ),
+
+                array(
                     'title' => 'Kampdata 2017',
                     'text' => '(Jong)giverkamp is van 1 tot 11 augustus, kapoenenkamp van 1 tot 5 augustus en wouterkamp van 5 tot 11 augustus.',
                     'button' => array('text' => 'Meer info', 'url' => '/info')

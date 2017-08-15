@@ -32,7 +32,7 @@ class EditSteekkaart extends Page {
             $steekkaart = $this->lid->steekkaart;
         }
 
-        if (!$this->lid->steekkaart->moetNagekekenWorden()) {
+        if (!$steekkaart->moetNagekekenWorden()) {
             // Als overslaan toegestaan is
             
             if (isset($_POST['overslaan'])) {

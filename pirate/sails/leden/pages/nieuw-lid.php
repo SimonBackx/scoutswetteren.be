@@ -130,6 +130,20 @@ class NieuwLid extends Page {
             }
             $gezin_data = $data;
 
+            // todo: check duplicate gezin!
+            
+            $gsm_array = array();
+            $email_array = array();
+            foreach ($ouder_models as $ouder) {
+                $gsm_array[] = $ouder->gsm;
+                $email_array[] = $ouder->email;
+            }
+            $existing_ouders = Ouder::getOuders(array('gsm' => $gsm_array, 'email' => $email_array));
+            if (count($existing_ouders) > 0) {
+                $fail = true;
+                $errors[] = 'Er is al een gezin gekend met een van de opgegeven e-mailadressen of gsm-nummers. Ga naar de loginpagina en log daar in om het inschrijven af te ronden.';
+            }
+
             if ($fail == false) {
                 // Gezin opslaan
                 $success = $gezin->save();

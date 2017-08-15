@@ -47,9 +47,9 @@ class SteekkaartOverzicht extends Page {
             $aandacht_hygiene = array('title' => 'Aandacht bij hygiëne', 'table' => array());
             $aandacht_andere = array('title' => 'Andere aandachtspunten', 'table' => array());
 
-            $toestemming_medicatie = array('title' => 'Toestemming toedienen medicatie', 'table' => array());
+            $toestemming_medicatie = array('title' => 'Toestemming toedienen pijnstillende en koortswerende medicatie zonder raadplegen dokter', 'table' => array());
             $medicatie = array('title' => 'Specifieke medicatie krijgen (doktersattest voor kamp/weekend vragen)', 'table' => array());
-            $ziekten = array('title' => 'Ziekten', 'table' => array());
+            $ziekten = array('title' => 'Ziekten en allergieën', 'table' => array());
             $klem = array('title' => 'Geen vaccinatie tetanus (klem)', 'table' => array());
 
             $dieet = array('title' => 'Speciaal dieet volgen', 'table' => array());
@@ -58,7 +58,7 @@ class SteekkaartOverzicht extends Page {
             $aanvullende_opmerkingen = array('title' => 'Aanvullende opmerkingen', 'table' => array());
             $geen_steekkaart = array('title' => 'Steekkaart niet ingevuld / nagekeken', 'table' => array());
 
-            $year = date("Y") - 10;
+            $year = date("Y") - 5; // Jaar klem
 
             foreach ($leden as $lid) {
                 if (isset($lid->steekkaart) && $lid->steekkaart->isIngevuld()) {
@@ -113,7 +113,7 @@ class SteekkaartOverzicht extends Page {
                     if (!isset($lid->steekkaart->medisch_klem_jaar)) {
                         $klem['table'][$lid->voornaam . ' ' . $lid->achternaam] = 'Niet ingeënt';
                     } elseif ($lid->steekkaart->medisch_klem_jaar <= $year){
-                        $klem['table'][$lid->voornaam . ' ' . $lid->achternaam] = 'Te lang geleden ingeënt ('.$lid->steekkaart->medisch_klem_jaar.')';
+                        $klem['table'][$lid->voornaam . ' ' . $lid->achternaam] = 'Meer dan 5 jaar geleden ingeënt ('.$lid->steekkaart->medisch_klem_jaar.')';
                     }
 
                     if ($lid->steekkaart->moetNagekekenWorden()) {

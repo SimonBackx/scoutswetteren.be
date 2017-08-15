@@ -418,8 +418,8 @@ class Leiding extends Model {
 
     private static function setCookies($id, $token){
         // We slaan ook de client id op, omdat we hierdoor een time safe operatie kunnen doen
-        setcookie('client', $id, time()+604800,'/', '', true, true); 
-        setcookie('token', $token, time()+604800,'/', '', true, true); 
+        setcookie('client', $id, time()+5184000,'/', '', true, true); 
+        setcookie('token', $token, time()+5184000,'/', '', true, true); 
     }
 
     private static function removeCookies(){
@@ -475,7 +475,7 @@ class Leiding extends Model {
                 $interval = $date->diff($now);
 
                 // Als het vervallen is: verwijderen
-                if ($interval->days > Self::$login_days) {
+                if ($interval->days > self::$login_days) {
                     self::deleteToken($token, true);
                     return null;
                 }
@@ -489,7 +489,8 @@ class Leiding extends Model {
                 }
                 
             } else {
-
+                // ?
+                return null;
             }
         }
 

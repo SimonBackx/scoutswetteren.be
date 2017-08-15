@@ -439,7 +439,26 @@ class Ouder extends Model {
         $where = '';
 
         if (!is_null($filter)) {
-            if (isset(self::$filters[$filter])) {
+            if (is_array($filter)) {
+                // Filter op veldnamen
+                $fields = array('gsm', 'email');
+                foreach ($fields as $field) {
+                    if (isset($filter[$field])) {
+                        if (!is_array($filter[$field])) {
+                            $filter[$field] = array($filter[$field]);
+                        }
+                        foreach ($filter[$field] as $value) {
+                            if (strlen($where) > 0)
+                                $where .= ' OR ';
+                            $where .= 'o.'.$field.' = "'.self::getDb()->escape_string($value).'"';
+                    
+                        }
+                    }
+                }
+            }
+            elseif (isset(self::$filters[$filter])) {
+                // Filter op premade selectors
+                
                 $filter = self::$filters[$filter];
                 $where = $filter['where'];
             }
@@ -609,8 +628,8 @@ class Ouder extends Model {
 
     private static function setCookies($id, $token){
         // We slaan ook de client id op, omdat we hierdoor een time safe operatie kunnen doen
-        setcookie('ouder_client', $id, time()+604800,'/', '', true, true); 
-        setcookie('ouder_token', $token, time()+604800,'/', '', true, true); 
+        setcookie('ouder_client', $id, time()+51840000,'/', '', true, true); 
+        setcookie('ouder_token', $token, time()+51840000,'/', '', true, true); 
     }
 
     private static function removeCookies(){

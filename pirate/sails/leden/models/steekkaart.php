@@ -311,7 +311,7 @@ class Steekkaart extends Model {
     }
 
     function isIngevuld() {
-        return !empty($this->nagekeken_door);
+        return !empty($this->nagekeken_door) && !empty($this->nagekeken_door_titel);
     }
 
     // Moet verplicht nagekeken worden
