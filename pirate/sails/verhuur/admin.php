@@ -9,7 +9,7 @@ class VerhuurAdminRouter extends Route {
     private $future_only = true;
 
     function doMatch($url, $parts) {
-        if (!Leiding::hasPermission('verhuur') && !Leiding::hasPermission('oudercomite')) {
+        if (!Leiding::hasPermission('verhuur') && !Leiding::hasPermission('oudercomite') && !Leiding::hasPermission('leiding') && !Leiding::hasPermission('groepsleiding')) {
             return false;
         }
         

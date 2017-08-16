@@ -6,7 +6,8 @@ $admin_pages = array(
     '' => array(
         array('priority' => true, 'name' => 'Mijn gegevens', 'url' => ''),
         array('name' => 'Maandplanning', 'url' => 'maandplanning'),
-        array('name' => 'Foto\'s', 'url' => 'photos')
+        array('name' => 'Foto\'s', 'url' => 'photos'),
+        array('name' => 'Verhuur', 'url' => 'verhuur')
        //array('name' => 'Blog', 'url' => 'blog'),
         //array('name' => 'Foto\'s', 'url' => 'fotos'),
     ),
@@ -20,7 +21,8 @@ $admin_pages = array(
          array('priority' => true, 'name' => 'Verhuur', 'url' => 'verhuur')
     ),
     'groepsleiding' => array(
-        array('name' => 'Leiding', 'url' => 'leiding')
+        array('name' => 'Leiding', 'url' => 'leiding'),
+        array('name' => 'Verhuur', 'url' => 'verhuur')
     ),
     'financieel' => array(
         array('priority' => true, 'name' => 'Afrekeningen', 'url' => 'afrekeningen')
