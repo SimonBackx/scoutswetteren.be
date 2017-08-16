@@ -1,34 +1,41 @@
 <div class="text">
 
-    <h1>Inschrijvingen</h1>
+    {% if jaar is empty %}
+        <h1>Inschrijvingen</h1>
+        <form>
+            <input id="info_tonen" type="checkbox" value="1">
+            <label for="info_tonen">Toon meer info</label>
 
-    <form>
-        <input id="info_tonen" type="checkbox" value="1">
-        <label for="info_tonen">Toon meer info</label>
+            <div class="checkbox-controllable">
+                <div class="visible-when-checked">
+                    <h2>Betalen van het lidgeld</h2>
+                    <p>Alle ouders kregen zelf duidelijke instructies bij het inschrijven hoe ze het lidgeld kunnen betalen. Als ze dit niet meer vinden: ze kregen dit ook via e-mail. Ze kunnen dit doen door over te schrijven (enkel met juiste mededeling) of door aan de takleiding cash te betalen.</p><p>De takleiding moet dit hieronder <strong>meteen</strong> aanduiden. Bij overschrijvingen doet de financieel verantwoordelijke dit.</p>
 
-        <div class="checkbox-controllable">
-            <div class="visible-when-checked">
-                <h2>Betalen van het lidgeld</h2>
-                <p>Alle ouders kregen zelf duidelijke instructies bij het inschrijven hoe ze het lidgeld kunnen betalen. Als ze dit niet meer vinden: ze kregen dit ook via e-mail. Ze kunnen dit doen door over te schrijven (enkel met juiste mededeling) of door aan de takleiding cash te betalen.</p><p>De takleiding moet dit hieronder <strong>meteen</strong> aanduiden. Bij overschrijvingen doet de financieel verantwoordelijke dit.</p>
-
-                <h2>Verminderd lidgeld</h2>
-                <p>Bij leden met verminderd lidgeld, moet via een huisbezoek worden bekeken tot hoever de steun van de scouts reikt. Dit moet altijd discreet gebeuren. De scouts betaalt in dat geval sowieso voor het inschrijvingsgeld. Verplicht te lezen voor deze leiding: <a href="https://www.scoutsengidsenvlaanderen.be/publicatie/scouting-op-maat">Scouting op maat</a></p>
+                    <h2>Verminderd lidgeld</h2>
+                    <p>Bij leden met verminderd lidgeld, moet via een huisbezoek worden bekeken tot hoever de steun van de scouts reikt. Dit moet altijd discreet gebeuren. De scouts betaalt in dat geval sowieso voor het inschrijvingsgeld. Verplicht te lezen voor deze leiding: <a href="https://www.scoutsengidsenvlaanderen.be/publicatie/scouting-op-maat">Scouting op maat</a></p>
+                </div>
             </div>
+           
+        </form>
+
+        <div>
+            <a href="/admin/inschrijvingen/mail" class="aubergine fill button">Mailen</a>
+            <a href="/admin/inschrijvingen/sms" class="aubergine button">Sms'en</a>
+            •
+            <a href="/admin/inschrijvingen/steekkaart/{{tak}}" class="aubergine button">Steekkaart</a>
+            <a href="/admin/inschrijvingen/exporteren" class="aubergine button">Excel</a>
+            •
+            <a href="/admin/groepsadmin" class="aubergine button">Groepsadmin controleren</a>
         </div>
-       
-    </form>
+    {% endif %}
 
-    <div>
-        <a href="/admin/inschrijvingen/mail" class="aubergine fill button">Mailen</a>
-        <a href="/admin/inschrijvingen/sms" class="aubergine button">Sms'en</a>
-        •
-        <a href="/admin/inschrijvingen/steekkaart/{{tak}}" class="aubergine button">Steekkaart</a>
-        <a href="/admin/inschrijvingen/exporteren" class="aubergine button">Excel</a>
-        •
-        <a href="/admin/groepsadmin" class="aubergine button">Groepsadmin controleren</a>
-    </div>
-
-    <h1>Ingeschreven {{ tak }} ({{ leden | length }})</h1>
+    <h1>
+        Ingeschreven {{ tak }} 
+        {% if jaar is not empty %}
+            in {{ jaar }} - {{ jaar + 1 }}
+        {% endif %}
+        ({{ leden | length }})
+    </h1>
     <div class="list-bundle">
     {% for lid in leden %}
         <article class="list">
@@ -81,9 +88,16 @@
         </article>
     {% endfor %}
     </div>
-    <h1>Andere tak bekijken</h1>
-    {% for tak in takken %}
-        <a href="/admin/inschrijvingen/{{ tak }}" class="icon-button">{{ tak }}</a>
-    {% endfor %}
+    <h1>Vorig jaar</h1>
+    <div>
+        <a href="/admin/inschrijvingen/{{ tak }}/{{ prev }}" class="aubergine fill button">Bekijk {{ prev }} - {{ prev + 1}}</a>
+    </div>
+
+    {% if jaar is empty %}
+        <h1>Andere tak bekijken</h1>
+        {% for tak in takken %}
+            <a href="/admin/inschrijvingen/{{ tak }}" class="icon-button">{{ tak }}</a>
+        {% endfor %}
+    {% endif %}
 </div>
 

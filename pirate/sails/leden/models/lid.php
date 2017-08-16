@@ -129,10 +129,14 @@ class Lid extends Model {
         return $leden;
     }
 
-    static function getLedenForTak($tak) {
+    static function getLedenForTak($tak, $jaar = null) {
         $tak = self::getDb()->escape_string($tak);
 
-        $scoutsjaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
+        if (isset($jaar)) {
+            $scoutsjaar = self::getDb()->escape_string($jaar);
+        } else {
+            $scoutsjaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
+        }
 
         $leden = array();
         $query = '

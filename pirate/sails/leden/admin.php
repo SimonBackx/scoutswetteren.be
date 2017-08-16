@@ -11,6 +11,7 @@ class LedenAdminRouter extends Route {
     private $lid = null;
     private $afrekening = null;
     private $tak = null;
+    private $jaar = null;
 
     function doMatch($url, $parts) {
         if ($url == 'afrekeningen') {
@@ -77,6 +78,15 @@ class LedenAdminRouter extends Route {
                 $takken = Inschrijving::$takken;
                 if (in_array($parts[1], $takken)) {
                     $this->tak = $parts[1];
+
+                    if(isset($parts[2])) {
+                        if (is_numeric($parts[2])) {
+                            $this->jaar = intval($parts[2]);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
                     return true;
                 }
             }
@@ -101,7 +111,7 @@ class LedenAdminRouter extends Route {
             if (is_null($this->tak)) {
                 return new Admin\Overview();
             }
-            return new Admin\Overview($this->tak);
+            return new Admin\Overview($this->tak, $this->jaar);
         }
 
         if (!is_null($this->afrekening)) {
