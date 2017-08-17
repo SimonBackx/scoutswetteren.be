@@ -96,7 +96,7 @@ class LedenRouter extends Route {
             }
 
             if (count($parts) == 3) {
-                if ($parts[1] == 'steekkaart') {
+                if ($parts[1] == 'lid-aanpassen' || $parts[1] == 'steekkaart') {
                     // kijken of gezin wel in orde is
                     $lid = Lid::getLid($parts[2]);
                     if (!is_null($lid) && $lid->gezin->id == Ouder::getUser()->gezin->id) {
@@ -174,6 +174,11 @@ class LedenRouter extends Route {
 
             // Beveiligde sectie: reeds authenticatie gedaan
             if (count($parts) == 3) {
+                if ($parts[1] == 'lid-aanpassen' && !empty($this->lid)) {
+                    require(__DIR__.'/pages/broer-zus-toevoegen.php');
+                    return new Pages\BroerZusToevoegen($this->lid);
+                }
+
                 if ($parts[1] == 'steekkaart' && !empty($this->lid)) {
                     require(__DIR__.'/pages/steekkaart.php');
                     return new Pages\EditSteekkaart($this->lid);

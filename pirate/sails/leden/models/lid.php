@@ -306,7 +306,11 @@ class Lid extends Model {
         }
 
         if (is_numeric($data['geboortedatum_jaar'])) {
-            $tak = self::getTak(intval($data['geboortedatum_jaar']));
+            if ($this->isIngeschreven()) {
+                $tak = $this->inschrijving->tak;
+            } else {
+                $tak = self::getTak(intval($data['geboortedatum_jaar']));
+            }
 
             if ($tak === false) {
                 $errors[] = 'Uw zoon is te oud  / jong voor de scouts. Kinderen zijn toegelaten vanaf 6 jaar.';
@@ -320,6 +324,30 @@ class Lid extends Model {
         }
 
         return $errors;
+    }
+
+    function moetNagekekenWorden() {
+        if ($this->isIngeschreven()) {
+            if ($this->inschrijving->tak == 'givers' || $this->inschrijving->tak == 'jin' ) {
+                $errors = array();
+                if (!Validator::validatePhone($this->gsm, $this->gsm, $errors)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    function getProperties() {
+        return array(
+            'voornaam' => $this->voornaam,
+            'achternaam' => $this->achternaam,
+            'geboortedatum_dag' => $this->geboortedatum->format('j'),
+            'geboortedatum_maand' => $this->geboortedatum->format('n'),
+            'geboortedatum_jaar' => $this->geboortedatum->format('Y'),
+            'gsm' => $this->gsm,
+            'geslacht' => $this->geslacht
+        );
     }
 
     function setGezin(Gezin $gezin) {

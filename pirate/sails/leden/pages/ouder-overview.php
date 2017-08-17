@@ -67,6 +67,15 @@ class OuderOverview extends Page {
             }
         }
 
+        // Nakijken
+        foreach ($leden as $lid) {
+            if ($lid->moetNagekekenWorden()) {
+                $this->redirect = "ouders/lid-aanpassen/".$lid->id;
+                return 302;
+            }
+        }
+
+
         $inschrijvingen_afrekenen = array();
         $leden_waarvoor_afgerekend = array();
         foreach ($leden as $lid) {
