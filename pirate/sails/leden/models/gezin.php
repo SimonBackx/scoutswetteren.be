@@ -58,7 +58,7 @@ class Gezin extends Model {
             $scouting_op_maat = 1;
         }
 
-        if (!isset($scoutsjaar_checked)) {
+        if (!isset($this->scoutsjaar_checked)) {
             $scoutsjaar_checked = 'NULL';
         } else {
             $scoutsjaar_checked = "'".self::getDb()->escape_string($this->scoutsjaar_checked)."'";

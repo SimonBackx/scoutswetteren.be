@@ -73,7 +73,7 @@ class Leiding extends Model {
 
         $datetime = \DateTime::createFromFormat('d-m-Y H:i', $date.' '.$time);
         if ($datetime !== false) {
-            $leidingsverdeling->value = $datetime->format('Y-m-d H:i');
+            $leidingsverdeling->value = $datetime->format('Y-m-d H:i').':00';
             return $leidingsverdeling->save();
         } else {
             $errors[] = 'Ongeldige datum en/of tijdstip.';

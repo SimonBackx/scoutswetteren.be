@@ -24,8 +24,10 @@ class Setting extends Model {
         where `key` = '$key'";
 
         if ($result = self::getDb()->query($query)){
-            $row = $result->fetch_assoc();
-            return new Setting($row);
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Setting($row);
+            }
         }
 
         return new Setting(array('key' => $key, 'value' => $default, 'id' => null));
@@ -71,7 +73,7 @@ class Setting extends Model {
         if (!isset($this->id)) {
             return false;
         }
-        
+
         $id = self::getDb()->escape_string($this->id);
         $query = "DELETE FROM 
                 settings WHERE id = '$id' ";
