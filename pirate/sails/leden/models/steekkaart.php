@@ -324,6 +324,7 @@ class Steekkaart extends Model {
             $now = new \DateTime();
             $interval = $now->diff($this->lid->inschrijving->datum);
             if ($interval->days > 30) {
+                // Niet ingevuld en al 1 maand ingeschreven = verplicht invullen
                 return true;
             }
         }
@@ -331,6 +332,8 @@ class Steekkaart extends Model {
         if (empty($this->laatst_nagekeken)) {
             return false;
         }
+
+        // Als al eens nagekenen geweest...
         
         $jaar = intval($this->laatst_nagekeken->format('Y'));
         $maand = intval($this->laatst_nagekeken->format('n'));
@@ -338,10 +341,8 @@ class Steekkaart extends Model {
             $jaar--;
         }
 
-        $now = new \DateTime();
-        $interval = $now->diff($this->laatst_nagekeken);
-
-        if ($jaar != Inschrijving::getScoutsjaar() && $interval->days > 30) {
+        if ($jaar != Inschrijving::getScoutsjaar()) {
+            // Verplicht nakijken in nieuw scoutsjaar
             return true;
         }
 

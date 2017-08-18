@@ -188,7 +188,7 @@ class Lid extends Model {
         return $leden;
     }
 
-    static function getLeden($filter = null, $tak = null) {
+    /*static function getLeden($filter = null, $tak = null) {
         $where = '';
 
         if (!is_null($filter)) {
@@ -227,7 +227,7 @@ class Lid extends Model {
         }
         
         return $leden;
-    }
+    }*/
 
     function isIngeschreven() {
         if (empty($this->inschrijving)) {

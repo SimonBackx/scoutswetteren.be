@@ -9,6 +9,7 @@ use Pirate\Model\Leden\Inschrijving;
 
 class LedenRouter extends Route {
     private $lid = null;
+    private $ouder = null;
     private $afrekening = null;
     private $magicLink = false;
 
@@ -93,9 +94,22 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'wachtwoord-wijzigen') {
                     return true;
                 }
+                if ($parts[1] == 'gezin-nakijken') {
+                    return true;
+                }
             }
 
             if (count($parts) == 3) {
+                if ($parts[1] == 'ouder-aanpassen') {
+                    // kijken of gezin wel in orde is
+                    $ouder = Ouder::getOuderForId($parts[2]);
+                    if (!is_null($ouder) && $ouder->gezin->id == Ouder::getUser()->gezin->id) {
+                        $this->ouder = $ouder;
+                        return true;
+                    }
+
+                    return false;
+                }
                 if ($parts[1] == 'lid-aanpassen' || $parts[1] == 'steekkaart') {
                     // kijken of gezin wel in orde is
                     $lid = Lid::getLid($parts[2]);
@@ -170,10 +184,19 @@ class LedenRouter extends Route {
                     require(__DIR__.'/pages/verleng-inschrijving.php');
                     return new Pages\VerlengInschrijving();
                 }
+                if ($parts[1] == 'gezin-nakijken') {
+                    require(__DIR__.'/pages/gezin-nakijken.php');
+                    return new Pages\GezinNakijken();
+                }
             }
 
             // Beveiligde sectie: reeds authenticatie gedaan
             if (count($parts) == 3) {
+                if ($parts[1] == 'ouder-aanpassen' && !empty($this->ouder)) {
+                    require(__DIR__.'/pages/ouder-aanpassen.php');
+                    return new Pages\OuderAanpassen($this->ouder);
+                }
+
                 if ($parts[1] == 'lid-aanpassen' && !empty($this->lid)) {
                     require(__DIR__.'/pages/broer-zus-toevoegen.php');
                     return new Pages\BroerZusToevoegen($this->lid);

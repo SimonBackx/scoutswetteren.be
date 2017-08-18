@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <div class="white block">
+                <form method="post">
+                    <div class="text">
+                        <header>
+                            <h1>Gezinsituatie controleren</h1>
+                            <p>Kijk even na of iets is veranderd tegenover vorig jaar.</p>
+                        </header>
+
+                        {% if success %}
+                            <h2>Opslaan gelukt!</h2>
+                        {% endif %}
+
+                        {% if errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        {{ include('leden/gezin_settings.part.html') }}
+
+                        <footer>
+                            <input type="submit" class="aubergine fill" value="Opslaan">
+                        </footer>
+
+                    </div>
+                </form>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,41 @@
+
+<div class="splitted">
+    <div class="part column first">
+        <label>Titel</label>
+        <label class="select-box">
+            <select name="ouder-titel{{ multiple }}">
+                <option value="" selected>Maak een keuze</option>
+                {% for titel in titels %}
+                    <option value="{{ titel }}"{% if titel == ouder.titel %} selected{% endif %}>{{ titel }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>Voornaam</label>
+        <input type="text" name="ouder-voornaam{{ multiple }}" placeholder="Voornaam van de ouder" value="{{ ouder.voornaam | e('html_attr') }}">
+
+        <label>Achternaam</label>
+        <input type="text" name="ouder-achternaam{{ multiple }}" placeholder="Naam van de ouder" value="{{ ouder.achternaam | e('html_attr') }}">
+
+        <label>GSM</label>
+        <input type="text" name="ouder-gsm{{ multiple }}" placeholder="Vul het gsm-nummer van de ouder in" value="{{ ouder.gsm | e('html_attr') }}">
+
+        <label>E-mailadres</label>
+        <input type="text" name="ouder-email{{ multiple }}" placeholder="Vul e-mailadres van de ouder in" value="{{ ouder.email | e('html_attr') }}">
+
+    </div>
+
+    <div class="part column last">
+        <label>Adres</label>
+        <input type="text" class="adres" name="ouder-adres{{ multiple }}" placeholder="Straat en nummer" value="{{ ouder.adres | e('html_attr') }}">
+
+        <label>Gemeente</label>
+        <input type="text" class="gemeente" name="ouder-gemeente{{ multiple }}" placeholder="Vul de gemeente in van de ouder" value="{{ ouder.gemeente | e('html_attr') }}">
+
+        <label>Postcode</label>
+        <input type="text" class="postcode" name="ouder-postcode{{ multiple }}" placeholder="Vul de postcode in van de ouder" value="{{ ouder.postcode | e('html_attr') }}">
+
+        <label>Huistelefoon (optioneel)</label>
+        <input type="text" class="telefoon" name="ouder-telefoon{{ multiple }}" placeholder="Vul telefoon bij adres in" value="{{ ouder.telefoon | e('html_attr') }}">
+    </div>
+</div>

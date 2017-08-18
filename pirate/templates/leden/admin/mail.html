@@ -37,6 +37,15 @@
                 </select>
             </label>
 
+            <label>Ingeschreven in scoutsjaar</label>
+            <label class="select-box">
+                <select name="scoutsjaar">
+                    <option>Maak een keuze</option>
+                    <option value="{{ scoutsjaar }}"{% if scoutsjaar == data.scoutsjaar %} selected{% endif %}>{{ scoutsjaar }} - {{ scoutsjaar + 1 }}</option>
+                    <option value="{{ scoutsjaar - 1 }}"{% if scoutsjaar - 1 == data.scoutsjaar %} selected{% endif %}>{{ scoutsjaar - 1 }} - {{ scoutsjaar }}</option>
+                </select>
+            </label>
+
             <label>Filter</label>
             <label class="select-box">
                 <select name="filter">

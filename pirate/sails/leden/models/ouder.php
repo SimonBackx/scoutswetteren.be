@@ -58,6 +58,7 @@ class Ouder extends Model {
 
     private $temporaryMagicToken = null;
 
+
     function __construct($row = array()) {
         if (count($row) == 0) {
             return;
@@ -141,6 +142,20 @@ class Ouder extends Model {
         }
 
         return $errors;
+    }
+
+    function getProperties() {
+        return array(
+            'titel' => $this->titel,
+            'voornaam' => $this->voornaam,
+            'achternaam' => $this->achternaam,
+            'adres' => $this->adres,
+            'gemeente' => $this->gemeente,
+            'postcode' => $this->postcode,
+            'telefoon' => $this->telefoon,
+            'gsm' => $this->gsm,
+            'email' => $this->email
+        );
     }
 
     function setGezin(Gezin $gezin) {
@@ -416,6 +431,23 @@ class Ouder extends Model {
         return null;
     }
 
+    static function getOuderForId($id) {
+        $id = self::getDb()->escape_string($id);
+
+        $query = '
+            SELECT o.*, g.* from ouders o
+                left join gezinnen g on g.gezin_id = o.gezin
+            where o.id = "'.$id.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Ouder($row);
+            }
+        }
+        return null;
+    }
+
     static function getOudersForGezin($gezin_id) {
         $gezin = self::getDb()->escape_string($gezin_id);
 
@@ -435,7 +467,7 @@ class Ouder extends Model {
         return $ouders;
     }
 
-    static function getOuders($filter = null, $tak = null, $return_leden = false) {
+    static function getOuders($filter = null, $tak = null, $return_leden = false, $scoutsjaar = null) {
         $where = '';
 
         if (!is_null($filter)) {
@@ -472,19 +504,24 @@ class Ouder extends Model {
         if (strlen($where) > 0)
             $where = 'WHERE '.$where;
 
-        $scoutsjaar = intval(Inschrijving::getScoutsjaar());
+        if (!isset($scoutsjaar)) {
+            $scoutsjaar = intval(Inschrijving::getScoutsjaar());
+        } else {
+            $scoutsjaar = self::getDb()->escape_string($scoutsjaar);
+        }
 
         $ouders = array();
 
         if ($return_leden) {
             $query = '
-            SELECT l.*, g.* from ouders o
-                left join gezinnen g on g.gezin_id = o.gezin
-                join leden l on l.gezin = o.gezin
+            SELECT l.*, i.*, s.*, g.* from leden l
+                left join gezinnen g on g.gezin_id = l.gezin
+                join ouders o on l.gezin = o.gezin
                 join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.'
                 left join steekkaarten s on s.lid = l.id
             '.$where.'
-            GROUP BY l.id, g.gezin_id';
+            GROUP BY l.id, g.gezin_id, i.inschrijving_id, s.steekkaart_id
+            order by year(l.geboortedatum) desc, l.voornaam;';
         } else {
             $query = '
             SELECT o.*, g.* from ouders o

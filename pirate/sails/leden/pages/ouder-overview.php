@@ -48,7 +48,10 @@ class OuderOverview extends Page {
         
         // Tweede: controleren of alles steekkaarten van deze leden recent zijn nagekeken of bestaan
         foreach ($leden as $lid) {
-            if (empty($lid->steekkaart) || $lid->steekkaart->moetNagekekenWorden()) {
+            if ( ($lid->isIngeschreven() || empty($lid->inschrijving)) // Ingeschreven of zal automatisch worden ingeschreven
+                  && 
+                 (empty($lid->steekkaart) || $lid->steekkaart->moetNagekekenWorden()) // Steekkaart niet in orde
+            ) {
                 $this->redirect = "ouders/steekkaart/".$lid->id;
                 return 302;
             }
@@ -73,6 +76,12 @@ class OuderOverview extends Page {
                 $this->redirect = "ouders/lid-aanpassen/".$lid->id;
                 return 302;
             }
+        }
+
+        // Gezin checken
+        if (Ouder::getUser()->gezin->scoutsjaar_checked != $scoutsjaar) {
+            $this->redirect = "ouders/gezin-nakijken";
+            return 302;
         }
 
 
@@ -128,7 +137,7 @@ class OuderOverview extends Page {
         $user = Ouder::getUser();
         $ouders = Ouder::getOudersForGezin($user->gezin->id);
         $afrekeningen = Afrekening::getAfrekeningenForGezin($user->gezin);
-
+        $scoutsjaar = Inschrijving::getScoutsjaar();
         
         return Template::render('leden/ouder-overview', array(
             'leden' => $leden_ingeschreven,
@@ -136,7 +145,8 @@ class OuderOverview extends Page {
             'ouder' => $user,
             'afrekeningen' => $afrekeningen,
             'gezin' => $user->gezin,
-            'ouders' => $ouders
+            'ouders' => $ouders,
+            'scoutsjaar' => $scoutsjaar
         ));
     }
 }

@@ -8,18 +8,15 @@
                         
                         <header>
                         {% if new %}
-                            <h1>Broer of zus inschrijven</h1>
+                            <h1>Ouder toevoegen</h1>
                         {% else %}
-                            <h1>Algemene gegevens van {{ lid['voornaam'] }} nakijken</h1>
+                            <h1>Gegevens van {{ ouder['voornaam'] }} nakijken</h1>
                         {% endif %}
                         </header>
 
-                        {% if fail %}
-                        <ul class="error">
-                            <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
-                        </ul>{% endif %}
                         {% if success %}
-                        <h2>Gelukt!</h2>{% endif %}
+                            <h2>Gelukt!</h2>
+                        {% endif %}
 
                         {% if errors|length > 0 %}
                             <ul class="error">
@@ -30,18 +27,14 @@
                         {% endif %}
 
                         {% set multiple = '' %}
-                        {% set multipleCount = '' %}
-                        {{ include('leden/lid-aanpassen.part.html') }}
+                        {{ include('leden/ouder-aanpassen.part.html') }}
                          
                         <footer>
-                            <input type="submit" class="aubergine fill" value="{% if new %}Inschrijven{% else %}Opslaan{% endif %}">
+                            <input type="submit" class="aubergine fill" value="{% if new %}Toevoegen{% else %}Opslaan{% endif %}">
                         </footer>
 
                     </div>
                 </form>
         </div>
-        <script type="text/javascript">
-            {{ include('leden/lid-aanpassen.part.js') }}
-        </script>
     </main>
 {% endblock %}

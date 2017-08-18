@@ -17,8 +17,8 @@ class Inschrijving extends Model {
     public $afrekening_oke;
     public $halfjaarlijks;
 
-    public static $lidgeld_per_tak = array('kapoenen' => 42, 'wouters' => 32, 'jonggivers' => 32, 'givers' => 32, 'jin' => 32);
-    public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 21, 'wouters' => 16, 'jonggivers' => 16, 'givers' => 16, 'jin' => 16);
+    public static $lidgeld_per_tak = array('kapoenen' => 40, 'wouters' => 40, 'jonggivers' => 40, 'givers' => 40, 'jin' => 40);
+    public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 20, 'wouters' => 20, 'jonggivers' => 20, 'givers' => 20, 'jin' => 20);
 
     public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
@@ -76,7 +76,7 @@ class Inschrijving extends Model {
     }
 
     function getTakJaar() {
-        $verdeling = Lid::getTakkenVerdeling(self::getScoutsjaar());
+        $verdeling = Lid::getTakkenVerdeling($this->scoutsjaar);
         $jaar = intval($this->lid->geboortedatum->format('Y'));
         $min = 0;
 
