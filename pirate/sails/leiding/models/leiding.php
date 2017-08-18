@@ -3,6 +3,7 @@ namespace Pirate\Model\Leiding;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Mail\Mail;
+use Pirate\Model\Settings\Setting;
 
 class Leiding extends Model {
     public $id;
@@ -47,6 +48,51 @@ class Leiding extends Model {
 
         // Hier nog permissions opvullen!
         $this->permissions = explode('±', $row['permissions']);
+
+        if (count($this->permissions) == 1 && $this->permissions[0] == '') {
+           $this->permissions = array(); 
+        }
+    }
+
+    static function getLeidingsverdeling() {
+        $leidingsverdeling = Setting::getSetting('leidingsverdeling');
+
+        if (isset($leidingsverdeling) && isset($leidingsverdeling->value)) {
+            return new \DateTime($leidingsverdeling->value);
+        }
+        return null;
+    }
+
+    static function disableLeidingsverdeling() {
+        $leidingsverdeling = Setting::getSetting('leidingsverdeling');
+        $leidingsverdeling->delete();
+    }
+
+    static function setLeidingsverdeling(&$errors, $date, $time) {
+        $leidingsverdeling = Setting::getSetting('leidingsverdeling');
+
+        $datetime = \DateTime::createFromFormat('d-m-Y H:i', $date.' '.$time);
+        if ($datetime !== false) {
+            $leidingsverdeling->value = $datetime->format('Y-m-d H:i');
+            return $leidingsverdeling->save();
+        } else {
+            $errors[] = 'Ongeldige datum en/of tijdstip.';
+            return false;
+        }
+    }
+
+    static function isLeidingZichtbaar() {
+        $leidingsverdeling = Self::getLeidingsverdeling();
+
+        if (!isset($leidingsverdeling)) {
+            return true;
+        }
+
+        $now = new \DateTime("now");
+        if ($now < $leidingsverdeling) {
+            return false;
+        }
+        return true;
     }
 
     // Geeft lijst van contact personen (array(key -> name))
@@ -160,7 +206,7 @@ class Leiding extends Model {
         if (!is_null($permission)) {
             $permission_code = "WHERE p2.permissionCode = '".self::getDb()->escape_string($permission)."'";
         } else {
-            $permission_code = "WHERE p2.permissionId = p.permissionId";
+            $permission_code = "WHERE p.permissionId IS NULL OR p2.permissionId = p.permissionId";
             // TODO: Kan versneld worden als persmission = null -> dan dubbele joins weglaten
         }
 

@@ -16,6 +16,10 @@ class Overview extends Page {
 
         $leiding = Leiding::getLeiding();
 
+        $leiding_zichtbaar = Leiding::isLeidingZichtbaar();
+        $leidingsverdeling = Leiding::getLeidingsverdeling();
+
+
         foreach ($leiding as $leider) {
             $group = array(
                 'name' => '',
@@ -37,7 +41,9 @@ class Overview extends Page {
         }
 
         return Template::render('leiding/admin/overview', array(
-            'groups' => $data
+            'groups' => $data,
+            'leidingsverdeling' => $leidingsverdeling,
+            'leiding_zichtbaar' => $leiding_zichtbaar
         ));
     }
 }

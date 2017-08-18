@@ -132,6 +132,8 @@
                     </footer>
                 </div>
             {% else %}
+                {% if leiding_zichtbaar %}
+
                   <div class="splitted">
                     <div class="part text">
                         <header>
@@ -169,6 +171,15 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                    <div class="part text">
+                    <header>
+                        <h1>Contactgegevens</h1>
+                        <h2>Voor dringende communicatie</h2>
+                    </header>
+                    <p>Tot de bekendmaking is de leidingsverdeling nog een groot geheim. We maken tot dan ook geen contactgegevens van de leiding bekend. Gebruik het bovenstaande formulier om toch contact op te nemen met de leiding.</p>
+                </div>
+                {% endif %}
             {% endif %}
         </article>
     </main>

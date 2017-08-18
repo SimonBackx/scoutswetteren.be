@@ -132,7 +132,8 @@ class Contact extends Page {
             'success' => $success,
             'wie' => $wie,
             'takkenverdeling' => $verdeling_string,
-            'leiding' => $leiding_data
+            'leiding' => $leiding_data,
+            'leiding_zichtbaar' => Leiding::isLeidingZichtbaar()
             )
         );
     }

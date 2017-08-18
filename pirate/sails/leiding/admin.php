@@ -23,6 +23,11 @@ class LeidingAdminRouter extends Route {
         if ($url == 'leiding') {
             return true;
         }
+
+        if (isset($parts[1]) && $parts[0] == 'leiding' && $parts[1] == 'verdeling') {
+             return true;
+        }
+
         if (isset($parts[1]) && $parts[0] == 'leiding' && ($parts[1] == 'edit' || $parts[1] == 'delete')) {
             if (isset($parts[2])) {
                 if (!is_numeric($parts[2])) {
@@ -55,6 +60,12 @@ class LeidingAdminRouter extends Route {
             require(__DIR__.'/admin/overview.php');
             return new Admin\Overview();
         }
+        
+        if (isset($parts[1]) && $parts[0] == 'leiding' && $parts[1] == 'verdeling') {
+            require(__DIR__.'/admin/leidingsverdeling.php');
+            return new Admin\Leidingsverdeling();
+        }
+
         if (isset($parts[1]) && $parts[0] == 'leiding') {
             if ($parts[1] == 'edit') {
                 require(__DIR__.'/admin/gegevens.php');

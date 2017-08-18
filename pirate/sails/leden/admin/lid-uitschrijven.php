@@ -29,7 +29,7 @@ class LidUitschrijven extends Page {
         if (isset($_POST['confirm-delete'])) {
             // Echt verwijderen en doorverwijzen
             $success = $this->lid->inschrijving->delete();
-            //header("Location: https://".$_SERVER['SERVER_NAME']."/admin/inschrijvingen/lid/".$this->lid->id);
+            header("Location: https://".$_SERVER['SERVER_NAME']."/admin/inschrijvingen/lid/".$this->lid->id);
         }
 
         return Template::render('leden/admin/lid-uitschrijven', array(
