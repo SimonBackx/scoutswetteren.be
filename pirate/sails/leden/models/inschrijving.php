@@ -4,6 +4,8 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Afrekening;
+use Pirate\Model\Leden\Inschrijving;
 
 class Inschrijving extends Model {
     public $id;
@@ -11,7 +13,9 @@ class Inschrijving extends Model {
     public $datum;
     public $scoutsjaar;
     public $tak;
-    public $betaald_cash;
+    
+    //public $betaald_cash;
+
     public $prijs;
     public $afrekening; // id
     public $afrekening_oke;
@@ -22,7 +26,7 @@ class Inschrijving extends Model {
 
     public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
-    public static $inschrijvings_start_maand = 8;
+    public static $inschrijvings_start_maand = 9;
     public static $inschrijvings_einde_maand = 7;
     public static $inschrijvings_halfjaar_maand = 3; // Vanaf maart halfjaarlijks lidgeld
 
@@ -44,7 +48,8 @@ class Inschrijving extends Model {
         $this->datum = new \DateTime($row['datum']);
         $this->scoutsjaar = $row['scoutsjaar'];
         $this->tak = $row['tak'];
-        $this->betaald_cash = $row['inschrijving_betaald_cash'];
+        
+        //$this->betaald_cash = $row['inschrijving_betaald_cash'];
 
         $this->afrekening = $row['afrekening'];
         $this->afrekening_oke = ($row['afrekening_oke'] == 1);
@@ -53,26 +58,16 @@ class Inschrijving extends Model {
         $this->halfjaarlijks = $row['halfjaarlijks'];
     }
 
-    function isBetaald() {
-        // Todo check afrekening
-        if ($this->afrekening_oke) {
-            return true;
-        }
-
-        return $this->betaald_cash >= $this->prijs;
+    public static function isGeldigeTak($tak) {
+        return in_array($tak, Self::$takken);
     }
 
+    function isBetaald() {
+        return $this->afrekening_oke;
+    }
 
     function getPrijs() {
         return '€ '.money_format('%!.2n', $this->prijs);
-    }
-
-    function getTeBetalen() {
-        return '€ '.money_format('%!.2n', $this->prijs - $this->betaald_cash);
-    }
-
-    function getBetaaldCash() {
-        return '€ '.money_format('%!.2n', $this->betaald_cash);
     }
 
     function getTakJaar() {
@@ -190,84 +185,52 @@ class Inschrijving extends Model {
         return self::$lidgeld_per_tak[$tak];
     }
 
-    function betaal(string &$bedrag, &$message, &$errors) {
-        $out = 0;
-        Validator::validatePrice($bedrag, $out, $errors, true);
-
-        if (count($errors) == 0) {
-            // Alle te betalen leden overlopen, en gaten zo goed mogelijk proberen op te vullen
-
-            if ($this->betaald_cash + $out > $this->prijs) {
-                $errors[] = 'Er kan niet meer cash betaalt worden dan de inschrijving van dit lid zelf.';
-                return false;
-            } elseif ($this->betaald_cash + $out < 0){
-                $errors[] = 'Je kan niet meer terugbetalen aan een lid dan cash werd betaalt via dat lid. ';
-                return false;
-            }
-
-            $this->betaald_cash += $out;
-
-            $okay = $this->save();
-
-            if (!$okay) {
-                $errors[] = 'Er ging iets mis bij het registreren van de betaling. Controleer of er niet meer betaald wordt dan het gezin nog moet betalen.';
-                return false;
-            }
-
-            if ($this->isBetaald()) {
-                $message = 'Hoera, het lidgeld is in orde.';
-            } else {
-                $message = 'Het lidgeld is nog niet volledig betaald.';
-            }
-            return true;
-        }
-
-        return false;
-    }
-
-    function getNogTeBetalen() {
-        $afrekening = Afrekening::getAfrekening($this->afrekening);
-
-        return '€ '.money_format('%!.2n', min($this->prijs - $this->betaald_cash, $afrekening->getNogTeBetalenFloat()));
-    }
-
     function save() {
         if (!isset($this->id)) {
             return false;
         }
 
         $id = self::getDb()->escape_string($this->id);
-        $betaald_cash = self::getDb()->escape_string($this->betaald_cash);
+        $tak = self::getDb()->escape_string($this->tak);
 
         $query = "UPDATE inschrijvingen 
                 SET 
-                 `inschrijving_betaald_cash` = '$betaald_cash'
+                 `tak` = '$tak'
                  where `inschrijving_id` = '$id'
             ";
 
-        self::getDb()->autocommit(false);
         if (!self::getDb()->query($query)) {
-            self::getDb()->autocommit(true);
             return false;
         }
 
-        $afrekening = Afrekening::getAfrekening($this->afrekening);
+       return true;
+    }
 
-        if ($afrekening->getNogTeBetalenFloat() < 0) {
-            self::getDb()->rollback();
-            self::getDb()->autocommit(true);
-            return false;
+    function delete() {
+        $id = self::getDb()->escape_string($this->id);
+        $query = "DELETE FROM 
+                inschrijvingen WHERE inschrijving_id = '$id' ";
+
+        // todo: afrekening aanpassen (prijs)
+        
+        // todo: lid verwijderen indien enigste inschrijving van dit lid
+
+        if (self::getDb()->query($query)) {
+            $afrekening = Afrekening::getAfrekening($this->afrekening);
+            if (isset($afrekening)) {
+                $afrekening->recalculate();
+            }
+
+            // lid opnieuw ophalen
+            $lid = Lid::getLid($this->lid->id);
+
+            if (empty($lid->inschrijving)) {
+                // enigste inschrijving is weg -> verwijderen
+                $lid->delete();
+            }
+
+            return true;
         }
-
-        if (is_null($afrekening)) {
-            self::getDb()->autocommit(true);
-            return false;
-        }
-
-        $this->afrekening_oke = $afrekening->isBetaald();
-
-        // Volgende save functie gebruikt ook autocommit, dus als dat fout gaat wordt ook de query hierboven
-        // ongedaan gemaakt. Het zet autocommit ook weer op true, in elke situatie (behalve als id niet klopt)
-        return $afrekening->save(); // alles weer juist instellen :D
+        return false;
     }
 }

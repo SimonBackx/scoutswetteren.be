@@ -81,6 +81,16 @@ class Lid extends Model {
         return array_keys($map);
     }
 
+    function getGeslacht() {
+        if ($this->geslacht == 'M') {
+            return 'Jongen';
+        }
+        if ($this->geslacht == 'V') {
+            return 'Meisje';
+        }
+        return 'Onbekend geslacht';
+    }
+
     static function getLid($id) {
         if (!is_numeric($id)) {
             return null;
@@ -398,6 +408,17 @@ class Lid extends Model {
         return false;
     }
 
+    function delete() {
+        $id = self::getDb()->escape_string($this->id);
+        $query = "DELETE FROM 
+                leden WHERE id = '$id' ";
+
+        if (self::getDb()->query($query)) {
+            return true;
+        }
+        
+        return false;
+    }
 
     
 }

@@ -50,7 +50,7 @@
                         </div>
                     {% else %}
                         <div class="large merlot column">
-                            Verminderd lidgeld + niet betaald ({{ lid.inschrijving.getTeBetalen }})
+                            Verminderd lidgeld + niet betaald
                         </div>
                     {% endif %}   
                 {% else %}
@@ -70,7 +70,7 @@
                     {% if lid.steekkaart.laatst_nagekeken is empty %}
                         <div class="large merlot column">Lidgeld niet betaald + steekkaart niet ingevuld</div>
                     {% else %}
-                        <div class="large merlot column">Lidgeld niet betaald ({{ lid.inschrijving.getTeBetalen }})</div>
+                        <div class="large merlot column">Lidgeld niet betaald</div>
                     {% endif %}   
                 {% else %}
                     {% if lid.steekkaart.laatst_nagekeken is empty %}
@@ -79,16 +79,17 @@
                 {% endif %}
             {% endif %}
             <div class="last column">
-                {% if lid.inschrijving.betaald < lid.inschrijving.prijs and lid.inschrijving.betaald_door_scouts < lid.inschrijving.prijs %}
-                    <a href="/admin/inschrijvingen/betalen/{{ lid.id }}" class="aubergine button noborder">cash betalen</a>
-
-                {% endif %}
                 <a href="/admin/inschrijvingen/lid/{{ lid.id }}" class="button noborder">Steekkaart</a>
             </div>
         </article>
+
+    {% else %}
+    </div>
+        <p>Haha, niemand is ingeschreven. Slechte leiding! Foei!</p>
+        <div>
     {% endfor %}
     </div>
-    <h1>Vorig jaar</h1>
+
     <div>
         <a href="/admin/inschrijvingen/{{ tak }}/{{ prev }}" class="aubergine fill button">Bekijk {{ prev }} - {{ prev + 1}}</a>
     </div>

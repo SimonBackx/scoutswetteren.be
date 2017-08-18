@@ -25,7 +25,7 @@ class ViewAfrekening extends Page {
 
         return Template::render('leden/admin/afrekening', array(
             'afrekening' => $this->afrekening,
-            'from_inschrijvingen' => isset($_GET['inschrijvingen']),
+            'from_inschrijvingen' => !Leiding::hasPermission('financieel'),
             'ouders' => $ouders
         ));
     }

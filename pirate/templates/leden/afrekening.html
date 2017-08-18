@@ -80,14 +80,6 @@
                                         <td>- {{ afrekening.getBetaaldOverschrijving() }}</td>
                                     </tr>
                                 {% endif %}
-                                {% for inschrijving in afrekening.inschrijvingen %}
-                                    {% if inschrijving.betaald_cash > 0 %}
-                                        <tr>
-                                            <td>Cash {{ inschrijving.lid.voornaam }} {{ inschrijving.lid.achternaam }}</td>
-                                            <td>- {{ inschrijving.getBetaaldCash() }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
                                 {% if afrekening.betaald_cash > 0 %}
                                     <tr>
                                         <td>Cash betaald</td>

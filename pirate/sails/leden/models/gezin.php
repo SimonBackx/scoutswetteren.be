@@ -31,25 +31,50 @@ class Gezin extends Model {
         return array();
     }
 
+    static function getGezin($id) {
+        if (!is_numeric($id)) {
+            return null;
+        }
+
+        $id = self::getDb()->escape_string($id);
+
+        $query = '
+            SELECT g.* from gezinnen g
+            where g.gezin_id = "'.$id.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Gezin($row);
+            }
+        }
+        return null;
+    }
+
     function save() {
         $gezinssituatie = self::getDb()->escape_string($this->gezinssituatie);
         $scouting_op_maat = 0;
         if ($this->scouting_op_maat) {
             $scouting_op_maat = 1;
         }
-        $scoutsjaar_checked = self::getDb()->escape_string($this->scoutsjaar_checked);
+
+        if (!isset($scoutsjaar_checked)) {
+            $scoutsjaar_checked = 'NULL';
+        } else {
+            $scoutsjaar_checked = "'".self::getDb()->escape_string($this->scoutsjaar_checked)."'";
+        }
 
         if (empty($this->id)) {
             $query = "INSERT INTO 
                 gezinnen (`gezinssituatie`,  `scouting_op_maat`, `scoutsjaar_checked`)
-                VALUES ('$gezinssituatie', '$scouting_op_maat', '$scoutsjaar_checked')";
+                VALUES ('$gezinssituatie', '$scouting_op_maat', $scoutsjaar_checked)";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE gezinnen 
                 SET 
                  `gezinssituatie` = '$gezinssituatie',
                  `scouting_op_maat` = '$scouting_op_maat',
-                 `scoutsjaar_checked` = '$scoutsjaar_checked'
+                 `scoutsjaar_checked` = $scoutsjaar_checked
                  where gezin_id = '$id' 
             ";
         }

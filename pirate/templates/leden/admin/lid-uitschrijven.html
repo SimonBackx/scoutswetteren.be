@@ -1,0 +1,19 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+             <header>
+                <h1>Uitschrijven gelukt!</h1>
+            </header>
+        {% else %}
+             <header>
+                <h1>Ben je zeker dat je dit lid wilt uitschrijven in het huidige scoutsjaar?</h1>
+                <h2>"{{ lid.voornaam }} {{ lid.achternaam }}"</h2>
+            </header>
+
+            <footer>
+                <input type="submit" class="aubergine fill" name="confirm-delete" value="Ja, uitschrijven">
+                <a href="/admin/inschrijvingen/lid/{{ lid.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+            </footer>
+        {% endif %}
+    </div>
+</form>
