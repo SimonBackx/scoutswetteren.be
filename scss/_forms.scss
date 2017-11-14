@@ -2,6 +2,10 @@ $slider-circle: 12px;
 $slider-box: 30px;
 $slider-top: 20px;
 
+.show-on-file-selected {
+    display: none;
+}
+
 form {
     blockquote {
         border-left: 2px solid $cardinal;

@@ -22,6 +22,8 @@
 {% endblock %}
 
 {% block javascript %}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
+
     <script src="/js/photoswipe.min.js"></script> 
     <script type="text/javascript">
         function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten) {
@@ -35,7 +37,28 @@
 
     </script>
     <script src="/js/verhuur.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
+    <script src="/js/photos.js"></script>
+
+    <script type="text/javascript">
+        var grid = new photos.Grid({});
+        grid.trackWidth(document.getElementById('album_container'));
+        grid.margin = 8;
+        grid.max_height = 300;
+
+        var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+
+        {% for image in images %}
+            var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+            photo.sources = {{ image.getSourcesJSON | raw }};
+            grid.add(photo);
+        {% endfor %}
+        
+        var element = grid.toDOM();
+        document.getElementById('album_container').appendChild(element);
+        grid.updateVisiblePhotos();
+
+        grid.enablePhotoSwipe();
+    </script>
 {% endblock %}
 
 {% block main %}
@@ -230,13 +253,12 @@
             <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
             {% if general.logged_in %}
                 <div class="button-bar">
-                    <a href="/admin/photos/edit/{{ images[0].album }}" class="button aubergine noborder">Foto's toevoegen</a>
+                    <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
                 </div>
             {% endif %}
         </section>
     </main>
 
-<script src="/js/photos.js"></script>
 
 <!-- Root element of PhotoSwipe. Must have class pswp. -->
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -304,24 +326,5 @@
     </div>
 
 </div>
-<script type="text/javascript">
-    var grid = new photos.Grid({});
-    grid.trackWidth(document.getElementById('album_container'));
-    grid.margin = 8;
-    grid.max_height = 300;
 
-    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
-
-    {% for image in images %}
-        var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
-        photo.sources = {{ image.getSourcesJSON | raw }};
-        grid.add(photo);
-    {% endfor %}
-    
-    var element = grid.toDOM();
-    document.getElementById('album_container').appendChild(element);
-    grid.updateVisiblePhotos();
-
-    grid.enablePhotoSwipe();
-</script>
 {% endblock %}

@@ -12,7 +12,7 @@ $admin_pages = array(
         //array('name' => 'Foto\'s', 'url' => 'fotos'),
     ),
     'leiding' => array(
-        array('priority' => true, 'name' => 'Inschrijvingen', 'url' => 'inschrijvingen')
+        array('priority' => true, 'name' => 'Leden', 'url' => 'inschrijvingen')
     ),
     'verhuur' => array(
          array('priority' => true, 'name' => 'Verhuur', 'url' => 'verhuur')
@@ -25,6 +25,9 @@ $admin_pages = array(
         array('name' => 'Verhuur', 'url' => 'verhuur')
     ),
     'financieel' => array(
-        array('priority' => true, 'name' => 'Afrekeningen', 'url' => 'afrekeningen')
-    )
+        array('priority' => true, 'name' => 'Rekeningen', 'url' => 'afrekeningen')
+    ),
+    'materiaalmeester' => array(
+        array('priority' => false, 'name' => 'Materiaal', 'url' => 'materiaal')
+    ),
 );

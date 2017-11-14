@@ -137,6 +137,10 @@ class Leiding extends Model {
                 'name' => 'Webmaster',
                 'mail' => 'website@scoutswetteren.be'
             ),
+            'materiaal' => array(
+                'name' => 'Materiaalmeesters',
+                'mail' => 'materiaal@scoutswetteren.be'
+            ),
             'verhuur' => array(
                 'name' => 'Verhuur verantwoordelijke',
                 'permission' => 'verhuur'

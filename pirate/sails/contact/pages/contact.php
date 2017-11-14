@@ -40,6 +40,11 @@ class Contact extends Page {
             }
         }
 
+        // Optioneel, maar verplicht indien opgegeven
+        if (isset($_POST["phone"])) {
+            $data["phone"] = $_POST["phone"];
+        }
+
         // Beveiliging tegen robots
         if (isset($_POST['nickname'])) {
             if (strlen($_POST['nickname']) > 0) {
@@ -60,6 +65,11 @@ class Contact extends Page {
             if (!Validator::isValidMail($data['email'])) {
                 $errors[] = 'Ongeldig e-mailadres. Controleer of je geen fouten hebt gemaakt.';
             }
+
+            if (isset($data['phone']) && !Validator::validatePhone($data['phone'], $data['phone'], $errors)) {
+                // done
+            }
+
             if (strlen($data['subject']) < 4) {
                 $errors[] = 'Onderwerp te kort';
             }

@@ -99,7 +99,23 @@ class Album extends Model {
         $id = self::getDb()->escape_string($id);
 
         $albums = array();
-        $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count from albums a join images i on i.image_album = a.album_id left join images c on c.image_id = a.album_cover WHERE a.album_id = "'.$id.'" group by a.album_id, c.image_id';
+        $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count from albums a left join images i on i.image_album = a.album_id left join images c on c.image_id = a.album_cover WHERE a.album_id = "'.$id.'" group by a.album_id, c.image_id';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Album($row);
+            }
+        }
+
+        return null;
+    }
+
+    static function getHiddenAlbum($name) {
+        $name = self::getDb()->escape_string($name);
+
+        $albums = array();
+        $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count from albums a left join images i on i.image_album = a.album_id left join images c on c.image_id = a.album_cover WHERE a.album_slug = "'.$name.'" AND a.album_hidden = 1 group by a.album_id, c.image_id';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows == 1){
@@ -119,7 +135,7 @@ class Album extends Model {
 
         $query = 'SELECT a.*, c.*, i_f.*, f.*
         from albums a 
-        join images c on c.image_id = a.album_cover 
+        left join images c on c.image_id = a.album_cover 
         join image_files i_f on i_f.imagefile_image = c.image_id
         join files f on f.file_id = i_f.imagefile_file
         WHERE a.album_slug = "'.$slug.'" 
@@ -165,7 +181,7 @@ class Album extends Model {
         if (!$with_cover) {
             $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count 
                     from albums a 
-                    join images i on i.image_album = a.album_id 
+                    left join images i on i.image_album = a.album_id 
                     left join images c on c.image_id = a.album_cover
                     '.$where.' 
                     group by a.album_id, c.image_id 
@@ -184,7 +200,7 @@ class Album extends Model {
         // Ook cover sources uit database halen
         $query = 'SELECT a.*, c.*, i_f.*, f.*
                 from albums a 
-                join images c on c.image_id = a.album_cover
+                left join images c on c.image_id = a.album_cover
                 join image_files i_f on i_f.imagefile_image = c.image_id
                 join files f on f.file_id = i_f.imagefile_file
                  '.$where.' 
