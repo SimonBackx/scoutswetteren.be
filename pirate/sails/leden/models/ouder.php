@@ -103,14 +103,14 @@ class Ouder extends Model {
         }
 
         if (Validator::isValidFirstname($data['voornaam'])) {
-            $this->voornaam = ucwords(mb_strtolower($data['voornaam']));
+            $this->voornaam = ucwords(mb_strtolower(trim($data['voornaam'])));
             $data['voornaam'] = $this->voornaam;
         } else {
             $errors[] = 'Ongeldige voornaam';
         }
 
         if (Validator::isValidLastname($data['achternaam'])) {
-            $this->achternaam = ucwords(mb_strtolower($data['achternaam']));
+            $this->achternaam = ucwords(mb_strtolower(trim($data['achternaam'])));
             $data['achternaam'] = $this->achternaam;
         } else {
             $errors[] = 'Ongeldige achternaam';
@@ -119,7 +119,7 @@ class Ouder extends Model {
         Validator::validatePhone($data['gsm'], $this->gsm, $errors);
 
         if (Validator::isValidMail($data['email'])) {
-            $this->email = strtolower($data['email']);
+            $this->email = strtolower(trim($data['email']));
             $data['email'] = $this->email;
         } else {
             $errors[] = 'Ongeldig e-mailadres';
@@ -127,7 +127,7 @@ class Ouder extends Model {
 
 
         if (Validator::isValidAddress($data['adres'])) {
-            $this->adres = ucwords(mb_strtolower($data['adres']));
+            $this->adres = ucwords(mb_strtolower(trim($data['adres'])));
             $data['adres'] = $this->adres;
         } else {
             $errors[] = 'Ongeldig adres';
@@ -142,6 +142,14 @@ class Ouder extends Model {
         }
 
         return $errors;
+    }
+
+    static function oudersToFieldArray($original) {
+        $arr = array();
+        foreach ($original as $key => $value) {
+            $arr[] = $value->getProperties();
+        }
+        return $arr;
     }
 
     function getProperties() {

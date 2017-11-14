@@ -42,10 +42,10 @@ class Reservatie extends Model {
     static public $max_gebouw = 35;
     static public $max_tenten = 20;
 
-    static public $prijzen = array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102);
+    static public $prijzen = array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102, 2020 => 105);
     static public $waarborg_weekend = 400;
     static public $waarborg_kamp = 750;
-    static public $prijs_tent_dag = 15;
+    static public $prijs_tent_dag = 20;
     static public $prijs_tent_persoon = 2;
 
     private $no_mail = false;

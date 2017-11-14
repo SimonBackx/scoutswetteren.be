@@ -5,6 +5,7 @@ use Pirate\Block\Block;
 use Pirate\Template\Template;
 use Pirate\Model\Groepsadmin\Groepsadmin;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Ouder;
 
 class Check extends Page {
     function __construct() {
@@ -47,7 +48,7 @@ class Check extends Page {
         if ($groepsadmin->Login()) {
             if ($groepsadmin->GetLedenlijst()) {
                 // Leden ophalen
-                $leden = Lid::getLeden();
+                $leden = Ouder::getOuders(null, null, true);
 
                 // Welke leden staan niet in groepsadmin?
                 $niet_aanwezig_in_groepsadmin = array();

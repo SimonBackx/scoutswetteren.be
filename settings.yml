@@ -9,3 +9,4 @@ letsencrypt:
   - "scoutswetteren.be"
   - "www.scoutswetteren.be"
   - "files.scoutswetteren.be"
+sass: "scss/style.scss:public/css/style.css"

@@ -40,7 +40,20 @@
 
 {% block main %}
     <main>
-        <article class="white block">
+        <nav class="buttons">
+            <a href="/verhuur" class="selected button">Gebouw</a>
+            <a href="/verhuur/materiaal" class="button">Materiaal</a>
+        </nav>
+
+        <article class="white block withButtons">
+            <div class="map">
+                <div id="map">
+                  
+                </div>
+            </div>
+        </article>
+        
+        <article class="white block ">
             <div class="splitted">
                 <div class="part image" id="terrein-image">
                     <img src="/images/part/terrein.jpg" alt="Hoofdlokaal">
@@ -112,13 +125,7 @@
             </div>
         </article>
 
-                <article class="white block">
-            <div class="map">
-                <div id="map">
-                  
-                </div>
-            </div>
-        </article>
+
 
 
 

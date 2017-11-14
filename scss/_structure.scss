@@ -70,6 +70,8 @@ main {
 }
 
 .block {
+    position: relative;
+    
     &.album_block {
         header {
             h1 {

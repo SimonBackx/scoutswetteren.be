@@ -5,6 +5,7 @@ use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Leden\Steekkaart;
+use Pirate\Model\Leden\Ouder;
 
 class Lid extends Model {
     public $id;
@@ -137,6 +138,130 @@ class Lid extends Model {
             }
         }
         return $leden;
+    }
+
+
+    static function search($text) {
+        // todo: Als text = getal -> omzetten in telefoonnummer
+        $phone = '';
+        $leden = array();
+        $duplicate_fields = array('id', 'gsm', 'voornaam', 'achternaam');
+
+        $errors = array();
+        if (Validator::validateBothPhone($text, $phone, $errors, true)) {
+            $text = self::getDb()->escape_string($phone);
+            $query = '
+                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.* from ouders o
+                    join leden l on l.gezin = o.gezin
+                    left join steekkaarten s on s.lid = l.id
+                    left join gezinnen g on g.gezin_id = l.gezin
+                    left join inschrijvingen i on i.lid = l.id
+                    left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
+                where 
+                    i2.inschrijving_id is null
+                    AND i.inschrijving_id is not null
+                    AND
+                    (
+                        l.gsm LIKE "'.$text.'%" OR 
+                        o.gsm LIKE "'.$text.'%" OR 
+                        o.telefoon LIKE "'.$text.'%" 
+                    )';
+
+        } else {
+            // todo: remove +,*,-
+
+            // Add + before every word longer then 3 characters, add * at the end
+            $newText = "";
+            $currentWord = "";
+
+            for ($i=0; $i < strlen($text); $i++) { 
+                $char = substr($text, $i, 1);
+                if ($char == " ") {
+                    if (strlen($currentWord) > 3) {
+                        $newText .=" +".$currentWord;
+                    } else {
+                        $newText .=" ".$currentWord;
+                    }
+                    $currentWord = "";
+                } else {
+                    $currentWord .= $char;
+                }
+            }
+
+            if (strlen($currentWord) > 3) {
+                $newText .=" +".$currentWord."*";
+            } else {
+                if (strlen($currentWord) > 0) {
+                    $newText .=" ".$currentWord."*";
+                }
+            }
+
+            $text = self::getDb()->escape_string($newText);
+
+            $query = '
+                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.* from ouders o
+                    join leden l on l.gezin = o.gezin
+                    left join steekkaarten s on s.lid = l.id
+                    left join gezinnen g on g.gezin_id = l.gezin
+                    left join inschrijvingen i on i.lid = l.id
+                    left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
+                where 
+                    i2.inschrijving_id is null
+                    AND i.inschrijving_id is not null
+                    AND
+                    (
+                        MATCH(l.voornaam,l.achternaam,l.gsm) 
+                        AGAINST("'.$text.'" IN BOOLEAN MODE)
+                        OR
+                        MATCH(o.voornaam,o.achternaam,o.gsm,o.telefoon,o.adres,o.gemeente) 
+                        AGAINST("'.$text.'" IN BOOLEAN MODE)
+                    )';//
+        }
+
+        $leden_dict = array();
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $ouder = new Ouder($row);
+
+                    // Fix duplicate fields
+                    foreach ($duplicate_fields as $key => $value) {
+                        $row[$value] = $row[$value."_lid"];
+                    }
+                    $lid = new Lid($row);
+                    if (isset($leden_dict[$lid->id])) {
+                        $lid = $leden_dict[$lid->id];
+                    } else {
+                        $leden[] = $lid;
+                        $leden_dict[$lid->id] = $lid;
+                    }
+                    $lid->ouders[] = $ouder;
+                }
+            }
+        }
+        
+        return $leden;
+    }
+
+    static function ledenToFieldArray($original) {
+        $arr = array();
+        foreach ($original as $key => $value) {
+            $arr[] = $value->getPropertiesDetails();
+        }
+        return $arr;
+    }
+
+    function getPropertiesDetails() {
+        return array(
+            'id' => $this->id,
+            'voornaam' => $this->voornaam,
+            'achternaam' => $this->achternaam,
+            'gsm' => $this->gsm,
+            'tak' => $this->inschrijving->tak,
+            'geboortedatum' => $this->geboortedatum->format("j-n-Y"),
+            'ouders' => Ouder::oudersToFieldArray($this->ouders)
+        );
     }
 
     static function getLedenForTak($tak, $jaar = null) {
@@ -285,14 +410,14 @@ class Lid extends Model {
         $errors = array();
 
         if (Validator::isValidFirstname($data['voornaam'])) {
-            $this->voornaam = ucwords(mb_strtolower($data['voornaam']));
+            $this->voornaam = ucwords(mb_strtolower(trim($data['voornaam'])));
             $data['voornaam'] = $this->voornaam;
         } else {
             $errors[] = 'Ongeldige voornaam';
         }
 
         if (Validator::isValidLastname($data['achternaam'])) {
-            $this->achternaam = ucwords(mb_strtolower($data['achternaam']));
+            $this->achternaam = ucwords(mb_strtolower(trim($data['achternaam'])));
             $data['achternaam'] = $this->achternaam;
         } else {
             $errors[] = 'Ongeldige achternaam';

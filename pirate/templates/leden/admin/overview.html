@@ -1,6 +1,13 @@
 <div class="text">
 
     {% if jaar is empty %}
+        <div class="sticky search-box">
+            <input type="text" name="" class="aubergine search" placeholder="Zoeken" data-sail="leden">
+            <div class="results-anchor">
+                <div class="results"></div>
+            </div>
+        </div>
+                
         <h1>Inschrijvingen</h1>
         <form>
             <input id="info_tonen" type="checkbox" value="1">
@@ -9,7 +16,7 @@
             <div class="checkbox-controllable">
                 <div class="visible-when-checked">
                     <h2>Betalen van het lidgeld</h2>
-                    <p>Alle ouders kregen zelf duidelijke instructies bij het inschrijven hoe ze het lidgeld kunnen betalen. Als ze dit niet meer vinden: ze kregen dit ook via e-mail. Ze kunnen dit doen door over te schrijven (enkel met juiste mededeling) of door aan de takleiding cash te betalen.</p><p>De takleiding moet dit hieronder <strong>meteen</strong> aanduiden. Bij overschrijvingen doet de financieel verantwoordelijke dit.</p>
+                    <p>Alle ouders kregen zelf duidelijke instructies bij het inschrijven hoe ze het lidgeld kunnen betalen. Als ze dit niet meer vinden: ze kregen dit ook via e-mail. Ze kunnen dit doen door over te schrijven (enkel met juiste mededeling) of door cash te betalen (probeer dit te vermijden).</p><p>Geef het cash geld door aan de financieel verantwoordelijke zodat hij/zij dit op de website kan aanduiden. Bij overschrijvingen doet de financieel verantwoordelijke dit.</p>
 
                     <h2>Verminderd lidgeld</h2>
                     <p>Bij leden met verminderd lidgeld, moet via een huisbezoek worden bekeken tot hoever de steun van de scouts reikt. Dit moet altijd discreet gebeuren. De scouts betaalt in dat geval sowieso voor het inschrijvingsgeld. Verplicht te lezen voor deze leiding: <a href="https://www.scoutsengidsenvlaanderen.be/publicatie/scouting-op-maat">Scouting op maat</a></p>
@@ -27,6 +34,7 @@
             •
             <a href="/admin/groepsadmin" class="aubergine button">Groepsadmin controleren</a>
         </div>
+                
     {% endif %}
 
     <h1>

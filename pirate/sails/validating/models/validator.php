@@ -91,7 +91,7 @@ class Validator extends Model {
     }
 
     // Returns true on success
-    static function validatePhone(&$in, &$out, &$errors) {
+    static function validatePhone(&$in, &$out, &$errors, $partial = false) {
         if (!self::isValidPhone($in)) {
             $errors[] = 'Ongeldig GSM nummer';
             return false;
@@ -100,7 +100,7 @@ class Validator extends Model {
         $output = preg_replace('/[^0-9+]/', '', $in);
 
         // lengte bepalen
-        if (strlen($output) < 10 || strlen($output) == 11) {
+        if (!$partial && (strlen($output) < 10 || strlen($output) == 11)) {
             $errors[] = 'Ongeldig GSM nummer';
         } else {
             $original = $output;
@@ -119,11 +119,11 @@ class Validator extends Model {
             // Indien landcode is opgegeven:
             if ($plus > 0 &&
                 (
-                    ($country == '324' && (strlen($original) == 11 + $plus))
-                || ($country == '316' && (strlen($original) == 11 + $plus))
-                || ($country == '336' && (strlen($original) == 11 + $plus))
-                || ($country == '337' && (strlen($original) == 11 + $plus))
-                || ($country == '491' && (strlen($original) == 14 + $plus || strlen($original) == 13 + $plus || strlen($original) == 12 + $plus || strlen($original) == 11 + $plus))
+                    ($country == '324' && (strlen($original) == 11 + $plus || $partial) )
+                || ($country == '316' && (strlen($original) == 11 + $plus || $partial))
+                || ($country == '336' && (strlen($original) == 11 + $plus || $partial))
+                || ($country == '337' && (strlen($original) == 11 + $plus || $partial))
+                || ($country == '491' && (strlen($original) == 14 + $plus || strlen($original) == 13 + $plus || strlen($original) == 12 + $plus || strlen($original) == 11 + $plus || $partial))
                 )
             ) {
 
@@ -165,12 +165,12 @@ class Validator extends Model {
         return false;
     }
 
-    static function validateBothPhone(&$in, &$out, &$errors) {
+    static function validateBothPhone(&$in, &$out, &$errors, $partial = false) {
         $in_copy = $in;
         $out_copy = $out;
         $errors_copy = array();
 
-        if (self::validateNetPhone($in_copy, $out_copy, $errors_copy)) {
+        if (self::validatePhone($in_copy, $out_copy, $errors_copy, $partial)) {
             $in = $in_copy;
             $out = $out_copy;
             return true;
@@ -180,7 +180,7 @@ class Validator extends Model {
         $out_copy = $out;
         $errors_copy = array();
 
-        if (self::validatePhone($in_copy, $out_copy, $errors_copy)) {
+        if (self::validateNetPhone($in_copy, $out_copy, $errors_copy, $partial)) {
             $in = $in_copy;
             $out = $out_copy;
             return true;
@@ -190,7 +190,7 @@ class Validator extends Model {
         return false;
     }
 
-    static function validateNetPhone(&$in, &$out, &$errors) {
+    static function validateNetPhone(&$in, &$out, &$errors, $partial = false) {
         // Formaat:
         //   0x xxx xx xx - dialing a big city, such as Brussels, Antwerp, Liège and Ghent.
         //   0xx  xx xx xx
@@ -228,7 +228,7 @@ class Validator extends Model {
             $needed_length = 11;
         }
 
-        if (strlen($filtered_in) != $needed_length) {
+        if (strlen($filtered_in) != $needed_length && !$partial) {
             $errors[] = 'Vul geldig Belgisch telefoonnummer in formaat +32 x xxx xx xx, +32 xx xx xx xx, 0x xxx xx xx of 0xx xx xx xx';
         } else {
             $zonenummer = substr($filtered_in, $needed_length - 8, 1);
