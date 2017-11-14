@@ -20,6 +20,7 @@
 
         {% for image in images %}
             var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+            photo.title = "{{image.title | e('js')}}";
             photo.sources = {{ image.getSourcesJSON | raw }};
             grid.add(photo);
         {% endfor %}
