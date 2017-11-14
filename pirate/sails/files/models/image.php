@@ -11,6 +11,7 @@ class Image extends Model {
     public $date_taken;
     public $sources = array();
     public $album; // id of null! -> geen object
+    public $title;
 
     function __construct($row = null, $sources = array()) {
         if (!isset($row)) {
@@ -19,6 +20,8 @@ class Image extends Model {
         }
 
         $this->id = $row['image_id'];
+
+        $this->title = $row['image_title'];
 
         if (isset($row['image_date_taken'])) {
             $this->date_taken = new \DateTime($row['image_date_taken']);
@@ -321,22 +324,23 @@ class Image extends Model {
             $image_album = '"'.self::getDb()->escape_string($this->album).'"';
         }
 
+        $image_title = self::getDb()->escape_string($this->image_title);
+
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
 
             $query = "UPDATE images 
                 SET 
                  image_date_taken = $date_taken,
-                 image_album = $image_album
+                 image_album = $image_album,
+                 image_title = '$image_title'
                  where image_id = '$id' 
             ";
         } else {
             $query = "INSERT INTO 
-                images (`image_date_taken`, `image_album`)
-                VALUES ($date_taken, $image_album)";
+                images (`image_date_taken`, `image_album`, `image_title`)
+                VALUES ($date_taken, $image_album, '$image_title')";
         }
-
-        
 
         if (self::getDb()->query($query)) {
             if (!isset($this->id)) {

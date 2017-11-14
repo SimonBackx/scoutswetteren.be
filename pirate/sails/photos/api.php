@@ -28,7 +28,7 @@ class PhotosApiRouter extends Route {
             return true;
         }
 
-        if (count($parts) == 2 && ($parts[0] == 'delete' || $parts[0] == 'set-cover')) {
+        if (count($parts) == 2 && ($parts[0] == 'delete' || $parts[0] == 'set-cover' || $parts[0] == 'set-title')) {
             $id = $parts[1];
             $this->image = Image::getImage($id);
             if (isset($this->image)) {
@@ -45,6 +45,11 @@ class PhotosApiRouter extends Route {
             if ($parts[0] == 'delete') {
                 require(__DIR__.'/api/delete.php');
                 return new Api\DeletePhoto($this->image);
+            }
+
+            if ($parts[0] == 'set-title') {
+                require(__DIR__.'/api/set-title.php');
+                return new Api\SetTitle($this->image);
             }
 
             require(__DIR__.'/api/set-cover.php');

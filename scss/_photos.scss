@@ -29,7 +29,7 @@
                 text-align: right;
                 display: none;
 
-                .del, .cov {
+                .del, .cov, .caption {
                     background: rgba($aubergine,0.8) url('/images/delete-photo.png') no-repeat center center;
                     width: 15px;
                     height: 15px;
@@ -42,6 +42,12 @@
                 }
                 .cov {
                     background-image: url('/images/cover-button.png');
+                    width: 15px;
+                    height: 15px;
+                }
+
+                .caption {
+                    background-image: url('/images/caption-button.png');
                     width: 15px;
                     height: 15px;
                 }

@@ -3,7 +3,7 @@
 {% set social_image = album.cover.getBiggestSource().file.getPublicPath() %}
 {% extends "base.html" %}
 
-{% block head %}
+{% block javascript %}
 <link rel="stylesheet" href="/css/photoswipe.css"> 
 <script src="/js/photoswipe.min.js"></script> 
 <script src="/js/photos.js"></script>
@@ -17,6 +17,7 @@
 
     {% for image in images %}
         var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+        photo.title = "{{image.title | e('js')}}";
         photo.sources = {{ image.getSourcesJSON | raw }};
         grid.add(photo);
     {% endfor %}
