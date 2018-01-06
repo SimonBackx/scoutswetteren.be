@@ -22,8 +22,19 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
+                    'title' => 'Prettige feestdagen en gelukkig 2018!',
+                    'text' => 'Geniet van de feesten en alvast een gelukkig 2018 gewenst van alle leiding en het oudercomité!',
+                ),
+
+                array(
+                    'title' => 'Kerstwandeling',
+                    'text' => 'Kom naar onze kerstwandeling op 15 december. Inschrijven kan via kerstwandeling@scoutswetteren.be, maar lees eerst bijhorende brief!',
+                    'button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/brief-kerstwandeling-2017.pdf')
+                ),
+
+                array(
                     'title' => 'Winter is coming',
-                    'text' => 'Kom naar onze Kerstactiviteit op 15 december en ons Winterfeest op 25 februari (12u)! Info volgt.'
+                    'text' => 'Kom naar onze Kerstwandeling op 15 december en ons Winterfeest op 25 februari (12u)! Info volgt.'
                 ),
 
                 array(

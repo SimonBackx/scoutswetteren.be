@@ -157,7 +157,7 @@ class Image extends Model {
             return false;
         }
 
-        if ($source->extension == 'jpg' || $source->extension == 'jpeg') {
+        if (($source->extension == 'jpg' || $source->extension == 'jpeg') && function_exists('exif_read_data')) {
             $error_reporting = error_reporting();
             error_reporting(0);
             $exif_data = exif_read_data($source->getPath());
@@ -189,11 +189,13 @@ class Image extends Model {
 
         if (count($sizes) > 0) {
             $original = GDImage::createFromFile($source->getPath());
-            if ($sponsorify) {
+            /*if ($sponsorify) {
+                $original->extension = "png";
+                $original->image->setImageFormat("png");
                 $original->blackAndWhite();
                 $original->level();
-                $original->trim();
-            }
+                //$original->trim();
+            }*/
 
             $previousSize = array();
             foreach ($sizes as $size) {
@@ -212,17 +214,21 @@ class Image extends Model {
                 }
                 if ($sponsorify) {
                     $quality = 100;
+                    $gdImage = GDImage::createFromGDImage($original);
+                } else {
+                    $gdImage = GDImage::createFromGDImage($original, $quality);
                 }
-
-                $gdImage = GDImage::createFromGDImage($original, $quality);
 
                 if (isset($size['width'], $size['height'])) {
                     $gdImage->fit($actual_size);
                 } else {
                     $gdImage->scale($actual_size);
                 }
-                
-                
+
+                if ($sponsorify) {
+                    $gdImage->blackAndWhite();
+                    $gdImage->level();
+                }
 
                 $img = ImageFile::create($this, $gdImage, $errors, $path);
                 if ($img === false) {
@@ -324,7 +330,7 @@ class Image extends Model {
             $image_album = '"'.self::getDb()->escape_string($this->album).'"';
         }
 
-        $image_title = self::getDb()->escape_string($this->image_title);
+        $image_title = self::getDb()->escape_string($this->title);
 
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);

@@ -4,8 +4,8 @@ use Pirate\Model\Model;
 use Imagick;
 
 class GDImage extends Model {
-    protected $extension = '';
-    protected $image = null;
+    public $extension = '';
+    public $image = null;
     protected $width;
     protected $height;
 
@@ -15,10 +15,10 @@ class GDImage extends Model {
         $gd = new GDImage(clone $image->image, $image->extension, $image->width, $image->height);
         if (isset($quality)) {
             $gd->quality = $quality;
-            if ($gd->extension == 'jpg' || $gd->extension == 'jpeg') {
+            /*if ($gd->extension == 'jpg' || $gd->extension == 'jpeg') {
                 $gd->image->setImageCompression(Imagick::COMPRESSION_JPEG); 
                 $gd->image->setImageCompressionQuality($gd->quality);
-            }
+            }*/
         }
         return $gd;
     }
@@ -41,10 +41,10 @@ class GDImage extends Model {
 
         $gd = new GDImage($image, $ext, $width, $height);
 
-        if ($ext == 'jpg' || $ext == 'jpeg') {
+        /*if ($ext == 'jpg' || $ext == 'jpeg') {
             $image->setImageCompression(Imagick::COMPRESSION_JPEG); 
             $image->setImageCompressionQuality($gd->quality);
-        }
+        }*/
 
         $orientation = $image->getImageOrientation(); 
         if ($orientation != imagick::ORIENTATION_TOPLEFT && $orientation != imagick::ORIENTATION_UNDEFINED){
@@ -70,19 +70,31 @@ class GDImage extends Model {
     }
 
     function level() {
-        $background = $this->image->getImagePixelColor(0,0)->getHSL()['luminosity'];
+        $this->extension = 'png';
+        $this->image->setImageFormat("png");
+
+        $pixel = $this->image->getImagePixelColor(0,0);
+        $alpha = $pixel->getColor(true)['a'];
+        $background = (1 - $pixel->getHSL()['luminosity']) * $alpha;
         $darkest = $background;
 
         $iterator = $this->image->getPixelIterator();
         foreach ($iterator as $row=>$pixels) {
           foreach ( $pixels as $col=>$pixel ){
-            $lum = $pixel->getHSL()['luminosity'];
-            if ($lum < $darkest) {
+            $alpha = $pixel->getColor(true)['a'];
+
+            // 1 = zwart (doorzichtig)
+            // 0 = wit (ondoorzichtig)
+            $lum = (1 - $pixel->getHSL()['luminosity']) * $alpha;
+
+            if ($lum > $darkest) {
                 $darkest = $lum;
              }
           }
           $iterator->syncIterator();
         }
+
+        // Darkest > background normaal gezien
 
         // darkest moet volledig zwart worden
         $width = $background - $darkest;
@@ -93,15 +105,17 @@ class GDImage extends Model {
         $iterator = $this->image->getPixelIterator();
         foreach ($iterator as $row=>$pixels) {
           foreach ( $pixels as $col=>$pixel ){
-            $lum = $pixel->getHSL()['luminosity'];
-            $lum = ($lum - $darkest) / $width;
+            $alpha = $pixel->getColor(true)['a'];
+            $lum = ( 1 - $pixel->getHSL()['luminosity']) * ($alpha);
+            $lum = 1 - ($lum - $darkest) / $width;
             if ($lum < 0) {
                 $lum = -$lum;
             }
             // Nu nog bijstellen naar background (maxium 0.96)
-            $lum *= 0.98;
+            //$lum *= 0.98;
 
-            $pixel->setHSL(0, 0, $lum);
+            $pixel->setColor('rgba(0%, 0%, 0%, '. $lum .')');
+            //$pixel->setHSL(0, 0, 1-$lum);
           }
           $iterator->syncIterator();
         }
@@ -278,6 +292,7 @@ class GDImage extends Model {
 
         $result = false;
 
+        $this->image->setImageFormat($this->extension);
         $result = $this->image->writeImage($path);
         $this->destroy();
 
