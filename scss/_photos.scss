@@ -181,7 +181,7 @@
 }
 
 
-#upload-progress {
+#upload-progress, .progress {
     width: auto;
     height: 2px;
     border-radius: 2px;
@@ -199,14 +199,39 @@
         width: 0%;
         background: $merlot;
     }
+
+    &.red {
+        div:first-child {
+            background: #FF6A87;
+        }
+
+        div:last-child {
+            background: #FFEBEF;
+        }
+    }
+
+    &.purple {
+        div:first-child {
+            background: #966AFF;
+        }
+
+        div:last-child {
+            background: #F2ECFF;
+        }
+    }
 }
 
-#upload-progress-text {
+
+#upload-progress-text, .progress-text {
     max-width: 500px;
     text-align: right;
     color: $aubergine;
     margin: 10px 0;
     display: none;
+}
+
+.progress-text {
+    display: block;
 }
 
 #photos {

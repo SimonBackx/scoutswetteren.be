@@ -16,8 +16,7 @@ services:
     php:
         links:
          - db
-        image: php7fpm-imagick
-        restart: always
+        build: ./docker/update-pirate
         volumes:
          - ./files:/var/www/scoutswetteren.dev/files
          - ./pirate:/var/www/scoutswetteren.dev/pirate
@@ -25,6 +24,12 @@ services:
          - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
         environment:
          - DEBUG=1
+        depends_on:
+         - db
+        security_opt:
+         - seccomp:unconfined
+        privileged: true
+
     nginx:
         image: nginx:latest
         ports:
@@ -35,8 +40,10 @@ services:
              - ./pirate:/var/www/scoutswetteren.dev/pirate
              - ./public:/var/www/scoutswetteren.dev/public
              - ./nginx.conf:/etc/nginx/conf.d/site.conf
+             - ./error.log:/var/log/nginx/error.log
              - ./certs:/etc/nginx/certs
         depends_on:
              - php
+        restart: always
 volumes:
     database:

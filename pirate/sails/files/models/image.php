@@ -38,7 +38,7 @@ class Image extends Model {
         $sources = array();
 
         foreach ($this->sources as $source) {
-            if ($source->file->is_source) {
+            if ($source->is_source) {
                 continue;
             }
             
@@ -57,7 +57,7 @@ class Image extends Model {
 
         for ($i=0; $i < count($this->sources); $i++) { 
             $source = $this->sources[$i];
-            if (!$source->file->is_source && (!isset($bestfit) || $source->isGreaterThan($bestfit))) {
+            if (!$source->is_source && (!isset($bestfit) || $source->isGreaterThan($bestfit))) {
                 $bestfit = $source;
             }
         }
@@ -72,7 +72,7 @@ class Image extends Model {
         $bestfit = null;
         for ($i=0; $i < count($this->sources); $i++) { 
             $source = $this->sources[$i];
-            if (!$source->file->is_source && $width <= $source->width && $height <= $source->height && (!isset($bestfit) || $source->isLessThan($bestfit))) {
+            if (!$source->is_source && $width <= $source->width && $height <= $source->height && (!isset($bestfit) || $source->isLessThan($bestfit))) {
                 $bestfit = $source;
             }
         }
@@ -91,7 +91,7 @@ class Image extends Model {
         $biggest = null;
         $biggest_source = null;
         foreach ($this->sources as $source) {
-            if (!$source->file->is_source) {
+            if (!$source->is_source) {
                 if (!isset($biggest) || $biggest->width < $source->width) {
                     $biggest = $source;
                 }
@@ -109,6 +109,20 @@ class Image extends Model {
         return $biggest;
     }
 
+    /**
+     * Geeft grootste ImageFile die niet het origineel is
+     * @return [type] [description]
+     */
+    function getRealSource() {
+        foreach ($this->sources as $source) {
+            if ($source->is_source) {
+                return $source;
+            }
+        }
+
+        return null;
+    }
+
     function addSource(ImageFile $source) {
         $this->sources[] = $source;
     }
@@ -117,8 +131,13 @@ class Image extends Model {
         $this->album = $id;
     }
 
+    static function getLonelyImagePath() {
+        return 'images/';
+    }
+
     function upload($form_name, $sizes, &$errors, Album $album_object = null, $sponsorify = false) {
-        
+        $should_be_saved_in_object_storage = true;
+
         if (isset($this->album) && !isset($album_object)) {
             if ($this->album == Album::$QUEUE_ID) {
                 $album_object = Album::getQueueAlbum();
@@ -129,6 +148,10 @@ class Image extends Model {
             if (!isset($this->album)) {
                 $album_object = null;
             }
+        }
+
+        if (isset($album_object) && $album_object->id == Album::$QUEUE_ID) {
+            $should_be_saved_in_object_storage = false;
         }
 
         ini_set('MAX_IFD_NESTING_LEVEL', 200);
@@ -143,12 +166,24 @@ class Image extends Model {
         }
 
         $source = new File();
+        $source->should_be_saved_in_object_storage = $should_be_saved_in_object_storage;
+
+        // Als het een album heeft should_be_saved_on_server op true zetten (enkel voor sources)
+        if (isset($album_object)) {
+            $source->should_be_saved_on_server = true;
+            // Hier nog niet wijzigen voor alle andere bestanden, want upload is nog niet 100% zeker
+        }
 
         $leiding_id = Leiding::getUser()->id;
         // Hier nog location manipuleren
         
         // Locatie waar source + thumbnails worden opgeslagen
-        $path = Album::getPathForAlbum($album_object);
+        if (isset($album_object)) {
+            $path = $album_object->getPath();
+        } else {
+            $path = Self::getLonelyImagePath();
+        }
+
         $source->location = $path.'sources/';
         if (!$source->upload($form_name, $errors, array('jpeg', 'jpg', 'png', 'gif', 'bmp'), $this->id)) {
             self::getDb()->rollback();
@@ -175,11 +210,10 @@ class Image extends Model {
         // gebeurd al in alle gevallen van true:
         //self::getDb()->commit();
         //self::getDb()->autocommit(true);
-
-
-        $original = ImageFile::createFromOriginal($this, $source, $errors);
+        
+        $original = ImageFile::createFromFile(/*image: */ $this, /*file: */ $source, $errors);
         if ($original === false) {
-            $errors[] = 'Create from original failed';
+            $errors[] = 'Create from file failed';
             // TODO: alles ongedaan maken
             return false;
         }
@@ -189,13 +223,6 @@ class Image extends Model {
 
         if (count($sizes) > 0) {
             $original = GDImage::createFromFile($source->getPath());
-            /*if ($sponsorify) {
-                $original->extension = "png";
-                $original->image->setImageFormat("png");
-                $original->blackAndWhite();
-                $original->level();
-                //$original->trim();
-            }*/
 
             $previousSize = array();
             foreach ($sizes as $size) {
@@ -205,13 +232,16 @@ class Image extends Model {
                 }
                 $previousSize = $actual_size;
 
-                $quality = 40;
+                $quality = 60;
+                
                 if ($actual_size["width"] < 400 || $actual_size["height"] < 400) {
                     $quality = 60;
                 }
+
                 if ($actual_size["width"] <= 100 || $actual_size["height"] <= 100) {
-                    $quality = 40;
+                    $quality = 60;
                 }
+
                 if ($sponsorify) {
                     $quality = 100;
                     $gdImage = GDImage::createFromGDImage($original);
@@ -230,9 +260,8 @@ class Image extends Model {
                     $gdImage->level();
                 }
 
-                $img = ImageFile::create($this, $gdImage, $errors, $path);
+                $img = ImageFile::createFromGDImage($this, $gdImage, $errors, $path, $should_be_saved_in_object_storage);
                 if ($img === false) {
-
                     // TODO: alles ongedaan maken
                     return false;
                 }
@@ -241,7 +270,11 @@ class Image extends Model {
 
             $original->destroy();
         }
-        // Hier nog resize toevoegen
+
+        // Hele album beschikbaar maken zodat zip file kan worden aangepast
+        if (isset($album_object) && !$album_object->isQueue()) {
+            $album_object->setSourcesShouldBeSavedOnServer(true);
+        }
 
         return true;
     }
@@ -381,6 +414,7 @@ class Image extends Model {
                     $i++;
                 }
                 $album->save();
+                $album->onImageDeleted($this);
             }
         }
 

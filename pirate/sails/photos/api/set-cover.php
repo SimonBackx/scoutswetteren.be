@@ -27,6 +27,7 @@ class SetCover extends Page {
         }
 
         $album->cover = $this->image;
+        // cover_id moet niet geset wordne, enkel bij deletion
 
         if ($album->save()) {
             return 200;

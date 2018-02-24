@@ -2,6 +2,9 @@
 namespace Pirate\Model\Files;
 use Pirate\Model\Model;
 use Pirate\Model\Leiding\Leiding;
+//use Pirate\Model\Files\Space;
+//use Pirate\Model\Files\SpaceRequest; // todo: if not found -> error file not exists
+//use Pirate\Model\Files\SpaceResponse; // todo: if not found -> error file not exists
 
 class File extends Model {
     public $id;
@@ -11,13 +14,23 @@ class File extends Model {
     public $size; // bytes
     public $upload_date;
     public $author;
-    public $is_source;
+
+    public $object_storage_host;
+    public $saved_on_server = true;
+
+    // Datum waarop file werd geupload op object storage (= dient voor cronjobs om het origineel te verwijderen te vertragen om foutieve file requests te voorkomen)
+    public $object_storage_date = null;
+    public $should_be_saved_on_server = false;
+    public $should_be_saved_in_object_storage = true;
 
     private $new = false;
 
     static private $restrictedExtensions = array('exe', 'pif', 'application', 'gadget', 'msi', 'jar', 'msc', 'bat', 'cmd', 'vb', 'vbs', 'vbe', 'ps1', 'ps1xml', 'ps2', 'ps2xml', 'psc1', 'psc2', 'msh', 'msh1', 'msh2', 'mshxml', 'msh1xml', 'msh2xml', 'scf', 'lnk', 'inf', 'reg', 'php', 'cgi', 'torrent', 'js', 'app', 'pif', 'vbscript', 'wsf', 'asp', 'cer', 'csr', 'jsp', 'drv', 'sys', 'ade', 'adp', 'htaccess', 'sh');
 
     static public $max_size = 20000000; // in bytes
+
+    // Delay before a file is deleted from the server after object_storage_date when should_be_saved_on_server turns false
+    static public $DELETE_DELAY = 1*60; // Seconds
 
     function __construct($row = null) {
         if (!isset($row)) {
@@ -32,7 +45,23 @@ class File extends Model {
         $this->size = $row['file_size'];
         $this->upload_date = new \DateTime($row['file_upload_date']);
         $this->author = $row['file_author'];
-        $this->is_source = $row['file_is_source'];
+        $this->saved_on_server = ($row['file_saved_on_server'] == 1);
+        $this->should_be_saved_on_server = ($row['file_should_be_saved_on_server'] == 1);
+        $this->should_be_saved_in_object_storage = ($row['file_should_be_saved_in_object_storage'] == 1);
+
+        if (isset($row['file_object_storage_date'])) {
+            $this->object_storage_date = new \DateTime($row['file_object_storage_date']);
+        } else {
+            $this->object_storage_date = null;
+        }
+
+
+        if (isset($row['file_object_storage_host'])) {
+            $this->object_storage_host = $row['file_object_storage_host'];
+        } else {
+            $this->object_storage_host = null;
+        }
+
     }
 
     static function getFile($id) {
@@ -49,14 +78,321 @@ class File extends Model {
         return null;
     }
 
+    static function getFilesForAlbum($id) {
+        $id = self::getDb()->escape_string($id);
+        $query = "
+            SELECT f.* FROM files f
+                inner join image_files i_f on i_f.imagefile_file = f.file_id
+                inner join images i on i.image_id = i_f.imagefile_image
+        WHERE image_album = '$id'";
+
+        $files = [];
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while($row = $result->fetch_assoc()) {
+                    $files[] = new File($row);
+                }
+            }
+        }
+
+        return $files;
+    }
+
+
+    static function getLatestSourceFileForAlbum($id) {
+        $id = self::getDb()->escape_string($id);
+        $query = "
+            SELECT f.* FROM files f
+                inner join image_files i_f on i_f.imagefile_file = f.file_id
+                inner join images i on i.image_id = i_f.imagefile_image
+        WHERE image_album = '$id' 
+        order by f.file_upload_date desc
+        limit 1";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                $row = $result->fetch_assoc();
+                return new File($row);
+            }
+        }
+
+        return null;
+    }
+
+    static function generateStatistics($files) {
+        $stats = (object) array(
+            'count_server' => 0,
+
+            'count_downloading_from_object_storage' => 0,
+            'size_downloading_from_object_storage' => 0,
+            'count_object_storage' => 0,
+
+            'count_uploading_to_object_storage' => 0,
+            'size_uploading_to_object_storage' => 0,
+            'count_object_storage' => 0,
+
+            'count_removing_from_server' => 0,
+            'size_removing_from_server' => 0,
+
+            'size_server' => 0,
+            'size_object_storage' => 0,
+
+            'count' => 0,
+            'size' => 0,
+        );
+        foreach ($files as $file) {
+            $stats->count++;
+            $stats->size += $file->size;
+
+            if ($file->saved_on_server) {
+
+                $stats->count_server++;
+                $stats->size_server += $file->size;
+
+                if ($file->should_be_saved_in_object_storage && !isset($file->object_storage_host)) {
+                    $stats->count_uploading_to_object_storage++;
+                    $stats->size_uploading_to_object_storage += $file->size;
+                }
+
+                if (!$file->should_be_saved_on_server && isset($file->object_storage_host)) {
+                    $stats->count_removing_from_server++;
+                    $stats->size_removing_from_server += $file->size;
+                }
+
+            }
+
+            if (isset($file->object_storage_host)) {
+                $stats->count_object_storage++;
+                $stats->size_object_storage += $file->size;
+                
+                if ($file->should_be_saved_on_server && !$file->saved_on_server) {
+                    $stats->count_downloading_from_object_storage++;
+                    $stats->size_downloading_from_object_storage += $file->size;
+                }
+            }
+        }
+
+        $stats->availability_server = round(($stats->size_server - $stats->size_removing_from_server) / $stats->size * 100, 2);
+        $stats->availability_working_server = round(($stats->size_downloading_from_object_storage + $stats->size_removing_from_server) / $stats->size * 100, 2);
+
+        $stats->availability_object_storage = round($stats->size_object_storage / $stats->size * 100, 2);
+        $stats->availability_working_object_storage = round($stats->size_uploading_to_object_storage / $stats->size * 100, 2);
+
+        $stats->size = Self::convertSizeToString($stats->size);
+        $stats->size_server = Self::convertSizeToString($stats->size_server);
+        $stats->size_object_storage = Self::convertSizeToString($stats->size_object_storage);
+
+        return $stats;
+    }
+
+    static function convertSizeToString($size) {
+        if ($size < 100) {
+            return $size.' byte';
+        }
+        $size /= 1000;
+        if ($size < 500) {
+            return round($size, 2).' kB';
+        }
+
+        $size /= 1000;
+        if ($size < 500) {
+            return round($size, 2).' MB';
+        }
+
+        $size /= 1000;
+        if ($size < 500) {
+            return round($size, 2).' GB';
+        }
+
+        $size /= 1000;
+        if ($size < 500) {
+            return round($size, 2).' TB';
+        }
+
+        $size /= 1000;
+        return round($size, 2).' PB';
+    }
+
+    // Uploadable
+    static function getFilesNotObjectStorage($limit = 100) {
+        $limit = intval($limit);
+        $query = 'SELECT * FROM files WHERE file_object_storage_host IS NULL AND file_saved_on_server = 1 AND file_should_be_saved_in_object_storage = 1 order by file_size desc LIMIT '.$limit;
+
+        $files = array();
+
+        if ($result = self::getDb()->query($query)){
+            while ($row = $result->fetch_assoc()) {
+                $files[] = new File($row);
+            }
+        }
+
+        return $files;
+    }
+
+    // Downloadable
+    static function getFilesNotSavedOnServer($limit = 60) {
+        $limit = intval($limit);
+        $query = 'SELECT * FROM files WHERE file_object_storage_host IS NOT NULL AND file_saved_on_server = 0 AND file_should_be_saved_on_server = 1 LIMIT '.$limit;
+        $files = array();
+
+        if ($result = self::getDb()->query($query)){
+            while ($row = $result->fetch_assoc()) {
+                $files[] = new File($row);
+            }
+        }
+
+        return $files;
+    }
+
+    static function getRemoveableFiles($limit = 200) {
+        $limit = intval($limit);
+        $delay = intval(Self::$DELETE_DELAY);
+        $date = (new \DateTime())->format('Y-m-d H:i:s'); // mysql NOW() kan niet gesynchroniseerd zijn met PHP tijd
+        $query = "
+            SELECT * 
+            FROM files 
+            WHERE 
+            file_object_storage_host IS NOT NULL 
+            AND file_saved_on_server = 1 
+            AND file_should_be_saved_on_server = 0 
+            AND file_should_be_saved_in_object_storage = 1
+            AND file_object_storage_date < ('$date' - INTERVAL $delay SECOND) 
+            order by file_size desc
+            LIMIT $limit";
+
+        $files = array();
+
+        if ($result = self::getDb()->query($query)){
+            while ($row = $result->fetch_assoc()) {
+                $files[] = new File($row);
+            }
+        }
+
+        return $files;
+    }
+
+    function updateSavedOnServer() {
+        // Check and return success
+        clearstatcache();
+        $new = file_exists($this->getPath());
+        if ($new != $this->saved_on_server) {
+            $this->saved_on_server = $new;
+            return $this->save();
+        }
+        return true;
+    }
+
     function getPath() {
         global $FILES_DIRECTORY;
 
-        return $FILES_DIRECTORY.'/'.$this->location.$this->name;
+        return $FILES_DIRECTORY.'/'.$this->getKey();
     }
 
     function getPublicPath() {
-        return "https://".str_replace('www.','files.',$_SERVER['SERVER_NAME'])."/".$this->location.$this->name;
+        if (isset($this->object_storage_host)) {
+            return "https://".$this->object_storage_host."/".$this->getKey();
+        }
+
+        return "https://".str_replace('www.','files.',$_SERVER['SERVER_NAME'])."/".$this->getKey();
+    }
+
+    function getKey() {
+        return $this->location.$this->name;
+    }
+
+    function deleteFromServer(&$errors) {
+        if (unlink(realpath($this->getPath())) === false) {
+            $errors[] = 'Deleting file failed.';
+            return false;
+        }
+        clearstatcache();
+
+        $this->saved_on_server = false;
+
+        $album = Album::getAlbumForFile($this->id);
+        if (isset($album)) {
+            $album->onFileRemovedFromServer($this);
+        }
+
+        return $this->save();
+    }
+
+    function deleteFromSpace(&$errors) {
+        // todo
+        $errors[] = 'Not yet implemented.';
+        return false;
+    }
+
+    function downloadFromSpace(&$errors) {
+        if (!isset($this->object_storage_host)) {
+            $errors[] = 'File has no object_storage_host';
+            return false;
+        }
+
+        $f = fopen($this->getPublicPath(), 'r');
+
+        if ($f === false) {
+            $errors[] = 'Failed to open stream to '.$this->getPublicPath();
+            return false;
+        }
+
+        if (file_put_contents($this->getPath(), $f) === false) {
+            fclose($f);
+            $errors[] = 'Failed to save file from space '.$this->getPublicPath();
+            return false;
+        }
+
+        fclose($f);
+        
+        $this->saved_on_server = true;
+        if ($this->save()) {
+             $album = Album::getAlbumForFile($this->id);
+            if ($album) {
+                $album->updateSourcesAvailable();
+            }
+            return true;
+        }
+        
+        return false;
+    }
+
+    function uploadToSpace(&$errors) {
+        if (!file_exists($this->getPath())) {
+            $errors[] = 'Bestand '.$this->id.' staat niet meer op de server opgeslagen!';
+            $this->saved_on_server = false;
+            $this->save();
+            // todo: album -> update_Sources_available aanroepen (mag eigenlijk niet hierin)
+            return false;
+        }
+
+        $space = Space::getDefault();
+        $request = new SpaceRequest('PUT', $space, '/'.$this->getKey());
+        $request->setHeaders(
+            array(
+                'x-amz-acl' => 'public-read',
+                'x-amz-storage-class' => 'STANDARD',
+            )
+        );
+
+        $request->setFile($this->getPath());
+        //$request->setText('Hello world');
+        $response = $request->send();
+
+        if (!$response->success) {
+            $errors[] = 'Er ging iets mis';
+            return false;
+        }
+
+        if ($response->http_statuscode == 200) {
+            // Todo: maak aanpassingen aan mysql object!
+            $this->object_storage_host = $space->getHost();
+            $this->object_storage_date = new \DateTime();
+            return $this->save();
+        }
+
+        $errors[] = $response->body;
+
+        return false;
     }
 
     static function isFileSelected($form_name) {
@@ -215,7 +551,6 @@ class File extends Model {
         
         $this->upload_date = $date;
         $this->size = $size;
-        $this->is_source = true;
 
         // Error reporting tijdelijk uitzetten
         $error_reporting = error_reporting();
@@ -279,7 +614,10 @@ class File extends Model {
         return true;
     }
 
-    function from_file($location, $name, &$errors) {
+    // Maakt een file object aan, maar slaat deze nog niet op in de database
+    static function createFromFile($location, $name, &$errors) {
+        $file = new File();
+
         $ext = strtolower(substr(strrchr($name,'.'),1));
 
         if ($location != '' && substr($location, -1) != '/') {
@@ -287,31 +625,23 @@ class File extends Model {
             return false;
         }
         
-        $this->name = $name;
-        $this->location = $location;
-        $this->extension = $ext;
+        $file->name = $name;
+        $file->location = $location;
+        $file->extension = $ext;
         $date = new \DateTime();
 
         if (Leiding::isLoggedIn()) {
-            $this->author = Leiding::getUser()->id;
+            $file->author = Leiding::getUser()->id;
         }
-        $this->upload_date = $date;
-        $this->size = filesize($this->getPath());
+        $file->upload_date = $date;
 
-        if (!file_exists($this->getPath())) {
+        if (!file_exists($file->getPath())) {
             $errors[] = 'Bestand bestaat niet';
-            return false;
+            return null;
         }
+        $file->size = filesize($file->getPath());
 
-        $this->is_source = false;
-     
-        // Opslaan in mysql en rollback als verplaatsen mislukt
-        if (!$this->save()) {
-            $errors[] = 'Opslaan in database mislukt';
-            return false;
-        }
-
-        return true;
+        return $file;
     }
 
     function save() {
@@ -321,9 +651,32 @@ class File extends Model {
         $size = self::getDb()->escape_string($this->size);
         $upload_date = self::getDb()->escape_string($this->upload_date->format('Y-m-d H:i:s'));
 
-        $is_source = 0;
-        if ($this->is_source) {
-            $is_source = 1;
+        $saved_on_server = 0;
+        if ($this->saved_on_server) {
+            $saved_on_server = 1;
+        }
+
+        $should_be_saved_on_server = 0;
+        if ($this->should_be_saved_on_server) {
+            $should_be_saved_on_server = 1;
+        }
+
+        
+        $should_be_saved_in_object_storage = 0;
+        if ($this->should_be_saved_in_object_storage) {
+            $should_be_saved_in_object_storage = 1;
+        }
+
+        if (!isset($this->object_storage_host)) {
+            $object_storage_host = 'NULL';
+        } else {
+            $object_storage_host = "'".self::getDb()->escape_string($this->object_storage_host)."'";
+        }
+
+        if (!isset($this->object_storage_date)) {
+            $object_storage_date = 'NULL';
+        } else {
+            $object_storage_date = "'".self::getDb()->escape_string($this->object_storage_date->format('Y-m-d H:i:s'))."'";
         }
 
         if (!isset($this->author)) {
@@ -341,17 +694,47 @@ class File extends Model {
                 SET 
                  file_name = '$name',
                  file_extension = '$extension',
-                 file_location = '$location,
+                 file_location = '$location',
                  file_size = '$size',
                  file_upload_date = '$upload_date',
                  file_author = $author,
-                 file_is_source = '$is_source'
+                 file_object_storage_host = $object_storage_host,
+                 file_saved_on_server = '$saved_on_server',
+                 file_object_storage_date = $object_storage_date,
+                 file_should_be_saved_on_server = '$should_be_saved_on_server',
+                 file_should_be_saved_in_object_storage = '$should_be_saved_in_object_storage'
                  where file_id = '$id' 
             ";
         } else {
             $query = "INSERT INTO 
-                files (`file_name`, `file_extension`, `file_location`, `file_size`, `file_upload_date`, `file_author`, `file_is_source`)
-                VALUES ('$name', '$extension', '$location', '$size', '$upload_date', $author, '$is_source')";
+                files 
+                (
+                    `file_name`, 
+                    `file_extension`, 
+                    `file_location`, 
+                    `file_size`, 
+                    `file_upload_date`, 
+                    `file_author`, 
+                    `file_object_storage_host`, 
+                    `file_saved_on_server`, 
+                    `file_object_storage_date`, 
+                    `file_should_be_saved_on_server`,
+                    `file_should_be_saved_in_object_storage`
+                )
+                VALUES 
+                (
+                    '$name', 
+                    '$extension', 
+                    '$location', 
+                    '$size', 
+                    '$upload_date', 
+                    $author, 
+                    $object_storage_host, 
+                    '$saved_on_server', 
+                    $object_storage_date, 
+                    '$should_be_saved_on_server', 
+                    '$should_be_saved_in_object_storage'
+                )";
         }
 
         if (self::getDb()->query($query)) {
@@ -359,6 +742,9 @@ class File extends Model {
                 $this->id = self::getDb()->insert_id;
             }
             return true;
+        }else {
+            echo $query;
+            echo self::getDb()->error."\n";
         }
 
         return false;
@@ -381,10 +767,14 @@ class File extends Model {
             return false;
         }
 
-        if (unlink(realpath($this->getPath())) === false) {
-            $errors[] = 'De foto is verwijderd uit de database, maar niet volledig uit het bestandssysteem (door een interne fout).';
-            return false;
-       }
+        clearstatcache();
+
+        if (file_exists(realpath($this->getPath()))) {
+            if (unlink(realpath($this->getPath())) === false) {
+                $errors[] = 'De foto is verwijderd uit de database, maar niet volledig uit het bestandssysteem (door een interne fout).';
+                return false;
+           }
+        }
 
        return true;
     }

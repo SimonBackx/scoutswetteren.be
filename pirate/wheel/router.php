@@ -2,6 +2,7 @@
 namespace Pirate\Route;
 use Pirate\Page\Page404;
 use Pirate\Page\Page301;
+use Pirate\Page\Page302;
 
 class Router {
     function route($url) {
@@ -61,6 +62,11 @@ class Router {
             if (in_array($url, array_keys($redirects))) {
                 header("Location: https://".$_SERVER['SERVER_NAME'].$redirects[$url]);
                 return new Page301();
+            }
+
+            if ($url == 'inschrijven-winterfeest') {
+                header("Location: https://docs.google.com/forms/d/e/1FAIpQLSd2fOMUuwnmmj9PElKAHplFkYeezq5SpGcKTZtplGKFdW9F-g/viewform?usp=pp_url&entry.68005830&entry.1905493851&entry.123158276=0&entry.372456103=0&entry.1007462089=0&entry.1496954756=0&entry.1369601917=0&entry.783841059=0&entry.710634492=0&entry.1759246294=0&entry.402550269=0&entry.1797343913=0&entry.1508497080=0&entry.2115967023=0");
+                return new Page302();
             }
 
             include(__DIR__.'/../sails/_bindings/routes.php');

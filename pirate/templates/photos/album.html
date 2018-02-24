@@ -60,6 +60,10 @@
                     <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
                     {% endif %}
             </div>
+
+            {% if not album.canDownload() %}
+                <p>Je kan dit album binnen enkele minuten downloaden.</p>
+            {% endif %}
         </section>
     </main>
 

@@ -123,6 +123,11 @@ def nginxMaintenance():
     run("systemctl status nginx")
     exit()
 
+def updatePirate():
+    print("[PIRATECMS] Updating Pirate CMS...")
+    run("php "+"/var/www/"+config["folder"]+"/pirate/run/update.php")
+    print("[PIRATECMS] Done.")
+
 def uploadApp():
     print("[UPLOAD] Uploading app files...")
     uploading_directory = "/var/www/"+config["folder"]
@@ -167,13 +172,25 @@ def letsencrypt():
 
     print("[LETSENCRYPT] Done.")
 
+def uploadPHPIni():
+    print('[PIRATE.INI] Uploading Pirate.ini (PHP.ini config)...')
+    put('php.ini', '/etc/php/7.0/fpm/conf.d/pirate.ini')
+    put('php.ini', '/etc/php/7.0/cli/conf.d/pirate.ini')
+    run('service php7.0-fpm reload')
+    print('[PIRATE.INI] Done.')
 
 def deploy():
     compileSass()
     print('--')
     nginxMaintenance()
     print('--')
+    uploadPHPIni()
+    print('--')
     uploadApp()
+    
+    print('--')
+    updatePirate()
+
     print('--')
     letsencrypt()
     #print('--')

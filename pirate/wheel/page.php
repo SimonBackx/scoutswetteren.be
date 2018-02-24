@@ -55,3 +55,14 @@ class Page301 extends Page {
         return Template::render('301');
     }
 }
+
+// Temp
+class Page302 extends Page {
+    function getStatusCode() {
+        return 302;
+    }
+
+    function getContent() {
+        return Template::render('302');
+    }
+}

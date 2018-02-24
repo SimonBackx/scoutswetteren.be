@@ -38,9 +38,8 @@ class UploadPhoto extends Page {
         if ($image->upload('file', $sizes, $this->errors, $this->album)) {
             $this->image = $image;
 
-            if (!$this->album->isQueue()) {
-                $this->album->deleteZip();
-            }
+            $this->album->onImageAdded($image);
+            
             return 200;
         }
         return 400;

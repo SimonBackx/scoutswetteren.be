@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="7px" height="5px" viewBox="0 0 7 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>down</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M0.0620542678,4.33966572 L2.69217958,0.186059062 C2.81036424,-0.000583212342 3.05747529,-0.0560790776 3.24411756,0.0621055774 C3.29409212,0.0937502079 3.33642642,0.136084505 3.36807105,0.186059062 L5.99819636,4.33966572 C6.11638102,4.526308 6.06088515,4.77341905 5.87424288,4.8916037 C5.81022895,4.93213827 5.73601892,4.95365797 5.66025063,4.95365797 L0.4,4.95365797 C0.1790861,4.95365797 -3.22773439e-16,4.77457187 -5.55111512e-17,4.55365797 C3.61535497e-17,4.47788968 0.021519701,4.40367965 0.0620542678,4.33966572 Z" id="down" fill="#FF0000" transform="translate(3.030151, 2.476829) scale(1, -1) translate(-3.030151, -2.476829) "></path>
+    </g>
+</svg>

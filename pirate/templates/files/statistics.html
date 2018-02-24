@@ -1,0 +1,18 @@
+
+<h2>Statistieken</h2>
+
+<label>Beschikbaarheid op de server</label>
+
+<div class="progress purple">
+    <div style="width: {{ stats.availability_server }}%;"></div>
+    <div style="width: {{ stats.availability_working_server }}%; margin-left:{{ stats.availability_server }}%;"></div>
+</div>
+<div class="progress-text">{{ stats.size_server }} / {{ stats.size }}</div>
+
+<label>Beschikbaarheid op object storage</label>
+<div class="progress red">
+    <div style="width: {{ stats.availability_object_storage }}%;"></div>
+    <div style="width: {{ stats.availability_working_object_storage }}%; margin-left: {{ stats.availability_object_storage }}%;"></div>
+</div>
+<div class="progress-text">{{ stats.size_object_storage }} / {{ stats.size }}</div>
+
