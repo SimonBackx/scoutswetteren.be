@@ -117,6 +117,8 @@ class Sponsor extends Model {
             return false;
         }
 
+        $this->image->delete();
+
         $id = self::getDb()->escape_string($this->id);
 
         $query = "DELETE FROM sponsors WHERE sponsor_id = '$id'";

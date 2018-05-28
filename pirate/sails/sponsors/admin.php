@@ -27,6 +27,19 @@ class SponsorsAdminRouter extends Route {
             return true;
         }
 
+        if (count($parts) == 3 && $parts[0] == 'sponsors' && $parts[1] == 'delete') {
+            if (!is_numeric($parts[2])) {
+                return false;
+            }
+            
+            $this->sponsor = Sponsor::getSponsor(intval($parts[2]));
+            return isset($this->sponsor);
+        }
+
+        if (count($parts) == 1 && $parts[0] == 'sponsors') {
+            return true;
+        }
+
         return false;
     }
 
@@ -36,7 +49,12 @@ class SponsorsAdminRouter extends Route {
             return new Admin\Edit($this->sponsor);
         }
 
-        // todo: overview
-        return false;
+        if (isset($parts[1]) && $parts[1] == 'delete') {
+            require(__DIR__.'/admin/delete.php');
+            return new Admin\Delete($this->sponsor);
+        }
+
+        require(__DIR__.'/admin/overview.php');
+        return new Admin\Overview();
     }
 }

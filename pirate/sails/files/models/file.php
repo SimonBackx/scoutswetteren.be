@@ -776,6 +776,8 @@ class File extends Model {
            }
         }
 
+        // Todo: verwijderen van object storage
+
        return true;
     }
 }

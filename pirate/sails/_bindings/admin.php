@@ -4,7 +4,7 @@
 $admin_routes = array('leiding', 'maandplanning', 'leden', 'blog', 'verhuur', 'photos', 'dependencies', 'sponsors', 'groepsadmin');
 $admin_pages = array(
     '' => array(
-        array('priority' => true, 'name' => 'Mijn gegevens', 'url' => ''),
+        array('priority' => true, 'name' => 'Ik', 'url' => ''),
         array('name' => 'Maandplanning', 'url' => 'maandplanning'),
         array('name' => 'Foto\'s', 'url' => 'photos'),
         array('name' => 'Verhuur', 'url' => 'verhuur')
@@ -18,11 +18,13 @@ $admin_pages = array(
          array('priority' => true, 'name' => 'Verhuur', 'url' => 'verhuur')
     ),
     'oudercomite' => array(
-         array('priority' => true, 'name' => 'Verhuur', 'url' => 'verhuur')
+         array('priority' => true, 'name' => 'Verhuur', 'url' => 'verhuur'),
+         array('name' => 'Sponsors', 'url' => 'sponsors')
     ),
     'groepsleiding' => array(
         array('name' => 'Leiding', 'url' => 'leiding'),
-        array('name' => 'Verhuur', 'url' => 'verhuur')
+        array('name' => 'Verhuur', 'url' => 'verhuur'),
+        array('name' => 'Sponsors', 'url' => 'sponsors')
     ),
     'financieel' => array(
         array('priority' => true, 'name' => 'Rekeningen', 'url' => 'afrekeningen')

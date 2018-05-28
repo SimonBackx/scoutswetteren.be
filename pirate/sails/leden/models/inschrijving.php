@@ -110,7 +110,15 @@ class Inschrijving extends Model {
         return false;
     }
 
-    static function getScoutsjaar() {
+    static function getScoutsjaarFor($year, $month) {
+        if ($month >= self::$inschrijvings_start_maand) {
+            return $year;
+        } else {
+            return $year - 1;
+        }
+    }
+
+    static function getScoutsjaar($year = null) {
         if (is_null(self::$scoutsjaar_cache)) {
             $jaar = intval(date('Y'));
             $maand = intval(date('n'));

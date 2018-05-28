@@ -339,7 +339,7 @@ class Album extends Model {
                 join image_files i_f on i_f.imagefile_image = c.image_id
                 join files f on f.file_id = i_f.imagefile_file
                  '.$where.' 
-                order by YEAR(a.album_date_taken) desc, a.album_date desc, a.album_id desc '.$limit;
+                order by YEAR(a.album_date_taken) desc, a.album_date_taken desc, a.album_id desc '.$limit;
         
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){

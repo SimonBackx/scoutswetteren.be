@@ -435,7 +435,8 @@ class Image extends Model {
         }
 
         foreach ($this->sources as $source) {
-           if (unlink(realpath($source->file->getPath())) === false) {
+
+           if ($source->delete() === false) {
                 $errors[] = 'De foto is verwijderd uit de database, maar niet volledig uit het bestandssysteem (door een interne fout).';
                 return false;
            }

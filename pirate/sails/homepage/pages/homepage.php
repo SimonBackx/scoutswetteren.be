@@ -1,11 +1,10 @@
 <?php
 namespace Pirate\Sail\Homepage\Pages;
-use Pirate\Page\Page;
 use Pirate\Block\Block;
-use Pirate\Template\Template;
+use Pirate\Page\Page;
 
 // temp
-use Pirate\Model\Files\File;
+use Pirate\Template\Template;
 
 class Homepage extends Page {
 
@@ -16,7 +15,7 @@ class Homepage extends Page {
     function getContent() {
 
         // Block ophalen van maandplanning sail
-        
+
         $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
         $blog = Block::getBlock('Blog', 'Overview')->getContent();
 
@@ -26,10 +25,20 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
+                    'title' => 'De kampen komen eraan!',
+                    'text' => 'Kapoenenkamp: 1 - 5 augustus, Wouterkamp: 5 - 11 augustus, (Jong)giverskamp: 1 - 11 augustus. Info volgt via e-mail en huisbezoeken.',
+                ),
+
+                array(
+                    'title' => 'Groepsreis op paasmaandag ',
+                    'text' => 'Op 2 april is het weer groepsreis! We gaan zwemmen in S&R Rozenbroeken. Inschrijvingen zijn intussen gesloten.',
+                ),
+
+                array(
                     'title' => 'Inschrijven winterfeest ⛄️',
                     'text' => 'Op 25 februari is het weer ons jaarlijks eetfestijn. Inschrijven kan via de knop hieronder.',
                     'button' => array('text' => 'Inschrijven', 'url' => '/inschrijven-winterfeest'),
-                    'extra_button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/brief-winterfeest-2018.pdf')
+                    'extra_button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/brief-winterfeest-2018.pdf'),
                 ),
 
                 array(
@@ -40,14 +49,14 @@ class Homepage extends Page {
                 array(
                     'title' => 'Kerstwandeling',
                     'text' => 'Kom naar onze kerstwandeling op 15 december. Inschrijven kan via kerstwandeling@scoutswetteren.be, maar lees eerst bijhorende brief!',
-                    'button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/brief-kerstwandeling-2017.pdf')
+                    'button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/brief-kerstwandeling-2017.pdf'),
                 ),
             ),
             'call_to_action' => array(
                 'title' => 'Volg je kapoen',
                 'subtitle' => 'Doorheen het jaar en tijdens weekends en kampen posten we geregeld foto\'s en updates op onze facebook pagina.',
-                'button' => array('text' => 'Like onze pagina', 'url' => 'https://www.facebook.com/scoutsprinsboudewijn/')
-            )
+                'button' => array('text' => 'Like onze pagina', 'url' => 'https://www.facebook.com/scoutsprinsboudewijn/'),
+            ),
         ));
     }
 }

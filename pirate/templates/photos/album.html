@@ -11,7 +11,7 @@
     var grid = new photos.Grid({});
     grid.trackWidth(document.getElementById('album_container'));
     grid.margin = 8;
-    grid.max_height = 300;
+    grid.max_height = 400;
 
     var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
 

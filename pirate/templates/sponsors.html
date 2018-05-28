@@ -9,7 +9,7 @@
                 <h1>Onze sponsors</h1>
                 <h2>Bedankt om onze werking mogelijk te maken!</h2>
             </div>
-            <div id="sponsors">{% for sponsor in sponsors %}{% if sponsor.url is defined %}<a href="{{sponsor.url}}" rel="nofollow" title="{{sponsor.name}}" target="_blank">{% else %}<div>{%endif%}<img src="{{sponsor.src}}">{% if sponsor.url is defined%}</a>{% else %}</div>{%endif%}{% endfor %}</section>
+            <div id="sponsors">{% for sponsor in sponsors %}{% if sponsor.url is defined %}<a href="{{ sponsor.url }}" rel="nofollow" title="{{sponsor.name}}" target="_blank">{% else %}<div>{%endif%}<img src="{{sponsor.src}}">{% if sponsor.url is defined%}</a>{% else %}</div>{%endif%}{% endfor %}</section>
         </section>
     </main>
 {% endblock %}
