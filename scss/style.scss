@@ -257,6 +257,16 @@ a.button, button.button, input[type=submit] {
                 opacity: 0.6;
             }
         }
+
+        &.arrow-right {
+            background: url(../images/icon-button.svg) no-repeat right center;
+            padding-right: 20px;
+        }
+
+        &.arrow-left {
+            background: url(../images/icon-button-back.svg) no-repeat left center;
+            padding-left: 20px;
+        }
     }
 
     &.search {

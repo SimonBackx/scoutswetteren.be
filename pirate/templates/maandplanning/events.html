@@ -1,41 +1,47 @@
 <div>
-{% for day in days %}
-    <h1>{{ day.weekday }}<time datetime="{{ day.date_raw }}">{{ day.date }}</time></h1>
-    {% for activity in day.activities %}
-        <script type="application/ld+json">
-            {
-              "@context": "http://schema.org/",
-              "@type": "Event",
-              "name": {{ activity.name_js | raw}},
-              "organizer": {
-                "@type": "Organization",
-                "name": "Scouts Prins Boudewijn Wetteren",
+    <div>
+        <button class="button noborder arrow-left aubergine" onclick="previousWeek();">Vorige</button>
+        <button class="button noborder arrow-right aubergine" onclick="nextWeek();">Volgende week</button>
+    </div>
+    
+    {% for day in days %}
+        <h1>{{ day.weekday }}<time datetime="{{ day.date_raw }}">{{ day.date }}</time></h1>
+        {% for activity in day.activities %}
+            <script type="application/ld+json">
+                {
+                "@context": "http://schema.org/",
+                "@type": "Event",
+                "name": {{ activity.name_js | raw}},
+                "organizer": {
+                    "@type": "Organization",
+                    "name": "Scouts Prins Boudewijn Wetteren",
+                    "url": "https://www.scoutswetteren.be"
+                },
+                "startDate": "{{ activity.time_start_js }}",
+                "endDate": "{{ activity.time_start_js }}",
+                "location": {{ activity.location_js | raw }},
+                "performer": {
+                    "@type": "Organization",
+                    "name": "{{ activity.group }}"
+                },
                 "url": "https://www.scoutswetteren.be"
-              },
-              "startDate": "{{ activity.time_start_js }}",
-              "endDate": "{{ activity.time_start_js }}",
-              "location": {{ activity.location_js | raw }},
-              "performer": {
-                "@type": "Organization",
-                "name": "{{ activity.group }}"
-              },
-              "url": "https://www.scoutswetteren.be"
-            }
-            </script>
+                }
+                </script>
 
-        <article>
-            <div class="group column">
-                {{ activity.group }}
-            </div>
-            <time class="time column" datetime="{{ activity.time_raw }}">
-                {{ activity.time }}
-            </time>
-            <div class="description column">
-                {{ activity.description }}
-            </div>
-        </article>
+            <article>
+                <div class="group column">
+                    {{ activity.group }}
+                </div>
+                <time class="time column" datetime="{{ activity.time_raw }}">
+                    {{ activity.time }}
+                </time>
+                <div class="description column">
+                    {{ activity.description }}
+                </div>
+            </article>
+        {% endfor %}
+    {% else %}
+        <h1>Geen activiteiten deze week</h1>
     {% endfor %}
-{% else %}
-    <h1>Geen activiteiten deze week</h1>
-{% endfor %}
+    
 </div>

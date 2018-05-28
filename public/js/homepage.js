@@ -8,13 +8,13 @@ $( document ).ready(function() {
 
     $('.calendar .next').click(function() {
         var current = new Date($(this).parent().children('.month').attr('datetime'));
-        current.setMonth(current.getMonth()+1);
+        current.setMonth(current.getMonth()+1, true);
         goToMonth(current);
     });
 
     $('.calendar .previous').click(function() {
         var current = new Date($(this).parent().children('.month').attr('datetime'));
-        current.setMonth(current.getMonth()-1);
+        current.setMonth(current.getMonth()-1, true);
         goToMonth(current);
     });
 
@@ -64,8 +64,36 @@ function bindMaandplanning() {
     });
 }
 
-function goToMonth(firstday) {
+function nextWeek() {
+    var current_week = $('.calendar .row.selected');
+    var selected_days = $('.calendar .row.selected').find('time');
+    var next_week = current_week.next('.row');
+    var current = stringToDate(selected_days.first().attr('datetime'));
+
+    var first_date = current.addDays(7);
+    console.log(first_date);
+
+    goToMonth(first_date, false);
+}
+
+function previousWeek() {
+    var current_week = $('.calendar .row.selected');
+    var selected_days = $('.calendar .row.selected').find('time');
+    var next_week = current_week.next('.row');
+    var current = stringToDate(selected_days.first().attr('datetime'));
+
+    var first_date = current.addDays(-7);
+    console.log(first_date);
+
+    goToMonth(first_date, false);
+}
+
+function goToMonth(selected_day, jump_today) {
+    var firstday = new Date(selected_day.getTime());
+    firstday.setDate(1);
+    console.log(firstday);
     console.log(dateToString(firstday));
+
     // keep running back until we reach a monday
     var day = firstday.getMonday();
     console.log(dateToString(day));
@@ -79,6 +107,7 @@ function goToMonth(firstday) {
     var week = -1;
 
     var today = new Date().toDateString();
+    var selected_day_string = selected_day.toDateString();
     var month = firstday.getMonth();
 
     var data = [];
@@ -91,6 +120,7 @@ function goToMonth(firstday) {
         }
 
         var is_today = (today == day.toDateString());
+        var is_selected_day = (selected_day_string == day.toDateString()) && week != 0;
 
         data[data.length-1]['days'].push({
             'day': day.getDate(),
@@ -99,11 +129,18 @@ function goToMonth(firstday) {
             'datetime': day.getFullYear()+'-'+(day.getMonth()+1)+'-'+day.getDate()
         });
 
-        if (is_today) {
+        if (is_today && jump_today) {
             data[0]['is_selected'] = false;
             data[data.length-1]['is_selected'] = true;
 
             firstday_calendar = new Date().getMonday();
+        }
+
+        if (is_selected_day && !jump_today) {
+            data[0]['is_selected'] = false;
+            data[data.length-1]['is_selected'] = true;
+
+            firstday_calendar = selected_day.getMonday();
         }
 
 
