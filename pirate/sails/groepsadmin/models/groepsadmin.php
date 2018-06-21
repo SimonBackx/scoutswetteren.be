@@ -1,156 +1,114 @@
 <?php
 namespace Pirate\Model\Groepsadmin;
 use Pirate\Model\Model;
+use Pirate\Curl\Curl;
+use Pirate\Curl\Method;
+use Pirate\Curl\DataType;
 
 class Groepsadmin {
     private $access_token = '';
     public $logged_in = false;
     public $ledenlijst = null;
 
+    // Todo: voeg dit toe aan de database configuratie!
+    private $username = "simonb";
+    private $password = "o2209g";
+    private $groepsNummer = "O2209G";
+
     function __construct() {
     }
 
-    function Login() {
-        try {
-            
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => 'https://login.scoutsengidsenvlaanderen.be/auth/realms/scouts/protocol/openid-connect/token',
-                CURLOPT_USERAGENT => 'cURL Request',
-                CURLOPT_POST => 1,
-                CURLOPT_POSTFIELDS => 'client_id=groepsadmin-production-client&username=simonb&password=o2209g&grant_type=password',
-                CURLOPT_HTTPHEADER => array('Content-Type: application/x-www-form-urlencoded')
-            ));
-
-            $result = curl_exec($curl);
-            
-            if (!$result) {
-                return false;
-            }
-
-            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            if ($status == 200) {
-                // decode json
-                $data = @json_decode($result, true);
-                if (isset($data["access_token"])) {
-                    $this->access_token = $data["access_token"];
-                    $this->logged_in = true;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        catch (Exception $e) {
-            return false;
-        }
+    private function authenticatedRequest($method, $url, $headers = [], $data_type = DataType::urlencoded, $data = null) {
+        $headers[] = 'Authorization: Bearer '.$this->access_token;
+        return Curl::request($method, $url, $headers, $data_type, $data);
     }
 
-    function SetFilter() {
-        $content = '{"criteria":{"groepen":[],"functies":["d5f75b320b812440010b812554790354","d5f75b320b812440010b812555de03a2","d5f75b320b812440010b8125567703cb","d5f75b320b812440010b812555db03a1","d5f75b320b812440010b812555d603a0","d5f75b320b812440010b812555c7039d","d5f75b320b812440010b8125565203c1","d5f75b320b812440010b812555380380","d5f75b320b812440010b812555c1039b"],"oudleden":false},"kolommen":["be.vvksm.groepsadmin.model.column.LidNummerColumn","be.vvksm.groepsadmin.model.column.VoornaamColumn","be.vvksm.groepsadmin.model.column.AchternaamColumn","be.vvksm.groepsadmin.model.column.GeboorteDatumColumn","be.vvksm.groepsadmin.model.column.VVKSMFunktiesColumn"],"groepen":[],"sortering":[],"type":"groep","links":[{"rel":"self","href":"http://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst/filter/39a96d045785391a015787429ac35753","method":"GET","secties":[]}]}';
+    function login() {
+        $response = Curl::request(Method::POST, 'https://login.scoutsengidsenvlaanderen.be/auth/realms/scouts/protocol/openid-connect/token', [], DataType::urlencoded, [
+            'client_id' => 'groepsadmin-production-client',
+            'username' => $this->username,
+            'password' => $this->password,
+            'grant_type' => 'password',
+        ]);
         
-        try {            
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst/filter/huidige',
-                CURLOPT_HTTPHEADER => array('Content-Type: application/json;charset=UTF-8', 'Authorization: Bearer '.$this->access_token),
-                CURLOPT_POSTFIELDS => $content,
-                CURLOPT_CUSTOMREQUEST => 'PATCH',
-            ));
-
-            $result = curl_exec($curl);
-            
-            if (!$result) {
-                return false;
-            }
-
-            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            if ($status == 200) {
-               return true;
-            }
-
+        if (!isset($response)) {
             return false;
         }
-        catch (Exception $e) {
-            return false;
+
+        if (isset($response["access_token"])) {
+            $this->access_token = $response["access_token"];
+            $this->logged_in = true;
+            return true;
         }
+
+        return false;
+    }
+
+    private function setFilter() {
+        $response = static::authenticatedRequest(Method::PATCH, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst/filter/huidige', [], DataType::json, [
+            'criteria' => [
+                'groepen' => [$this->groepsNummer],
+                'functies' => ["d5f75b320b812440010b812554790354","d5f75b320b812440010b812555de03a2","d5f75b320b812440010b8125567703cb","d5f75b320b812440010b812555db03a1","d5f75b320b812440010b812555d603a0","d5f75b320b812440010b812555c7039d","d5f75b320b812440010b8125565203c1","d5f75b320b812440010b812555380380","d5f75b320b812440010b812555c1039b"],
+                'oudleden' => false,
+            ],
+            'kolommen' => ["be.vvksm.groepsadmin.model.column.LidNummerColumn","be.vvksm.groepsadmin.model.column.VoornaamColumn","be.vvksm.groepsadmin.model.column.AchternaamColumn","be.vvksm.groepsadmin.model.column.GeboorteDatumColumn","be.vvksm.groepsadmin.model.column.VVKSMFunktiesColumn"],
+            'sortering' => ["be.vvksm.groepsadmin.model.column.LidNummerColumn"],
+            "type" => "lid",
+            "groep" => $this->groepsNummer,
+        ]);
+
+        return isset($response);
     }
 
     // Return false on fail, array on success
-    function DownloadLedenlijst($offset = 0) {
-        // todo: filter goed instellen zodat juiste velden enzo worden weergegeven!
-        
-        try {            
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-                CURLOPT_RETURNTRANSFER => 1,
-                CURLOPT_URL => 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst?aantal=100&offset='.$offset,
-                CURLOPT_HTTPHEADER => array('Content-Type: application/json', 'Authorization: Bearer '.$this->access_token)
-            ));
+    private function downloadLedenlijst($offset = 0) {
+        $response = static::authenticatedRequest(Method::GET, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst?aantal=100&offset='.urlencode($offset));
+        if (!isset($response)) {
+            return null;
+        }
 
-            $result = curl_exec($curl);
+        if (isset($response["aantal"])) {
+            $aantal = $response["aantal"]; // aantal teruggegeven leden
+            $totaal = $response["totaal"]; // totaal aantal leden
+
+            // lees leden in
             
-            if (!$result) {
-                return false;
+            $leden = array();
+            foreach ($response['leden'] as $lid_data) {
+                $lid = new GroepsadminLid($lid_data);
+                $leden[] = $lid;
             }
 
-            $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            curl_close($curl);
-
-            if ($status == 200) {
-                // decode json
-                $data = @json_decode($result, true);
-                if (isset($data["aantal"])) {
-                    $aantal = $data["aantal"]; // aantal teruggegeven leden
-                    $totaal = $data["totaal"]; // totaal aantal leden
-
-                    // lees leden in
-                    
-                    $leden = array();
-                    foreach ($data['leden'] as $lid_data) {
-                        $lid = new GroepsadminLid($lid_data);
-                        $leden[] = $lid;
-                    }
-
-                    if ($totaal > count($leden)+$offset) {
-                        $extra = $this->DownloadLedenlijst(count($leden) + $offset);
-                        if (!$extra) {
-                            return false;
-                        }
-                        $leden = array_merge($leden, $extra);
-                    }
-                    
-                    return $leden;
+            if ($totaal > count($leden)+$offset) {
+                $extra = $this->downloadLedenlijst(count($leden) + $offset);
+                if (!isset($extra)) {
+                    return null;
                 }
+                $leden = array_merge($leden, $extra);
             }
-
-            return false;
-        }
-        catch (Exception $e) {
-            return false;
+            
+            return $leden;
         }
 
-        // return false on 
+        return null;
     }
 
-    function GetLedenlijst() {
+    function getLedenlijst() {
         if (!$this->logged_in) {
+            echo "Login failed";
             return false;
         }
-        if (!$this->SetFilter()) {
+        if (!$this->setFilter()) {
+            echo "Filter failed";
             return false;
         }
 
-        $this->ledenlijst = $this->DownloadLedenlijst();
-        if ($this->ledenlijst) {
+        $this->ledenlijst = $this->downloadLedenlijst();
+        if (isset($this->ledenlijst)) {
             return true;
         }
+
+        echo "downloadLedenlijst failed";
         $this->ledenlijst = null;
         return false;
     }

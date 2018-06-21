@@ -16,12 +16,12 @@ services:
     php:
         links:
          - db
-        build: ./docker/update-pirate
+        build: ./
         volumes:
-         - ./files:/var/www/scoutswetteren.dev/files
-         - ./pirate:/var/www/scoutswetteren.dev/pirate
-         - ./public:/var/www/scoutswetteren.dev/public
-         - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
+         - .../files:/var/www/scoutswetteren.dev/files
+         - ../pirate:/var/www/scoutswetteren.dev/pirate
+         - ../public:/var/www/scoutswetteren.dev/public
+         - ../config/php.ini:/usr/local/etc/php/conf.d/custom.ini
         environment:
          - DEBUG=1
         depends_on:
@@ -36,11 +36,10 @@ services:
              - "80:80"
              - "443:443"
         volumes:
-             - ./files:/var/www/scoutswetteren.dev/files
-             - ./pirate:/var/www/scoutswetteren.dev/pirate
-             - ./public:/var/www/scoutswetteren.dev/public
+             - ../files:/var/www/scoutswetteren.dev/files
+             - ../pirate:/var/www/scoutswetteren.dev/pirate
+             - ../public:/var/www/scoutswetteren.dev/public
              - ./nginx.conf:/etc/nginx/conf.d/site.conf
-             - ./error.log:/var/log/nginx/error.log
              - ./certs:/etc/nginx/certs
         depends_on:
              - php

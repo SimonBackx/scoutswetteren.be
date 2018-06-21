@@ -45,8 +45,8 @@ class Check extends Page {
 
     function getContent() {
         $groepsadmin = new Groepsadmin();
-        if ($groepsadmin->Login()) {
-            if ($groepsadmin->GetLedenlijst()) {
+        if ($groepsadmin->login()) {
+            if ($groepsadmin->getLedenlijst()) {
                 // Leden ophalen
                 $leden = Ouder::getOuders(null, null, true);
 

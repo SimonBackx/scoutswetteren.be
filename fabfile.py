@@ -8,7 +8,7 @@ import yaml
 output['running'] = False
 
 try:
-    stream = file('settings.yml', 'r')    # 'document.yaml' contains a single YAML document.
+    stream = file('config/settings.yml', 'r')    # 'document.yaml' contains a single YAML document.
 except IOError:
     print("Configfile settings.yml doesn\'t exist.")
     exit()
@@ -66,7 +66,7 @@ def nginx():
     removeCustomMaintenance()
 
     print("[NGINX] Uploading and enabling configuration file /etc/nginx/sites-available/"+config["folder"]+".conf")
-    put("nginx.production.conf", "/etc/nginx/sites-available/"+config["folder"]+".conf")
+    put("config/nginx.production.conf", "/etc/nginx/sites-available/"+config["folder"]+".conf")
     run("ln -sf /etc/nginx/sites-available/"+config["folder"]+".conf /etc/nginx/sites-enabled/")
     run("service nginx reload")
     print ("[NGINX] Done. Nginx reloaded.")
@@ -79,11 +79,11 @@ def nginxMaintenance():
         run("rm /etc/nginx/sites-enabled/"+config["folder"]+".conf")
 
     print('[NGINX] Adding default maintenance file... (nginx.maintenance.default.conf)')
-    put("nginx.maintenance.default.conf", "/etc/nginx/sites-available/maintenance.default.conf")
+    put("config/nginx.maintenance.default.conf", "/etc/nginx/sites-available/maintenance.default.conf")
     run("ln -sf /etc/nginx/sites-available/maintenance.default.conf /etc/nginx/sites-enabled/")
     
     print('[NGINX] Adding custom maintenance file...(nginx.maintenance.conf)')
-    put("nginx.maintenance.conf", "/etc/nginx/sites-available/"+config["folder"]+".maintenance.conf")
+    put("config/nginx.maintenance.conf", "/etc/nginx/sites-available/"+config["folder"]+".maintenance.conf")
     run("ln -sf /etc/nginx/sites-available/"+config["folder"]+".maintenance.conf /etc/nginx/sites-enabled/")
 
     print('[NGINX] Creating maintenance root in /var/www/maintenance')
@@ -174,8 +174,8 @@ def letsencrypt():
 
 def uploadPHPIni():
     print('[PIRATE.INI] Uploading Pirate.ini (PHP.ini config)...')
-    put('php.ini', '/etc/php/7.0/fpm/conf.d/pirate.ini')
-    put('php.ini', '/etc/php/7.0/cli/conf.d/pirate.ini')
+    put('config/php.ini', '/etc/php/7.0/fpm/conf.d/pirate.ini')
+    put('config/php.ini', '/etc/php/7.0/cli/conf.d/pirate.ini')
     run('service php7.0-fpm reload')
     print('[PIRATE.INI] Done.')
 

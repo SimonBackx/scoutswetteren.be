@@ -32,6 +32,7 @@ class Ship {
         require(__DIR__.'/mail.php');
         require(__DIR__.'/dependencies.php');
         require(__DIR__.'/cronjob.php');
+        require(__DIR__.'/curl.php');
 
         // Loading Sails's services with certain priority level
         Database::init();
