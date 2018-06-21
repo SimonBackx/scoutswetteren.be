@@ -371,6 +371,15 @@ class Lid extends Model {
         return $this->inschrijving->scoutsjaar == Inschrijving::getScoutsjaar();
     }
 
+    // Bv. Jin van vorig jaar is niet meer inschrijfbaar (of bv na takherverdeling)
+    function isInschrijfbaar() {
+        $tak = $this->getTakVoorHuidigScoutsjaar();
+        if ($tak === false) {
+            return false;
+        }
+        return true;
+    }
+
     function heeftSteekkaart() {
         if (empty($this->steekkaart)) {
             return false;
@@ -401,6 +410,9 @@ class Lid extends Model {
     }
 
     function schrijfIn() {
+        if (!$this->isInschrijfbaar()) {
+            return false;
+        }
         return Inschrijving::schrijfIn($this);
     }
 

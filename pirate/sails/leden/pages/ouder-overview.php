@@ -48,7 +48,7 @@ class OuderOverview extends Page {
         
         // Tweede: controleren of alles steekkaarten van deze leden recent zijn nagekeken of bestaan
         foreach ($leden as $lid) {
-            if ( ($lid->isIngeschreven() || empty($lid->inschrijving)) // Ingeschreven of zal automatisch worden ingeschreven
+            if ($lid->isInschrijfbaar() && ($lid->isIngeschreven() || empty($lid->inschrijving)) // Ingeschreven of zal automatisch worden ingeschreven
                   && 
                  (empty($lid->steekkaart) || $lid->steekkaart->moetNagekekenWorden()) // Steekkaart niet in orde
             ) {
@@ -65,14 +65,14 @@ class OuderOverview extends Page {
         // Alle nog nooit ingeschreven leden (nieuwe leden), nu pas inschrijven (nadat hun steekkaart dus is ingevuld)
         
         foreach ($leden as $lid) {
-            if (empty($lid->inschrijving)) {
+            if ($lid->isInschrijfbaar() && empty($lid->inschrijving)) {
                 $lid->schrijfIn();
             }
         }
 
         // Nakijken
         foreach ($leden as $lid) {
-            if ($lid->moetNagekekenWorden()) {
+            if ($lid->isInschrijfbaar() && $lid->moetNagekekenWorden()) {
                 $this->redirect = "ouders/lid-aanpassen/".$lid->id;
                 return 302;
             }
@@ -88,7 +88,7 @@ class OuderOverview extends Page {
         $inschrijvingen_afrekenen = array();
         $leden_waarvoor_afgerekend = array();
         foreach ($leden as $lid) {
-            if (!empty($lid->inschrijving) && $lid->isIngeschreven() && empty($lid->inschrijving->afrekening)) {
+            if ($lid->isIngeschreven() && empty($lid->inschrijving->afrekening)) {
                 $inschrijvingen_afrekenen[] = $lid->inschrijving;
                 $leden_waarvoor_afgerekend[] = $lid;
             }

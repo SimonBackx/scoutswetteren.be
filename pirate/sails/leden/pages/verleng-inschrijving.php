@@ -25,8 +25,14 @@ class VerlengInschrijving extends Page {
         $errors = array();
 
         $al_ingeschreven = array();
+        $niet_inschrijfbaar = array();
 
         foreach ($leden_allemaal as $lid) {
+            if (!$lid->isInschrijfbaar()) {
+                $niet_inschrijfbaar[] = $lid;
+                continue;
+            }
+
             if (!$lid->isIngeschreven() && isset($lid->inschrijving)) {
                 $leden[] = $lid;
             } else {
@@ -75,11 +81,11 @@ class VerlengInschrijving extends Page {
                 header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
             }
         }
-
         
         return Template::render('leden/verleng-inschrijving', array(
             'leden' => $leden,
             'al_ingeschreven' => $al_ingeschreven,
+            'niet_inschrijfbaar' => $niet_inschrijfbaar,
             'scoutsjaar' => $scoutsjaar,
             'success' => $success,
             'errors' => $errors

@@ -46,6 +46,10 @@
                             </ul>
                         {% endif %}
 
+                        {% for lid in niet_inschrijfbaar %}
+                            <p><strong>Opgelet: {{ lid.voornaam }} {{ lid.achternaam }} kan niet meer ingeschreven worden (leeftijd). Kijk na of hij / zij niet te oud is en over moet gaan naar de leidingingsploeg. Indien er een speciale regeling is i.v.m. een jin jaar (bv. door een 4e giverjaar) contacteer je best de leidingsploeg om dit probleem op te lossen.</strong></p>
+                        {% endfor %}
+
                         {% for lid in leden %}
                             <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" name="leden[]" value="{{ lid.id }}"{% if lid.inschrijving.scoutsjaar == scoutsjaar-1 %} checked{% endif %}>
                             <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }})</label>
