@@ -9,6 +9,7 @@ use Pirate\Model\Leden\Ouder;
 
 class Lid extends Model {
     public $id;
+    public $lidnummer;
     public $gezin; // Gezin object
     public $voornaam;
     public $achternaam;
@@ -36,6 +37,7 @@ class Lid extends Model {
             $this->gezin = null;
         }
 
+        $this->lidnummer = $row['lidnummer'];
         $this->voornaam = $row['voornaam'];
         $this->achternaam = $row['achternaam'];
         $this->geslacht = $row['geslacht'];
@@ -294,6 +296,35 @@ class Lid extends Model {
         return $leden;
     }
 
+    // Geef alle ingeschreven leden terug
+    // Met ingevulde ouder objecten
+    // Enkel gebruiken als je de ouder objecten nodig hebt
+    static function getLedenFull() {
+        $leden = Ouder::getOuders(null, null, true);
+        $ouders = Ouder::getOuders();
+
+        $gezinnen = [];
+        foreach ($ouders as $ouder) {
+            if (isset($gezinnen[$ouder->gezin->id])) {
+                $ouder->gezin = $gezinnen[$ouder->gezin->id];
+            } else {
+                $gezinnen[$ouder->gezin->id] = $ouder->gezin;
+            }
+            $ouder->gezin->ouders[] = $ouder;
+        }
+
+        foreach ($leden as $lid) {
+            if (isset($gezinnen[$ouder->gezin->id])) {
+                $lid->gezin = $gezinnen[$ouder->gezin->id];
+                $lid->ouders = $lid->gezin->ouders;
+            } else {
+                // Hmmm... Dit kan eigenlijk niet gebeuren
+            }
+        }
+
+        return $leden;
+    }
+
     // Geeft ook ouders mee
     static function getLedenForTakFull($tak) {
         $tak = self::getDb()->escape_string($tak);
@@ -322,47 +353,6 @@ class Lid extends Model {
         
         return $leden;
     }
-
-    /*static function getLeden($filter = null, $tak = null) {
-        $where = '';
-
-        if (!is_null($filter)) {
-            if (isset(Ouder::$filters[$filter])) {
-                $filter = Ouder::$filters[$filter];
-                $where = $filter['where'];
-            }
-        }
-        if (!is_null($tak)) {
-            if (strlen($where) > 0)
-                $where .= ' AND ';
-            $where .= 'i.tak = "'.self::getDb()->escape_string($tak).'"';
-        }
-
-        if (strlen($where) > 0)
-            $where = 'WHERE '.$where;
-
-        $scoutsjaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
-
-        $leden = array();
-        $query = '
-            SELECT l.*, i.*, s.*, g.* from leden l
-                left join steekkaarten s on s.lid = l.id
-                left join gezinnen g on g.gezin_id = l.gezin
-                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
-            '.$where.'
-            order by year(l.geboortedatum) desc, l.voornaam';
-
-
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
-                while ($row = $result->fetch_assoc()) {
-                    $leden[] = new Lid($row);
-                }
-            }
-        }
-        
-        return $leden;
-    }*/
 
     function isIngeschreven() {
         if (empty($this->inschrijving)) {
@@ -407,6 +397,13 @@ class Lid extends Model {
 
     function getTakVoorHuidigScoutsjaar() {
         return self::getTak(intval($this->geboortedatum->format('Y')));
+    }
+
+    function getTakVoorInschrijving() {
+        if ($this->isIngeschreven()) {
+            return $this->inschrijving->tak;
+        }
+        return null;
     }
 
     function schrijfIn() {
@@ -508,6 +505,11 @@ class Lid extends Model {
             $gsm = "'".self::getDb()->escape_string($this->gsm)."'";
         }
 
+        if (!isset($this->lidnummer)) {
+            $lidnummer = "NULL";
+        } else {
+            $lidnummer = "'".self::getDb()->escape_string($this->lidnummer)."'";
+        }
 
         $voornaam = self::getDb()->escape_string($this->voornaam);
         $achternaam = self::getDb()->escape_string($this->achternaam);
@@ -521,8 +523,8 @@ class Lid extends Model {
             $gezin = self::getDb()->escape_string($this->gezin->id);
 
             $query = "INSERT INTO 
-                leden (`gezin`,  `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`)
-                VALUES ('$gezin', '$voornaam', '$achternaam', '$geslacht', '$geboortedatum', $gsm)";
+                leden (`gezin`, `lidnummer`, `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`)
+                VALUES ('$gezin', $lidnummer, '$voornaam', '$achternaam', '$geslacht', '$geboortedatum', $gsm)";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE leden 
@@ -531,7 +533,8 @@ class Lid extends Model {
                  `achternaam` = '$achternaam',
                  `geslacht` = '$geslacht',
                  `geboortedatum` = '$geboortedatum',
-                 `gsm` = $gsm
+                 `gsm` = $gsm,
+                 `lidnummer` = $lidnummer
                  where id = '$id' 
             ";
         }

@@ -86,6 +86,25 @@ class Mail {
     function send() {
         global $config;
 
+        if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
+            // Forceer versturen naar website@scoustwetteren.be
+            // + behoud substitutions van eerste email!
+            $first_personalization = $this->sendgrid_mail->personalization[0];
+            $substitutions = $first_personalization->getSubstitutions();
+            if (!isset($substitutions)) {
+                $substitutions = [];
+            }
+
+            $new_substitutions = [];
+            // % tekens terug weghalen uit keys
+            foreach ($substitutions as $key => $value) {
+                $new_substitutions[substr($key, 1, count($key) - 2)] = $value;
+            }
+
+            $this->sendgrid_mail->personalization = [];
+            $this->addTo($config['development_mail']['mail'], $new_substitutions, $config['development_mail']['name']);
+        }
+
         $sg = new \SendGrid($config['sendgrid']['key']);
         $response = $sg->client->mail()->send()->post($this->sendgrid_mail);
         $status = intval($response->statusCode());

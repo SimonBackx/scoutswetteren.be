@@ -10,6 +10,8 @@ class Gezin extends Model {
     public $scouting_op_maat;
     public $scoutsjaar_checked;
 
+    public $ouders = array(); // wordt enkel door speciale toepassingen gebruikt, niet automatisch opgevuld
+
     function __construct($row = array()) {
         if (count($row) == 0) {
             return;

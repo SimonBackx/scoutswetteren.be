@@ -8,7 +8,7 @@
         <div class="list-bundle">
         {% for lid in niet_aanwezig_in_groepsadmin %}
             <article class="list">
-                <div class="small column">{{ lid.lid.getTakVoorHuidigScoutsjaar() | capitalize }}</div>
+                <div class="small column">{{ lid.lid.getTakVoorInschrijving() | capitalize }}</div>
 
                 <div class="medium merlot column">{{ lid.lid.voornaam }} {{ lid.lid.achternaam }}</div>
                 <div class="small column">{{ lid.geboortedatum }}</div>
