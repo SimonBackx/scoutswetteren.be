@@ -2,11 +2,22 @@
 
 namespace Pirate\Sail\Leiding;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Leiding\Leiding;
 
-class LeidingAdminRouter extends Route {
+class LeidingAdminRouter extends AdminRoute {
     private $leiding = null;
+
+    static function getAvailablePages() {
+        return [
+            '' => [
+                array('priority' => 1000, 'name' => 'Ik', 'url' => ''),
+            ],
+            'groepsleiding' => [
+                array('priority' => 200, 'name' => 'Leiding', 'url' => 'leiding'),
+            ],
+        ];
+    }
 
     function doMatch($url, $parts) {
         if (empty($url)) {

@@ -1,11 +1,15 @@
 <?php
 namespace Pirate\Sail\Dependencies;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Leiding\Leiding;
 
-class DependenciesAdminRouter extends Route {
+class DependenciesAdminRouter extends AdminRoute {
     private $leiding = null;
+
+    static function getAvailablePages() {
+        return [];
+    }
 
     function doMatch($url, $parts) {
         if (!Leiding::hasPermission('webmaster')) {

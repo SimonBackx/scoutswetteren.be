@@ -1,10 +1,21 @@
 <?php
 namespace Pirate\Sail\Maandplanning;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 
-class MaandplanningAdminRouter extends Route {
+class MaandplanningAdminRouter extends AdminRoute {
     private $id = null;
+
+    static function getAvailablePages() {
+        return [
+            '' => [
+                array('name' => 'Kalender', 'url' => 'maandplanning'),
+            ],
+            'leiding' => [
+                array('priority' => 100, 'name' => 'Maandplanning', 'url' => 'maandplanning'),
+            ],
+        ];
+    }
 
     function doMatch($url, $parts) {
         if (isset($parts[0]) && $parts[0] == 'maandplanning') {

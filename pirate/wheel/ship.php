@@ -2,6 +2,7 @@
 namespace Pirate;
 use \Pirate\Database\Database;
 use Pirate\Model\Model;
+use Pirate\Model\Migrations\Migration;
 
 class Ship {
     private $router;
@@ -28,6 +29,9 @@ class Ship {
         // Loading all builtin stuff
         require(__DIR__.'/template.php');
         require(__DIR__.'/database.php');
+        require(__DIR__.'/classes.php');
+        Classes::setupAutoload();
+
         require(__DIR__.'/model.php');
         require(__DIR__.'/mail.php');
         require(__DIR__.'/dependencies.php');
@@ -112,6 +116,10 @@ class Ship {
             return false;
         }
 
+        if (!Migration::upgrade()) {
+            echo "ERR. Migrations failed!\n";
+            return false;
+        }
 
         if (!Cronjob\Cronjobs::install()) {
             echo "ERR. Cronjob installation failed!\n";

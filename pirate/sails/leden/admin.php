@@ -1,20 +1,31 @@
 <?php
 namespace Pirate\Sail\Leden;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Afrekening;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Leden\Inschrijving;
 
-class LedenAdminRouter extends Route {
+class LedenAdminRouter extends AdminRoute {
     private $lid = null;
     private $gezin = null;
     private $inschakelen = false;
     private $afrekening = null;
     private $tak = null;
     private $jaar = null;
+
+    static function getAvailablePages() {
+        return [
+            'leiding' => array(
+                array('priority' => 100, 'name' => 'Leden', 'url' => 'inschrijvingen')
+            ),
+            'financieel' => array(
+                array('priority' => 2, 'name' => 'Rekeningen', 'url' => 'afrekeningen')
+            ),
+        ];
+    }
 
     function doMatch($url, $parts) {
         if ($url == 'afrekeningen') {

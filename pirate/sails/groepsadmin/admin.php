@@ -1,9 +1,13 @@
 <?php
 namespace Pirate\Sail\Groepsadmin;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 
-class GroepsadminAdminRouter extends Route {
+class GroepsadminAdminRouter extends AdminRoute {
+    static function getAvailablePages() {
+        return [];
+    }
+
     function doMatch($url, $parts) {
         if ($url == 'groepsadmin') {
             return true;

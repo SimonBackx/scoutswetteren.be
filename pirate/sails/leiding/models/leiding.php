@@ -394,28 +394,49 @@ class Leiding extends Model {
         }
 
         include(__DIR__.'/../../_bindings/admin.php');
-        $priorityButtons = array();
-        $allButtons = array();
-        $urls = array();
+
+        $allButtons = [];
+        $urls = [];
+        $ignoreButtons = [];
+
         foreach ($admin_pages as $permission => $buttons) {
             if ($permission == '' || self::hasPermission($permission)) {
                 foreach ($buttons as $button) {
+                    $priority = isset($button['priority']) ? $button['priority'] : 0;
+
                     if (isset($urls[$button['url']])) {
-                        continue;
-                    } else {
-                        $urls[$button['url']] = true;
+                        $o = $urls[$button['url']];
+                        if ($priority <= $o->priority) {
+                            continue;
+                        }
+                        
+                        // Remove old button
+                        $allButtons[$o->priority] = array_splice($allButtons[$o->priority], $o->index, 1);
+                    } 
+
+                    if (!isset($allButtons[$priority])) {
+                        $allButtons[$priority] = [];
                     }
 
-                    if (isset($button['priority']) && $button['priority'] == true) {
-                        $priorityButtons[] = $button;
-                    } else {
-                        $allButtons[] = $button;
-                    }
+                    $urls[$button['url']] = (object) [
+                        'priority' => $priority,
+                        'index' => count($allButtons[$priority])
+                    ];
+
+                    $allButtons[$priority][] = $button;
                 }
             }
         }
-        self::$adminMenu = array_merge($priorityButtons, $allButtons);
-        return self::$adminMenu;
+
+        ksort($allButtons);
+
+        $sortedButtons = [];
+
+        foreach ($allButtons as $priority => $buttons) {
+            $sortedButtons = array_merge($buttons, $sortedButtons);
+        }
+
+        return $sortedButtons;
     }
 
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies

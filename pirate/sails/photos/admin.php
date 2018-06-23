@@ -1,12 +1,20 @@
 <?php
 namespace Pirate\Sail\Photos;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Files\Album;
 use Pirate\Model\Leiding\Leiding;
 
-class PhotosAdminRouter extends Route {
+class PhotosAdminRouter extends AdminRoute {
     private $album = null;
+
+    static function getAvailablePages() {
+        return [
+            '' => array(
+                array('name' => 'Foto\'s', 'url' => 'photos'),
+            ),
+        ];
+    }
 
     function doMatch($url, $parts) {
         if ($url == 'photos/upload') {

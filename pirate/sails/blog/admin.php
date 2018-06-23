@@ -1,10 +1,14 @@
 <?php
 namespace Pirate\Sail\Blog;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 
-class BlogAdminRouter extends Route {
+class BlogAdminRouter extends AdminRoute {
     private $id;
+
+    static function getAvailablePages() {
+        return [];
+    }
 
     function doMatch($url, $parts) {
         if (isset($parts[0]) && $parts[0] == 'blog') {

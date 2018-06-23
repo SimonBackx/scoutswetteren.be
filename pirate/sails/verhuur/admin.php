@@ -1,12 +1,29 @@
 <?php
 namespace Pirate\Sail\Verhuur;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Leiding\Leiding;
 
-class VerhuurAdminRouter extends Route {
+class VerhuurAdminRouter extends AdminRoute {
     private $id = null;
     private $future_only = true;
+
+    static function getAvailablePages() {
+        return [
+            '' => array(
+                array('name' => 'Verhuur', 'url' => 'verhuur')
+            ),
+            'verhuur' => array(
+                array('priority' => 100, 'name' => 'Verhuur', 'url' => 'verhuur')
+            ),
+            'oudercomite' => array(
+                array('priority' => 100, 'name' => 'Verhuur', 'url' => 'verhuur'),
+            ),
+            'materiaalmeester' => array(
+                array('priority' => 1, 'name' => 'Materiaal', 'url' => 'materiaal')
+            )
+        ];
+    }
 
     function doMatch($url, $parts) {
         if (Leiding::hasPermission('materiaalmeester') && count($parts) == 1 && $parts[0] == 'materiaal') {

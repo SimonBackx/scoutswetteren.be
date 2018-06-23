@@ -30,7 +30,7 @@ class Router {
 
             if (in_array($module, $api_routes)) {
                 $ucfirst_module = ucfirst($module);
-                require(__DIR__."/../sails/$module/api.php");
+                require_once(__DIR__."/../sails/$module/api.php");
                 $classname = "\\Pirate\\Sail\\$ucfirst_module\\{$ucfirst_module}ApiRouter";
 
                 $router = new $classname();
@@ -77,7 +77,7 @@ class Router {
 
             foreach ($routes as $module) {
                 $ucfirst_module = ucfirst($module);
-                require(__DIR__."/../sails/$module/routes.php");
+                require_once(__DIR__."/../sails/$module/routes.php");
                 $classname = "\\Pirate\\Sail\\$ucfirst_module\\{$ucfirst_module}Router";
 
                 $router = new $classname();

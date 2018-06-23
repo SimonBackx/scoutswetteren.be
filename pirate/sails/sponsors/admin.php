@@ -1,12 +1,23 @@
 <?php
 namespace Pirate\Sail\Sponsors;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Sponsors\Sponsor;
 use Pirate\Model\Leiding\Leiding;
 
-class SponsorsAdminRouter extends Route {
+class SponsorsAdminRouter extends AdminRoute {
     private $sponsor = null;
+
+    static function getAvailablePages() {
+        return [
+            'oudercomite' => array(
+                array('name' => 'Sponsors', 'url' => 'sponsors')
+            ),
+            'groepsleiding' => array(
+                array('name' => 'Sponsors', 'url' => 'sponsors')
+            ),
+        ];
+    }
 
     function doMatch($url, $parts) {
         if (!Leiding::hasPermission('sponsors')) {
