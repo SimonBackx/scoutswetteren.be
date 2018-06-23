@@ -62,6 +62,15 @@
             <label>Bericht</label>
             <textarea type="text" name="message" class="big" placeholder="Typ hier het bericht">{{ data.message }}</textarea>
 
+            <input id="info_tonen" type="checkbox" value="1">
+            <label for="info_tonen">Tips en handigheden bij versturen mails</label>
+
+            <div class="checkbox-controllable">
+                <div class="visible-when-checked">
+                    <p>Spreek ouders persoonlijk aan. Als je <strong>%voornaam%</strong> gebruikt in je bericht, wordt die bij elke e-mail afzonderlijk vervangen door de voornaam van de ouder waar je de e-mail naar stuurt.</p>
+                </div>
+            </div>
+               
             <input type="file" name="attachment" id="file" class="file_upload"/>
             <label for="file">
                 <svg width="12px" height="12px" viewBox="1502 -655 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">

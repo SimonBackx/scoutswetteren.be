@@ -98,7 +98,7 @@ class Mail {
             $new_substitutions = [];
             // % tekens terug weghalen uit keys
             foreach ($substitutions as $key => $value) {
-                $new_substitutions[substr($key, 1, count($key) - 2)] = $value;
+                $new_substitutions[substr($key, 1, strlen($key) - 2)] = $value;
             }
 
             $this->sendgrid_mail->personalization = [];
