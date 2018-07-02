@@ -204,14 +204,14 @@
                             {% if lid.gsm | length > 0 %}
                                 <tr><td>Eigen gsm</td><td>{{ lid.gsm }}</td></tr>
                             {% endif %}
-                            {% if lid.getAddress | length == 1 %}
-                                {% for adres in lid.getAddress %}
+                            {% if lid.getAdressen | length == 1 %}
+                                {% for adres in lid.getAdressen %}
                                     <tr><td>Adres</td><td>{{ adres }}</td></tr>
                                 {% endfor %}
                             {% endif %}
 
-                            {% if lid.getTelefoon | length == 1 %}
-                                {% for telefoon in lid.getTelefoon %}
+                            {% if lid.getTelefoonnummers | length == 1 %}
+                                {% for telefoon in lid.getTelefoonnummers %}
                                     <tr><td>Thuis</td><td>{{ telefoon }}</td></tr>
                                 {% endfor %}
                             {% endif %}
@@ -219,11 +219,11 @@
                             {% for ouder in lid.ouders %}
                                 <tr><td>{{ ouder.titel }}</td><td>{{ ouder.voornaam }} {{ ouder.achternaam }}</td></tr>
                                 <tr><td></td><td>{{ ouder.gsm }}</td></tr>
-                                {% if lid.getAddress | length > 1 %}
-                                    <tr><td></td><td>{{ ouder.getAddress }}</td></tr>
+                                {% if lid.getAdressen | length > 1 %}
+                                    <tr><td></td><td>{{ ouder.getAdres }}</td></tr>
                                 {% endif %}
-                                {% if lid.getTelefoon | length > 1 %}
-                                    <tr><td></td><td>{{ ouder.telefoon }}</td></tr>
+                                {% if lid.getTelefoonnummers | length > 1 %}
+                                    <tr><td></td><td>{{ ouder.adres.telefoon }}</td></tr>
                                 {% endif %}
                             {% endfor %}
 

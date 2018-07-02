@@ -1,0 +1,1 @@
+docker exec -it "pirate-php-container" php /var/www/scoutswetteren.dev/pirate/run/update.php

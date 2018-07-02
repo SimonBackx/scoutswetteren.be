@@ -4,14 +4,6 @@
 clearstatcache();
 $sails = include __DIR__.'/sails.php';
 
-function endsWith($haystack, $needle)
-{
-    $length = strlen($needle);
-
-    return $length === 0 || 
-    (substr($haystack, -$length) === $needle);
-}
-
 $migrations = [];
 foreach ($sails as $sail) {
     if (file_exists(__DIR__."/../$sail/migrations")) {

@@ -7,16 +7,13 @@
                     <div class="text">
                         
                         <header>
-                        {% if new %}
-                            <h1>Ouder toevoegen</h1>
-                        {% else %}
-                            <h1>Gegevens van {{ ouder['voornaam'] }} nakijken</h1>
-                        {% endif %}
+                            <h1>Ouder {{ ouder['voornaam'] }} verwijderen</h1>
+                            <p>
+                                Ben je zeker dat je deze ouder wil verwijderen? Gebruik deze functie enkel om fouten te corrigeren, niet om een ouder de toegang tot de website te ontzeggen.
+                            </p>
                         </header>
 
-                        {% if success %}
-                            <h2>Gelukt!</h2>
-                        {% endif %}
+                        
 
                         {% if errors|length > 0 %}
                             <ul class="error">
@@ -25,16 +22,9 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
-
-                        {% set multiple = '' %}
-                        {{ include('leden/ouder-aanpassen.part.html') }}
                          
                         <footer>
-                            <input type="submit" class="aubergine fill" value="{% if new %}Toevoegen{% else %}Opslaan{% endif %}">
-                            {% if not new %}
-                                <a class="button aubergine" href="/ouders/ouder-verwijderen/{{ id }}">Verwijderen</a>
-                            {% endif %}
-
+                            <input type="submit" name="confirm" class="aubergine fill" value="Ja, {{ ouder['voornaam'] }} is geen wettelijke ouder">
                             <a class="button aubergine" href="/ouders">Annuleren</a>
                         </footer>
 

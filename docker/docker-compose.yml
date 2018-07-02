@@ -17,6 +17,7 @@ services:
         links:
          - db
         build: ./
+        container_name: pirate-php-container
         volumes:
          - .../files:/var/www/scoutswetteren.dev/files
          - ../pirate:/var/www/scoutswetteren.dev/pirate

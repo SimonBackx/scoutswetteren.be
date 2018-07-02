@@ -51,45 +51,6 @@ class Validator extends Model {
         return (preg_match($pattern, $adres) === 1);
     }
 
-    static function validateGemeente(&$inGemeente, &$inPostcode, &$outGemeente, &$outPostcode, &$errors) {
-        $inGemeente = trim($inGemeente);
-        $inPostcode = trim($inPostcode);
-        
-        if (empty($inGemeente)) {
-            $errors[] = 'Vul een gemeente in.';
-            return false;
-        }
-        if (empty($inPostcode)) {
-            $errors[] = 'Vul een postcode in.';
-            return false;;
-        }
-        $inGemeenteEscaped = self::getDb()->escape_string($inGemeente);
-        $inPostcodeEscaped = self::getDb()->escape_string($inPostcode);
-        $query = "select * from gemeenten where postcode = '$inPostcodeEscaped' or gemeente LIKE '%$inGemeente%' order by (postcode = '$inPostcodeEscaped' and gemeente = '$inGemeenteEscaped') desc, gemeente = '$inGemeenteEscaped' desc";
-        if ($result = self::getDb()->query($query)) {
-            if ($result->num_rows > 0){
-                $row = $result->fetch_assoc();
-                if ($row['postcode'] != $inPostcode) {
-                    $errors[] = 'Opgegeven postcode voor '.$inGemeente.' niet gevonden, bedoelt u '.$row['postcode'].' ('.$row['provincie'].')?';
-                    return false;
-                }
-                elseif (strtolower($row['gemeente']) != strtolower($inGemeente)) {
-                    $errors[] = 'Opgegeven gemeente niet gevonden, bedoelt u '.$row['gemeente'].' ('.$row['provincie'].')?';;
-                    return false;
-                } else {
-                    $inGemeente = $row['gemeente'];
-                    $inPostcode = $row['postcode'];
-
-                    $outGemeente = $inGemeente;
-                    $outPostcode = $inPostcode;
-                    return true;
-                }
-            }
-        }
-        $errors[] = 'Geen gemeente gevonden met opgegeven naam en postcode.';
-        return false;
-    }
-
     // Returns true on success
     static function validatePhone(&$in, &$out, &$errors, $partial = false) {
         if (!self::isValidPhone($in)) {

@@ -97,10 +97,13 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'gezin-nakijken') {
                     return true;
                 }
+                if ($parts[1] == 'ouder-toevoegen') {
+                    return true;
+                }
             }
 
             if (count($parts) == 3) {
-                if ($parts[1] == 'ouder-aanpassen') {
+                if ($parts[1] == 'ouder-aanpassen' || $parts[1] == 'ouder-verwijderen') {
                     // kijken of gezin wel in orde is
                     $ouder = Ouder::getOuderForId($parts[2]);
                     if (!is_null($ouder) && $ouder->gezin->id == Ouder::getUser()->gezin->id) {
@@ -110,6 +113,7 @@ class LedenRouter extends Route {
 
                     return false;
                 }
+
                 if ($parts[1] == 'lid-aanpassen' || $parts[1] == 'steekkaart') {
                     // kijken of gezin wel in orde is
                     $lid = Lid::getLid($parts[2]);
@@ -120,6 +124,7 @@ class LedenRouter extends Route {
 
                     return false;
                 }
+
                 if ($parts[1] == 'afrekening') {
                     // kijken of gezin wel in orde is
                     $afrekening = Afrekening::getAfrekening($parts[2]);
@@ -188,6 +193,10 @@ class LedenRouter extends Route {
                     require(__DIR__.'/pages/gezin-nakijken.php');
                     return new Pages\GezinNakijken();
                 }
+                if ($parts[1] == 'ouder-toevoegen') {
+                    require(__DIR__.'/pages/ouder-aanpassen.php');
+                    return new Pages\OuderAanpassen();
+                }
             }
 
             // Beveiligde sectie: reeds authenticatie gedaan
@@ -195,6 +204,11 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'ouder-aanpassen' && !empty($this->ouder)) {
                     require(__DIR__.'/pages/ouder-aanpassen.php');
                     return new Pages\OuderAanpassen($this->ouder);
+                }
+
+                if ($parts[1] == 'ouder-verwijderen' && !empty($this->ouder)) {
+                    require(__DIR__.'/pages/ouder-verwijderen.php');
+                    return new Pages\OuderVerwijderen($this->ouder);
                 }
 
                 if ($parts[1] == 'lid-aanpassen' && !empty($this->lid)) {

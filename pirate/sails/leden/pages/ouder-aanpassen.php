@@ -28,12 +28,15 @@ class OuderAanpassen extends Page {
         $success = false;
         $data = array();
         $errors = array();
+        $id = null;
 
         if (isset($this->ouder)) {
             $new = false;
             $data = $this->ouder->getProperties();
+            $id = $this->ouder->id;
         } else {
             $this->ouder = new Ouder();
+            $this->ouder->gezin = Ouder::getUser()->gezin;
         }
 
         // check of vanalles is geset
@@ -77,6 +80,7 @@ class OuderAanpassen extends Page {
 
         return Template::render('leden/ouder-aanpassen', array(
             'new' => $new,
+            'id' => $id,
             'ouder' => $data,
             'success' => $success,
             'errors' => $errors,

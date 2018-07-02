@@ -61,7 +61,7 @@
                     <article class="list">
                         <div class="medium merlot column"><a href="/ouders/ouder-aanpassen/{{ ouder.id }}">{{ouder.voornaam}} {{ouder.achternaam}}</a></div>
                         <div class="small merlot column">{{ouder.titel}}</div>
-                        <div class="max column">{{ouder.email}}<br>{{ouder.gsm}}<br>{{ouder.adres}}, {{ouder.gemeente}}</div>
+                        <div class="max column">{{ouder.email}}<br>{{ouder.gsm}}<br>{{ouder.getAdres}}</div>
                         <div class="last column">
                             <a href="/ouders/ouder-aanpassen/{{ ouder.id | e('html_attr')}}" class="icon-button">
                             Wijzigen
@@ -73,7 +73,7 @@
 
 
                 <footer>
-                    <a href="/ouders/gezin-nakijken" class="aubergine fill button">Ouder toevoegen</a>
+                    <a href="/ouders/ouder-toevoegen" class="aubergine fill button">Ouder toevoegen</a>
                     <a href="/ouders/gezin-nakijken" class="aubergine button">Gezinsituatie aanpassen</a>
                 </footer>
 

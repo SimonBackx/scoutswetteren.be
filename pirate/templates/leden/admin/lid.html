@@ -26,8 +26,8 @@
          <div class="part column first">
             {% for ouder in ouders %}
                 <h2>{{ouder.voornaam}} {{ouder.achternaam}} ({{ouder.titel}})</h2>
-                <p>{{ouder.adres}}, {{ouder.postcode}} {{ouder.gemeente}}</p>
-                <p>{{ouder.telefoon}}</p>
+                <p>{{ouder.adres.toString }}</p>
+                <p>{{ouder.adres.telefoon}}</p>
                 <p>{{ouder.gsm}}</p>
                 <p>{{ouder.email}}</p>
             {% endfor %}

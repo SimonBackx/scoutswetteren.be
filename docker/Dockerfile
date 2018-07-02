@@ -9,4 +9,4 @@ RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
 RUN apt-get install -y zip
 
-cmd php /var/www/scoutswetteren.dev/pirate/run/update.php && php-fpm
+cmd php-fpm

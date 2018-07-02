@@ -62,17 +62,79 @@ class Migration extends Model {
 
         ksort($to_execute);
 
+        $first = null;
+
         foreach ($to_execute as $key => $migration) {
+            
             require_once($migration->path);
-            $className = '\Pirate\Classes\Migrations\\'.$migration->class;
+            $className = '\Pirate\Classes\\'.ucfirst($migration->sail).'\\'.$migration->class;
             echo "Runing migration $className...\n";
             try {
                 if ($className::upgrade()) {
                     static::create($migration->id);
                     echo "Succeeded $className\n\n";
+
+                    if (!isset($first)) {
+                        $first = $migration->id;
+                    }
                     continue;
                 }
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
+                echo $ex->getMessage()."\n";
+            }
+            echo "Failed $className\n\n";
+
+            if (isset($first)) {
+                static::downgrade(null, $first);
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    // Doorloop alle migrations die er zijn
+    static function downgrade($untilDatetime = null, $untilMigration = null) {
+        $executed = static::getExecutedMigrations();
+        $migrations = include __DIR__.'/../../_bindings/migrations.php';
+        $to_execute = [];
+
+        $found = false;
+        
+        foreach ($migrations as $migration) {
+            $id = $migration->id;
+
+            if (isset($executed[$id]) && (!isset($until) || $executed[$id]->executed_at >= $untilDatetime)) {
+                if (isset($untilMigration) && $untilMigration == $id) {
+                    $found = true;
+                }
+                $to_execute[$migration->timestamp] = $migration;
+            }
+        }
+
+        if (isset($untilMigration) && !$found) {
+            return true;
+        }
+
+        krsort($to_execute);
+
+        foreach ($to_execute as $key => $migration) {
+            require_once($migration->path);
+            $className = '\Pirate\Classes\\'.ucfirst($migration->sail).'\\'.$migration->class;
+            echo "Downgrading migration $className...\n";
+            try {
+                if ($className::downgrade()) {
+                    $model = $executed[$migration->id];
+                    $model->delete();
+                    echo "Succeeded $className\n\n";
+
+                    if (isset($untilMigration) && $untilMigration == $migration->id) {
+                        // Laatste
+                        break;
+                    }
+                    continue;
+                }
+            } catch (\Exception $ex) {
                 echo $ex->getMessage()."\n";
             }
             echo "Failed $className\n\n";

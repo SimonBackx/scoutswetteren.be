@@ -60,24 +60,22 @@ class Lid extends Model {
         }
     }
 
-    function getAddress() {
+    function getAdressen() {
         $map = array();
         foreach ($this->ouders as $ouder) {
-            $adres = $ouder->getAddress();
+            $adres = $ouder->getAdres();
             $map[$adres] = true; 
         }
 
         return array_keys($map);
     }
 
-    function getTelefoon() {
+    function getTelefoonnummers() {
         $map = array();
         foreach ($this->ouders as $ouder) {
-            if (isset($ouder->telefoon)) {
-                $telefoon = $ouder->telefoon;
-                if (count($telefoon) > 0) {
-                    $map[$telefoon] = true; 
-                }
+            if (!empty($ouder->adres->telefoon)) {
+                $telefoon = $ouder->adres->telefoon;
+                $map[$telefoon] = true; 
             }
         }
 
@@ -153,8 +151,9 @@ class Lid extends Model {
         if (Validator::validateBothPhone($text, $phone, $errors, true)) {
             $text = self::getDb()->escape_string($phone);
             $query = '
-                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.* from ouders o
+                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.*, a.* from ouders o
                     join leden l on l.gezin = o.gezin
+                    left join adressen a on a.adres_id = o.adres
                     left join steekkaarten s on s.lid = l.id
                     left join gezinnen g on g.gezin_id = l.gezin
                     left join inschrijvingen i on i.lid = l.id
@@ -166,7 +165,7 @@ class Lid extends Model {
                     (
                         l.gsm LIKE "'.$text.'%" OR 
                         o.gsm LIKE "'.$text.'%" OR 
-                        o.telefoon LIKE "'.$text.'%" 
+                        a.telefoon LIKE "'.$text.'%" 
                     )';
 
         } else {
@@ -201,8 +200,9 @@ class Lid extends Model {
             $text = self::getDb()->escape_string($newText);
 
             $query = '
-                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.* from ouders o
+                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.*, a.* from ouders o
                     join leden l on l.gezin = o.gezin
+                    left join adressen a on a.adres_id = o.adres
                     left join steekkaarten s on s.lid = l.id
                     left join gezinnen g on g.gezin_id = l.gezin
                     left join inschrijvingen i on i.lid = l.id
@@ -215,7 +215,7 @@ class Lid extends Model {
                         MATCH(l.voornaam,l.achternaam,l.gsm) 
                         AGAINST("'.$text.'" IN BOOLEAN MODE)
                         OR
-                        MATCH(o.voornaam,o.achternaam,o.gsm,o.telefoon,o.adres,o.gemeente) 
+                        MATCH(o.voornaam,o.achternaam,o.gsm) 
                         AGAINST("'.$text.'" IN BOOLEAN MODE)
                     )';//
         }
