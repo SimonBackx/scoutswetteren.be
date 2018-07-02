@@ -5,7 +5,7 @@ We hebben de inschrijvingsaanvraag van {% for lid in leden %}{{ lid.voornaam }}{
 {% if ouders | length == 1 %}
 Om de inschrijving te voltooien moet je een account aanmaken via onderstaande link. Met dat account kan je later de inschrijving bewerken en verlengen. Daarna moet je nog enkele stappen overlopen zodat we de inschrijving kunnen voltooien.
 {% else %}
-Om de inschrijving te volooien moet zeker één ouder een account aanmaken via onderstaande link. Met dat account kan je later de inschrijving bewerken en verlengen (elke ouder in het gezin kan een account aanmaken). Daarna moet je nog enkele stappen overlopen zodat we de inschrijving kunnen voltooien.
+Om de inschrijving te voltooien moet zeker één ouder een account aanmaken via onderstaande link. Met dat account kan je later de inschrijving bewerken en verlengen (elke ouder in het gezin kan een account aanmaken). Daarna moet je nog enkele stappen overlopen zodat we de inschrijving kunnen voltooien.
 {% endif %}
 
 {% if ouders | length == 1 %}
