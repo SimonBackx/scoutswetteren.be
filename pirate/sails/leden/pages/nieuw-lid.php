@@ -85,6 +85,8 @@ class NieuwLid extends Page {
 
             // Alle ouders overlopen
             $aantal_ouders = count($_POST['ouder-voornaam']) - 1;
+            $emailadressen = [];
+
             for ($i=0; $i < $aantal_ouders; $i++) { 
                 $data = array(
                     'titel' => $_POST['ouder-titel'][$i],
@@ -101,14 +103,21 @@ class NieuwLid extends Page {
                 // Controleren en errors setten
                 $ouder = new Ouder();
                 $data['errors'] = $ouder->setProperties($data);
+                if (isset($emailadressen[$ouder->email])) {
+                    $data['errors'][] = 'Het is niet toegestaan dat je hetzelfde e-mailadres gebruikt voor meerdere ouders. Elke ouder krijgt namelijk een apart account waarmee hij/zij kan inloggen.';
+                }
+
                 if (count($data['errors']) > 0) {
                     $fail = true;
+                } else {
+                    $emailadressen[$ouder->email] = true;
                 }
 
                 $ouder_models[] = $ouder;
 
                 // Opslaan
                 $ouders[] = $data;
+                
             }
 
             if (count($ouder_models) < 1) {
