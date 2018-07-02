@@ -1,6 +1,6 @@
 Dag %naam%,
 
-Goed nieuws! De inschrijving van {% for lid in leden %}{{ lid.voornaam }}{% if loop.index < (leden | length)-1 %}, {% endif %}{% if loop.index == (leden | length)-1 %} en {% endif %}{% endfor %} is afgerond. Als je de steekkaarten nog niet hebt ingevuld, moet je dit binnen 3 weken in orde brengen. Het enige wat daarnaast nog moet gebeuren is de betaling van het lidgeld. Dit kan via overschrijving of cash. Indien cash betaald wordt, dan moet dit voor elk lid afzonderlijk aan hun takleiding betaald worden (we hebben namelijk een aparte takkas voor elke tak).
+Goed nieuws! De inschrijving van {% for lid in leden %}{{ lid.voornaam }}{% if loop.index < (leden | length)-1 %}, {% endif %}{% if loop.index == (leden | length)-1 %} en {% endif %}{% endfor %} is afgerond. Als je de steekkaarten nog niet hebt ingevuld, moet je dit binnen 3 weken in orde brengen. Het enige wat daarnaast nog moet gebeuren is de betaling van het lidgeld. Dit kan enkel via overschrijving, alle informatie daarvoor vind je op de website bij je afrekeningen.
 
 Een overzicht van het te betalen lidgeld, en hoe er kan worden overgeschreven vind je terug via onderstaande link:
 
