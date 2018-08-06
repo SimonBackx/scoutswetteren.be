@@ -116,6 +116,11 @@ class Check extends Page {
                 foreach ($ledenlijst as $groepadminLid) {
                     if (!$groepadminLid->found) {
                         $niet_aanwezig_op_website[] = array('lid' => $groepadminLid, 'info' => 'Niet ingeschreven op website');
+                    } else {
+                        if ($groepadminLid->needsSync()) {
+                            $niet_aanwezig_op_website[] = array('lid' => $groepadminLid, 'info' => 'Moet gesynct worden');
+                            $groepadminLid->sync($groepsadmin);
+                        }
                     }
                 }
 

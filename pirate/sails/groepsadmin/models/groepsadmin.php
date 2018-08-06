@@ -5,6 +5,7 @@ use Pirate\Curl\Curl;
 use Pirate\Curl\Method;
 use Pirate\Curl\DataType;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Ouder;
 
 class Groepsadmin {
     private $access_token = '';
@@ -19,7 +20,7 @@ class Groepsadmin {
     function __construct() {
     }
 
-    private function authenticatedRequest($method, $url, $headers = [], $data_type = DataType::urlencoded, $data = null) {
+    function authenticatedRequest($method, $url, $headers = [], $data_type = DataType::urlencoded, $data = null) {
         $headers[] = 'Authorization: Bearer '.$this->access_token;
         return Curl::request($method, $url, $headers, $data_type, $data);
     }
@@ -112,6 +113,15 @@ class Groepsadmin {
         return null;
     }
 
+    function downloadLid($id) {
+        return static::authenticatedRequest(Method::GET, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/lid/'.$id);
+    }
+
+    function uploadLid($data, $id = null) {
+        $response = static::authenticatedRequest(isset($id) ? Method::PATCH : Method::POST, isset($id) ? 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/lid/'.$id.'?bevestig=true' : 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/lid', [], DataType::json, $data);
+        return $response;
+    }
+
     function getLedenlijst() {
         if (!$this->logged_in) {
             return false;
@@ -155,6 +165,8 @@ class GroepsadminLid {
     public $lidnummer;
     public $hash;
 
+    private $linkedLid = null;
+
     public $found = false;
 
     function __construct($data) {
@@ -167,6 +179,8 @@ class GroepsadminLid {
         $this->geboortedatum = $waarden['be.vvksm.groepsadmin.model.column.GeboorteDatumColumn']; // DD/MM/YYYY
         $this->lidnummer = $waarden['be.vvksm.groepsadmin.model.column.LidNummerColumn'];
         $this->hash = $waarden['39a96d046403c4b10164248c1f2e071a'];
+
+        $this->linkedLid = null;
     }
 
     function isEqual(Lid $lid) {
@@ -226,14 +240,205 @@ class GroepsadminLid {
             $lid->save();
         }
         $this->found = true;
+        $this->linkedLid = $lid;
     }
 
-    function needsSync($lid) {
+    function needsSync() {
         // Als de groepsadmin hash leeg is
         if (empty($this->hash)) {
             return true;
         }
-        return false;
+
+        return $this->hash != $this->calculateHash($this->linkedLid);
+    }
+
+    function sync($groepsadmin) {
+        if (!isset($this->linkedLid)) {
+            return false;
+        }
+
+        // Stap 1: huidige data ophalen van de groepsadmin
+        $fetchedData = $groepsadmin->downloadLid($this->id);
+        echo '<pre>'.json_encode($fetchedData, JSON_PRETTY_PRINT).'</pre>';
+
+        if (!isset($fetchedData)) {
+            exit;
+            return false;
+        }
+
+        // Stap 2: data versturen, maar contacten weglaten als niet alle adresId velden gegeven zijn
+        $newData = static::getDataFor($this->linkedLid, $fetchedData);
+
+        echo '<pre>'.json_encode($newData, JSON_PRETTY_PRINT).'</pre>';
+        
+        $adressenOk = true;
+        foreach ($newData['contacten'] as $contact) {
+            if (!isset($contact['adres'])) {
+                $adressenOk = false;
+                break;
+            }
+        }
+
+        if (!$adressenOk) {
+            unset($newData['contacten']);
+        }
+
+        echo '<pre>'.json_encode($newData, JSON_PRETTY_PRINT).'</pre>';
+        
+        $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
+        if (!isset($fetchedData)) {
+            exit;
+            return false;
+        }
+
+        echo '<pre>'.json_encode($fetchedData, JSON_PRETTY_PRINT).'</pre>';
+
+        if (!$adressenOk) {
+            // Stap 3: als contacten weggelaten werden => data opnieuw berekenen met returnwaarde van vorige stap
+            // en nu nog eens opslaan
+            $newData = static::getDataFor($this->linkedLid, $fetchedData);
+            echo '<pre>'.json_encode($newData, JSON_PRETTY_PRINT).'</pre>';
+
+            $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
+
+            echo '<pre>'.json_encode($fetchedData, JSON_PRETTY_PRINT).'</pre>';
+            if (!isset($fetchedData)) {
+                exit;
+                return false;
+            }
+        }
+
+        exit;
+
+        return true;
+    }
+
+    static function getDataFor($lid, $fetchedData = null) {
+        // Use fetchedData to corelate Id's
+        $data = [
+            "persoonsgegevens" => [
+                "geslacht" => ($lid->geslacht == 'M' ? 'man' : 'vrouw'),
+                "gsm" => isset($lid->gsm) ? str_replace(' ', ' ', $lid->gsm) : "",
+               
+                //"rekeningnummer" => "BE68 5390 0754 7034"
+            ],
+            "email" => $lid->ouders[0]->email,
+            "vgagegevens" => [
+                "voornaam" => $lid->voornaam,
+                "achternaam" => $lid->achternaam,
+                "geboortedatum" => $lid->geboortedatum->format("Y-m-d"),
+                "beperking" => false,
+                "verminderdlidgeld" => $lid->gezin->scouting_op_maat,
+            ],
+
+            "adressen" => [],
+
+            "contacten" => [],
+            
+            // Todo: functies
+        ];
+
+        // Adressen
+        $addedAdressen = [];
+        foreach ($lid->ouders as $ouder) {
+            if (isset($addedAdressen[$ouder->adres->id])) {
+                continue;
+            }
+            $addedAdressen[$ouder->adres->id] = true;
+            $adres = [
+                "id" => null,
+                "land" => "BE",
+                "postcode" => $ouder->adres->postcode,
+                "gemeente" => $ouder->adres->gemeente,
+                "straat" => $ouder->adres->straatnaam,
+                "giscode" => $ouder->adres->giscode,
+                "nummer" => $ouder->adres->huisnummer,
+                "bus" => isset($ouder->adres->busnummer) ? $ouder->adres->busnummer : "",
+                "telefoon" => str_replace(' ', ' ', $ouder->adres->telefoon),
+                "postadres" => (count($data["adressen"]) == 0),
+                "omschrijving" => "Adres van ".$ouder->titel,
+                /*"positie" =>  [
+                    "lat" => 51.166969,
+                    "lng" => 4.462271
+                ]*/
+            ];
+
+            if (isset($fetchedData)) {
+                $id = null;
+                // Adres opzoeken
+                foreach($fetchedData["adressen"] as $a) {
+                    if ($a['postcode'] == $adres['postcode'] && $a['straat'] == $adres['straat'] && $a['nummer'] == $adres['nummer'] && $a['bus'] == $adres['bus']) {
+                        $id = $a['id'];
+                        break;
+                    }
+                }
+
+                if (isset($id)) {
+                    $adres['id'] = $id;
+                    $addedAdressen[$ouder->adres->id] = $id;
+                }
+            }
+
+            $data["adressen"][] = $adres;
+        }
+
+        // Ouders
+        foreach ($lid->ouders as $ouder) {
+            $contact = [
+                "id" => null,
+                "adres" => null,
+                "voornaam" => $ouder->voornaam,
+                "achternaam" => $ouder->achternaam,
+                "rol" => $ouder->getGroepsadminRol(),
+                "gsm" => str_replace(' ', ' ', $ouder->gsm),
+                "email" => $ouder->email
+            ];
+
+            if (isset($fetchedData)) {
+                $id = null;
+                // Adres opzoeken
+                foreach($fetchedData["contacten"] as $c) {
+                    if ($c['voornaam'] == $contact['voornaam'] && $c['achternaam'] == $contact['achternaam']) {
+                        $id = $c['id'];
+                        break;
+                    }
+                }
+
+                if (isset($id)) {
+                    $contact['id'] = $id;
+                }
+            }
+
+            if (isset($addedAdressen[$ouder->adres->id]) && $addedAdressen[$ouder->adres->id] !== true) {
+                $contact['adres'] = $addedAdressen[$ouder->adres->id];
+            }
+            $data["contacten"][] = $contact;
+        }
+
+        // Extra velden
+        if (isset($fetchedData)) {
+            $data["groepseigenVelden"] = [
+                "O2209G" => [
+                    "waarden" => [
+                        // Hash opslaan hier, enkel als fetchedData != null
+                        "39a96d046403c4b10164248c1f2e071a" => static::calculateHash($lid)
+                    ]
+                ]
+            ];
+
+            if (isset($fetchedData['gebruikersnaam'])) {
+                // Als het lid een gebruikersnama heeft => VGA mag e-mailadres niet wijzigen
+                unset($data['email']);
+            }
+        }
+
+        return $data;
+    }
+
+    static function calculateHash($lid) {
+        $data = static::getDataFor($lid);
+        $hash = hash('sha256', json_encode($data));
+        return $hash;
     }
 
     // All data we 

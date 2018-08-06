@@ -69,6 +69,9 @@ class Curl {
             if ($status >= 200 && $status < 300) {
                 $data = @json_decode($result, true);
                 return $data;
+            } else {
+                echo $result;
+                exit;
             }
             return null;
         }

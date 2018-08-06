@@ -314,8 +314,8 @@ class Lid extends Model {
         }
 
         foreach ($leden as $lid) {
-            if (isset($gezinnen[$ouder->gezin->id])) {
-                $lid->gezin = $gezinnen[$ouder->gezin->id];
+            if (isset($gezinnen[$lid->gezin->id])) {
+                $lid->gezin = $gezinnen[$lid->gezin->id];
                 $lid->ouders = $lid->gezin->ouders;
             } else {
                 // Hmmm... Dit kan eigenlijk niet gebeuren

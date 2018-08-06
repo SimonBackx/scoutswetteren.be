@@ -19,6 +19,27 @@ class Ouder extends Model {
     private $set_password_key;
 
     static $titels = array('Mama', 'Papa', 'Voogd', 'Stiefmoeder', 'Stiefvader');
+    
+    static function titelToGroepsadmin($functie) {
+        $functie = strtolower($functie);
+        $map = array(
+            'mama' => 'moeder', 
+            'papa' => 'vader', 
+            'voogd' => 'voogd', 
+            'stiefmoeder' => 'moeder', 
+            'stiefvader' => 'vader'
+        );
+
+        if (!isset($map[$functie])) {
+            return 'moeder';
+        }
+
+        return $map[$functie];
+    }
+
+    function getGroepsadminRol() {
+        return static::titelToGroepsadmin($this->titel);
+    }
 
     // als didCheckLogin == false, dan is currentToken en user nog niet op de juiste waarde
     private static $didCheckLogin = false;
