@@ -71,6 +71,15 @@
                 <div id="upload-progress" style="display: none;"><div></div></div>
                 <div id="upload-progress-text">100%</div>
                 <div id="output"></div>
+
+
+                {% if album.zip_file %}
+                    <p>Dit album is beschikbaar als .zip</p>
+                {% else %}
+                    <p>Dit album is binnenkort beschikbaar als .zip</p>
+                {% endif %}
+
+                {% include 'files/statistics.html' %}
             {% endif %}
         {% endif %}
 

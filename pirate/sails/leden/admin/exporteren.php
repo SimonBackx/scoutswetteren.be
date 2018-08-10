@@ -22,6 +22,8 @@ class Exporteren extends Page {
 
     function getContent() {
         $user = Leiding::getUser();
+        $scoutsjaar = Inschrijving::getScoutsjaar();
+        $selected_scoutsjaar = $scoutsjaar;
 
         $tak = '';
         if (!empty($user->tak)) {
@@ -34,6 +36,7 @@ class Exporteren extends Page {
         $data = array(
             'tak' => $tak,
             'filter' => array_keys($filters)[0],
+            'scoutsjaar' => $scoutsjaar
         );
 
         $allSet = true;
@@ -55,15 +58,20 @@ class Exporteren extends Page {
             if (!isset($filters[$data['filter']])) {
                 $errors[] = 'Selecteer een filter.';
             }
+
+            $selected_scoutsjaar = intval($data['scoutsjaar']);
+            if ($selected_scoutsjaar == 0) {
+                $errors[] = 'Ongeldig scoutsjaar.';
+            }
           
             if (count($errors) == 0) {
 
                 if ($data['tak'] == 'alle takken') {
-                    $ouders = Ouder::getOuders($data['filter']);
-                    $leden = Lid::getLeden($data['filter']);
+                    $ouders = Ouder::getOuders($data['filter'], null, false, $selected_scoutsjaar);
+                    $leden = Ouder::getOuders($data['filter'], null, true, $selected_scoutsjaar);
                 } else {
-                    $ouders = Ouder::getOuders($data['filter'], $data['tak']);
-                    $leden = Lid::getLeden($data['filter'], $data['tak']);
+                    $ouders = Ouder::getOuders($data['filter'], $data['tak'], false, $selected_scoutsjaar);
+                    $leden = Ouder::getOuders($data['filter'], $data['tak'], true, $selected_scoutsjaar);
                 }
 
                 foreach ($leden as $lid) {
@@ -103,12 +111,12 @@ class Exporteren extends Page {
 
 
 
-
         return Template::render('leden/admin/exporteren', array(
             'takken' => $takken,
             'filters' => $filters,
             'errors' => $errors,
             'data' => $data,
+            'scoutsjaar' => $scoutsjaar,
             'success' => $success
         ));
     }

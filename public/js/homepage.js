@@ -2,20 +2,19 @@ var maandTekst = ["Januari", "Februari", "Maart", "April", "Mei", "Juni",
   "Juli", "Augustus", "September", "Oktober", "November", "December"
 ];
 
-var search_timeout = null;
 
 $( document ).ready(function() {
     bindMaandplanning();
 
     $('.calendar .next').click(function() {
         var current = new Date($(this).parent().children('.month').attr('datetime'));
-        current.setMonth(current.getMonth()+1);
+        current.setMonth(current.getMonth()+1, true);
         goToMonth(current);
     });
 
     $('.calendar .previous').click(function() {
         var current = new Date($(this).parent().children('.month').attr('datetime'));
-        current.setMonth(current.getMonth()-1);
+        current.setMonth(current.getMonth()-1, true);
         goToMonth(current);
     });
 
@@ -23,55 +22,6 @@ $( document ).ready(function() {
         event.preventDefault();
         nextPage();
     });
-
-    // Search
-    $('input.search').bind("propertychange change click keyup input paste", function(event){
-        var needle = $(this).val();
-
-        if (needle.length == 0) {
-            $(this).parent().children('.results-anchor').css('display', 'none');
-            return;
-        } 
-
-        if (needle == $(this).attr('data-last-search')) {
-            $(this).parent().children('.results-anchor').css('display', 'block');
-        } else {
-            $(this).parent().find('.results').html('<article class="result last"><h1>Bezig met zoeken...</h1></article>');
-            $(this).attr('data-last-search', '');
-        }
-
-        $(this).parent().children('.results-anchor').css('display', 'block');
-        
-        if (search_timeout) {
-            clearTimeout(search_timeout);
-        }
-        var source = $(this);
-
-        search_timeout = setTimeout(function() {
-            startSearch(needle, source);
-        }, 200);
-    });
-
-    $('input.search').blur(function() {
-        if (did_click_popup) {
-            $(this).focus();
-        } else {
-            $(this).parent().children('.results-anchor').css('display', 'none');
-        }
-    });
-
-    $('input.search').focus(function() {
-        if ($(this).val().length > 0) {
-            $(this).parent().children('.results-anchor').css('display', 'block');
-        }
-    });
-
-
-
-    $('.search-box').mousedown(function() {
-        did_click_popup = true;
-    });
-    
 });
 
 Date.prototype.deep_copy = function()
@@ -114,8 +64,36 @@ function bindMaandplanning() {
     });
 }
 
-function goToMonth(firstday) {
+function nextWeek() {
+    var current_week = $('.calendar .row.selected');
+    var selected_days = $('.calendar .row.selected').find('time');
+    var next_week = current_week.next('.row');
+    var current = stringToDate(selected_days.first().attr('datetime'));
+
+    var first_date = current.addDays(7);
+    console.log(first_date);
+
+    goToMonth(first_date, false);
+}
+
+function previousWeek() {
+    var current_week = $('.calendar .row.selected');
+    var selected_days = $('.calendar .row.selected').find('time');
+    var next_week = current_week.next('.row');
+    var current = stringToDate(selected_days.first().attr('datetime'));
+
+    var first_date = current.addDays(-7);
+    console.log(first_date);
+
+    goToMonth(first_date, false);
+}
+
+function goToMonth(selected_day, jump_today) {
+    var firstday = new Date(selected_day.getTime());
+    firstday.setDate(1);
+    console.log(firstday);
     console.log(dateToString(firstday));
+
     // keep running back until we reach a monday
     var day = firstday.getMonday();
     console.log(dateToString(day));
@@ -129,6 +107,7 @@ function goToMonth(firstday) {
     var week = -1;
 
     var today = new Date().toDateString();
+    var selected_day_string = selected_day.toDateString();
     var month = firstday.getMonth();
 
     var data = [];
@@ -141,6 +120,7 @@ function goToMonth(firstday) {
         }
 
         var is_today = (today == day.toDateString());
+        var is_selected_day = (selected_day_string == day.toDateString()) && week != 0;
 
         data[data.length-1]['days'].push({
             'day': day.getDate(),
@@ -149,11 +129,18 @@ function goToMonth(firstday) {
             'datetime': day.getFullYear()+'-'+(day.getMonth()+1)+'-'+day.getDate()
         });
 
-        if (is_today) {
+        if (is_today && jump_today) {
             data[0]['is_selected'] = false;
             data[data.length-1]['is_selected'] = true;
 
             firstday_calendar = new Date().getMonday();
+        }
+
+        if (is_selected_day && !jump_today) {
+            data[0]['is_selected'] = false;
+            data[data.length-1]['is_selected'] = true;
+
+            firstday_calendar = selected_day.getMonday();
         }
 
 
@@ -236,34 +223,6 @@ function pad(str){
         return "0" + str;
     }
     return str;
-}
-
-function startSearch(needle, source) {
-    var sail = source.attr('data-sail');
-    var search_box = source.parent();
-    var results = search_box.find('.results');
-    $.ajax({
-      url: "/api/"+sail+"/search?q="+encodeURIComponent(needle),
-      dataType: 'html',
-    }).done(function(data, textStatus, jqXHR) {
-        
-        results.html(data);
-
-        source.attr('data-last-search', needle);
-        // Kijken of het onderste deel van de resultaten in beeld is, en bijscrollen indien nodig
-        var scrollPosition = $(window).scrollTop();
-        var viewHeight = $(window).height();
-
-        var resultsHeight = $(results).outerHeight() + 20;
-        var resultsOffset = results.offset().top;
-
-        // Als meer dan de helft onzichtbaar is
-        if (scrollPosition + viewHeight < resultsHeight + resultsOffset) {
-            $('body, html').animate({scrollTop: Math.min(search_box.offset().top, resultsOffset + resultsHeight - viewHeight)}, 'fast');
-        }
-    }).fail(function() {
-        results.html('<h1>Er ging iets fout</h1>');
-    });
 }
 
 function nextPage() {

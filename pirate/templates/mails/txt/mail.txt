@@ -1,0 +1,9 @@
+{{ message }}
+%reason%
+
+{% if magic_url %}
+---
+
+Gebruik de link hieronder om de gegevens van ingeschreven leden aan te passen en leden in te schrijven.
+%magic_url%
+{% endif %}

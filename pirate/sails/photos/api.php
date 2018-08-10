@@ -24,11 +24,28 @@ class PhotosApiRouter extends Route {
             return false;
         }
 
+        if (count($parts) == 2 && $parts[0] == 'update-sources-available') {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                return false;
+            }
+
+            $id = $parts[1];
+            $this->album = Album::getAlbum($id);
+            if (isset($this->album)) {
+                return true;
+            }
+            return false;
+        }
+
         if (count($parts) == 1 && $parts[0] == 'upload') {
             return true;
         }
 
-        if (count($parts) == 2 && ($parts[0] == 'delete' || $parts[0] == 'set-cover')) {
+        if (count($parts) == 2 && ($parts[0] == 'delete' || $parts[0] == 'set-cover' || $parts[0] == 'set-title')) {
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                return false;
+            }
+
             $id = $parts[1];
             $this->image = Image::getImage($id);
             if (isset($this->image)) {
@@ -47,9 +64,19 @@ class PhotosApiRouter extends Route {
                 return new Api\DeletePhoto($this->image);
             }
 
+            if ($parts[0] == 'set-title') {
+                require(__DIR__.'/api/set-title.php');
+                return new Api\SetTitle($this->image);
+            }
+
             require(__DIR__.'/api/set-cover.php');
             return new Api\SetCover($this->image);
         }
+        if (count($parts) == 2 && $parts[0] == 'update-sources-available') {
+            require(__DIR__.'/api/update-sources-available.php');
+            return new Api\UpdateSourcesAvailable($this->album);
+        }
+
         require(__DIR__.'/api/upload-photo.php');
         return new Api\UploadPhoto($this->album);
     }

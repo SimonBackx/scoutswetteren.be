@@ -6,7 +6,7 @@
     <div class="list-bundle">
     {% for afrekening in afrekeningen %}
         <article class="list">
-            <div class="small column">{{ afrekening.inschrijvingen[0].scoutsjaar }}</div>
+            <div class="small column">{{ afrekening.inschrijvingen[0].scoutsjaar }} - {{ afrekening.inschrijvingen[0].scoutsjaar + 1 }}</div>
             <div class="max merlot column">{{ afrekening.mededeling }}</div>
             <div class="large merlot column">
                 {{ afrekening.getNogTeBetalen() }}

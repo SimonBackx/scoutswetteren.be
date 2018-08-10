@@ -127,16 +127,28 @@ class Edit extends Page {
 
         // Als alles geset is
         if ($allset) {
-            // Nu één voor één controleren
-            $errors = $reservatie->setProperties($data);
+            if (Leiding::hasPermission('verhuur') || Leiding::hasPermission('oudercomite') || Leiding::hasPermission('groepsleiding')) {
+                // Nu één voor één controleren
+                $errors = $reservatie->setProperties($data);
 
-            if (count($errors) == 0) {
-                if ($reservatie->save()) {
-                    $success = true;
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/admin/verhuur");
+                if (count($errors) == 0) {
+                    if ($reservatie->save()) {
+                        $success = true;
+                        header("Location: https://".$_SERVER['SERVER_NAME']."/admin/verhuur");
+                    }
+                    else
+                        $errors[] = 'Probleem bij opslaan';
                 }
-                else
-                    $errors[] = 'Probleem bij opslaan';
+            } else {
+                $errors[] = 'Je hebt geen toestemming om reservaties te wijzigen, contacteer de verhuur verantwoordelijke';
+            }
+
+            
+        } else {
+            if ($new) {
+                if (!Leiding::hasPermission('verhuur') && !Leiding::hasPermission('oudercomite') && !Leiding::hasPermission('groepsleiding')) {
+                    $errors[] = 'Je hebt geen toestemming om reservaties toe te voegen, contacteer de verhuur verantwoordelijke';
+                }
             }
         }
 

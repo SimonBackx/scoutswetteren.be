@@ -1,0 +1,28 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+             <header>
+                <h1>{% if inschakelen %}Inschakelen{% else %}Uitschakelen{% endif %} gelukt!</h1>
+            </header>
+        {% else %}
+
+            {% if inschakelen %}
+             <header>
+                <h1>Scouting op maat inschakelen voor dit gezin?</h1>
+                <p>Het inschakelen van verminderd lidgeld zal alle bestaande en toekomstige afrekeningen van het lidgeld voor dit gezin reduceren tot €0 voor dit scoutsjaar.</p>
+                <p>Een huisbezoek is sterk aangeraden om te bespreken waar de scouts al dan niet helpt met financieren (bv. slaapmatje voorzien, afbetalingsplan, 1/3 regeling).</p>
+            </header>
+            {% else %}
+             <header>
+                <h1>Scouting op maat uitschakelen voor dit gezin?</h1>
+                <p>Doe dit als je de financiele situatie van dit gezin toch voldoende beoordeelt en het gezin in kwestie dit foutief heeft aangegeven. Dit past de afrekeningen van het huidige scoutsjaar aan en verwijdert het daarop toegepaste verminderd lidgeld.</p>
+            </header>
+            {% endif %}
+
+            <footer>
+                <input type="submit" class="aubergine fill" name="confirm" value="{% if inschakelen %}Inschakelen{% else %}Uitschakelen{% endif %}">
+                <a href="/admin/inschrijvingen" class="button merlot">Annuleren</a>
+            </footer>
+        {% endif %}
+    </div>
+</form>

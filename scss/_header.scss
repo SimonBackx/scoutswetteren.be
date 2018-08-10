@@ -7,19 +7,19 @@
     max-height: 800px;
     -webkit-flex: 0;
 
-    background: url(../images/background-1280.jpg) center center;
+    background: url(../images/background2017-1280.jpg) center center;
 
     @media screen and (max-width: 640px) {
-        background-image: url(../images/background-640.jpg);
+        background-image: url(../images/background2017-640.jpg);
     }
     @media screen and (max-width: 1024px) {
-        background-image: url(../images/background-1024.jpg);
+        background-image: url(../images/background2017-1024.jpg);
     }
     @media screen and (max-width: 1280px) {
-        background-image: url(../images/background-1280.jpg);
+        background-image: url(../images/background2017-1280.jpg);
     }
     @media screen and (min-width: 1281px) {
-        background-image: url(../images/background-2560.jpg);
+        background-image: url(../images/background2017-2560.jpg);
     }
 
     background-size: cover;

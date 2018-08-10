@@ -22,6 +22,8 @@
 {% endblock %}
 
 {% block javascript %}
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
+
     <script src="/js/photoswipe.min.js"></script> 
     <script type="text/javascript">
         function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten) {
@@ -35,12 +37,47 @@
 
     </script>
     <script src="/js/verhuur.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
+    <script src="/js/photos.js"></script>
+
+    <script type="text/javascript">
+        var grid = new photos.Grid({});
+        grid.trackWidth(document.getElementById('album_container'));
+        grid.margin = 8;
+        grid.max_height = 300;
+
+        var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+
+        {% for image in images %}
+            var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+            photo.title = "{{image.title | e('js')}}";
+            photo.sources = {{ image.getSourcesJSON | raw }};
+            grid.add(photo);
+        {% endfor %}
+        
+        var element = grid.toDOM();
+        document.getElementById('album_container').appendChild(element);
+        grid.updateVisiblePhotos();
+
+        grid.enablePhotoSwipe();
+    </script>
 {% endblock %}
 
 {% block main %}
     <main>
-        <article class="white block">
+        <nav class="buttons">
+            <a href="/verhuur" class="selected button">Gebouw</a>
+            <a href="/verhuur/materiaal" class="button">Materiaal</a>
+        </nav>
+
+        <article class="white block withButtons">
+            <div class="map">
+                <div id="map">
+                  
+                </div>
+            </div>
+        </article>
+        
+        <article class="white block ">
             <div class="splitted">
                 <div class="part image" id="terrein-image">
                     <img src="/images/part/terrein.jpg" alt="Hoofdlokaal">
@@ -74,7 +111,7 @@
                     </header>
 
 
-                    <p>Het hoofdgebouw bestaat uit een uitgeruste inoxkeuken met professioneel gasvuur met oven, frigo, diepvriezer, microgolf en koffiezet. Bestek, borden, pannen en potten zijn aanwezig voor 40 personen. Handdoeken, afwasmiddel, toiletpapier en kuisproduct zijn niet aanwezig. Borstels, dweilen en emmers wel.  </p>
+                    <p>Het hoofdgebouw bestaat uit een uitgeruste inoxkeuken met professioneel gasvuur met oven, frigo, diepvriezer, microgolf en koffiezet. Bestek, borden, pannen en potten zijn aanwezig voor {{ max_gebouw }} personen. Handdoeken, afwasmiddel, toiletpapier en kuisproduct zijn niet aanwezig. Borstels, dweilen en emmers wel.  </p>
 
                     <p>Op het gelijkvloers bevinden zich de toiletten, douches, een grote leefruimte (inclusief tafels, stoelen en banken) en de keuken. De bovenverdieping bestaat uit een grote slaapzaal en kleiner slaapzaaltje (of vergaderzaaltje).  </p>
 
@@ -102,23 +139,18 @@
                         <h1>Huurprijs</h1>
                     </header>
 
-                    <p>Het hoofdgebouw (maximaal 40 personen) wordt samen met één chalet verhuurd. In deze chalet mag niet geslapen worden. Deze worden enkel verhuurd aan jeugdbewegingen, scholen, sportclubs en socio-culturele organisaties, geen fuifverhuur. </p>
+                    <p>Het hoofdgebouw (maximaal {{ max_gebouw }} personen) wordt samen met één chalet verhuurd. In deze chalet mag niet geslapen worden. Deze worden enkel verhuurd aan jeugdbewegingen, scholen, sportclubs en socio-culturele organisaties, geen fuifverhuur. </p>
 
-                    <p>De huurprijs bedraagt € 98 /nacht voor verblijven in 2017 (2018: €100). Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € 15 / nacht + € 2 / extra persoon / nacht (max. 20 personen extra).  </p>
+                    <p>{{ prijzen }}. Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € {{ prijs_tent_dag }} / nacht + € {{ prijs_tent_persoon }} / persoon / nacht (max. {{ max_tenten }} personen in tenten).  </p>
 
-                    <p>De waarborg bedraagt 400 euro voor een verblijf van 2 nachten of minder en 750 euro vanaf 3 overnachtingen.</p>
+                    <p>De waarborg bedraagt {{ waarborg_weekend }} euro voor een verblijf van 2 nachten of minder en {{ waarborg_kamp }} euro vanaf 3 overnachtingen.</p>
 
+                    <p>Weekendverhuur gebeurt altijd per 2 nachten. In de week is verhuur mogelijk vanaf 1 nacht.</p>
                 </div>
             </div>
         </article>
 
-                <article class="white block">
-            <div class="map">
-                <div id="map">
-                  
-                </div>
-            </div>
-        </article>
+
 
 
 
@@ -145,7 +177,7 @@
                     <div id="verhuur-calendar-weeks">
                         {{ kalender | raw }}
                     </div>
-                    <p>Alle dagen aangeduid met een rode cirkel zijn niet meer vrij.</p>
+                    <p>Alle dagen aangeduid met een rode cirkel zijn niet meer beschikbaar.</p>
                 </div>
 
                 <div class="part text">
@@ -167,7 +199,7 @@
                         <div class="splitted">
                             <div class="part column first">
                                 <label>Aantal personen in hoofdgebouw</label>
-                                <div class="slider" data-max="40" data-min="1">
+                                <div class="slider" data-max="{{ max_gebouw }}" data-min="1">
                                     <input type="hidden" name="personen" value="1" id="aantal-personen">
                                     <div class="bar">
                                         <div class="progress"></div>
@@ -181,7 +213,7 @@
                             <div class="part column last">
                                 <div id="aantal-personen-tenten-box" style="display: none;">
                                     <label>Aantal personen in tenten</label>
-                                    <div class="slider" data-max="20" data-min="0">
+                                    <div class="slider" data-max="{{ max_tenten }}" data-min="0">
                                         <input type="hidden" name="personen_tenten" value="0" id="aantal-personen-tenten">
                                         <div class="bar">
                                             <div class="progress"></div>
@@ -223,13 +255,12 @@
             <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
             {% if general.logged_in %}
                 <div class="button-bar">
-                    <a href="/admin/photos/edit/{{ images[0].album }}" class="button aubergine noborder">Foto's toevoegen</a>
+                    <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
                 </div>
             {% endif %}
         </section>
     </main>
 
-<script src="/js/photos.js"></script>
 
 <!-- Root element of PhotoSwipe. Must have class pswp. -->
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -297,24 +328,5 @@
     </div>
 
 </div>
-<script type="text/javascript">
-    var grid = new photos.Grid({});
-    grid.trackWidth(document.getElementById('album_container'));
-    grid.margin = 8;
-    grid.max_height = 300;
 
-    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
-
-    {% for image in images %}
-        var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
-        photo.sources = {{ image.getSourcesJSON | raw }};
-        grid.add(photo);
-    {% endfor %}
-    
-    var element = grid.toDOM();
-    document.getElementById('album_container').appendChild(element);
-    grid.updateVisiblePhotos();
-
-    grid.enablePhotoSwipe();
-</script>
 {% endblock %}

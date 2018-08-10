@@ -2,11 +2,22 @@
 
 namespace Pirate\Sail\Leiding;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Leiding\Leiding;
 
-class LeidingAdminRouter extends Route {
+class LeidingAdminRouter extends AdminRoute {
     private $leiding = null;
+
+    static function getAvailablePages() {
+        return [
+            '' => [
+                array('priority' => 1000, 'name' => 'Ik', 'url' => ''),
+            ],
+            'groepsleiding' => [
+                array('priority' => 200, 'name' => 'Leiding', 'url' => 'leiding'),
+            ],
+        ];
+    }
 
     function doMatch($url, $parts) {
         if (empty($url)) {
@@ -23,6 +34,11 @@ class LeidingAdminRouter extends Route {
         if ($url == 'leiding') {
             return true;
         }
+
+        if (isset($parts[1]) && $parts[0] == 'leiding' && $parts[1] == 'verdeling') {
+             return true;
+        }
+
         if (isset($parts[1]) && $parts[0] == 'leiding' && ($parts[1] == 'edit' || $parts[1] == 'delete')) {
             if (isset($parts[2])) {
                 if (!is_numeric($parts[2])) {
@@ -55,6 +71,12 @@ class LeidingAdminRouter extends Route {
             require(__DIR__.'/admin/overview.php');
             return new Admin\Overview();
         }
+        
+        if (isset($parts[1]) && $parts[0] == 'leiding' && $parts[1] == 'verdeling') {
+            require(__DIR__.'/admin/leidingsverdeling.php');
+            return new Admin\Leidingsverdeling();
+        }
+
         if (isset($parts[1]) && $parts[0] == 'leiding') {
             if ($parts[1] == 'edit') {
                 require(__DIR__.'/admin/gegevens.php');

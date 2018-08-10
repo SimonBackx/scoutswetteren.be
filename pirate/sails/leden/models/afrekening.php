@@ -51,25 +51,16 @@ class Afrekening extends Model {
     }
 
     function isBetaald() {
-        return 
-        (   $this->totaal 
-            - $this->getBetaaldTakken()
+        $sum =  $this->totaal 
             - $this->betaald_cash 
             - $this->betaald_overschrijving 
-            - $this->betaald_scouts) 
-        < 0.005;
-    }
-
-    function getBetaaldTakken() {
-        $betaald_cash_takken = 0;
-        foreach ($this->inschrijvingen as $inschrijving) {
-            $betaald_cash_takken += $inschrijving->betaald_cash;
-        }
-        return $betaald_cash_takken;
+            - $this->betaald_scouts;
+        return 
+        $sum < 0.005 && $sum > -0.005;
     }
 
     function getNogTeBetalenFloat() {
-        return $this->totaal - $this->getBetaaldTakken() - $this->betaald_cash - $this->betaald_overschrijving - $this->betaald_scouts;
+        return $this->totaal - $this->betaald_cash - $this->betaald_overschrijving - $this->betaald_scouts;
     }
 
     function getNogTeBetalen() {
@@ -94,14 +85,14 @@ class Afrekening extends Model {
                 $this->betaald_overschrijving += $out;
             }
 
-            $betaald_totaal = $this->betaald_overschrijving + $this->betaald_scouts + $this->getBetaaldTakken() + $this->betaald_cash;
+            $betaald_totaal = $this->betaald_overschrijving + $this->betaald_scouts + $this->betaald_cash;
             $te_veel = $betaald_totaal - $this->totaal;
 
 
             // terugstorting
             if ($out < 0) {
                 if ($betaald_totaal < 0) {
-                    $errors[] = 'Je kan niet meer terugstorten dan en betaald is geweest.';
+                    $errors[] = 'Je kan niet meer terugstorten dan er betaald is geweest.';
                     return false;
                 }
             }
@@ -136,9 +127,6 @@ class Afrekening extends Model {
     }
 
     static function getAfrekening($id) {
-        if (!is_numeric($id)) {
-            return null;
-        }
         $id = self::getDb()->escape_string($id);
 
         $query = '
@@ -163,7 +151,7 @@ class Afrekening extends Model {
 
     // enkel onbetaalde of in huidge scoutsjaar (geordend op onbetaald)
     static function getAfrekeningen() {
-        $jaar = self::getDb()->escape_string(Lid::getScoutsjaar());
+        $jaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
 
         $query = '
             SELECT a.*, i.*, l.* from afrekeningen a
@@ -331,6 +319,14 @@ class Afrekening extends Model {
         return null;
     }
 
+    function recalculate() {
+        $this->totaal = 0;
+        foreach ($this->inschrijvingen as $inschrijving) {
+           $this->totaal += floatval($inschrijving->prijs);
+        }
+        return $this->save();
+    }
+
     function save() {
         if (!isset($this->id)) {
             self::getDb()->autocommit(true); // nodig voor aanroep in inschrijving->save()
@@ -342,6 +338,7 @@ class Afrekening extends Model {
         $betaald_scouts = self::getDb()->escape_string($this->betaald_scouts);
         $betaald_overschrijving = self::getDb()->escape_string($this->betaald_overschrijving);
         $betaald_cash = self::getDb()->escape_string($this->betaald_cash);
+        $totaal = self::getDb()->escape_string($this->totaal);
 
         $oke = 0;
         if ($this->isBetaald()) {
@@ -353,6 +350,7 @@ class Afrekening extends Model {
                  `betaald_cash` = '$betaald_cash',
                  `betaald_overschrijving` = '$betaald_overschrijving',
                  `betaald_scouts` = '$betaald_scouts',
+                 `totaal` = '$totaal',
                  `oke` = $oke
                  where `afrekening_id` = '$id'
             ";

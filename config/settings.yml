@@ -1,0 +1,12 @@
+folder: "scoutswetteren.be"
+server: "root@scoutswetteren.be"
+e-mail: "simon.backx@scoutswetteren.be"
+mysql:
+  username: root
+  password: root
+  database: scouts
+letsencrypt:
+  - "scoutswetteren.be"
+  - "www.scoutswetteren.be"
+  - "files.scoutswetteren.be"
+sass: "scss/style.scss:public/css/style.css"

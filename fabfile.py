@@ -8,7 +8,7 @@ import yaml
 output['running'] = False
 
 try:
-    stream = file('settings.yml', 'r')    # 'document.yaml' contains a single YAML document.
+    stream = file('config/settings.yml', 'r')    # 'document.yaml' contains a single YAML document.
 except IOError:
     print("Configfile settings.yml doesn\'t exist.")
     exit()
@@ -66,7 +66,7 @@ def nginx():
     removeCustomMaintenance()
 
     print("[NGINX] Uploading and enabling configuration file /etc/nginx/sites-available/"+config["folder"]+".conf")
-    put("nginx.production.conf", "/etc/nginx/sites-available/"+config["folder"]+".conf")
+    put("config/nginx.production.conf", "/etc/nginx/sites-available/"+config["folder"]+".conf")
     run("ln -sf /etc/nginx/sites-available/"+config["folder"]+".conf /etc/nginx/sites-enabled/")
     run("service nginx reload")
     print ("[NGINX] Done. Nginx reloaded.")
@@ -79,11 +79,11 @@ def nginxMaintenance():
         run("rm /etc/nginx/sites-enabled/"+config["folder"]+".conf")
 
     print('[NGINX] Adding default maintenance file... (nginx.maintenance.default.conf)')
-    put("nginx.maintenance.default.conf", "/etc/nginx/sites-available/maintenance.default.conf")
+    put("config/nginx.maintenance.default.conf", "/etc/nginx/sites-available/maintenance.default.conf")
     run("ln -sf /etc/nginx/sites-available/maintenance.default.conf /etc/nginx/sites-enabled/")
     
     print('[NGINX] Adding custom maintenance file...(nginx.maintenance.conf)')
-    put("nginx.maintenance.conf", "/etc/nginx/sites-available/"+config["folder"]+".maintenance.conf")
+    put("config/nginx.maintenance.conf", "/etc/nginx/sites-available/"+config["folder"]+".maintenance.conf")
     run("ln -sf /etc/nginx/sites-available/"+config["folder"]+".maintenance.conf /etc/nginx/sites-enabled/")
 
     print('[NGINX] Creating maintenance root in /var/www/maintenance')
@@ -123,6 +123,11 @@ def nginxMaintenance():
     run("systemctl status nginx")
     exit()
 
+def updatePirate():
+    print("[PIRATECMS] Updating Pirate CMS...")
+    run("php "+"/var/www/"+config["folder"]+"/pirate/run/update.php")
+    print("[PIRATECMS] Done.")
+
 def uploadApp():
     print("[UPLOAD] Uploading app files...")
     uploading_directory = "/var/www/"+config["folder"]
@@ -141,9 +146,7 @@ def letsencrypt():
     print("[LETSENCRYPT] Configuring letsencrypt...")
 
     with settings(hide('warnings', 'running', 'stdout')):
-        run("sudo add-apt-repository --yes ppa:certbot/certbot")
-        run("sudo apt-get --yes --force-yes update")
-        run("sudo apt-get --yes --force-yes install certbot")
+        run("sudo apt-get install letsencrypt")
     directory = "/var/www/maintenance"
     
     try:
@@ -165,16 +168,29 @@ def letsencrypt():
     print("[LETSENCRYPT] Renewing certificates if needed. Serving from "+directory+" for authentication.")
 
     with settings(hide('warnings', 'running')):
-        run("certbot certonly --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --webroot -w "+directory+domains)
+        run("letsencrypt certonly --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --webroot -w "+directory+domains)
 
     print("[LETSENCRYPT] Done.")
+
+def uploadPHPIni():
+    print('[PIRATE.INI] Uploading Pirate.ini (PHP.ini config)...')
+    put('config/php.ini', '/etc/php/7.0/fpm/conf.d/pirate.ini')
+    put('config/php.ini', '/etc/php/7.0/cli/conf.d/pirate.ini')
+    run('service php7.0-fpm reload')
+    print('[PIRATE.INI] Done.')
 
 def deploy():
     compileSass()
     print('--')
     nginxMaintenance()
     print('--')
+    uploadPHPIni()
+    print('--')
     uploadApp()
+    
+    print('--')
+    updatePirate()
+
     print('--')
     letsencrypt()
     #print('--')

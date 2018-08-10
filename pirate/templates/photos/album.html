@@ -3,9 +3,31 @@
 {% set social_image = album.cover.getBiggestSource().file.getPublicPath() %}
 {% extends "base.html" %}
 
-{% block head %}
+{% block javascript %}
 <link rel="stylesheet" href="/css/photoswipe.css"> 
 <script src="/js/photoswipe.min.js"></script> 
+<script src="/js/photos.js"></script>
+<script type="text/javascript">
+    var grid = new photos.Grid({});
+    grid.trackWidth(document.getElementById('album_container'));
+    grid.margin = 8;
+    grid.max_height = 400;
+
+    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+
+    {% for image in images %}
+        var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+        photo.title = "{{image.title | e('js')}}";
+        photo.sources = {{ image.getSourcesJSON | raw }};
+        grid.add(photo);
+    {% endfor %}
+    
+    var element = grid.toDOM();
+    document.getElementById('album_container').appendChild(element);
+    grid.updateVisiblePhotos();
+
+    grid.enablePhotoSwipe();
+</script>
 {% endblock %}
 
 {% block main %}
@@ -38,10 +60,13 @@
                     <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
                     {% endif %}
             </div>
+
+            {% if not album.canDownload() %}
+                <p>Je kan dit album binnen enkele minuten downloaden.</p>
+            {% endif %}
         </section>
     </main>
 
-<script src="/js/photos.js"></script>
 
 <!-- Root element of PhotoSwipe. Must have class pswp. -->
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -109,24 +134,5 @@
     </div>
 
 </div>
-<script type="text/javascript">
-    var grid = new photos.Grid({});
-    grid.trackWidth(document.getElementById('album_container'));
-    grid.margin = 8;
-    grid.max_height = 300;
 
-    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
-
-    {% for image in images %}
-        var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
-        photo.sources = {{ image.getSourcesJSON | raw }};
-        grid.add(photo);
-    {% endfor %}
-    
-    var element = grid.toDOM();
-    document.getElementById('album_container').appendChild(element);
-    grid.updateVisiblePhotos();
-
-    grid.enablePhotoSwipe();
-</script>
 {% endblock %}

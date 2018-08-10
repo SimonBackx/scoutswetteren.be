@@ -5,6 +5,10 @@
 
     <a href="/admin/verhuur/reservatie" class="icon-button plus">Reservatie manueel toevoegen</a>
     <a href="/admin/verhuur/reservatie?scouts" class="icon-button plus">Vrijhouden in kalender (bv. leefweek)</a>
+    <div>
+        <a href="?csv" class="fill aubergine button">Download verhuurkalender</a>
+    </div>
+
 
     <h1>Aanvragen</h1>
     {% if in_behandeling | length > 0 %}
@@ -28,20 +32,23 @@
 
 
     <h1>Ligt vast</h1>
-
-    {% for group in groups %}
-        <h2>{{ group.name }}</h2>
+    {% for month in months %}
+        <h2>{{ month.month }}</h2>
         <div class="list-bundle">
-        {% for reservatie in group.reservaties %}
+        {% for reservatie in month.reservaties %}
             <article class="list">
-                <div class="medium merlot column">{{ reservatie.startdatum | date('j-m') }} tot {{ reservatie.einddatum | date('j-m') }}</div>
+                <div class="medium merlot column">{{ reservatie.date }}</div>
+                {% if reservatie.type == 'reservatie' %}
+                    <div class="max column">{{ reservatie.reservatie.getTitle() }}</div>
+                    <div class="large merlot column">{{ reservatie.reservatie.getDescription() }}</div>
 
-                <div class="max column">{{ reservatie.getTitle() }}</div>
-                <div class="large merlot column">{{ reservatie.getDescription() }}</div>
-
-                <div class="last column">
-                    <a href="/admin/verhuur/reservatie/{{ reservatie.id }}" class="button noborder">Bekijken / bewerken</a>
-                </div>
+                    <div class="last column">
+                        <a href="/admin/verhuur/reservatie/{{ reservatie.reservatie.id }}" class="button noborder">Bekijken</a>
+                    </div>
+                {% else %}
+                    <div class="max column bold">Weekend nog vrij</div>
+                    <div class="last column"></div>
+                {% endif %}
             </article>
         {% endfor %}
         </div>

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
-    <link href='{{ http }}/css/style.css' rel='stylesheet' type='text/css'>
+    <link href='{{ http }}/css/style.css?v=2' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/pickadate.css' rel='stylesheet' type='text/css'>
     <link href='/css/print.css' media="print" rel='stylesheet' type='text/css'>
 
@@ -78,6 +78,8 @@
                             {% for button in admin.buttons %}
                                 <a href="/admin/{{ button.url }}" class="aubergine button noborder">{{ button.name }}</a>
                             {% endfor %}
+                            <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank" class="aubergine button noborder">Drive</a>
+
                         </div>
                     </div>
                 </div>
@@ -212,5 +214,6 @@
     <script type="text/javascript" src="/js/pickadate.date.js"></script>
     <script type="text/javascript" src="/js/forms.js"></script>
     {% block javascript %}{% endblock %}
+    <script type="text/javascript" src="{{ http }}/js/search.js"></script>
 </body>
 </html>

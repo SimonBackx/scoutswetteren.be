@@ -3,6 +3,10 @@ namespace Pirate\Page;
 use Pirate\Template\Template;
 
 class Page {
+    function customHeaders() {
+        return false;
+    }
+
     function getStatusCode() {
         return 200;
     }
@@ -20,7 +24,9 @@ class Page {
     }
 
     final function execute() {
-        http_response_code($this->getStatusCode());
+        if (!$this->customHeaders()) {
+            http_response_code($this->getStatusCode());
+        }
         echo $this->getContent();
     }
 
@@ -47,5 +53,16 @@ class Page301 extends Page {
 
     function getContent() {
         return Template::render('301');
+    }
+}
+
+// Temp
+class Page302 extends Page {
+    function getStatusCode() {
+        return 302;
+    }
+
+    function getContent() {
+        return Template::render('302');
     }
 }

@@ -11,6 +11,7 @@ class Image extends Model {
     public $date_taken;
     public $sources = array();
     public $album; // id of null! -> geen object
+    public $title;
 
     function __construct($row = null, $sources = array()) {
         if (!isset($row)) {
@@ -19,6 +20,8 @@ class Image extends Model {
         }
 
         $this->id = $row['image_id'];
+
+        $this->title = $row['image_title'];
 
         if (isset($row['image_date_taken'])) {
             $this->date_taken = new \DateTime($row['image_date_taken']);
@@ -35,7 +38,7 @@ class Image extends Model {
         $sources = array();
 
         foreach ($this->sources as $source) {
-            if ($source->file->is_source) {
+            if ($source->is_source) {
                 continue;
             }
             
@@ -54,7 +57,7 @@ class Image extends Model {
 
         for ($i=0; $i < count($this->sources); $i++) { 
             $source = $this->sources[$i];
-            if (!$source->file->is_source && (!isset($bestfit) || $source->isGreaterThan($bestfit))) {
+            if (!$source->is_source && (!isset($bestfit) || $source->isGreaterThan($bestfit))) {
                 $bestfit = $source;
             }
         }
@@ -69,7 +72,7 @@ class Image extends Model {
         $bestfit = null;
         for ($i=0; $i < count($this->sources); $i++) { 
             $source = $this->sources[$i];
-            if (!$source->file->is_source && $width <= $source->width && $height <= $source->height && (!isset($bestfit) || $source->isLessThan($bestfit))) {
+            if (!$source->is_source && $width <= $source->width && $height <= $source->height && (!isset($bestfit) || $source->isLessThan($bestfit))) {
                 $bestfit = $source;
             }
         }
@@ -88,7 +91,7 @@ class Image extends Model {
         $biggest = null;
         $biggest_source = null;
         foreach ($this->sources as $source) {
-            if (!$source->file->is_source) {
+            if (!$source->is_source) {
                 if (!isset($biggest) || $biggest->width < $source->width) {
                     $biggest = $source;
                 }
@@ -106,6 +109,20 @@ class Image extends Model {
         return $biggest;
     }
 
+    /**
+     * Geeft grootste ImageFile die niet het origineel is
+     * @return [type] [description]
+     */
+    function getRealSource() {
+        foreach ($this->sources as $source) {
+            if ($source->is_source) {
+                return $source;
+            }
+        }
+
+        return null;
+    }
+
     function addSource(ImageFile $source) {
         $this->sources[] = $source;
     }
@@ -114,8 +131,13 @@ class Image extends Model {
         $this->album = $id;
     }
 
+    static function getLonelyImagePath() {
+        return 'images/';
+    }
+
     function upload($form_name, $sizes, &$errors, Album $album_object = null, $sponsorify = false) {
-        
+        $should_be_saved_in_object_storage = true;
+
         if (isset($this->album) && !isset($album_object)) {
             if ($this->album == Album::$QUEUE_ID) {
                 $album_object = Album::getQueueAlbum();
@@ -126,6 +148,10 @@ class Image extends Model {
             if (!isset($this->album)) {
                 $album_object = null;
             }
+        }
+
+        if (isset($album_object) && $album_object->id == Album::$QUEUE_ID) {
+            $should_be_saved_in_object_storage = false;
         }
 
         ini_set('MAX_IFD_NESTING_LEVEL', 200);
@@ -140,12 +166,24 @@ class Image extends Model {
         }
 
         $source = new File();
+        $source->should_be_saved_in_object_storage = $should_be_saved_in_object_storage;
+
+        // Als het een album heeft should_be_saved_on_server op true zetten (enkel voor sources)
+        if (isset($album_object)) {
+            $source->should_be_saved_on_server = true;
+            // Hier nog niet wijzigen voor alle andere bestanden, want upload is nog niet 100% zeker
+        }
 
         $leiding_id = Leiding::getUser()->id;
         // Hier nog location manipuleren
         
         // Locatie waar source + thumbnails worden opgeslagen
-        $path = Album::getPathForAlbum($album_object);
+        if (isset($album_object)) {
+            $path = $album_object->getPath();
+        } else {
+            $path = Self::getLonelyImagePath();
+        }
+
         $source->location = $path.'sources/';
         if (!$source->upload($form_name, $errors, array('jpeg', 'jpg', 'png', 'gif', 'bmp'), $this->id)) {
             self::getDb()->rollback();
@@ -154,7 +192,7 @@ class Image extends Model {
             return false;
         }
 
-        if ($source->extension == 'jpg' || $source->extension == 'jpeg') {
+        if (($source->extension == 'jpg' || $source->extension == 'jpeg') && function_exists('exif_read_data')) {
             $error_reporting = error_reporting();
             error_reporting(0);
             $exif_data = exif_read_data($source->getPath());
@@ -172,11 +210,10 @@ class Image extends Model {
         // gebeurd al in alle gevallen van true:
         //self::getDb()->commit();
         //self::getDb()->autocommit(true);
-
-
-        $original = ImageFile::createFromOriginal($this, $source, $errors);
+        
+        $original = ImageFile::createFromFile(/*image: */ $this, /*file: */ $source, $errors);
         if ($original === false) {
-            $errors[] = 'Create from original failed';
+            $errors[] = 'Create from file failed';
             // TODO: alles ongedaan maken
             return false;
         }
@@ -186,11 +223,6 @@ class Image extends Model {
 
         if (count($sizes) > 0) {
             $original = GDImage::createFromFile($source->getPath());
-            if ($sponsorify) {
-                $original->blackAndWhite();
-                $original->level();
-                $original->trim();
-            }
 
             $previousSize = array();
             foreach ($sizes as $size) {
@@ -200,30 +232,36 @@ class Image extends Model {
                 }
                 $previousSize = $actual_size;
 
-                $quality = 40;
+                $quality = 60;
+                
                 if ($actual_size["width"] < 400 || $actual_size["height"] < 400) {
                     $quality = 60;
                 }
+
                 if ($actual_size["width"] <= 100 || $actual_size["height"] <= 100) {
-                    $quality = 40;
-                }
-                if ($sponsorify) {
-                    $quality = 100;
+                    $quality = 60;
                 }
 
-                $gdImage = GDImage::createFromGDImage($original, $quality);
+                if ($sponsorify) {
+                    $quality = 100;
+                    $gdImage = GDImage::createFromGDImage($original);
+                } else {
+                    $gdImage = GDImage::createFromGDImage($original, $quality);
+                }
 
                 if (isset($size['width'], $size['height'])) {
                     $gdImage->fit($actual_size);
                 } else {
                     $gdImage->scale($actual_size);
                 }
-                
-                
 
-                $img = ImageFile::create($this, $gdImage, $errors, $path);
+                if ($sponsorify) {
+                    $gdImage->blackAndWhite();
+                    $gdImage->level();
+                }
+
+                $img = ImageFile::createFromGDImage($this, $gdImage, $errors, $path, $should_be_saved_in_object_storage);
                 if ($img === false) {
-
                     // TODO: alles ongedaan maken
                     return false;
                 }
@@ -232,27 +270,15 @@ class Image extends Model {
 
             $original->destroy();
         }
-        // Hier nog resize toevoegen
+
+        // Hele album beschikbaar maken zodat zip file kan worden aangepast
+        if (isset($album_object) && !$album_object->isQueue()) {
+            $album_object->setSourcesShouldBeSavedOnServer(true);
+        }
 
         return true;
     }
     
-    static function getImagesFromHiddenAlbum($album_name) {
-        $name = self::getDb()->escape_string($album_name);
-        $where = "WHERE a.album_name = '$name' AND a.album_hidden = 1";
-
-        $query = "
-            SELECT * FROM images i
-                JOIN image_files i_f on i_f.imagefile_image = i.image_id
-                JOIN files f on f.file_id = i_f.imagefile_file
-                LEFT JOIN albums a on i.image_album = a.album_id
-            $where
-            ORDER BY i.image_id
-        ";
-
-        return self::getImagesForQuery($query);
-    }
-
     static function getImagesFromAlbum($album_id = null) {
         $where = '';
         if (!isset($album_id) || intval($album_id) == Album::$QUEUE_ID) {
@@ -337,22 +363,23 @@ class Image extends Model {
             $image_album = '"'.self::getDb()->escape_string($this->album).'"';
         }
 
+        $image_title = self::getDb()->escape_string($this->title);
+
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
 
             $query = "UPDATE images 
                 SET 
                  image_date_taken = $date_taken,
-                 image_album = $image_album
+                 image_album = $image_album,
+                 image_title = '$image_title'
                  where image_id = '$id' 
             ";
         } else {
             $query = "INSERT INTO 
-                images (`image_date_taken`, `image_album`)
-                VALUES ($date_taken, $image_album)";
+                images (`image_date_taken`, `image_album`, `image_title`)
+                VALUES ($date_taken, $image_album, '$image_title')";
         }
-
-        
 
         if (self::getDb()->query($query)) {
             if (!isset($this->id)) {
@@ -373,20 +400,21 @@ class Image extends Model {
         if (isset($this->album)) {
 
             $images = Self::getImagesFromAlbum($this->album);
-            if (count($images) == 1) {
+            if (count($images) == 1 && $this->album != Album::$QUEUE_ID) {
                 $errors[] = 'Je kan de laatste foto van dit album niet verwijderen.';
                 return false;
             }
 
             // Coverfoto wijzigen indien verwijderd
             $album = Album::getAlbum($this->album);
-            if ($album->cover->id == $this->id) {
+            if (isset($album) && isset($album->cover) && $album->cover->id == $this->id) {
                 $i = 0;
                 while ($album->cover->id == $this->id && $i < count($images)) {
                     $album->cover = $images[$i];
                     $i++;
                 }
                 $album->save();
+                $album->onImageDeleted($this);
             }
         }
 
@@ -407,7 +435,8 @@ class Image extends Model {
         }
 
         foreach ($this->sources as $source) {
-           if (unlink(realpath($source->file->getPath())) === false) {
+
+           if ($source->delete() === false) {
                 $errors[] = 'De foto is verwijderd uit de database, maar niet volledig uit het bestandssysteem (door een interne fout).';
                 return false;
            }

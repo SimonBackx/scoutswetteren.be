@@ -1,0 +1,25 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+             <header>
+                <h1>De tak is gewijzigd!</h1>
+            </header>
+        {% else %}
+             <header>
+                <h1>Tak wijzigen van {{ lid.voornaam }} {{ lid.achternaam }}</h1>
+                <p>Verplaats een lid naar een andere tak zonder dat de geboortedatum moet overeenkomen.</p>
+            </header>
+
+            <label>Nieuwe tak</label>
+            {% for tak in takken %}
+                <input id="tak_{{ tak | e('html_attr') }}" type="radio" name="tak" value="{{ tak | e('html_attr') }}" {% if lid.inschrijving.tak == tak %} checked{% endif %}>
+                <label for="tak_{{ tak | e('html_attr') }}">{{ tak | capitalize }}</label>
+            {% endfor %}
+
+            <footer>
+                <input type="submit" class="aubergine fill" name="confirm-delete" value="Verwissel van tak">
+                <a href="/admin/inschrijvingen/lid/{{ lid.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+            </footer>
+        {% endif %}
+    </div>
+</form>

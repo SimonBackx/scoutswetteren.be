@@ -52,7 +52,7 @@ class Edit extends Page {
                 $form_name = "logo";
                 if (File::isFileSelected($form_name)) {
                     $img = new Image();
-                    if ($img->upload($form_name, array(array('height' => 80)), $errors, null, true)) {
+                    if ($img->upload($form_name, array(array('height' => 100)), $errors, null, true)) {
                         $this->sponsor->image = $img;
                     }
                 }
@@ -74,6 +74,7 @@ class Edit extends Page {
         return Template::render('sponsors/admin/edit', array(
             'new' => $new,
             'data' => $data,
+            'sponsor' => $this->sponsor,
             'errors' => $errors,
             'success' => $success
         ));

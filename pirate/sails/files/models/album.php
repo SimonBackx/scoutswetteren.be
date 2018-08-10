@@ -18,11 +18,19 @@ class Album extends Model {
 
     public $group;
     public $slug;
-    public $zip_file; // id van file of null
+    
+    public $zip_file;   // id van file of null
+                        // upload_date van zip_file bevat de datum van de laaste aanpassing
     public $sources_available; // true / false
 
     public $cover = null;
+    private $cover_id = null;
+
     public $image_count = 0;
+    
+    public $latest_upload_date = null;
+    public $zip_last_updated = null;
+
     public static $QUEUE_ID = 0;
 
     public static $groups = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'algemeen');
@@ -42,15 +50,27 @@ class Album extends Model {
         $this->group = $row['album_group'];
         $this->author = $row['album_author'];
         $this->hidden = ($row['album_hidden'] == 1);
+
         $this->sources_available = ($row['album_sources_available'] == 1);
 
         $this->cover = null;
         if (isset($row['image_id'])) {
             $this->cover = new Image($row);
         }
+        if (isset($row['album_cover'])) {
+            $this->cover_id = $row['album_cover'];
+        }
 
         if (isset($row['album_image_count'])) {
             $this->image_count = intval($row['album_image_count']);
+        }
+
+        if (isset($row['latest_upload_date'])) {
+            $this->latest_upload_date = new \DateTime($row['album_latest_upload_date']);
+        }
+
+        if (isset($row['zip_last_updated'])) {
+            $this->zip_last_updated = new \DateTime($row['album_zip_last_updated']);
         }
     }
 
@@ -65,8 +85,92 @@ class Album extends Model {
         return $this->id == Self::$QUEUE_ID;
     }
 
+    // Return true on successful update
+    function updateSourcesAvailable() {
+        // Alle Files ophalen -> file_exists checken -> sources_available updaten
+        $images = Image::getImagesFromAlbum($this->id);
+        if (!isset($images)) {
+            return false;
+        }
+
+        $all_sources = true;
+
+        foreach ($images as $image) {
+            foreach ($image->sources as $imagefile) {
+                if ($imagefile->is_source) {
+                    // double check here
+                    $imagefile->file->updateSavedOnServer();
+                    if (!$imagefile->file->saved_on_server) {
+                        $all_sources = false;
+                        break(2);
+                    }
+                }
+            }
+        }
+
+        if ($all_sources != $this->sources_available) {
+            $this->sources_available = $all_sources;
+            return $this->save();
+        }
+
+        return true;
+    }
+
+    function getFileStatistics() {
+        $files = File::getFilesForAlbum($this->id);
+        if (isset($this->zip_file)) {
+            $file = File::getFile($this->zip_file);
+            if (isset($file)) {
+                $files[] = $file;
+            }
+        }
+        return File::generateStatistics($files);
+    }
+
+    // Pas aan of de sources van dit album op de server moeten staan
+    // bij elke nieuwe upload -> oproepen met true
+    // zal automatisch terug op false gezet worden nadat de zip file is aangemaakt
+    function setSourcesShouldBeSavedOnServer($bool) {
+        $b = 0;
+        if ($bool) {
+            $b = 1;
+        }
+        $id = self::getDb()->escape_string($this->id);
+
+        $query = "UPDATE files f
+                    inner join image_files i_f on i_f.imagefile_file = f.file_id
+                    inner join images i on i.image_id = i_f.imagefile_image
+                SET 
+                 f.file_should_be_saved_on_server = '$b'
+                 where i.image_album = '$id' AND i_f.imagefile_is_source = 1";
+
+        if (self::getDb()->query($query)){
+            return true;
+        }
+        return false;
+    }
+
+    function delayDeletionOfImages() {
+        $id = self::getDb()->escape_string($this->id);
+
+        $d = (new \DateTime())->format('Y-m-d H:i:s');
+
+        $query = "UPDATE files f
+                    inner join image_files i_f on i_f.imagefile_file = f.file_id
+                    inner join images i on i.image_id = i_f.imagefile_image
+                SET 
+                 f.file_object_storage_date = '$d'
+                 where i.image_album = '$id' AND i_f.imagefile_is_source = 1 AND f.file_object_storage_host is not null and f.file_saved_on_server = 1";
+
+        if (self::getDb()->query($query)){
+            return true;
+        }
+        return false;
+    }
+
+
     function canDownload() {
-        return $this->sources_available || isset($this->zip_file);
+        return isset($this->zip_file);
     }
 
     function generateSlug() {
@@ -99,7 +203,54 @@ class Album extends Model {
         $id = self::getDb()->escape_string($id);
 
         $albums = array();
-        $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count from albums a join images i on i.image_album = a.album_id left join images c on c.image_id = a.album_cover WHERE a.album_id = "'.$id.'" group by a.album_id, c.image_id';
+        $query = "SELECT a.*, c.*, count(i.image_id) as album_image_count 
+        from albums a 
+        left join images i on i.image_album = a.album_id 
+        left join images c on c.image_id = a.album_cover 
+        WHERE a.album_id = '$id' 
+        group by a.album_id, c.image_id";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Album($row);
+            }
+        }
+
+        return null;
+    }
+
+    static function getAlbumForFile($file_id) {
+        $file_id = self::getDb()->escape_string($file_id);
+
+        $albums = array();
+        $query = "SELECT a.* 
+        from albums a 
+         join images i on i.image_album = a.album_id 
+         join image_files i_f on i_f.imagefile_image = i.image_id
+         join files f on f.file_id = i_f.imagefile_file
+        WHERE f.file_id = '$file_id'";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Album($row);
+            }
+        }
+
+        return null;
+    }
+
+    static function getHiddenAlbum($name) {
+        $name = self::getDb()->escape_string($name);
+
+        $albums = array();
+        $query = "SELECT a.*, c.*, count(i.image_id) as album_image_count 
+        from albums a 
+        left join images i on i.image_album = a.album_id 
+        left join images c on c.image_id = a.album_cover 
+        WHERE a.album_slug = '$name' AND a.album_hidden = 1 
+        group by a.album_id, c.image_id";
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows == 1){
@@ -119,7 +270,7 @@ class Album extends Model {
 
         $query = 'SELECT a.*, c.*, i_f.*, f.*
         from albums a 
-        join images c on c.image_id = a.album_cover 
+        left join images c on c.image_id = a.album_cover 
         join image_files i_f on i_f.imagefile_image = c.image_id
         join files f on f.file_id = i_f.imagefile_file
         WHERE a.album_slug = "'.$slug.'" 
@@ -165,7 +316,7 @@ class Album extends Model {
         if (!$with_cover) {
             $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count 
                     from albums a 
-                    join images i on i.image_album = a.album_id 
+                    left join images i on i.image_album = a.album_id 
                     left join images c on c.image_id = a.album_cover
                     '.$where.' 
                     group by a.album_id, c.image_id 
@@ -184,11 +335,11 @@ class Album extends Model {
         // Ook cover sources uit database halen
         $query = 'SELECT a.*, c.*, i_f.*, f.*
                 from albums a 
-                join images c on c.image_id = a.album_cover
+                left join images c on c.image_id = a.album_cover
                 join image_files i_f on i_f.imagefile_image = c.image_id
                 join files f on f.file_id = i_f.imagefile_file
                  '.$where.' 
-                order by YEAR(a.album_date_taken) desc, a.album_date desc, a.album_id desc '.$limit;
+                order by YEAR(a.album_date_taken) desc, a.album_date_taken desc, a.album_id desc '.$limit;
         
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -210,6 +361,35 @@ class Album extends Model {
         }
         
         return $albums;
+    }
+
+    static function getZippableAlbums($limit = 5) {
+        // Get albums with zip files that can and should be updated
+        // + is not the queue -> never zip!
+        $limit = intval($limit);        
+        $albums = array();
+        $query = 'SELECT a.*, zip_file.file_upload_date as album_zip_last_updated, max(f.file_upload_date) as album_latest_upload_date
+                from albums a 
+                 join images i on i.image_album = a.album_id 
+                 join image_files i_f on i_f.imagefile_image = i.image_id
+                 join files f on f.file_id = i_f.imagefile_file
+                 
+                left join files zip_file on zip_file.file_id = a.album_zip_file
+
+                where a.album_sources_available = 1 and album_id != '.Self::$QUEUE_ID.'
+                group by a.album_id
+                having zip_file.file_upload_date is null or album_zip_last_updated < album_latest_upload_date
+                limit '.$limit;
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $albums[] = new Album($row);
+                }
+            }
+        }
+        return $albums;
+        
     }
 
     // Get name suggestion for images
@@ -280,6 +460,11 @@ class Album extends Model {
         $cover = "NULL";
         if (isset($this->cover)) {
             $cover = "'".self::getDb()->escape_string($this->cover->id)."'";
+        } else {
+            if (isset($this->cover_id)) {
+                // Voor als de cover niet kan worden meegegeven als object -> prevent deletion
+                $cover = "'".self::getDb()->escape_string($this->cover_id)."'";
+            }
         }
 
         $zip_file = "NULL";
@@ -376,7 +561,8 @@ class Album extends Model {
     }
 
     static function getPathForAlbum($album = null, $deletePath = false) {
-        $path = 'images/';
+        // Todo: remove this function
+        $path = Image::getLonelyImagePath();
 
         if (isset($album) && isset($album->id)) {
             if ($album->id == Self::$QUEUE_ID) {
@@ -386,12 +572,26 @@ class Album extends Model {
                 if ($deletePath) {
                     $path = 'albums/'.$album->id.'/';
                 } else {
-                    $path = 'albums/'.$album->id.'/'.$album->getSlug().'/';
+                    return $album->getPath();
                 }
             }
         }
 
         return $path;
+    }
+
+
+
+    function getPath($delete = false) {
+        if ($this->id == Self::$QUEUE_ID) {
+            $leiding_id = Leiding::getUser()->id;
+            return 'albums/queue/'.$leiding_id.'/';
+        }
+        if ($delete) {
+            // Hele directory verwijderen met id
+            return 'albums/'.$this->id.'/';
+        }
+        return 'albums/'.$this->id.'/'.$this->getSlug().'/';
     }
 
     function createFromImageQueue() {
@@ -432,22 +632,23 @@ class Album extends Model {
         $id = self::getDb()->escape_string($this->id);
         $slug = self::getDb()->escape_string($this->getSlug());
 
-        $queue_dir = self::getDb()->escape_string(Self::getPathForAlbum(Self::getQueueAlbum()));
-        $new_dir = self::getDb()->escape_string(Self::getPathForAlbum($this));
+        $queue_dir = self::getDb()->escape_string(Self::getQueueAlbum()->getPath());
+        $new_dir = self::getDb()->escape_string($this->getPath());
 
         $query = "UPDATE images i
             join image_files i_f on i_f.imagefile_image = i.image_id
             join files f on f.file_id = i_f.imagefile_file
             SET 
              i.image_album = '$id',
-             f.file_location = REPLACE(f.file_location, '".$queue_dir."', '".$new_dir."')
+             f.file_location = REPLACE(f.file_location, '".$queue_dir."', '".$new_dir."'),
+             f.file_should_be_saved_in_object_storage = 1
             where i.image_album = '".Self::$QUEUE_ID."' and f.file_author = '$author'";
 
 
         if (self::getDb()->query($query)) {
             $error_reporting = error_reporting();
             //error_reporting(0);
-            $dir = $FILES_DIRECTORY.'/'.Self::getPathForAlbum($this);
+            $dir = $FILES_DIRECTORY.'/'.$this->getPath();
 
             $old = umask(0);
             if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
@@ -457,13 +658,55 @@ class Album extends Model {
             }
             umask($old);
 
-            rename($FILES_DIRECTORY.'/'.Self::getPathForAlbum(Self::getQueueAlbum()), $dir);
+            rename($FILES_DIRECTORY.'/'.Self::getQueueAlbum()->getPath(), $dir);
             error_reporting($error_reporting);
 
+            $this->updateSourcesAvailable();
             return true;
         }
 
         return false;
+    }
+
+    function onImageAdded($image) {
+        // Triggered on upload of a picture
+        if (!$this->isQueue()) {
+            $this->deleteZip();
+        }
+
+        // Set sources should be available
+        $available = false;
+
+        $source = $image->getRealSource();
+        if (isset($source)) {
+            if ($source->file->saved_on_server) {
+                // Oef, staat nog op de server
+                $available = true;
+            }
+        }
+
+        if (!$available) {
+            $this->sources_available = false;
+        }
+        $this->setSourcesShouldBeSavedOnServer(true);
+    }
+
+    function onImageDeleted($image) {
+        if (!$this->isQueue()) {
+            $this->deleteZip();
+        }
+        $this->setSourcesShouldBeSavedOnServer(true);
+    }
+
+    function onFileRemovedFromServer($file) {
+        // Weet nooit zeker of het om een source gaat
+
+        if ($this->sources_available) {
+            // Enkel doen als ze beschikbaar waren,
+            // want zou enkel onbeschikbaar kunnen worden
+            $this->updateSourcesAvailable();
+        }
+
     }
 
     function delete() {
@@ -487,6 +730,16 @@ class Album extends Model {
                 return false;
             }
 
+            // Verwijder de images
+            $query = "DELETE images FROM images
+                join albums on albums.album_id = images.image_album
+                left join image_files on image_files.imagefile_image = images.image_id
+                WHERE albums.album_id = '$id' and image_files.imagefile_id is null";
+
+            if (!self::getDb()->query($query)) {
+                return false;
+            }
+
             // Verwijder de albums + images
             $query = "DELETE FROM albums
                 WHERE albums.album_id = '$id'";
@@ -494,6 +747,7 @@ class Album extends Model {
             if (!self::getDb()->query($query)) {
                 return false;
             }
+
         } else {
 
             // Verwijdert alle files + image_files
@@ -521,14 +775,13 @@ class Album extends Model {
             }
         }
 
-        $path = $FILES_DIRECTORY.'/'.Album::getPathForAlbum($this, true);
+        $path = $FILES_DIRECTORY.'/'.$this->getPath(true);
         exec("rm -rf \"$path\"", $output, $response);
 
         return ($response === 0);
     }
 
     function deleteZip() {
-        // Zip updaten
         if (!isset($this->zip_file)) {
             return true;
         }
@@ -541,48 +794,152 @@ class Album extends Model {
         return false;
     }
 
-    function updateZip() {
-        // Zip updaten
+    function isZipUpToDate() {
+        // Opgelet: zware functie indien album niet werd opgehaald met zip_last_updated en latest_upload_date attributes
         if (!isset($this->zip_file)) {
+            return false;
+        }
+
+        if (!isset($this->zip_last_updated)) {
+            // todo vergelijking
+            
+            $file = File::getFile($this->zip_file);
+            if (!isset($file)) {
+                $this->zip_file = null;
+                $this->save();
+                return false;
+            }
+            $this->zip_last_updated = $file->upload_date;
+        }
+
+        if (!isset($this->latest_upload_date)) {
+            // Get latest image from this album
+            $latest_image = File::getLatestSourceFileForAlbum($this->id);
+            if (!isset($latest_image)) {
+                return true;
+            }
+            $this->latest_upload_date = $latest_image->upload_date;
+        }
+
+        return $this->latest_upload_date < $this->zip_last_updated;
+    }
+
+    function zip(&$errors) {
+        if ($this->isQueue()) {
+            // Queue mag nooit gezipped worden
+            $errors[] = 'Queue is not zippable';
+            return false;
+        }
+
+        // Zippen is enkel mogelijk als alle sources available zijn
+        if (!$this->updateSourcesAvailable(true)) {
+            $errors[] = 'UpdateSourcesAvailable failed';
+            return false;
+        }
+        
+        if (!$this->sources_available) {
+            // Kan performance probleem teweeg brengen als er sources verdwenen zijn
+            // Omdat dit in de cron job dan onnodige queries teweeg brengt
+            // Dus misschien toch volgende lijn niet uitvoeren?
+            $this->setSourcesShouldBeSavedOnServer(true);
+
+            $errors[] = 'Sources are not available on server';
+            return false;
+        }
+
+        // Hebben we al een ZIP file?
+        if (isset($this->zip_file)) {
+            //Is deze up to date?
+            if ($this->isZipUpToDate()) {
+                $this->setSourcesShouldBeSavedOnServer(false);
+                return true;
+            }
+
+            // Niet up to date
+            if ($this->updateZip()) {
+                $this->zip_file->saved_on_server = true;
+                $this->zip_file->object_storage_date = null;
+                $this->zip_file->object_storage_host = null;
+                $this->zip_file->upload_date = new \DateTime();
+
+                if ($this->zip_file->save()) {
+                    $this->zip_last_updated = new \DateTime();
+                    $this->setSourcesShouldBeSavedOnServer(false);
+                    $this->delayDeletionOfImages();
+                    return true;
+                }
+            }
+
+            $errors[] = 'Zip update failed';
+            return false;
+             
+        }
+
+        // We hebben nog geen zip file
+        if ($this->createZip()) {
+            $this->zip_last_updated = new \DateTime();
+            $this->setSourcesShouldBeSavedOnServer(false);
+            $this->delayDeletionOfImages();
             return true;
         }
 
-        $location = Album::getPathForAlbum($this);
+        $errors[] = 'Zip creation failed';
+        return false;
+    }
+
+    private function updateZip() {
+        global $FILES_DIRECTORY;
+
+        // Todo: fix object storage here
+        // 
+        // Zip updaten
+        if (!isset($this->zip_file)) {
+            // Updaten natuurlijk niet mogelijk
+            return false;
+        }
+
         $name = $this->getSlug().'.zip';
-        $file_path = $FILES_DIRECTORY.'/'.$location.$name;
-        $path = $FILES_DIRECTORY.'/'.$location.'sources';
+        $album_path = $this->getPath();
+        $file_path = $FILES_DIRECTORY.'/'.$album_path.$name;
+        $path = $FILES_DIRECTORY.'/'.$album_path.'sources';
 
         // File sync here (= -FS)
         exec("zip -FSjr \"$file_path\" \"$path\"", $output, $response);
 
+        echo implode("\n", $output);
         return ($response === 0);
     }
 
-    function createZip() {
+    private function createZip() {
+        // Todo: fix object storage here
+        // 
         global $FILES_DIRECTORY;
         if (isset($this->zip_file)) {
             return true;
         }
 
-        if (!$this->canDownload()) {
-            return false;
-        }
-
-        $location = Album::getPathForAlbum($this);
+        $album_path = $this->getPath();
         $name = $this->getSlug().'.zip';
-        $file_path = $FILES_DIRECTORY.'/'.$location.$name;
-        $path = $FILES_DIRECTORY.'/'.$location.'sources';
+        $file_path = $FILES_DIRECTORY.'/'.$album_path.$name;
+        $path = $FILES_DIRECTORY.'/'.$album_path.'sources';
         exec("zip -FSjr \"$file_path\" \"$path\"", $output, $response);
 
         if ($response === 0) {     
             $errors = array();       
-            $file = new File();
-            if (!$file->from_file($location, $name, $errors)) {
+            $file = File::createFromFile($album_path, $name, $errors);
+            if (!isset($file)) {
+                echo "createFromFile error\n";
+                return false;
+            }
+            if (!$file->save()) {
+                echo "file->save error\n";
                 return false;
             }
             $this->zip_file = $file->id;
             return $this->save();
         }
+        echo "zip error:\n";
+         echo implode("\n", $output);
         return false;
     }
 

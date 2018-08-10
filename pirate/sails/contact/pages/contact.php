@@ -4,6 +4,7 @@ use Pirate\Page\Page;
 use Pirate\Template\Template;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Mail\Mail;
 use Pirate\Model\Leden\Ouder;
@@ -39,6 +40,11 @@ class Contact extends Page {
             }
         }
 
+        // Optioneel, maar verplicht indien opgegeven
+        if (isset($_POST["phone"])) {
+            $data["phone"] = $_POST["phone"];
+        }
+
         // Beveiliging tegen robots
         if (isset($_POST['nickname'])) {
             if (strlen($_POST['nickname']) > 0) {
@@ -59,6 +65,11 @@ class Contact extends Page {
             if (!Validator::isValidMail($data['email'])) {
                 $errors[] = 'Ongeldig e-mailadres. Controleer of je geen fouten hebt gemaakt.';
             }
+
+            if (isset($data['phone']) && !Validator::validatePhone($data['phone'], $data['phone'], $errors)) {
+                // done
+            }
+
             if (strlen($data['subject']) < 4) {
                 $errors[] = 'Onderwerp te kort';
             }
@@ -84,7 +95,7 @@ class Contact extends Page {
             }
         }
 
-        $scoutsjaar = Lid::getScoutsjaar();
+        $scoutsjaar = Inschrijving::getScoutsjaar();
         $takkenverdeling = Lid::getTakkenVerdeling($scoutsjaar);
         $jaar_verdeling = array();
         foreach ($takkenverdeling as $jaar => $tak) {
@@ -99,9 +110,9 @@ class Contact extends Page {
             $min = min($jaren);
             $max = max($jaren);
             if ($min == $max) {
-                $verdeling_string[$tak] = $min;
+                $verdeling_string[$tak] = 'in '.$min;
             } else {
-                $verdeling_string[$tak] = $min.' en '.$max;
+                $verdeling_string[$tak] = 'in het jaar '. $min.' tot '.$max;
             }
         }
 
@@ -131,7 +142,8 @@ class Contact extends Page {
             'success' => $success,
             'wie' => $wie,
             'takkenverdeling' => $verdeling_string,
-            'leiding' => $leiding_data
+            'leiding' => $leiding_data,
+            'leiding_zichtbaar' => Leiding::isLeidingZichtbaar()
             )
         );
     }

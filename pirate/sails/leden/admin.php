@@ -1,16 +1,31 @@
 <?php
 namespace Pirate\Sail\Leden;
 use Pirate\Page\Page;
-use Pirate\Route\Route;
+use Pirate\Route\AdminRoute;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Afrekening;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Leden\Inschrijving;
 
-class LedenAdminRouter extends Route {
+class LedenAdminRouter extends AdminRoute {
     private $lid = null;
+    private $gezin = null;
+    private $inschakelen = false;
     private $afrekening = null;
     private $tak = null;
+    private $jaar = null;
+
+    static function getAvailablePages() {
+        return [
+            'leiding' => array(
+                array('priority' => 100, 'name' => 'Leden', 'url' => 'inschrijvingen')
+            ),
+            'financieel' => array(
+                array('priority' => 2, 'name' => 'Rekeningen', 'url' => 'afrekeningen')
+            ),
+        ];
+    }
 
     function doMatch($url, $parts) {
         if ($url == 'afrekeningen') {
@@ -28,7 +43,7 @@ class LedenAdminRouter extends Route {
                 $controle = $parts[2];
             }
 
-            if (!Leiding::hasPermission('financieel') && !(Leiding::hasPermission('leiding') && isset($_GET['inschrijvingen']))) {
+            if (!Leiding::hasPermission('financieel') && !Leiding::hasPermission('leiding')) {
                 return false;
             }
 
@@ -54,7 +69,7 @@ class LedenAdminRouter extends Route {
             } elseif(count($parts) == 2 && ($parts[1] == 'mail' || $parts[1] == 'sms' || $parts[1] == 'exporteren')) {
                 return true;
 
-            } elseif (count($parts) == 3 && ($parts[1] == 'lid' || $parts[1] == 'betalen')) {
+            } elseif (count($parts) == 3 && ($parts[1] == 'lid')) {
                 if (!is_numeric($parts[2])) {
                     return false;
                 }
@@ -63,6 +78,17 @@ class LedenAdminRouter extends Route {
                 if (!empty($this->lid)) {
                     return true;
                 }
+                return false;
+            } elseif (count($parts) == 3 && ($parts[1] == 'lid-uitschrijven' || $parts[1] == 'lid-tak')) {
+                if (!is_numeric($parts[2])) {
+                    return false;
+                }
+                $id = intval($parts[2]);
+                $this->lid = Lid::getLid($id);
+                if (!empty($this->lid) && $this->lid->isIngeschreven()) {
+                    return true;
+                }
+                $this->lid = null;
                 return false;
 
             } elseif (count($parts) == 3 && $parts[1] == 'steekkaart') {
@@ -73,10 +99,36 @@ class LedenAdminRouter extends Route {
                 }
                 return false;
 
+            } elseif (count($parts) == 4 && $parts[1] == 'scouting-op-maat') {
+                if (!is_numeric($parts[3])) {
+                    return false;
+                }
+                $id = intval($parts[3]);
+                $this->gezin = Gezin::getGezin($id);
+                if (!empty($this->gezin)) {
+                    if ($parts[2] == 'inschakelen') {
+                        $this->inschakelen = true;
+                        return true;
+                    }
+                    if ($parts[2] == 'uitschakelen') {
+                        $this->inschakelen = false;
+                        return true;
+                    } 
+                }
+                return false;
             } elseif(isset($parts[1])) {
                 $takken = Inschrijving::$takken;
                 if (in_array($parts[1], $takken)) {
                     $this->tak = $parts[1];
+
+                    if(isset($parts[2])) {
+                        if (is_numeric($parts[2])) {
+                            $this->jaar = intval($parts[2]);
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
                     return true;
                 }
             }
@@ -101,7 +153,7 @@ class LedenAdminRouter extends Route {
             if (is_null($this->tak)) {
                 return new Admin\Overview();
             }
-            return new Admin\Overview($this->tak);
+            return new Admin\Overview($this->tak, $this->jaar);
         }
 
         if (!is_null($this->afrekening)) {
@@ -113,9 +165,24 @@ class LedenAdminRouter extends Route {
             return new Admin\ViewAfrekening($this->afrekening);
         }
 
+        if ($parts[1] == 'scouting-op-maat') {
+            require(__DIR__.'/admin/scouting-op-maat.php');
+            return new Admin\ScoutingOpMaat($this->gezin, $this->inschakelen);
+        }
+
         if ($parts[1] == 'lid') {
             require(__DIR__.'/admin/lid.php');
             return new Admin\ViewLid($this->lid);
+        }
+
+        if ($parts[1] == 'lid-uitschrijven') {
+            require(__DIR__.'/admin/lid-uitschrijven.php');
+            return new Admin\LidUitschrijven($this->lid);
+        }
+
+        if ($parts[1] == 'lid-tak') {
+            require(__DIR__.'/admin/lid-tak.php');
+            return new Admin\LidTak($this->lid);
         }
 
         if ($parts[1] == 'mail') {
@@ -128,13 +195,11 @@ class LedenAdminRouter extends Route {
             return new Admin\SmsPage();
         }
 
-        if ($parts[1] == 'exporteren') {
+        //if ($parts[1] == 'exporteren') {
             require(__DIR__.'/admin/exporteren.php');
             return new Admin\Exporteren();
-        }
+        //}
 
-        require(__DIR__.'/admin/betaal-inschrijving.php');
-        return new Admin\BetaalInschrijving($this->lid);
         
     }
 }

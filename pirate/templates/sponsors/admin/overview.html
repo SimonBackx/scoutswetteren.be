@@ -1,0 +1,26 @@
+<div class="text">
+
+            
+    <h1>Sponsors</h1>
+
+    <div>
+        <a href="/admin/sponsors/edit" class="aubergine fill button">Nieuwe sponsor toevoegen</a>
+    </div>
+                
+
+    <div class="list-bundle">
+    {% for sponsor in sponsors %}
+        <article class="list">
+            <div class="max merlot column">{{ sponsor.name }}</div>
+            <div class="last column">
+                <a href="/admin/sponsors/edit/{{ sponsor.id }}" class="button noborder">Aanpassen</a>
+            </div>
+        </article>
+    {% else %}
+    </div>
+        <p>Geen sponsors</p>
+        <div>
+    {% endfor %}
+    </div>
+</div>
+

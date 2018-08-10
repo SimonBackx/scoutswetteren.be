@@ -3,6 +3,7 @@ namespace Pirate\Model\Leiding;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Mail\Mail;
+use Pirate\Model\Settings\Setting;
 
 class Leiding extends Model {
     public $id;
@@ -47,6 +48,51 @@ class Leiding extends Model {
 
         // Hier nog permissions opvullen!
         $this->permissions = explode('±', $row['permissions']);
+
+        if (count($this->permissions) == 1 && $this->permissions[0] == '') {
+           $this->permissions = array(); 
+        }
+    }
+
+    static function getLeidingsverdeling() {
+        $leidingsverdeling = Setting::getSetting('leidingsverdeling');
+
+        if (isset($leidingsverdeling) && isset($leidingsverdeling->value)) {
+            return new \DateTime($leidingsverdeling->value);
+        }
+        return null;
+    }
+
+    static function disableLeidingsverdeling() {
+        $leidingsverdeling = Setting::getSetting('leidingsverdeling');
+        $leidingsverdeling->delete();
+    }
+
+    static function setLeidingsverdeling(&$errors, $date, $time) {
+        $leidingsverdeling = Setting::getSetting('leidingsverdeling');
+
+        $datetime = \DateTime::createFromFormat('d-m-Y H:i', $date.' '.$time);
+        if ($datetime !== false) {
+            $leidingsverdeling->value = $datetime->format('Y-m-d H:i').':00';
+            return $leidingsverdeling->save();
+        } else {
+            $errors[] = 'Ongeldige datum en/of tijdstip.';
+            return false;
+        }
+    }
+
+    static function isLeidingZichtbaar() {
+        $leidingsverdeling = Self::getLeidingsverdeling();
+
+        if (!isset($leidingsverdeling)) {
+            return true;
+        }
+
+        $now = new \DateTime("now");
+        if ($now < $leidingsverdeling) {
+            return false;
+        }
+        return true;
     }
 
     // Geeft lijst van contact personen (array(key -> name))
@@ -90,6 +136,10 @@ class Leiding extends Model {
             'webmaster' => array(
                 'name' => 'Webmaster',
                 'mail' => 'website@scoutswetteren.be'
+            ),
+            'materiaal' => array(
+                'name' => 'Materiaalmeesters',
+                'mail' => 'materiaal@scoutswetteren.be'
             ),
             'verhuur' => array(
                 'name' => 'Verhuur verantwoordelijke',
@@ -160,7 +210,7 @@ class Leiding extends Model {
         if (!is_null($permission)) {
             $permission_code = "WHERE p2.permissionCode = '".self::getDb()->escape_string($permission)."'";
         } else {
-            $permission_code = "WHERE p2.permissionId = p.permissionId";
+            $permission_code = "WHERE p.permissionId IS NULL OR p2.permissionId = p.permissionId";
             // TODO: Kan versneld worden als persmission = null -> dan dubbele joins weglaten
         }
 
@@ -344,28 +394,49 @@ class Leiding extends Model {
         }
 
         include(__DIR__.'/../../_bindings/admin.php');
-        $priorityButtons = array();
-        $allButtons = array();
-        $urls = array();
+
+        $allButtons = [];
+        $urls = [];
+        $ignoreButtons = [];
+
         foreach ($admin_pages as $permission => $buttons) {
             if ($permission == '' || self::hasPermission($permission)) {
                 foreach ($buttons as $button) {
+                    $priority = isset($button['priority']) ? $button['priority'] : 0;
+
                     if (isset($urls[$button['url']])) {
-                        continue;
-                    } else {
-                        $urls[$button['url']] = true;
+                        $o = $urls[$button['url']];
+                        if ($priority <= $o->priority) {
+                            continue;
+                        }
+                        
+                        // Remove old button
+                        $allButtons[$o->priority] = array_splice($allButtons[$o->priority], $o->index, 1);
+                    } 
+
+                    if (!isset($allButtons[$priority])) {
+                        $allButtons[$priority] = [];
                     }
 
-                    if (isset($button['priority']) && $button['priority'] == true) {
-                        $priorityButtons[] = $button;
-                    } else {
-                        $allButtons[] = $button;
-                    }
+                    $urls[$button['url']] = (object) [
+                        'priority' => $priority,
+                        'index' => count($allButtons[$priority])
+                    ];
+
+                    $allButtons[$priority][] = $button;
                 }
             }
         }
-        self::$adminMenu = array_merge($priorityButtons, $allButtons);
-        return self::$adminMenu;
+
+        ksort($allButtons);
+
+        $sortedButtons = [];
+
+        foreach ($allButtons as $priority => $buttons) {
+            $sortedButtons = array_merge($buttons, $sortedButtons);
+        }
+
+        return $sortedButtons;
     }
 
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies
@@ -418,8 +489,8 @@ class Leiding extends Model {
 
     private static function setCookies($id, $token){
         // We slaan ook de client id op, omdat we hierdoor een time safe operatie kunnen doen
-        setcookie('client', $id, time()+604800,'/', '', true, true); 
-        setcookie('token', $token, time()+604800,'/', '', true, true); 
+        setcookie('client', $id, time()+5184000,'/', '', true, true); 
+        setcookie('token', $token, time()+5184000,'/', '', true, true); 
     }
 
     private static function removeCookies(){
@@ -475,7 +546,7 @@ class Leiding extends Model {
                 $interval = $date->diff($now);
 
                 // Als het vervallen is: verwijderen
-                if ($interval->days > Self::$login_days) {
+                if ($interval->days > self::$login_days) {
                     self::deleteToken($token, true);
                     return null;
                 }
@@ -489,7 +560,8 @@ class Leiding extends Model {
                 }
                 
             } else {
-
+                // ?
+                return null;
             }
         }
 

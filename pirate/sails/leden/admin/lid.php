@@ -21,6 +21,7 @@ class ViewLid extends Page {
 
     function getContent() {
         $ouders = Ouder::getOudersForGezin($this->lid->gezin->id);
+
         return Template::render('leden/admin/lid', array(
             'lid' => $this->lid,
             'ouders' => $ouders

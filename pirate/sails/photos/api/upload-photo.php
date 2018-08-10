@@ -22,8 +22,8 @@ class UploadPhoto extends Page {
         $image = new Image();
         $sizes = array(
             array('height' => 100),
-            array('height' => 300, 'height' => 300),
-            array('height' => 600, 'width' => 600),
+            array('height' => 400, 'height' => 400),
+            array('height' => 768, 'width' => 768),
             array('height' => 720)
         );
 
@@ -38,9 +38,8 @@ class UploadPhoto extends Page {
         if ($image->upload('file', $sizes, $this->errors, $this->album)) {
             $this->image = $image;
 
-            if (!$this->album->isQueue()) {
-                $this->album->deleteZip();
-            }
+            $this->album->onImageAdded($image);
+            
             return 200;
         }
         return 400;

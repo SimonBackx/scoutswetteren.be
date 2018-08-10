@@ -54,7 +54,7 @@ class Overview extends Page {
         return 200;
     }
 
-    function getContent() {
+    function getContent() {        
         $user = Leiding::getUser();
 
         $tak = 'Leiding';

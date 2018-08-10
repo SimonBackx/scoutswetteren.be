@@ -38,9 +38,9 @@ class Template {
      */
     static function render($template, $data = array(), $ext = 'html') {
         if (empty($_SERVER['HTTPS'])) {
-            $data['http'] = "http://{$_SERVER['HTTP_HOST']}";
+            $data['http'] = "http://{$_SERVER['SERVER_NAME']}";
         } else {
-            $data['http'] = "https://{$_SERVER['HTTP_HOST']}";
+            $data['http'] = "https://{$_SERVER['SERVER_NAME']}";
         }
 
         $data['general'] = array(

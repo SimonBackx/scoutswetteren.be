@@ -7,6 +7,7 @@
                     <div class="text">
                         
                         <h1>Nieuw gezin inschrijven</h1>
+                        <h2>Deze pagina is enkel voor nieuwe leden. Leden die vorig jaar waren ingeschreven kunnen inloggen met hun account om hun inschrijving te verlengen. Broers en zussen moeten ook via die weg worden ingeschreven.</h2>
                         {% if fail %}
                         <ul class="error">
                             <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
@@ -27,116 +28,9 @@
                             {% set lid = leden[loop.index0] %}
                             <div class="leden-bundle{% if loop.index > 1 and lid | length == 0 %} leden-new" style="display: none;{% endif %}">
                                 <h2>Gegevens nieuw lid</h2>
-                                <div class="splitted">
-                                    <div class="part column first">
-                                        <label>Voornaam</label>
-                                        <input type="text" name="lid-voornaam[]" placeholder="Voornaam van het kind / de jongere" value="{{ lid['voornaam'] | e('html_attr') }}">
-
-                                        <label>Achternaam</label>
-                                        <input type="text" class="achternaam" name="lid-achternaam[]" placeholder="Naam van het kind / de jongere" value="{{ lid.achternaam | e('html_attr') }}">
-
-                                        <label>Geslacht</label>
-                                        <input id="geslacht-jongen-{{ loop.index }}" class="randomize-id" type="radio" data-name="lid-geslacht" name="lid-geslacht[{{ loop.index0 }}]" value="M"{% if lid.geslacht == 'M' %} checked{% endif %}>
-                                        <label for="geslacht-jongen-{{ loop.index }}">Jongen</label>
-
-                                        <input id="geslacht-meisje-{{ loop.index }}" class="randomize-id" type="radio" data-name="lid-geslacht" name="lid-geslacht[{{ loop.index0 }}]" value="V"{% if lid.geslacht == 'V' %} checked{% endif %}>
-                                        <label for="geslacht-meisje-{{ loop.index }}">Meisje</label>
-                                    
-                                        {% if lid.errors|length > 0 %}
-                                            <ul class="error">
-                                                {% for error in lid.errors %}
-                                                    <li>{{ error }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="part column last">
-                                        <label>Geboortedatum</label>
-                                        <div class="input-box">
-                                            <label class="select-box mini">
-                                                <select name="lid-geboortedatum-dag[]">
-                                                    <option>Dag</option>
-                                                    {% for day in 1..31 %}
-                                                        <option value="{{ day }}"{% if lid.geboortedatum_dag == day %} selected{% endif %}>{{ day }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </label>
-
-                                            <label class="right select-box small">
-                                                <select name="lid-geboortedatum-jaar[]" class="lid-geboortejaar">
-                                                    <option>Jaar</option>
-                                                    {% for jaar in jaren %}
-                                                        <option value="{{ jaar }}"{% if lid.geboortedatum_jaar == jaar %} selected{% endif %}>{{ jaar }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </label>
-
-                                            <label class="select-box max">
-                                                <select name="lid-geboortedatum-maand[]">
-                                                    <option>Maand</option>
-                                                    {% for maand in maanden %}
-                                                        <option value="{{ loop.index }}"{% if lid.geboortedatum_maand == loop.index %} selected{% endif %}>{{ maand }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </label>
-                                        </div>
-
-                                        <aside class="givers jin"{% if lid.tak != 'givers' and lid.tak != 'jin' %} style="display: none;"{% endif %}>
-                                            <label>GSM van de jongere</label>
-                                            <input type="text" name="lid-gsm[]" placeholder="Vul GSM nummer in van het lid" value="{{ lid.gsm | e('html_attr') }}">
-                                        </aside>
-
-                                        <aside class="kapoenen"{% if lid.tak != 'kapoenen' %} style="display: none;"{% endif %}>
-                                            <p>
-                                            Tak: kapoenen
-                                            </p>
-                                            <p>
-                                                De Kapoenen is de tak voor de allerkleinsten. Het leven van een kapoen (6-8) is er één vol spel, fantasie, creativiteit en expressie. Sommigen gaan voor de eerste keer naar de scouts, voor de eerste keer op weekend, voor de eerste keer op kamp. Zoveel nieuwe dingen! Wat doen we bij de kapoenen? We spelen, we ravotten, we maken ons vuil, we kliederen en kladderen, we zingen, we klimmen in de bomen... Een heleboel dus! Speelkledij is een must!
-                                            </p>
-                                        </aside>
-                                        <aside class="wouters"{% if lid.tak != 'wouters' %} style="display: none;"{% endif %}>
-                                            <p>
-                                            Tak: wouters
-                                            </p>
-                                            <p>
-                                                Wie tussen 8 en 11 jaar is, kan meespelen bij de wouters. Zij voelen zich vaak al ervaren scouten, en dat zijn ze eigenlijk ook wel een beetje. Wouters worden zich steeds meer bewust van wat er rond hen gebeurt: op school, thuis en op de scouts. Ze krijgen ruimte en kansen om dingen uit te proberen en van elkaar te leren. Ze verleggen hun grenzen, halen kattenkwaad uit en kunnen vooral onbezorgd spelen.
-                                            </p>
-                                        </aside>
-                                        <aside class="jonggivers"{% if lid.tak != 'jonggivers' %} style="display: none;"{% endif %}>
-                                            <p>
-                                            Tak: jonggivers
-                                            </p>
-                                            <p>
-                                                De jonggivers, een geval apart. Niet oud, maar ook niet zo jong meer. In ieder geval in volle ontwikkeling. Ze mogen al alleen op pad, leren sjorren, kaartlezen en gaan op tentenkamp, waar ze zelfs hun eigen potje leren koken! Jonggivers krijgen een waaier van mogelijkheden om mee te beslissen, zelf de handen uit de mouwen te steken en allerlei vaardigheden onder de knie te krijgen. Een tak boordevol nieuwe dingen!
-                                            </p>
-                                        </aside>
-                                        <aside class="givers"{% if lid.tak != 'givers' %} style="display: none;"{% endif %}>
-
-                                            <p>
-                                            Tak: givers
-                                            </p>
-                                            <p>
-                                                Givers trekken samen op, hun vrienden zijn heilig. Ze hechten heel veel belang aan de groepssfeer. Van hun leiding krijgen ze alle mogelijkheden, ervaringen, spanning en enthousiasme die ze alleen binnen scouting kunnen vinden. Maar givers hebben ook hun eigen willetje. Ze krijgen dan ook elke keer dat ietsje meer. Dat ietsje meer participatie, dat ietsje meer zelfstandigheid, dat ietsje meer uitdaging. Als je hier zit, ben je al een echte!
-                                            </p>
-                                        </aside>
-                                        <aside class="jin"{% if lid.tak != 'jin' %} style="display: none;"{% endif %}>
-
-                                            <p>
-                                            Tak: jin
-                                            </p>
-                                            <p>
-                                               Jin, Jij en Ik een Noodzaak. Als jin sta je op een grens: die tussen lid en leiding. In hun eigen 'jonge' stijl werken ze gekke activiteiten, projecten en zelfs hun kamp uit. Al doende leren ze samen te werken en verantwoordelijkheid op te nemen. Hieruit groeit engagement voor de groep en voor de samenleving. Het is een jaar waarin ze hun eigen zegje hebben, waar ze samen met hun medejin tot ideeën komen en ze samen uitwerken. De jin gaat op buitenlands kamp. Ze organiseren financiële activiteiten om dat te kunnen bekostigen. Ze mogen zelf hun kamp invullen en vorm geven. Jin, gun ze hun apenjaar!
-                                            </p>
-                                        </aside>
-                                        <aside class="ongeldig" style="display: none;">
-                                            <p>
-                                                Jouw zoon/dochter is te jong/oud voor onze scouts. Leden zijn welkom vanaf 6 jaar, of als ze nog 6 jaar worden in dat jaar.
-                                            </p>
-                                        </aside>
-                                    </div>
-
-                                </div>
+                                {% set multiple = '[]' %}
+                                {% set multipleCount = '[' ~ loop.index0 ~ ']' %}
+                                {{ include('leden/lid-aanpassen.part.html') }}
                             </div>
                         {% endfor %}
                         <button class="icon-button delete delete-count"{% if leden | length <= 1 %} style="display: none;"{% endif %}>Lid verwijderen</button>
@@ -150,47 +44,9 @@
                             {% set ouder = ouders[loop.index0] %}
                             <div class="ouders-bundle{% if loop.index > 1 and ouder | length == 0 %} ouders-new" style="display: none;{% endif %}">
                                 <h2 data-fill="Gegevens">Gegevens ouder</h2>
+                                {% set multiple = '[]' %}
+                                {{ include('leden/ouder-aanpassen.part.html') }}
 
-                                <div class="splitted">
-                                    <div class="part column first">
-                                        <label>Titel</label>
-                                        <label class="select-box">
-                                            <select name="ouder-titel[]">
-                                                <option value="" selected>Maak een keuze</option>
-                                                {% for titel in titels %}
-                                                    <option value="{{ titel }}"{% if titel == ouder.titel %} selected{% endif %}>{{ titel }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </label>
-
-                                        <label>Voornaam</label>
-                                        <input type="text" name="ouder-voornaam[]" placeholder="Voornaam van de ouder" value="{{ ouder.voornaam | e('html_attr') }}">
-
-                                        <label>Achternaam</label>
-                                        <input type="text" name="ouder-achternaam[]" placeholder="Naam van de ouder" value="{{ ouder.achternaam | e('html_attr') }}">
-
-                                        <label>GSM</label>
-                                        <input type="text" name="ouder-gsm[]" placeholder="Vul het gsm-nummer van de ouder in" value="{{ ouder.gsm | e('html_attr') }}">
-
-                                        <label>E-mailadres</label>
-                                        <input type="text" name="ouder-email[]" placeholder="Vul e-mailadres van de ouder in" value="{{ ouder.email | e('html_attr') }}">
-
-                                    </div>
-
-                                    <div class="part column last">
-                                        <label>Adres</label>
-                                        <input type="text" class="adres" name="ouder-adres[]" placeholder="Straat en nummer" value="{{ ouder.adres | e('html_attr') }}">
-
-                                        <label>Gemeente</label>
-                                        <input type="text" class="gemeente" name="ouder-gemeente[]" placeholder="Vul de gemeente in van de ouder" value="{{ ouder.gemeente | e('html_attr') }}">
-
-                                        <label>Postcode</label>
-                                        <input type="text" class="postcode" name="ouder-postcode[]" placeholder="Vul de postcode in van de ouder" value="{{ ouder.postcode | e('html_attr') }}">
-
-                                        <label>Huistelefoon (optioneel)</label>
-                                        <input type="text" class="telefoon" name="ouder-telefoon[]" placeholder="Vul telefoon bij adres in" value="{{ ouder.telefoon | e('html_attr') }}">
-                                    </div>
-                                </div>
                                 {% if ouder.errors|length > 0 %}
                                     <ul class="error">
                                         {% for error in ouder.errors %}
@@ -206,30 +62,7 @@
                         <button class="icon-button plus add-count" data-field="ouders" data-move="adres,gemeente,postcode,telefoon" data-max="4"{% if aantal >= 4 %} style="display: none;"{% endif %}>Ouder toevoegen</button>
 
                         <h1>Gezin</h1>
-                        <label>Belangrijke afspraken vanuit de gezinssituatie</label>
-                        <textarea type="text" name="gezinssituatie" placeholder="Bv. regeling echtscheiding">{{ gezin.gezinssituatie }}</textarea>
-
-                        <h1>Scouting op maat</h1>
-                        <p>We willen de scouts toegankelijk houden voor alle jongeren. We engageren ons om de kosten tijdens het jaar en op kamp voor alle leden zo laag en transparant mogelijk te houden. De scouts betaalt het lidgeld en - in de mate van het mogelijke - een deel van of volledig de kosten van activiteiten tijdens het jaar (groepsreis, weekend, kamp...) voor gezinnen met financiële moelijkheden. We zoeken oplossingen voor de aankoop van kampeermateriaal, uniformen...</p>
-
-                        <blockquote cite="https://www.scoutsengidsenvlaanderen.be/files/publicaties/documenten/2013-scouting-op-maat-financi-le-tegemoetkomingen.pdf">
-                            <p>Als we de uitgaven voor ouders voor een jaar scouting vergelijken met deze voor een andere jeugdbeweging, sportorganisatie of culturele hobby, dan hoeft scouting niet duurder of goedkoper te zijn. Toch betekent lid zijn bij Scouts en Gidsen Vlaanderen van één of meerdere kinderen binnen één gezin soms een niet onaardige hap uit het familiale budget. Want behalve het jaarlijkse lidgeld en de kosten van weekends en kampen, komen hier ook nog niet-jaarlijkse kosten bij zoals de aankoop van een uniform en kampeermateriaal (slaapzak, luchtmatras, rugzak, ...) en tal van andere uitgaven (etentje op het groepsfeest, een zwemactiviteit, uitstappen, ...).</p>
-
-                            <p>Niet elk gezin heeft het daar gemakkelijk mee. Voor sommige ouders wegen deze kosten om verschillende redenen zwaarder door dan voor anderen. Al zullen ouders daar niet altijd graag mee op de proppen komen. En voor leiding is het niet altijd gemakkelijk om signalen bij ouders op te vangen die erop wijzen dat het kostenplaatje van scouting voor hen een drempel is.</p>
-
-                            <p>Het is daarom belangrijk om te weten dat er verschillende grote en kleinere initiatieven bestaan om tegemoet te komen aan deze mogelijke  financiële drempel voor maatschappelijk kwetsbare gezinnen. Scouts en Gidsen Vlaanderen werkte hiervoor reeds verschillende initiatieven uit, die we in deze brochure kort oplijsten. Maar ook kleine ingrepen in je lokale groepswerking kunnen ervoor zorgen dat de kostprijs voor alle leden zo laag mogelijk gehouden wordt.</p>
-
-                            <p>Al deze initiatieven, groot en klein, worden gebundeld onder de noemer Scouting op Maat: ideeën en acties die ervoor zorgen dat eventuele  financiële drempels voor deelname aan scouting voor alle jongeren hopelijk steeds meer zullen verdwijnen. Want scouting, da’s voor iedereen!</p>
-                        </blockquote>
-
-                        <p>Om de drempel zo laag mogelijk te houden, voorzien we een discrete checkbox die je kan aanvinken. Dan kunnen we samen kijken waar we precies kunnen bijstaan.</p>
-
-                        <input id="drempel" type="checkbox" name="scouting_op_maat" value="1"{% if gezin.scouting_op_maat %} checked{% endif %}>
-                        <label for="drempel">Het kostenplaatje van scouting weegt zwaar op ons gezin</label>
-
-                        <div class="checkbox-controllable">
-                            <p class="visible-when-checked">Bedankt, onze takleiding bespreekt dit graag persoonlijk en discreet op een huisbezoek.</p>
-                        </div>
+                        {{ include('leden/gezin_settings.part.html') }}
 
                         <footer>
                             <input type="submit" class="aubergine fill" value="Inschrijven">
@@ -240,7 +73,8 @@
         </div>
         <script type="text/javascript">
             var id_counter = 0;
-            var geboortedatums = {{ takken | raw }};
+
+            {{ include('leden/lid-aanpassen.part.js') }}
 
             $( document ).ready(function() {
                 $('.add-count').click(function(event) {
@@ -325,22 +159,6 @@
 
                     if (aantal == 1) {
                         $(this).hide();
-                    }
-                });
-
-                $('.lid-geboortejaar').change(function() {
-                    var year = parseInt($(this).val());
-                    var input_box = $(this).parent().parent();
-                    input_box.siblings('aside').hide();
-
-                    if (isNaN(year)) {
-                        return;
-                    } 
-
-                    if (typeof geboortedatums[year] === 'undefined') {
-                        input_box.siblings('aside.ongeldig').show();
-                    } else {
-                        input_box.siblings('aside.'+geboortedatums[year]).show();
                     }
                 });
             });

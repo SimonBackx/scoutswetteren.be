@@ -8,6 +8,7 @@ use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Database\Database;
 use Pirate\Mail\Mail;
+use Pirate\Model\Leden\Inschrijving;
 
 class NieuwLid extends Page {
 
@@ -84,6 +85,8 @@ class NieuwLid extends Page {
 
             // Alle ouders overlopen
             $aantal_ouders = count($_POST['ouder-voornaam']) - 1;
+            $emailadressen = [];
+
             for ($i=0; $i < $aantal_ouders; $i++) { 
                 $data = array(
                     'titel' => $_POST['ouder-titel'][$i],
@@ -100,14 +103,21 @@ class NieuwLid extends Page {
                 // Controleren en errors setten
                 $ouder = new Ouder();
                 $data['errors'] = $ouder->setProperties($data);
+                if (isset($emailadressen[$ouder->email])) {
+                    $data['errors'][] = 'Het is niet toegestaan dat je hetzelfde e-mailadres gebruikt voor meerdere ouders. Elke ouder krijgt namelijk een apart account waarmee hij/zij kan inloggen.';
+                }
+
                 if (count($data['errors']) > 0) {
                     $fail = true;
+                } else {
+                    $emailadressen[$ouder->email] = true;
                 }
 
                 $ouder_models[] = $ouder;
 
                 // Opslaan
                 $ouders[] = $data;
+                
             }
 
             if (count($ouder_models) < 1) {
@@ -128,6 +138,20 @@ class NieuwLid extends Page {
                 $fail = true;
             }
             $gezin_data = $data;
+
+            // todo: check duplicate gezin!
+            
+            $gsm_array = array();
+            $email_array = array();
+            foreach ($ouder_models as $ouder) {
+                $gsm_array[] = $ouder->gsm;
+                $email_array[] = $ouder->email;
+            }
+            $existing_ouders = Ouder::getOuders(array('gsm' => $gsm_array, 'email' => $email_array));
+            if (count($existing_ouders) > 0) {
+                $fail = true;
+                $errors[] = 'Er is al een gezin gekend met een van de opgegeven e-mailadressen of gsm-nummers. Ga naar de loginpagina en log daar in om het inschrijven af te ronden.';
+            }
 
             if ($fail == false) {
                 // Gezin opslaan
@@ -186,7 +210,7 @@ class NieuwLid extends Page {
                 }
             }
         }
-        $jaar = Lid::getScoutsjaar();
+        $jaar = Inschrijving::getScoutsjaar();
         $verdeling = Lid::getTakkenVerdeling($jaar);
         $keys = array_keys($verdeling);
         sort($keys);

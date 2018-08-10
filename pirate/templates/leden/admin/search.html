@@ -1,0 +1,15 @@
+
+
+{% for result in results %}
+    <article class="result{% if loop.last %} last{% endif %}">
+        <h1>{{ result.voornaam }} {{ result.achternaam }}</h1>
+        {% for ouder in result.ouders %}
+        <p>{{ ouder.voornaam }} {{ ouder.achternaam }} ({{ouder.gsm}})</p>
+        {% endfor %}
+        <p><a href="/admin/inschrijvingen/lid/{{ result.id }}" class="button aubergine noborder">Steekkaart</a></p>
+    </article>
+{% else %}
+    <article class="result last">
+        <h1>Geen resultaten</h1>
+    </article>
+{% endfor %}

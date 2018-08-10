@@ -8,8 +8,14 @@ use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Database\Database;
 use Pirate\Mail\Mail;
+use Pirate\Model\Leden\Inschrijving;
 
 class BroerZusToevoegen extends Page {
+    private $lid = null;
+
+    function __construct($lid = null) {
+        $this->lid = $lid;
+    }
 
     function getStatusCode() {
         return 200;
@@ -18,12 +24,18 @@ class BroerZusToevoegen extends Page {
     function getContent() {
         global $config;
 
+        $new = true;
         $fail = false;
         $success = false;
 
         $lid = array();
         $lid_model = null;
         $errors = array();
+
+        if (isset($this->lid)) {
+            $new = false;
+            $lid = $this->lid->getProperties();
+        }
 
         // check of vanalles is geset
         if (isset(
@@ -51,8 +63,12 @@ class BroerZusToevoegen extends Page {
             }
 
             // Controleren en errors setten
-            $lid_model = new Lid();
-            $errors = $lid_model->setProperties($lid);
+            
+            if ($new) {
+                $this->lid = new Lid();
+            }
+
+            $errors = $this->lid->setProperties($lid);
             if (count($errors) > 0) {
                 $fail = true;
             }
@@ -60,8 +76,8 @@ class BroerZusToevoegen extends Page {
 
             if ($fail == false) {
                 // Gezin opslaan
-                $lid_model->setGezin(Ouder::getUser()->gezin);
-                $success = $lid_model->save();
+                $this->lid->setGezin(Ouder::getUser()->gezin);
+                $success = $this->lid->save();
                 if ($success == false) {
                      $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
                 } else {
@@ -71,7 +87,7 @@ class BroerZusToevoegen extends Page {
                 }
             }
         }
-        $jaar = Lid::getScoutsjaar();
+        $jaar = Inschrijving::getScoutsjaar();
         $verdeling = Lid::getTakkenVerdeling($jaar);
         $keys = array_keys($verdeling);
         sort($keys);
@@ -80,7 +96,15 @@ class BroerZusToevoegen extends Page {
             $jaren[] = $i;
         }
 
+        if (!$new && $this->lid->isIngeschreven()) {
+            // geen mogelijkheid om tak te wisselen, die ligt al vast
+            foreach ($verdeling as $key => $value) {
+                $verdeling[$key] = $this->lid->inschrijving->tak;
+            }
+        }
+
         return Template::render('leden/broer-zus-toevoegen', array(
+            'new' => $new,
             'lid' => $lid,
             'maanden' => $config["months"],
             'jaren' => $jaren,

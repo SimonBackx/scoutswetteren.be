@@ -32,12 +32,9 @@ class EditSteekkaart extends Page {
             $steekkaart = $this->lid->steekkaart;
         }
 
-        $kan_overslaan = true;
-        if (!$new) {
-            $kan_overslaan = $this->lid->steekkaart->moetNagekekenWorden();
-        }
-
-        if ($kan_overslaan) {
+        if (!$steekkaart->moetNagekekenWorden()) {
+            // Als overslaan toegestaan is
+            
             if (isset($_POST['overslaan'])) {
                 if ($steekkaart->save()) {
                     header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
@@ -152,12 +149,13 @@ class EditSteekkaart extends Page {
             'success' => $success,
             'fail' => $fail,
             'errors' => $errors,
+            'moetNagekekenWorden' => $steekkaart->moetNagekekenWorden(),
+            'nagekekenString' => $steekkaart->getNagekekenString(),
             'bereikbaarheid_errors' => $bereikbaarheid_errors,
             'deelname_errors' => $deelname_errors,
             'medische_errors' => $medische_errors,
             'aanvullende_errors' => $aanvullende_errors,
-            'bevestiging_errors' => $bevestiging_errors,
-            'kan_overslaan' => $kan_overslaan
+            'bevestiging_errors' => $bevestiging_errors
         ));
     }
 }

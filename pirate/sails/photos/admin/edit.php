@@ -52,12 +52,14 @@ class Edit extends Page {
         // Alle albumloze afbeeldingen ophalen
         return Template::render('photos/admin/album', array(
             'data' => $data,
+            'album' => $this->album,
             'new' => false,
             'groups' => Album::$groups,
             'max_upload_size' => File::$max_size,
             'errors' => $errors,
             'success' => $success,
-            'images' => $images
+            'images' => $images,
+            'stats' => $this->album->getFileStatistics(),
         ));
     }
 }

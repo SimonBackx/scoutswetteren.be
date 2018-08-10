@@ -1,0 +1,32 @@
+https://login.scoutsengidsenvlaanderen.be/auth/realms/scouts/protocol/openid-connect/token
+
+POST /auth/realms/scouts/protocol/openid-connect/token HTTP/1.1
+Host: login.scoutsengidsenvlaanderen.be
+Content-Type: application/x-www-form-urlencoded
+Cache-Control: no-cache
+Postman-Token: 92f259b8-9a14-2890-d9a2-0159fef46e98
+
+client_id=groepsadmin-production-client&username=simonb&password=xxxxxx&grant_type=password
+
+
+
+
+
+code:UEQxY3JOsCcBrpweZLpvnlF7uL49C88u06DLB6TAh4o.2945c237-ecc3-4d4c-a3b3-b3e29de6aea3
+grant_type:authorization_code
+client_id:groepsadmin-production-client
+
+
+client_id : 'scoutswetteren.be',
+
+username : 'your_username',
+password : '@#$%^&',
+grant_type : "password"
+
+redirect_uri:https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/client/?redirect_fragment=%2Fledenlijst
+
+https://login.scoutsengidsenvlaanderen.be/auth/realms/scouts/protocol/openid-connect/token
+
+Response:
+{"access_token":"","expires_in":300,"refresh_expires_in":1800,"refresh_token":"","token_type":"bearer","id_token":"","not-before-policy":1478609665,"session_state":"70dff414-b394-42fb-b669-ef8256d8b8c9"}
+

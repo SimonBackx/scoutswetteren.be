@@ -4,6 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Inschrijving;
 
 class Ouder extends Model {
     public $id;
@@ -11,16 +12,34 @@ class Ouder extends Model {
     public $titel;
     public $voornaam;
     public $achternaam;
-    public $adres;
-    public $postcode;
-    public $gemeente;
-    public $telefoon;
+    public $adres; // object
     public $gsm;
     public $email;
     private $password;
     private $set_password_key;
 
     static $titels = array('Mama', 'Papa', 'Voogd', 'Stiefmoeder', 'Stiefvader');
+    
+    static function titelToGroepsadmin($functie) {
+        $functie = strtolower($functie);
+        $map = array(
+            'mama' => 'moeder', 
+            'papa' => 'vader', 
+            'voogd' => 'voogd', 
+            'stiefmoeder' => 'moeder', 
+            'stiefvader' => 'vader'
+        );
+
+        if (!isset($map[$functie])) {
+            return 'moeder';
+        }
+
+        return $map[$functie];
+    }
+
+    function getGroepsadminRol() {
+        return static::titelToGroepsadmin($this->titel);
+    }
 
     // als didCheckLogin == false, dan is currentToken en user nog niet op de juiste waarde
     private static $didCheckLogin = false;
@@ -55,6 +74,9 @@ class Ouder extends Model {
         )
     );
 
+    private $temporaryMagicToken = null;
+
+
     function __construct($row = array()) {
         if (count($row) == 0) {
             return;
@@ -71,20 +93,25 @@ class Ouder extends Model {
         $this->titel = $row['titel'];
         $this->voornaam = $row['voornaam'];
         $this->achternaam = $row['achternaam'];
-        $this->adres = $row['adres'];
-        $this->gemeente = $row['gemeente'];
-        $this->postcode = $row['postcode'];
+
+        if (!empty($row['adres_id'])) {
+            $this->adres = new Adres($row);
+        } else {
+            $this->adres = null;
+        }
 
         $this->email = $row['email'];
         $this->password = $row['password'];
         $this->gsm = $row['gsm'];
-        $this->telefoon = $row['telefoon'];
 
         $this->set_password_key = $row['set_password_key'];
     }
 
-    function getAddress() {
-        return $this->adres.', '.$this->gemeente;
+    function getAdres() {
+        if (!isset($this->adres)) {
+            return '';
+        }
+        return $this->adres->toString();
     }
 
     // empty array on success
@@ -99,14 +126,14 @@ class Ouder extends Model {
         }
 
         if (Validator::isValidFirstname($data['voornaam'])) {
-            $this->voornaam = ucwords(mb_strtolower($data['voornaam']));
+            $this->voornaam = ucwords(mb_strtolower(trim($data['voornaam'])));
             $data['voornaam'] = $this->voornaam;
         } else {
             $errors[] = 'Ongeldige voornaam';
         }
 
         if (Validator::isValidLastname($data['achternaam'])) {
-            $this->achternaam = ucwords(mb_strtolower($data['achternaam']));
+            $this->achternaam = ucwords(mb_strtolower(trim($data['achternaam'])));
             $data['achternaam'] = $this->achternaam;
         } else {
             $errors[] = 'Ongeldige achternaam';
@@ -115,29 +142,65 @@ class Ouder extends Model {
         Validator::validatePhone($data['gsm'], $this->gsm, $errors);
 
         if (Validator::isValidMail($data['email'])) {
-            $this->email = strtolower($data['email']);
-            $data['email'] = $this->email;
+            $email = strtolower(trim($data['email']));
+            $data['email'] = $email;
+
+            $escaped = self::getDb()->escape_string($email);
+
+            if (isset($this->id)) {
+                $id = self::getDb()->escape_string($this->id);
+                 // Zoek andere ouders met dit e-mailadres
+                $query = "SELECT o.*
+                from ouders o
+                where email = '$escaped' and id != '$id'";
+            } else {
+                 // Zoek andere ouders met dit e-mailadres
+                $query = "SELECT o.*
+                from ouders o
+                where email = '$escaped'";
+            }
+
+            if ($result = self::getDb()->query($query)) {
+                if ($result->num_rows == 0){
+                    $this->email = $email;
+                } else {
+                    $errors[] = 'Dit e-mailadres is al in gebruik door een andere ouder. Kijk na of je niet hetzelfde e-mailadres gebruikt voor beide ouders, dat is niet toegestaan.';
+                }
+            } else {
+                $errors[] = 'Er ging iets mis';
+            }
         } else {
             $errors[] = 'Ongeldig e-mailadres';
         }
 
-
-        if (Validator::isValidAddress($data['adres'])) {
-            $this->adres = ucwords(mb_strtolower($data['adres']));
-            $data['adres'] = $this->adres;
-        } else {
-            $errors[] = 'Ongeldig adres';
-        }
-
-        Validator::validateGemeente($data['gemeente'], $data['postcode'], $this->gemeente, $this->postcode, $errors);
-
-        if (!empty($data['telefoon'])) {
-            Validator::validateNetPhone($data['telefoon'], $this->telefoon, $errors);
-        } else {
-            $this->telefoon = null;
+        $model = Adres::find($data['adres'], $data['gemeente'], $data['postcode'], $data['telefoon'], $errors);
+        if (isset($model)) {
+            $this->adres = $model; 
         }
 
         return $errors;
+    }
+
+    static function oudersToFieldArray($original) {
+        $arr = array();
+        foreach ($original as $key => $value) {
+            $arr[] = $value->getProperties();
+        }
+        return $arr;
+    }
+
+    function getProperties() {
+        return array(
+            'titel' => $this->titel,
+            'voornaam' => $this->voornaam,
+            'achternaam' => $this->achternaam,
+            'adres' => isset($this->adres) ? $this->adres->getAdres() : "",
+            'gemeente' => isset($this->adres) ? $this->adres->gemeente : "",
+            'postcode' => isset($this->adres) ? $this->adres->postcode : "",
+            'telefoon' => isset($this->adres->telefoon) ? $this->adres->telefoon : "",
+            'gsm' => $this->gsm,
+            'email' => $this->email
+        );
     }
 
     function setGezin(Gezin $gezin) {
@@ -171,17 +234,14 @@ class Ouder extends Model {
     }
 
     function save() {
-        if (is_null($this->telefoon)) {
-            $telefoon = "NULL";
-        } else {
-            $telefoon = "'".self::getDb()->escape_string($this->telefoon)."'";
+        if (!isset($this->adres)) {
+            return false;
         }
 
         $voornaam = self::getDb()->escape_string($this->voornaam);
         $achternaam = self::getDb()->escape_string($this->achternaam);
-        $adres = self::getDb()->escape_string($this->adres);
-        $gemeente = self::getDb()->escape_string($this->gemeente);
-        $postcode = self::getDb()->escape_string($this->postcode);
+        
+        $adres = self::getDb()->escape_string($this->adres->id);
         $gsm = self::getDb()->escape_string($this->gsm);
         $email = self::getDb()->escape_string($this->email);
         $titel = self::getDb()->escape_string($this->titel);
@@ -201,8 +261,8 @@ class Ouder extends Model {
             $this->set_password_key = $key;
 
             $query = "INSERT INTO 
-                ouders (`gezin`, `titel`, `voornaam`, `achternaam`, `adres`, `gemeente`,`postcode`, `gsm`, `email`, `telefoon`, `set_password_key`)
-                VALUES ('$gezin', '$titel', '$voornaam', '$achternaam', '$adres', '$gemeente', '$postcode', '$gsm', '$email', $telefoon, '$key')";
+                ouders (`gezin`, `titel`, `voornaam`, `achternaam`, `adres`, `gsm`, `email`, `set_password_key`)
+                VALUES ('$gezin', '$titel', '$voornaam', '$achternaam', '$adres', '$gsm', '$email', '$key')";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE ouders 
@@ -211,10 +271,7 @@ class Ouder extends Model {
                  `voornaam` = '$voornaam',
                  `achternaam` = '$achternaam',
                  `adres` = '$adres',
-                 `gemeente` = '$gemeente',
-                 `postcode` = '$postcode',
                  `email` = '$email',
-                 `telefoon` = $telefoon,
                  `gsm` = '$gsm',
                  `set_password_key` = $key
                  where id = '$id' 
@@ -227,6 +284,22 @@ class Ouder extends Model {
             }
             return true;
         }
+        return false;
+    }
+
+    function delete() {
+        if (!isset($this->id)) {
+            return false;
+        }
+
+        $id = self::getDb()->escape_string($this->id);
+        $query = "DELETE FROM 
+                ouders WHERE id = '$id' ";
+
+        if (self::getDb()->query($query)) {
+            return true;
+        }
+        
         return false;
     }
 
@@ -243,6 +316,77 @@ class Ouder extends Model {
     private static function generateKey() {
         $bytes = openssl_random_pseudo_bytes(16);
         return bin2hex($bytes);
+    }
+
+    private static function generateLongKey() {
+        $bytes = openssl_random_pseudo_bytes(32);
+        return bin2hex($bytes);
+    }
+
+    function getMagicToken() {
+        if (isset($this->temporaryMagicToken)) {
+            return $this->temporaryMagicToken;
+        }
+
+        $token = self::getDb()->escape_string(self::generateLongKey());
+        $client = intval($this->id);
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        $query = "INSERT INTO ouder_magic_tokens (client, token, `expires`) VALUES ($client, '$token', '$time')";
+
+        if (self::getDb()->query($query)) {
+            $this->temporaryMagicToken = $token;
+            return $token;
+        }
+        return null;
+    }
+
+    function getMagicTokenUrl() {
+        $mail = $this->email;
+        $token = $this->getMagicToken();
+        return "https://".$_SERVER['SERVER_NAME']."/ouders/login/$mail/$token";
+    }
+
+    // Multiple ouders
+    static function createMagicTokensFor($ouders) {
+        $query = '';
+        $query = "";
+
+        // Bijhouden welke we hebben gegenereerd
+        // zodat we weten wanneer het fout loopt
+        $ouders_copy = array();
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        
+        foreach ($ouders as $ouder) {
+            if (!isset($ouder->temporaryMagicToken)) {
+                $token = self::getDb()->escape_string(self::generateLongKey());
+                $client = intval($ouder->id);
+                
+                if ($query != '') {
+                    $query .= ', ';
+                }
+                $query .= "($client, '$token', '$time')";
+
+                $ouder->temporaryMagicToken = $token;
+                $ouders_copy[] = $ouder;
+            }
+        }
+
+        if (count($ouders_copy) == 0) {
+            return true;
+        }
+        
+        $query = 'INSERT INTO ouder_magic_tokens (client, token, `expires`) VALUES '.$query;
+
+        if (self::getDb()->query($query)) {
+            return true;
+        } else {
+            foreach ($ouders_copy as $ouder) {
+                $ouder->temporaryMagicToken = null;
+            }
+        }
+        return false;
     }
 
     static function temporaryLoginWithPasswordKey($key) {
@@ -264,9 +408,10 @@ class Ouder extends Model {
 
     static function login($mail, $password) {
         $mail = self::getDb()->escape_string($mail);
-        $query = "SELECT o.*, g.*
+        $query = "SELECT o.*, g.*, a.*
         from ouders o
         left join gezinnen g on g.gezin_id = o.id
+        left join adressen a on a.adres_id = o.adres
         where email = '$mail' and password is not null";
 
         if ($result = self::getDb()->query($query)){
@@ -299,13 +444,59 @@ class Ouder extends Model {
         return false;
     }
 
+    static function loginWithMagicToken($mail, $magicToken) {
+        $mail = self::getDb()->escape_string($mail);
+        $magicToken = self::getDb()->escape_string($magicToken);
+
+        $query = "SELECT o.*, a.*, g.*, t.expires
+        from ouders o
+        left join gezinnen g on g.gezin_id = o.gezin
+        left join adressen a on a.adres_id = o.adres
+        join ouder_magic_tokens t on t.client = o.id
+        where o.email = '$mail' and o.password is not null and t.token = '$magicToken'";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                
+                $expires = $row['expires'];
+                // todo: validate magic token
+                
+                self::$user = new Ouder($row);
+                self::$didCheckLogin = true;
+
+                return self::createToken();
+            }
+        }
+        return false;
+    }
+
     static function getOuderForEmail($email) {
         $email = self::getDb()->escape_string($email);
 
         $query = '
-            SELECT o.*, g.* from ouders o
+            SELECT o.*, a.*, g.* from ouders o
                 left join gezinnen g on g.gezin_id = o.gezin
+                left join adressen a on a.adres_id = o.adres
             where o.email = "'.$email.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new Ouder($row);
+            }
+        }
+        return null;
+    }
+
+    static function getOuderForId($id) {
+        $id = self::getDb()->escape_string($id);
+
+        $query = '
+            SELECT o.*, a.*, g.* from ouders o
+                left join gezinnen g on g.gezin_id = o.gezin
+                left join adressen a on a.adres_id = o.adres
+            where o.id = "'.$id.'"';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows == 1){
@@ -321,8 +512,9 @@ class Ouder extends Model {
 
         $ouders = array();
         $query = '
-            SELECT o.*, g.* from ouders o
+            SELECT o.*, a.*, g.* from ouders o
                 left join gezinnen g on g.gezin_id = o.gezin
+                left join adressen a on a.adres_id = o.adres
             where o.gezin = "'.$gezin.'"';
 
         if ($result = self::getDb()->query($query)){
@@ -335,11 +527,30 @@ class Ouder extends Model {
         return $ouders;
     }
 
-    static function getOuders($filter = null, $tak = null, $return_leden = false) {
+    static function getOuders($filter = null, $tak = null, $return_leden = false, $scoutsjaar = null) {
         $where = '';
 
         if (!is_null($filter)) {
-            if (isset(self::$filters[$filter])) {
+            if (is_array($filter)) {
+                // Filter op veldnamen
+                $fields = array('gsm', 'email');
+                foreach ($fields as $field) {
+                    if (isset($filter[$field])) {
+                        if (!is_array($filter[$field])) {
+                            $filter[$field] = array($filter[$field]);
+                        }
+                        foreach ($filter[$field] as $value) {
+                            if (strlen($where) > 0)
+                                $where .= ' OR ';
+                            $where .= 'o.'.$field.' = "'.self::getDb()->escape_string($value).'"';
+                    
+                        }
+                    }
+                }
+            }
+            elseif (isset(self::$filters[$filter])) {
+                // Filter op premade selectors
+                
                 $filter = self::$filters[$filter];
                 $where = $filter['where'];
             }
@@ -353,23 +564,29 @@ class Ouder extends Model {
         if (strlen($where) > 0)
             $where = 'WHERE '.$where;
 
-        $scoutsjaar = intval(Lid::getScoutsjaar());
+        if (!isset($scoutsjaar)) {
+            $scoutsjaar = intval(Inschrijving::getScoutsjaar());
+        } else {
+            $scoutsjaar = self::getDb()->escape_string($scoutsjaar);
+        }
 
         $ouders = array();
 
         if ($return_leden) {
             $query = '
-            SELECT l.*, g.* from ouders o
-                left join gezinnen g on g.gezin_id = o.gezin
-                join leden l on l.gezin = o.gezin
+            SELECT l.*, i.*, s.*, g.* from leden l
+                left join gezinnen g on g.gezin_id = l.gezin
+                join ouders o on l.gezin = o.gezin
                 join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.'
                 left join steekkaarten s on s.lid = l.id
             '.$where.'
-            GROUP BY l.id, g.gezin_id';
+            GROUP BY l.id, g.gezin_id, i.inschrijving_id, s.steekkaart_id
+            order by year(l.geboortedatum) desc, l.voornaam;';
         } else {
             $query = '
-            SELECT o.*, g.* from ouders o
+            SELECT o.*, a.*, g.* from ouders o
                 left join gezinnen g on g.gezin_id = o.gezin
+                left join adressen a on a.adres_id = o.adres
                 join leden l on l.gezin = o.gezin
                 join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.'
                 left join steekkaarten s on s.lid = l.id
@@ -459,7 +676,6 @@ class Ouder extends Model {
         self::$didCheckLogin = true;
     }
 
-
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies
     // Indien al token op huidige sessie, dan verwijdert hij die eerst
     private static function createToken() {
@@ -510,8 +726,8 @@ class Ouder extends Model {
 
     private static function setCookies($id, $token){
         // We slaan ook de client id op, omdat we hierdoor een time safe operatie kunnen doen
-        setcookie('ouder_client', $id, time()+604800,'/', '', true, true); 
-        setcookie('ouder_token', $token, time()+604800,'/', '', true, true); 
+        setcookie('ouder_client', $id, time()+51840000,'/', '', true, true); 
+        setcookie('ouder_token', $token, time()+51840000,'/', '', true, true); 
     }
 
     private static function removeCookies(){
@@ -538,9 +754,10 @@ class Ouder extends Model {
 
         $client = intval($_COOKIE['ouder_client']);
         $token = self::getDb()->escape_string($_COOKIE['ouder_token']);
-        $query = "SELECT o.*, g.*, t.token, t.time
+        $query = "SELECT o.*, a.*, g.*, t.token, t.time
         from ouders o
         left join gezinnen g on g.gezin_id = o.gezin
+        left join adressen a on a.adres_id = o.adres
         join ouder_tokens t on t.client = o.id
         where t.client = $client and t.token = '$token'";
 

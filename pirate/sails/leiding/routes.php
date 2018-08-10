@@ -39,7 +39,7 @@ class LeidingRouter extends Route {
 
                 foreach ($admin_routes as $module) {
                     $ucfirst_module = ucfirst($module);
-                    require(__DIR__."/../$module/admin.php");
+                    require_once(__DIR__."/../$module/admin.php");
                     $classname = "\\Pirate\\Sail\\$ucfirst_module\\{$ucfirst_module}AdminRouter";
 
                     $router = new $classname();

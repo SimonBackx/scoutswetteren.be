@@ -1,7 +1,9 @@
 <?php
 namespace Pirate\Sail\Homepage\Pages;
-use Pirate\Page\Page;
 use Pirate\Block\Block;
+use Pirate\Page\Page;
+
+// temp
 use Pirate\Template\Template;
 
 class Homepage extends Page {
@@ -11,8 +13,9 @@ class Homepage extends Page {
     }
 
     function getContent() {
+
         // Block ophalen van maandplanning sail
-        
+
         $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
         $blog = Block::getBlock('Blog', 'Overview')->getContent();
 
@@ -22,44 +25,38 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
-                    'title' => 'Algemene vergadering VZW',
-                    'text' => 'Op donderdag 20 april om 20u vindt de algemene vergadering van de VZW plaats in onze scoutslokalen. Alle ouders en leiding zijn welkom.',
-                    'button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/algemene-vergadering-vzw-2017.pdf')
+                    'title' => 'De kampen komen eraan!',
+                    'text' => 'Kapoenenkamp: 1 - 5 augustus, Wouterkamp: 5 - 11 augustus, (Jong)giverskamp: 1 - 11 augustus. Info volgt via e-mail en huisbezoeken.',
                 ),
 
                 array(
-                    'title' => 'WI WA Wafelbak 2017!',
-                    'text' => 'Op zondag 26 maart gaan we weer heerlijke wafeltjes verkopen! Plaats op voorhand uw bestelling + We zoeken nog naar behulpzame ouders die ons willen helpen bakken.',
-                    'button' => array('text' => 'Meer info', 'url' => '/blog/2017/03/26/wafelbak-2017'),
-                    'extra_button' => array('text' => 'Bestellen', 'url' => 'https://files.scoutswetteren.be/manueel/wafels-bestellen.pdf')
+                    'title' => 'Groepsreis op paasmaandag ',
+                    'text' => 'Op 2 april is het weer groepsreis! We gaan zwemmen in S&R Rozenbroeken. Inschrijvingen zijn intussen gesloten.',
                 ),
 
                 array(
-                    'title' => 'Winterfeest: 12 februari',
-                    'text' => 'We nodigen iedereen uit voor ons jaarlijks eetfestijn met dit jaar als thema: "Prinsjes Got Talent". Inschrijven is verplicht.',
-                    'button' => array('text' => 'Inschrijven + meer info', 'url' => '/blog/2017/01/09/winterfeest-2017')
+                    'title' => 'Inschrijven winterfeest ⛄️',
+                    'text' => 'Op 25 februari is het weer ons jaarlijks eetfestijn. Inschrijven kan via de knop hieronder.',
+                    'button' => array('text' => 'Inschrijven', 'url' => '/inschrijven-winterfeest'),
+                    'extra_button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/brief-winterfeest-2018.pdf'),
                 ),
 
                 array(
-                    'title' => 'Kerstactiviteit 16 december',
-                    'text' => 'Zoals ieder jaar organiseren we dan onze fameuze fakkel- en sneukeltocht met na de tocht de mogelijkheid om iets te drinken op het scoutsterrein. Inschrijven verplicht.',
-                    'button' => array('text' => 'Inschrijven + meer info', 'url' => '/blog/2016/11/27/kerstactiviteit-2016')
+                    'title' => 'Prettige feestdagen en gelukkig 2018!',
+                    'text' => 'Geniet van de feesten en alvast een gelukkig 2018 gewenst van alle leiding en het oudercomité!',
                 ),
+
                 array(
-                    'title' => 'Gloednieuwe foto pagina',
-                    'text' => 'We hebben de foto pagina afgewerkt. Daar vind je de recentste foto\'s van je lieve spruit.',
-                    'button' => array('text' => 'Foto\'s bekijken', 'url' => '/fotos')
+                    'title' => 'Kerstwandeling',
+                    'text' => 'Kom naar onze kerstwandeling op 15 december. Inschrijven kan via kerstwandeling@scoutswetteren.be, maar lees eerst bijhorende brief!',
+                    'button' => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/brief-kerstwandeling-2017.pdf'),
                 ),
-                array(
-                    'title' => 'Wafelbak wordt uitgesteld',
-                    'text' => 'Door omstandigheden wordt de wafelbak uitgesteld naar het 2e semester. De werkvergadering voor de ouders en leiding gaat wel nog steeds door op 12 november. Zondag 13 november is het dus gewoon scouts.'//,
-                )
             ),
             'call_to_action' => array(
                 'title' => 'Volg je kapoen',
                 'subtitle' => 'Doorheen het jaar en tijdens weekends en kampen posten we geregeld foto\'s en updates op onze facebook pagina.',
-                'button' => array('text' => 'Like onze pagina', 'url' => 'https://www.facebook.com/scoutsprinsboudewijn/')
-            )
+                'button' => array('text' => 'Like onze pagina', 'url' => 'https://www.facebook.com/scoutsprinsboudewijn/'),
+            ),
         ));
     }
 }

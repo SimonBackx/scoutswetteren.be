@@ -14,7 +14,7 @@ class Event extends Model {
     public $group_order;
     public $in_past = false;
 
-    static $groups = array('Kapoenen', 'Wouters', 'Jonggivers', 'Givers', 'Jin', 'Leiding', 'Oudercomité', 'Alle takken', 'Familie en vrienden');
+    static $groups = array('Kapoenen', 'Wouters', 'Jonggivers', 'Givers', 'Jin', 'Leiding', 'Oudercomité', 'Alle takken', 'Familie en vrienden', '(Jong)givers');
     static $defaultLocation = 'Scoutsterrein';
 
     static private $defaultEndHour = array(
@@ -98,7 +98,7 @@ class Event extends Model {
         $tak = self::getDb()->escape_string($tak);
 
         $events = array();
-        $query = 'SELECT * FROM events WHERE startdate >= CURDATE() AND (`group` = "'.ucfirst($tak).'" OR `group` = "Familie en vrienden" OR `group` = "Alle takken") ORDER BY startdate LIMIT 30';
+        $query = 'SELECT * FROM events WHERE startdate >= CURDATE() AND (`group` = "'.ucfirst($tak).'" OR `group` = "Familie en vrienden" OR `group` = "Alle takken" OR `group` = "(Jong)givers") ORDER BY startdate LIMIT 30';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){

@@ -1,0 +1,41 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+             <header>
+                <h1>Aanpassen gelukt!</h1>
+            </header>
+        {% else %}
+             <header>
+                <h1>Leidingsverdeling verbergen</h1>
+            </header>
+
+            {% if errors|length > 0 %}
+                <ul class="error">
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <input id="zichtbaar" type="checkbox" name="zichtbaar" value="1" {% if not leiding_zichtbaar %} checked{% endif %}>
+            <label for="zichtbaar">Verberg de leidingsverdeling</label>
+
+            <div class="checkbox-controllable">
+                <div class="visible-when-checked">
+                    <label>Tot welke datum?</label>
+                    <input type="text" class="datepicker" name="date" value="{{ leidingsverdeling | date('d/m/Y') }}" placeholder="Datum">
+
+                    <label>Tijdstip</label>
+                    <div class="input-box">
+                        Om <input type="text" name="time" value="{{ leidingsverdeling | date('G:i') }}" placeholder="Tijdstip">
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <input type="submit" class="aubergine fill" name="submit" value="Opslaan">
+                <a href="/admin/leiding" class="button merlot">Annuleren</a>
+            </footer>
+        {% endif %}
+    </div>
+</form>

@@ -1,0 +1,45 @@
+<div class="text">
+
+
+    {% if success %}
+        <h1>Groepsadmin controle</h1>
+
+        <h2>Deze leden staan niet in de groepsadministratie of bevatten fouten</h2>
+        <div class="list-bundle">
+        {% for lid in niet_aanwezig_in_groepsadmin %}
+            <article class="list">
+                <div class="small column">{{ lid.lid.getTakVoorInschrijving() | capitalize }}</div>
+
+                <div class="medium merlot column">{{ lid.lid.voornaam }} {{ lid.lid.achternaam }}</div>
+                <div class="small column">{{ lid.geboortedatum }}</div>
+
+                <div class="max merlot column">
+                    {{ lid.info }}
+                </div>
+            </article>
+        {% endfor %}
+        </div>
+        <h2>Deze leden staan in de groepsadministratie maar zijn niet ingeschreven op de website</h2>
+        <div class="list-bundle">
+        {% for lid in niet_aanwezig_op_website %}
+            <article class="list">
+                <div class="small column">{{ lid.lid.geboortedatum }}</div>
+
+                <div class="max merlot column">{{ lid.lid.voornaam }} {{ lid.lid.achternaam }}</div>
+                <div class="last merlot column">
+                    {{ lid.info }}
+                </div>
+            </article>
+        {% endfor %}
+        </div>
+
+    {% else %}
+        <h1>Er ging iets mis</h1>
+        <p>{{ error }}</p>
+        <footer>
+            <a href="/admin/inschrijvingen" class="aubergine button">Terug</a>
+        </footer>
+    {% endif %}
+
+</div>
+

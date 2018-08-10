@@ -107,6 +107,14 @@ $( document ).ready(function() {
         if (files.length > 1) {
             info.text(files.length+" bestanden geselecteerd: "+names);
         } 
+
+        var next = $(this).nextAll(".show-on-file-selected");
+        if (files.length == 0) {
+            next.css("display", "");
+        } else {
+            next.css("display", "block");
+        }
+
         return false;
     });
     

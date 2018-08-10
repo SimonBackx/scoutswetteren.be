@@ -14,6 +14,10 @@ class Admin extends Page {
         $this->selected = $selected;
     }
 
+    function customHeaders() {
+        return $this->adminPage->customHeaders();
+    }
+
     function getStatusCode() {
         return $this->adminPage->getStatusCode();
     }

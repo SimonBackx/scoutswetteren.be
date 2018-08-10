@@ -4,6 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Inschrijving;
 
 class Steekkaart extends Model {
     public $id;
@@ -97,6 +98,14 @@ class Steekkaart extends Model {
         return datetimeToDateString($this->laatst_nagekeken);
     }
 
+    function isEmpty($text) {
+        $text = strtolower(trim($text));
+        if ($text == 'geen' || $text == 'geen.' || $text == '/' || $text == 'nee' || $text == 'neen' || $text == 'nvt') {
+            return true;
+        }
+        return false;
+    }
+
     // $data is een array met alle data die nagekeken moet worden
     // en indien goed, overgezet moet worden op het huidige object
     // $errors bevat een lijst met fouten
@@ -148,16 +157,32 @@ class Steekkaart extends Model {
             $this->deelname_reden = null;
         }
 
-        $this->deelname_sporten = ucsentence($data['deelname_sporten']);
+        if ($this->isEmpty($data['deelname_sporten'])) {
+            $this->deelname_sporten = '';
+        } else {
+            $this->deelname_sporten = ucsentence($data['deelname_sporten']);
+        }
         $data['deelname_sporten'] = $this->deelname_sporten;
 
-        $this->deelname_hygiene = ucsentence($data['deelname_hygiene']);
+        if ($this->isEmpty($data['deelname_hygiene'])) {
+            $this->deelname_hygiene = '';
+        } else {
+            $this->deelname_hygiene = ucsentence($data['deelname_hygiene']);
+        }
         $data['deelname_hygiene'] = $this->deelname_hygiene;
 
-        $this->deelname_sociaal = ucsentence($data['deelname_sociaal']);
+        if ($this->isEmpty($data['deelname_sociaal'])) {
+            $this->deelname_sociaal = '';
+        } else {
+            $this->deelname_sociaal = ucsentence($data['deelname_sociaal']);
+        }
         $data['deelname_sociaal'] = $this->deelname_sociaal;
 
-        $this->deelname_andere = ucsentence($data['deelname_andere']);
+        if ($this->isEmpty($data['deelname_andere'])) {
+            $this->deelname_andere = '';
+        } else {
+            $this->deelname_andere = ucsentence($data['deelname_andere']);
+        }
         $data['deelname_andere'] = $this->deelname_andere;
         
         // Medische gegevens ------------------------------------------------------
@@ -249,10 +274,20 @@ class Steekkaart extends Model {
             $this->toestemming_fotos = $data['toestemming_fotos'];
         }
 
-        $this->aanvullend_voeding = ucsentence($data['aanvullend_voeding']);
+
+
+        if ($this->isEmpty($data['aanvullend_voeding'])) {
+            $this->aanvullend_voeding = '';
+        } else {
+            $this->aanvullend_voeding = ucsentence($data['aanvullend_voeding']);
+        }
         $data['aanvullend_voeding'] = $this->aanvullend_voeding;
 
-        $this->aanvullend_andere = ucsentence($data['aanvullend_andere']);
+        if ($this->isEmpty($data['aanvullend_andere'])) {
+            $this->aanvullend_andere = '';
+        } else {
+            $this->aanvullend_andere = ucsentence($data['aanvullend_andere']);
+        }
         $data['aanvullend_andere'] = $this->aanvullend_andere;
 
         if (Validator::isValidName($data['nagekeken_door'])) {
@@ -276,29 +311,38 @@ class Steekkaart extends Model {
     }
 
     function isIngevuld() {
-        return !empty($this->nagekeken_door);
+        return !empty($this->nagekeken_door) && !empty($this->nagekeken_door_titel);
     }
 
-    // Inschrijvingen vanaf juni verbieden
+    // Moet verplicht nagekeken worden
     function moetNagekekenWorden() {
-        if (!$this->isIngevuld()) {
+        if (!$this->lid->isIngeschreven()) {
             return false;
         }
 
-        if (empty($this->laatst_nagekeken)) {
-            return true;
+        if (!$this->isIngevuld()) {
+            $now = new \DateTime();
+            $interval = $now->diff($this->lid->inschrijving->datum);
+            if ($interval->days > 30) {
+                // Niet ingevuld en al 1 maand ingeschreven = verplicht invullen
+                return true;
+            }
         }
+
+        if (empty($this->laatst_nagekeken)) {
+            return false;
+        }
+
+        // Als al eens nagekenen geweest...
         
         $jaar = intval($this->laatst_nagekeken->format('Y'));
         $maand = intval($this->laatst_nagekeken->format('n'));
-        if ($maand < 9) {
+        if ($maand < Inschrijving::$inschrijvings_start_maand) {
             $jaar--;
         }
 
-        $now = new \DateTime();
-        $interval = $now->diff($this->laatst_nagekeken);
-
-        if ($jaar != Lid::getScoutsjaar() && $interval->days > 30) {
+        if ($jaar != Inschrijving::getScoutsjaar()) {
+            // Verplicht nakijken in nieuw scoutsjaar
             return true;
         }
 

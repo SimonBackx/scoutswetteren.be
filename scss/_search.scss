@@ -14,9 +14,18 @@
         }
     }
 
+    &.sticky {
+        text-align: right;
+        width: 350px;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+
     .results-anchor {
         display: none;
         position: absolute;
+        z-index: 1000;
         bottom: 0;
         left: 5px;
         right: 5px;
@@ -24,6 +33,7 @@
         .results {
             text-align: left;
             position: absolute;
+            z-index: 1000;
             padding: 10px 0;
             left: 0;
             right: 0;

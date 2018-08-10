@@ -11,3 +11,13 @@ class Route {
         return new Page404();
     }
 }
+
+class AdminRoute extends Route {
+    /**
+     * Geef een lijst van alle available pages terug per permission.
+     * Permission '' is voor iedereen
+     */
+    static function getAvailablePages() {
+        return [];
+    }
+}

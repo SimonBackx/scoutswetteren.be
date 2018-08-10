@@ -18,10 +18,17 @@ class SmsPage extends Page {
 
     function getContent() {
         $iPhone  = stripos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-        $Android = stripos($_SERVER['HTTP_USER_AGENT'],"Android");
+        $Mac  = stripos($_SERVER['HTTP_USER_AGENT'],"Macintosh");
+        $Android = stripos(strtolower($_SERVER['HTTP_USER_AGENT']),"android");
 
-        if (!$iPhone && !$Android) {
+        if (!$iPhone && !$Android && !$Mac) {
             return Template::render('leden/admin/no-sms', array());
+        }
+
+        $noMessage = false;
+        if ($Mac) {
+            // ondersteunt geen pre filled berichten
+            $noMessage = true;
         }
 
         $user = Leiding::getUser();
@@ -34,11 +41,19 @@ class SmsPage extends Page {
         $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'alle takken');
         $filters = Ouder::$filters;
 
+         $scoutsjaar = Inschrijving::getScoutsjaar();
+        $selected_scoutsjaar = $scoutsjaar;
+
         $data = array(
             'tak' => $tak,
             'filter' => array_keys($filters)[0],
-            'message' => ''
+            'message' => '',
+            'scoutsjaar' => $scoutsjaar
         );
+
+        if ($noMessage) {
+            unset($data['message']);
+        }
 
         $allSet = true;
         foreach ($data as $key => $value) {
@@ -47,6 +62,10 @@ class SmsPage extends Page {
             } else {
                 $data[$key] = $_POST[$key];
             }
+        }
+
+        if ($noMessage) {
+            $data['message'] = '';
         }
 
         $success = false;
@@ -66,6 +85,11 @@ class SmsPage extends Page {
                 $errors[] = 'Selecteer een filter.';
             }
 
+            $selected_scoutsjaar = intval($data['scoutsjaar']);
+            if ($selected_scoutsjaar == 0) {
+                $errors[] = 'Ongeldig scoutsjaar.';
+            }
+
             if (count($errors) == 0) {
                 //$success = true;
                 $numbers = array();
@@ -74,9 +98,9 @@ class SmsPage extends Page {
                     $ouders = array();
 
                     if ($data['tak'] == 'alle takken') {
-                        $ouders = Ouder::getOuders($data['filter']);
+                        $ouders = Ouder::getOuders($data['filter'], null, false, $selected_scoutsjaar);
                     } else {
-                        $ouders = Ouder::getOuders($data['filter'], $data['tak']);
+                        $ouders = Ouder::getOuders($data['filter'], $data['tak'], false, $selected_scoutsjaar);
                     }
                     foreach ($ouders as $ouder) {
                         $stripped = preg_replace('/[ \s]+/', '', $ouder->gsm);
@@ -88,9 +112,9 @@ class SmsPage extends Page {
                     $leden = array();
 
                     if ($data['tak'] == 'alle takken') {
-                        $leden = Ouder::getOuders($data['filter'], null, true);
+                        $leden = Ouder::getOuders($data['filter'], null, true, $selected_scoutsjaar);
                     } else {
-                        $leden = Ouder::getOuders($data['filter'], $data['tak'], true);
+                        $leden = Ouder::getOuders($data['filter'], $data['tak'], true, $selected_scoutsjaar);
                     }
 
                     foreach ($leden as $lid) {
@@ -107,7 +131,10 @@ class SmsPage extends Page {
                 if (count($numbers) == 0) {
                     $errors[] = 'Er zijn geen leden die aan de criteria voldoen.';
                 }  else {
-                    if ($Android) {
+                    if ($Mac) {
+                        $url = "imessage:";
+                    }
+                    elseif ($Android) {
                         $url = "sms:";
                     } else {
                         $url = "sms:/open?addresses=";
@@ -122,7 +149,11 @@ class SmsPage extends Page {
                     }
 
                     if (strlen($data['message']) > 0) {
-                        if ($Android) {
+
+                        if ($Mac) {
+                            // werkt niet
+                        }
+                        elseif ($Android) {
                             $url .= "?body=".rawurlencode($data['message']);
                         } else {
                             $url .= "&body=".rawurlencode($data['message']);
@@ -149,6 +180,8 @@ class SmsPage extends Page {
             'errors' => $errors,
             'data' => $data,
             'success' => $success,
+            'no_message' => $noMessage,
+            'scoutsjaar' => $scoutsjaar,
             'send_leden' => $send_leden,
             'send_only_leden' => $send_only_leden
         ));

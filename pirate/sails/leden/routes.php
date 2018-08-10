@@ -9,7 +9,9 @@ use Pirate\Model\Leden\Inschrijving;
 
 class LedenRouter extends Route {
     private $lid = null;
+    private $ouder = null;
     private $afrekening = null;
+    private $magicLink = false;
 
     function doMatch($url, $parts) {
         if ($url == 'inschrijven' && !Ouder::isLoggedIn()) {
@@ -30,8 +32,24 @@ class LedenRouter extends Route {
                 return false;
             }
 
+
+
             // Onbeveiligde sectie
             if (!Ouder::isLoggedIn()) {
+                // magic token
+                if (count($parts) == 4 && ($parts[1] == 'login')) {
+
+                    $this->magicLink = true;
+                    // magic token controleren en inloggen
+                    if (Ouder::loginWithMagicToken($parts[2], $parts[3])) {
+                        return true;
+                    } else {
+                        // ongeldig -> doorverwijzen naar andere pagina
+                        return true;
+                    }
+                    return false;
+                }
+
                 if (count($parts) == 1) {
                     return true;
                 }
@@ -50,8 +68,13 @@ class LedenRouter extends Route {
                     return true;
                 }
 
-
                 return false;
+            } else {
+                // Als magic link -> gewoon doorverwijzen
+                if (count($parts) == 4 && ($parts[1] == 'login')) {
+                    $this->magicLink = true;
+                    return true;
+                }
             }
 
             // Beveiligde sectie
@@ -71,10 +94,27 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'wachtwoord-wijzigen') {
                     return true;
                 }
+                if ($parts[1] == 'gezin-nakijken') {
+                    return true;
+                }
+                if ($parts[1] == 'ouder-toevoegen') {
+                    return true;
+                }
             }
 
             if (count($parts) == 3) {
-                if ($parts[1] == 'steekkaart') {
+                if ($parts[1] == 'ouder-aanpassen' || $parts[1] == 'ouder-verwijderen') {
+                    // kijken of gezin wel in orde is
+                    $ouder = Ouder::getOuderForId($parts[2]);
+                    if (!is_null($ouder) && $ouder->gezin->id == Ouder::getUser()->gezin->id) {
+                        $this->ouder = $ouder;
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                if ($parts[1] == 'lid-aanpassen' || $parts[1] == 'steekkaart') {
                     // kijken of gezin wel in orde is
                     $lid = Lid::getLid($parts[2]);
                     if (!is_null($lid) && $lid->gezin->id == Ouder::getUser()->gezin->id) {
@@ -84,6 +124,7 @@ class LedenRouter extends Route {
 
                     return false;
                 }
+
                 if ($parts[1] == 'afrekening') {
                     // kijken of gezin wel in orde is
                     $afrekening = Afrekening::getAfrekening($parts[2]);
@@ -107,11 +148,16 @@ class LedenRouter extends Route {
             return new Pages\Overview();
         }
 
+        if ($this->magicLink) {
+            require(__DIR__.'/pages/magic-link.php');
+            return new Pages\MagicLinkPage();
+        }
+
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
 
             // Niet ingelogd
              if (!Ouder::isLoggedIn()) {
-                if ($parts[1] == 'wachtwoord-vergeten') {
+                if (isset($parts[1]) && $parts[1] == 'wachtwoord-vergeten') {
                     require(__DIR__.'/pages/wachtwoord-vergeten.php');
                     return new Pages\WachtwoordVergeten();
                 }
@@ -120,7 +166,6 @@ class LedenRouter extends Route {
                 return new Pages\Login();
             }
 
-            // Ingelogd
             if (count($parts) == 2) {
                 if ($parts[1] == 'uitloggen') {
                     require(__DIR__.'/pages/logout.php');
@@ -144,10 +189,33 @@ class LedenRouter extends Route {
                     require(__DIR__.'/pages/verleng-inschrijving.php');
                     return new Pages\VerlengInschrijving();
                 }
+                if ($parts[1] == 'gezin-nakijken') {
+                    require(__DIR__.'/pages/gezin-nakijken.php');
+                    return new Pages\GezinNakijken();
+                }
+                if ($parts[1] == 'ouder-toevoegen') {
+                    require(__DIR__.'/pages/ouder-aanpassen.php');
+                    return new Pages\OuderAanpassen();
+                }
             }
 
             // Beveiligde sectie: reeds authenticatie gedaan
             if (count($parts) == 3) {
+                if ($parts[1] == 'ouder-aanpassen' && !empty($this->ouder)) {
+                    require(__DIR__.'/pages/ouder-aanpassen.php');
+                    return new Pages\OuderAanpassen($this->ouder);
+                }
+
+                if ($parts[1] == 'ouder-verwijderen' && !empty($this->ouder)) {
+                    require(__DIR__.'/pages/ouder-verwijderen.php');
+                    return new Pages\OuderVerwijderen($this->ouder);
+                }
+
+                if ($parts[1] == 'lid-aanpassen' && !empty($this->lid)) {
+                    require(__DIR__.'/pages/broer-zus-toevoegen.php');
+                    return new Pages\BroerZusToevoegen($this->lid);
+                }
+
                 if ($parts[1] == 'steekkaart' && !empty($this->lid)) {
                     require(__DIR__.'/pages/steekkaart.php');
                     return new Pages\EditSteekkaart($this->lid);

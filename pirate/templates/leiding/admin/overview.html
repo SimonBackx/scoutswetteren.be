@@ -3,6 +3,11 @@
     <h1>Leiding</h1>
     <p></p>
 
+    {% if leiding_zichtbaar %}
+        <p>De leidingsverdeling is zichtbaar voor iedereen. <a href="/admin/leiding/verdeling">Wijzigen</a></p>
+    {% else %}
+        <p><strong>De leidingsverdeling is verborgen tot {{ leidingsverdeling | date("d/m/Y")}} om {{ leidingsverdeling | date("G:i")}}.</strong> <a href="/admin/leiding/verdeling">Wijzigen</a></p>
+    {% endif %}
     <a href="/admin/leiding/edit/" class="icon-button plus">Leider/ster toevoegen</a>
 
 

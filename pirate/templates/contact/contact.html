@@ -87,11 +87,11 @@
                             </select>
                         </label>
                         <p class="form_select_message" style="display: none" id="form_oudercomite_message">Het oudercomité mengt zich niet in de pedagogische werking van de scouts of andere zaken waar de leidingsploeg verantwoordelijk voor is.</p>
-                        <p class="form_select_message" style="display: none" id="form_kapoenen_message">De kapoenleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.kapoenen }}.</p>
-                        <p class="form_select_message" style="display: none" id="form_wouters_message">De wouterleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.wouters }}.</p>
-                        <p class="form_select_message" style="display: none" id="form_jonggivers_message">De jonggiverleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.jonggivers }}.</p>
-                        <p class="form_select_message" style="display: none" id="form_givers_message">De giverleiding is verantwoordelijk voor de leden geboren tussen {{ takkenverdeling.givers }}.</p>
-                        <p class="form_select_message" style="display: none" id="form_jin_message">De jinleiding is verantwoordelijk voor de leden geboren in {{ takkenverdeling.jin }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_kapoenen_message">De kapoenleiding is verantwoordelijk voor de leden geboren {{ takkenverdeling.kapoenen }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_wouters_message">De wouterleiding is verantwoordelijk voor de leden geboren {{ takkenverdeling.wouters }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_jonggivers_message">De jonggiverleiding is verantwoordelijk voor de leden geboren {{ takkenverdeling.jonggivers }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_givers_message">De giverleiding is verantwoordelijk voor de leden geboren {{ takkenverdeling.givers }}.</p>
+                        <p class="form_select_message" style="display: none" id="form_jin_message">De jinleiding is verantwoordelijk voor de leden geboren {{ takkenverdeling.jin }}.</p>
                         <p class="form_select_message" style="display: none" id="form_groepsleiding_message">Gelieve geen vragen over het verhuur of een specifieke tak naar de groepsleiding te versturen. De groepsleiding is verantwoordelijk voor de algemene werking van de scouts. Heb je vragen of problemen voor een bepaalde tak, gelieve deze dan hierboven te selecteren.</p>
                         <p class="form_select_message" style="display: none" id="form_verhuur_message">Kijk eerst de <a href="/verhuur#reserveren">verhuurkalender</a> na bij vragen over beschikbaarheid, deze is altijd up-to-date. Op smartphone: druk op "aankomstdatum" om de kalender te openen.</p>
 
@@ -100,6 +100,11 @@
 
                         <label>Jouw e-mailadres</label>
                         <input type="text" name="email" placeholder="Vul je e-mailadres hier in" value="{{ data.email | e('html_attr') }}">
+
+                        {% if data.phone is defined %}
+                            <label>Jouw GSM-nummer</label>
+                            <input type="text" name="email" placeholder="Vul je GSM-nummer hier in" value="{{ data.phone | e('html_attr') }}">
+                        {% endif %}
 
                         <label>Onderwerp</label>
                         <input type="text" name="subject" placeholder="Korte beschrijving" value="{{ data.subject | e('html_attr') }}">
@@ -132,6 +137,8 @@
                     </footer>
                 </div>
             {% else %}
+                {% if leiding_zichtbaar %}
+
                   <div class="splitted">
                     <div class="part text">
                         <header>
@@ -169,6 +176,15 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                    <div class="part text">
+                    <header>
+                        <h1>Contactgegevens</h1>
+                        <h2>Voor dringende communicatie</h2>
+                    </header>
+                    <p>Tot de bekendmaking is de leidingsverdeling nog een groot geheim. We maken tot dan ook geen contactgegevens van de leiding bekend. Gebruik het bovenstaande formulier om toch contact op te nemen met de leiding.</p>
+                </div>
+                {% endif %}
             {% endif %}
         </article>
     </main>

@@ -13,6 +13,9 @@ class VerhuurRouter extends Route {
         if ($url == 'verhuur/reserveren') {
             return true;
         }
+        if ($url == 'verhuur/materiaal') {
+            return true;
+        }
        
         return false;
     }
@@ -21,6 +24,10 @@ class VerhuurRouter extends Route {
         if ($url == 'verhuur') {
             require(__DIR__.'/pages/verhuur.php');
             return new Pages\Verhuur();
+        }
+        if ($url == 'verhuur/materiaal') {
+            require(__DIR__.'/pages/materiaal.php');
+            return new Pages\Materiaal();
         }
         
         require(__DIR__.'/pages/verhuur-reserveren.php');

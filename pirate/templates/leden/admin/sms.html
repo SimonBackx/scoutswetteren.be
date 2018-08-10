@@ -29,6 +29,15 @@
                 </select>
             </label>
 
+            <label>Ingeschreven in scoutsjaar</label>
+            <label class="select-box">
+                <select name="scoutsjaar">
+                    <option>Maak een keuze</option>
+                    <option value="{{ scoutsjaar }}"{% if scoutsjaar == data.scoutsjaar %} selected{% endif %}>{{ scoutsjaar }} - {{ scoutsjaar + 1 }}</option>
+                    <option value="{{ scoutsjaar - 1 }}"{% if scoutsjaar - 1 == data.scoutsjaar %} selected{% endif %}>{{ scoutsjaar - 1 }} - {{ scoutsjaar }}</option>
+                </select>
+            </label>
+
             <label>Filter</label>
             <label class="select-box">
                 <select name="filter">
@@ -39,9 +48,10 @@
                 </select>
             </label>
 
-            <label>Bericht (optioneel)</label>
-            <textarea type="text" name="message" class="big" placeholder="Typ hier het bericht">{{ data.message }}</textarea>
-
+            {% if not no_message %}
+                <label>Bericht (optioneel)</label>
+                <textarea type="text" name="message" class="big" placeholder="Typ hier het bericht">{{ data.message }}</textarea>
+            {% endif %}
 
             <input id="send_leden" type="checkbox" name="send_leden"{% if send_leden %} checked{% endif %}>
             <label for="send_leden">Stuur sms ook naar leden zelf (enkel givers/jin)</label>

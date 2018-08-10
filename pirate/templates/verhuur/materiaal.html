@@ -1,0 +1,174 @@
+{% set title = 'Materiaal huren' %}
+{% set description = 'Wij verhuren materiaal zoals tenten, bijlen, onze klimkoffer...' %}
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/css/photoswipe.css"> 
+{% endblock %}
+
+{% block javascript %}
+    <script src="/js/photoswipe.min.js"></script> 
+    <script src="/js/photos.js"></script>
+
+    <script type="text/javascript">
+        var grid = new photos.Grid({});
+        grid.trackWidth(document.getElementById('album_container'));
+        grid.margin = 8;
+        grid.max_height = 300;
+
+        var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+
+        {% for image in images %}
+            var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+            photo.title = "{{image.title | e('js')}}";
+            photo.sources = {{ image.getSourcesJSON | raw }};
+            grid.add(photo);
+        {% endfor %}
+        
+        var element = grid.toDOM();
+        document.getElementById('album_container').appendChild(element);
+        grid.updateVisiblePhotos();
+
+        grid.enablePhotoSwipe();
+    </script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <nav class="buttons">
+            <a href="/verhuur" class="button">Gebouw</a>
+            <a href="/verhuur/materiaal" class="selected button">Materiaal</a>
+        </nav>
+
+        <form method="POST" action="/contact">
+            <section class="white block withButtons">
+                 <div class="text">
+                     <header>
+                        <h1>Materiaal reserveren</h1>
+                    </header>
+
+                    <div class="splitted">
+                        <div class="part column first">
+                            <input type="hidden" value="Materiaal reserveren" name="subject">
+                            <input type="hidden" name="wie" value="materiaal">
+
+                            <label>Jouw naam</label>
+                            <input type="text" name="name" placeholder="Vul je voor- en achternaam hier in" value="">
+
+                            <label>Jouw e-mailadres</label>
+                            <input type="text" name="email" placeholder="Vul je e-mailadres hier in" value="">
+
+                            <label>Jouw GSM-nummer</label>
+                            <input type="text" name="phone" placeholder="Vul je GSM-nummer hier in" value="">
+
+                            <label>Wat, wanneer, waarvoor?</label>
+                            <textarea type="text" name="message" placeholder="Wat wil je huren, hoeveel, wanneer en waarvoor?"></textarea>
+
+                            <input type="text" style="color: white; display: none;" name="nickname">
+                            
+                        </div>
+                        <div class="part column last">
+                           
+
+                            <p>
+                                Scouts Prins Boudewijn beschikt over heel wat materiaal dat het grootste deel van het jaar niet gebruikt wordt. Op de prijslijst vind je een overzicht van het materiaal dat wij verhuren. 
+                            </p>
+                            <p>
+                                We verhuren onder meer patrouilletenten, seniortenten, kookpotten, gasfornuizen en sjorhout. Het materiaal is het hele jaar door beschikbaar, met uitzondering van de kampperiode (1 – 15 augustus). Het minimum verhuurbedrag bedraagt € 20.
+                            </p>
+
+                            <p>
+                                Heb je vragen of ben je op zoek naar iets specifieks? Aarzel niet om ons te contacteren op materiaal<span style="display: none;">-verwijdermij-</span>&amp;scoutswetteren<span style="display: none;">-verwijdermij-</span>.be.
+                            </p>
+
+                            
+                        </div>
+                    </div>
+
+                    <footer>
+                        <input type="submit" class="aubergine fill" value="Aanvragen">
+                        <a href="{{ prijslijst_location }}" class="button merlot">Download prijslijst</a>
+                    </footer>
+                </div>
+            </section>
+        </form>
+
+        <section class="block" id="fotos">
+            <div id="album_container"></div>
+            <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
+            {% if general.logged_in %}
+                <div class="button-bar">
+                    <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

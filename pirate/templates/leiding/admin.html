@@ -11,6 +11,8 @@
             {% for button in admin.buttons %}
                 <a href="/admin/{{ button.url }}" class="{% if button.url == admin.selected %}selected {% endif %}button">{{ button.name }}</a>
             {% endfor %}
+
+            <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank" class="button">Drive</a>
         </nav>
         <section class="white block withButtons">
             {{ content | raw }}

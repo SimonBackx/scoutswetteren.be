@@ -39,10 +39,14 @@ class Reservatie extends Model {
 
     public $aanvraag_datum;
 
-    static public $max_gebouw = 40;
+    static public $max_gebouw = 35;
     static public $max_tenten = 20;
 
-    static public $prijzen = array(2016 => 95, 2017 => 98, 2018 => 100);
+    static public $prijzen = array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102, 2020 => 105);
+    static public $waarborg_weekend = 400;
+    static public $waarborg_kamp = 750;
+    static public $prijs_tent_dag = 20;
+    static public $prijs_tent_persoon = 2;
 
     private $no_mail = false;
 
@@ -51,16 +55,51 @@ class Reservatie extends Model {
         $days = $difference->d;
 
         if ($days <= 2) {
-            return 400;
+            return self::$waarborg_weekend;
         }
-        return 750;
+        return self::$waarborg_kamp;
     }
 
-    function getWaarborg() {
+    static function getPrijzenString() {
+        $year = date("Y");
+        if (!isset(self::$prijzen[$year])) {
+            return 'De huurprijs is onbekend door een technische fout';
+        }
+        $current_price = '€ '.money_format('%!.2n', self::$prijzen[$year]);
+
+        $other = '';
+        $i = $year+1;
+        while (isset(self::$prijzen[$i])) {
+            if ($other != '') {
+                $other .= ', ';
+            } else {
+                $other .= ' (';
+            }
+            $other .= $i.': € '.money_format('%!.2n', self::$prijzen[$i]);
+            $i++;
+        }
+        if ($other != '') {
+            $other .= ')';
+        } 
+
+        return "De huurprijs bedraagt  $current_price / nacht voor verblijven in $year$other";
+    }
+
+    function getExcelSafeTelephone() {
+        return str_replace(" ", " ", $this->contact_gsm);
+    }
+
+    function getWaarborg($excelsafe = false) {
+        if ($excelsafe) {
+            return 'EUR '.money_format('%!.2n', $this->waarborg);
+        }
         return '€ '.money_format('%!.2n', $this->waarborg);
     }
 
-    function getHuur() {
+    function getHuur($excelsafe = false) {
+        if ($excelsafe) {
+            return 'EUR '.money_format('%!.2n', $this->huur);
+        }
         return '€ '.money_format('%!.2n', $this->huur);
     }
 
@@ -70,7 +109,7 @@ class Reservatie extends Model {
 
         $plus = 0;
         if ($this->personen_tenten > 0) {
-            $plus += 15*$days + 2*$this->personen_tenten*$days;
+            $plus += self::$prijs_tent_dag*$days + self::$prijs_tent_persoon*$this->personen_tenten*$days;
         }
 
 
@@ -89,7 +128,7 @@ class Reservatie extends Model {
 
         var base_price = diffDays * prices[startdate.getFullYear()];
         if (persons_tenten > 0) {
-            base_price += persons_tenten*2*diffDays + 15*diffDays;
+            base_price += persons_tenten*'.self::$prijs_tent_dag.'*diffDays + '.self::$prijs_tent_persoon.'*diffDays;
         }
         return base_price;';
     }
@@ -97,10 +136,10 @@ class Reservatie extends Model {
     static public function js_calculateBorg() {
         // function calculateBorg(startdate, enddate, diffDays, persons, persons_tenten)
         return '
-        var borg = 400;
+        var borg = '.self::$waarborg_weekend.';
 
         if (diffDays > 2) {
-            borg = 750;
+            borg = '.self::$waarborg_kamp.';
         }
         return borg;';
     }
@@ -590,13 +629,14 @@ class Reservatie extends Model {
                 $this->id = self::getDb()->insert_id;
 
                 if (!isset($this->door_leiding) && !$this->no_mail) {
-                    // Mail voor verantwoordelijke
                     
+                    // Mail voor verantwoordelijke(n)
                     $leiding = Leiding::getLeiding('verhuur');
                     $verhuurder = 'website@scoutswetteren.be';
+                    $mail = new Mail('Huur aanvraag van '.$this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
+                    
                     if (count($leiding) > 0) {
                         $verhuurder = $leiding[0]->mail;
-                        $mail = new Mail('Huur aanvraag van '.$this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
 
                         foreach ($leiding as $l) {
                             $mail->addTo(
@@ -606,10 +646,15 @@ class Reservatie extends Model {
                             );
                         }
 
-                        $mail->send();
+                    } else {
+                        // Geen verhuurder aangeduid: default gebruiken
+                        $mail->addTo(
+                            $verhuurder
+                        );
                     }
+                    $mail->send();
 
-                    // Andere
+                    // Andere (mail voor huurder zelf)
                     $mail = new Mail('Verhuur aanvraag', 'huurder-aanvraag', array('reservatie' => $this));
 
                     $mail->addTo(

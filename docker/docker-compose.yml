@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+    db:
+        image: mysql:5.7
+        ports:
+             - "3306:3306"
+        volumes:
+         - database:/var/lib/mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: scouts
+            MYSQL_USER: root
+            MYSQL_PASSWORD: root
+    php:
+        links:
+         - db
+        build: ./
+        container_name: pirate-php-container
+        volumes:
+         - .../files:/var/www/scoutswetteren.dev/files
+         - ../pirate:/var/www/scoutswetteren.dev/pirate
+         - ../public:/var/www/scoutswetteren.dev/public
+         - ../config/php.ini:/usr/local/etc/php/conf.d/custom.ini
+        environment:
+         - DEBUG=1
+        depends_on:
+         - db
+        security_opt:
+         - seccomp:unconfined
+        privileged: true
+
+    nginx:
+        image: nginx:latest
+        ports:
+             - "80:80"
+             - "443:443"
+        volumes:
+             - ../files:/var/www/scoutswetteren.dev/files
+             - ../pirate:/var/www/scoutswetteren.dev/pirate
+             - ../public:/var/www/scoutswetteren.dev/public
+             - ./nginx.conf:/etc/nginx/conf.d/site.conf
+             - ./certs:/etc/nginx/certs
+        depends_on:
+             - php
+        restart: always
+volumes:
+    database:

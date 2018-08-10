@@ -37,6 +37,7 @@ photos.Photo = function(width, height, id) {
     this.grid = null;
     this.index = 0;
     this.id = id;
+    this.title = "";
 
     this.source_width = width;
     this.source_height = height;
@@ -149,9 +150,8 @@ photos.Photo.prototype = {
 
         var me = this;
         $.ajax({
-          url: "/api/photos/delete/"+this.id+"/",
-          method: "POST",
-          dataType: 'json',
+          url: "/api/photos/delete/"+this.id,
+          type: "POST",
         }).done(function(data, textStatus, jqXHR) {
             me.grid.remove(me);
         }).fail(function(jqXHR, textStatus) {
@@ -162,13 +162,32 @@ photos.Photo.prototype = {
     setCover: function() {
         var me = this;
         $.ajax({
-          url: "/api/photos/set-cover/"+this.id+"/",
-          method: "POST",
-          dataType: 'json',
+          url: "/api/photos/set-cover/"+this.id,
+          type: "POST",
         }).done(function(data, textStatus, jqXHR) {
             alert('Deze foto is ingesteld als de nieuwe cover foto.');
         }).fail(function(jqXHR, textStatus) {
             alert('Het instellen van de cover foto is mislukt.');
+        });
+    },
+
+    setTitle: function() {
+        var new_title = prompt("Vul een beschrijving in voor de foto", this.title);
+        if (new_title == null) {
+            return;
+        }
+
+        var me = this;
+        $.ajax({
+          type: "POST",
+          url: "/api/photos/set-title/"+this.id,
+          data: {t: new_title},
+        }).done(function(data, textStatus, jqXHR) {
+            alert('De beschrijving van de foto is aangepast.');
+            this.title = new_title;
+
+        }).fail(function(jqXHR, textStatus) {
+            alert('Het instellen van de beschrijving is mislukt.');
         });
     },
 
@@ -203,7 +222,7 @@ photos.Photo.prototype = {
                     return false;
                 };
                 
-                var cov = document.createElement('cov');
+                var cov = document.createElement('div');
                 cov.className = 'cov';
                 cov.setAttribute('title', 'Instellen als cover foto');
                 cov.onclick = function(event) {
@@ -217,6 +236,21 @@ photos.Photo.prototype = {
                     return false;
                 };
 
+                var caption = document.createElement('div');
+                caption.className = 'caption';
+                caption.setAttribute('title', 'Beschrijving wijzigen');
+                caption.onclick = function(event) {
+                    if (event) {
+                        event.stopPropagation();
+                    } else {
+                        window.event.cancelBubble = true;
+                    }
+                    me.setTitle();
+
+                    return false;
+                };
+
+                box.appendChild(caption);
                 box.appendChild(cov);
                 box.appendChild(del);
 
@@ -241,7 +275,8 @@ photos.Photo.prototype = {
                 subelement = element.lastChild;
             }
 
-            subelement.setAttribute('alt', "");
+            subelement.setAttribute('alt', this.title);
+            subelement.setAttribute('title', this.title);
             /*subelement.setAttribute('width', this.width);
             subelement.setAttribute('height', this.height);
             subelement.setAttribute('srcset', this.getSourceSet());*/
@@ -708,7 +743,8 @@ photos.Grid.prototype = {
                         w: source.w,
                         h: source.h,
                         msrc: photo.getSource().url,
-                        el: photo.toDOM()
+                        el: photo.toDOM(),
+                        title: photo.title
                     };
                     items.push(item);
                 }

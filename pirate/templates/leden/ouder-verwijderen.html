@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <div class="white block">
+                <form method="post">
+                    <div class="text">
+                        
+                        <header>
+                            <h1>Ouder {{ ouder['voornaam'] }} verwijderen</h1>
+                            <p>
+                                Ben je zeker dat je deze ouder wilt verwijderen? Gebruik deze functie enkel om fouten te corrigeren, niet om een ouder de toegang tot de website te ontzeggen.
+                            </p>
+                        </header>
+
+                        
+
+                        {% if errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                         
+                        <footer>
+                            <input type="submit" name="confirm" class="aubergine fill" value="Ja, {{ ouder['voornaam'] }} is geen wettelijke ouder">
+                            <a class="button aubergine" href="/ouders">Annuleren</a>
+                        </footer>
+
+                    </div>
+                </form>
+        </div>
+    </main>
+{% endblock %}
