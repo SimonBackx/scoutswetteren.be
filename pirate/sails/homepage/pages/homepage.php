@@ -25,6 +25,11 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
+                    'title' => 'Startdag op zondag 9 september',
+                    'text' => 'In september beginnen we weer aan een nieuw scoutsjaar!',
+                ),
+
+                array(
                     'title' => 'De kampen komen eraan!',
                     'text' => 'Kapoenenkamp: 1 - 5 augustus, Wouterkamp: 5 - 11 augustus, (Jong)giverskamp: 1 - 11 augustus. Info volgt via e-mail en huisbezoeken.',
                 ),
