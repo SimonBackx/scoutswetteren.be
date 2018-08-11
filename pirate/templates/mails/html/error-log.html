@@ -1,0 +1,7 @@
+{% extends "mail-template.html" %}
+
+{% block main %}
+    {{ message | nl2br}}
+
+    <pre>{{ log }}</pre>
+{% endblock %}

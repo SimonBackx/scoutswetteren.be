@@ -47,7 +47,7 @@
     <div class="list-bundle">
     {% for lid in leden %}
         <article class="list">
-            <div class="small column">{{ lid.inschrijving.getTakJaar() }}e jaar</div>
+            <div class="small column">{{ lid.inschrijving.getTakJaar() }}<sup>e</sup> jaar</div>
 
             <div class="max merlot column">{{ lid.voornaam }} {{ lid.achternaam }}</div>
             {% if lid.gezin.scouting_op_maat %}

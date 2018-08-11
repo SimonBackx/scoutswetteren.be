@@ -824,4 +824,27 @@ class Leiding extends Model {
 
         return self::getDb()->query($query);
     }
+
+    static function sendErrorMail($subject, $message, $log) {
+        $webmasters = static::getLeiding('webmaster');
+        
+        $mail = new Mail(
+            $subject, 
+            'error-log', 
+            array(
+                'message' => $message,
+                'log' => $log
+            )
+        );
+
+        foreach($webmasters as $webmaster) {
+            $mail->addTo(
+                $webmaster->mail, 
+                array(),
+                $webmaster->firstname.' '.$webmaster->lastname
+            );
+        }
+
+        return $mail->send();
+    }
 }

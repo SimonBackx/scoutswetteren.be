@@ -50,7 +50,7 @@ class VerplaatsAdressen1529783215 extends Migration {
         echo "Dropped columns\n";
 
         $create_query = "ALTER TABLE ouders
-            ADD COLUMN `adres` int(11) unsigned AFTER `achternaam`
+            ADD COLUMN `adres` int(11) unsigned AFTER `achternaam`,
             ADD CONSTRAINT `fk_ouder_adres` FOREIGN KEY (`adres`) REFERENCES adressen(`adres_id`) ON DELETE RESTRICT ON UPDATE CASCADE;";
         
         if (!self::getDb()->query($create_query)) {

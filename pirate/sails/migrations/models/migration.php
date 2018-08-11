@@ -46,6 +46,21 @@ class Migration extends Model {
         return false;
     }
 
+    static function isUpToDate() {
+        $executed = static::getExecutedMigrations();
+        $migrations = include __DIR__.'/../../_bindings/migrations.php';
+        $to_execute = [];
+        
+        foreach ($migrations as $migration) {
+            $id = $migration->id;
+
+            if (!isset($executed[$id])) {
+                $to_execute[$migration->timestamp] = $migration;
+            }
+        }
+        return count($to_execute) == 0;
+    }
+
     // Doorloop alle migrations die er zijn
     static function upgrade() {
         $executed = static::getExecutedMigrations();
@@ -69,14 +84,30 @@ class Migration extends Model {
             require_once($migration->path);
             $className = '\Pirate\Classes\\'.ucfirst($migration->sail).'\\'.$migration->class;
             echo "Runing migration $className...\n";
+
+            if (!self::getDb()->begin_transaction()) {
+                echo "Failed to create transaction\n\n";
+                return false;
+            }
+
             try {
                 if ($className::upgrade()) {
                     static::create($migration->id);
+
+                    if (!self::getDb()->commit()) {
+                        echo "Failed to rollback transaction\n\n";
+                        throw new \Exception("Failed to rollback transaction");
+                    } else {
+                        echo "Successfully commited database changes\n\n";
+                    }
+
                     echo "Succeeded $className\n\n";
 
                     if (!isset($first)) {
                         $first = $migration->id;
                     }
+
+
                     continue;
                 }
             } catch (\Exception $ex) {
@@ -84,6 +115,13 @@ class Migration extends Model {
             }
             echo "Failed $className\n\n";
 
+            if (!self::getDb()->rollback()) {
+                echo "Failed to rollback transaction\n\n";
+            } else {
+                echo "Successfully rollbacked database changes\n\n";
+            }
+
+            // Alle andere migraties ongedaan maken tot en met first
             if (isset($first)) {
                 static::downgrade(null, $first);
             }

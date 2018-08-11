@@ -70,8 +70,7 @@ class Curl {
                 $data = @json_decode($result, true);
                 return $data;
             } else {
-                echo $result;
-                exit;
+                // Er ging iets mis
             }
             return null;
         }

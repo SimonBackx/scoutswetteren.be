@@ -1,5 +1,6 @@
 <?php
 namespace Pirate\Cronjob;
+use Pirate\Model\Migrations\Migration;
 
 class Cronjob {
     function needsRunning() {
@@ -20,6 +21,11 @@ class Cronjobs {
         include(__DIR__.'/../sails/_bindings/cronjobs.php');
         if (!isset($cronjobs)) {
             echo "Cronjobs not found\n";
+            return false;
+        }
+
+        if (!Migration::isUpToDate()) {
+            echo "Cronjobs are disabled until migrations are finished\n";
             return false;
         }
 

@@ -62,6 +62,61 @@ class Inschrijving extends Model {
         return in_array($tak, Self::$takken);
     }
 
+    function getVerbondTak() {
+        $mapping = [
+            "kapoenen" => [
+                "naam" => "Kapoenen",
+                "functie" => "d5f75b320b812440010b812555de03a2",
+            ],
+            "wouters" => [
+                "naam" => "Kabouters",
+                "functie" => "d5f75b320b812440010b812555db03a1",
+            ],
+            "jonggivers" => [
+                "naam" => "Jong gidsen",
+                "functie" => "d5f75b320b812440010b812555c7039d",
+            ],
+            "givers" => [
+                "naam" => "Gidsen",
+                "functie" => "d5f75b320b812440010b812555380380",
+            ],
+            "jin" => [
+                "naam" => "Jin",
+                "functie" => "d5f75b320b812440010b812555c1039b",
+            ],
+        ];
+
+        if ($this->lid->geslacht == "M") {
+            $mapping = [
+                "kapoenen" => [
+                    "naam" => "Kapoenen",
+                    "functie" => "d5f75b320b812440010b812555de03a2",
+                ],
+                "wouters" => [
+                    "naam" => "Welpen",
+                    "functie" => "d5f75b320b812440010b8125567703cb",
+                ],
+                "jonggivers" => [
+                    "naam" => "Jong verkenners",
+                    "functie" => "d5f75b320b812440010b812555d603a0",
+                ],
+                "givers" => [
+                    "naam" => "Verkenners",
+                    "functie" => "d5f75b320b812440010b8125565203c1",
+                ],
+                "jin" => [
+                    "naam" => "Jin",
+                    "functie" => "d5f75b320b812440010b812555c1039b",
+                ],
+            ];
+        }
+
+        if (!isset($mapping[$this->tak])) {
+            return null;
+        }
+        return $mapping[$this->tak];
+    }
+
     function isBetaald() {
         return $this->afrekening_oke;
     }

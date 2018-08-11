@@ -577,7 +577,7 @@ class Ouder extends Model {
             SELECT l.*, i.*, s.*, g.* from leden l
                 left join gezinnen g on g.gezin_id = l.gezin
                 join ouders o on l.gezin = o.gezin
-                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.'
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.' and i.tak != ""
                 left join steekkaarten s on s.lid = l.id
             '.$where.'
             GROUP BY l.id, g.gezin_id, i.inschrijving_id, s.steekkaart_id
