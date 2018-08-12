@@ -63,6 +63,8 @@ class Migration extends Model {
 
     // Doorloop alle migrations die er zijn
     static function upgrade() {
+        error_reporting(E_ALL);
+ini_set('display_errors', 1);
         $executed = static::getExecutedMigrations();
         $migrations = include __DIR__.'/../../_bindings/migrations.php';
         $to_execute = [];

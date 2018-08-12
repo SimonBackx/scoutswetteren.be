@@ -14,7 +14,7 @@ use Pirate\Model\Leiding\Leiding;
 
 class Sync extends Cronjob {
     function needsRunning() {
-        if (date('G') != '17') {
+        if (date('G') != '3') {
             return false;
         }
         // 's nachts tussen 3:00 en 3:59 uitvoeren

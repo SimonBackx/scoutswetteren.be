@@ -403,6 +403,7 @@ class Leiding extends Model {
             if ($permission == '' || self::hasPermission($permission)) {
                 foreach ($buttons as $button) {
                     $priority = isset($button['priority']) ? $button['priority'] : 0;
+                    $button['priority'] = $priority;
 
                     if (isset($urls[$button['url']])) {
                         $o = $urls[$button['url']];
@@ -411,7 +412,14 @@ class Leiding extends Model {
                         }
                         
                         // Remove old button
-                        $allButtons[$o->priority] = array_splice($allButtons[$o->priority], $o->index, 1);
+                        array_splice($allButtons[$o->priority], $o->index, 1);
+                        
+                        // Nu alle oude priority indexen updaten
+                        foreach ($urls as $key => $value) {
+                            if ($value->priority == $o->priority && $value->index >= $o->index) {
+                                $value->index--;
+                            }
+                        }
                     } 
 
                     if (!isset($allButtons[$priority])) {
@@ -427,7 +435,6 @@ class Leiding extends Model {
                 }
             }
         }
-
         ksort($allButtons);
 
         $sortedButtons = [];
@@ -435,6 +442,8 @@ class Leiding extends Model {
         foreach ($allButtons as $priority => $buttons) {
             $sortedButtons = array_merge($buttons, $sortedButtons);
         }
+
+           
 
         return $sortedButtons;
     }

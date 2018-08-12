@@ -75,6 +75,7 @@ class SpaceRequest {
         // 
         
         $this->datetime = new \DateTime();
+        $this->datetime->setTimezone(new \DateTimeZone("UTC"));
     }
 
     // Stel de headers in, met uitzondering van de Host, Content-Length en Authorization headers
@@ -248,7 +249,11 @@ class SpaceRequest {
     }
 
     function getISO8601Date() {
-        return $this->datetime->format('Ymd\THis\Z');
+        $current = date_default_timezone_get();
+        date_default_timezone_set('UTC');
+        $v = $this->datetime->format('Ymd\THis\Z');
+        date_default_timezone_set($current);
+        return $v;
     }
 
     function getHashedPayload() {

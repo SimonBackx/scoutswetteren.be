@@ -25,8 +25,9 @@ class Classes  {
     static function loadClass($sail, $name) {
         $file = __DIR__.'/../sails/'.strtolower($sail).'/classes/'.strtolower($name).'.php';
         
-        if (file_exists($file))
+        if (file_exists($file)) {
             require($file);
+        }
 
     }
 }
