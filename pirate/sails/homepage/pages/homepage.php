@@ -25,8 +25,8 @@ class Homepage extends Page {
             'blog' => $blog,
             'slideshows' => array(
                 array(
-                    'title' => 'Startdag op zondag 9 september',
-                    'text' => 'In september beginnen we weer aan een nieuw scoutsjaar!',
+                    'title' => 'Startweekend 2018 - 2019',
+                    'text' => "Streekbieravond: vrijdag 7 september, 19u\nStartdag: zondag 9 september, 14u - 17u. Iedereen welkom!",
                 ),
 
                 array(

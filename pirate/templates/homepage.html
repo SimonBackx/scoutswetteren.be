@@ -70,7 +70,7 @@
                 <div class="center">
                     <article>
                         <h1>{{ slideshows[0].title }}</h1>
-                        <p>{{ slideshows[0].text }}</p>
+                        <p>{{ slideshows[0].text | nl2br }}</p>
                         {% if slideshows[0].button is defined %}
                             <a href="{{ slideshows[0].button.url | e('html_attr') }}" class="button">{{ slideshows[0].button.text }}</a>
                             {% if slideshows[0].extra_button is defined %}
@@ -89,7 +89,7 @@
                 <div class="{% if loop.first %}selected {% endif %}item">
                     <article>
                         <h1>{{ slide.title }}</h1>
-                        <p>{{ slide.text }}</p>
+                        <p>{{ slide.text | nl2br }}</p>
                         {% if slide.button is defined %}
                             <a href="{{ slide.button.url | e('html_attr') }}" class="button">{{ slide.button.text }}</a>
                             {% if slide.extra_button is defined %}
