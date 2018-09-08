@@ -4,6 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Mail\Mail;
 use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Leden\Adres;
 
 class Reservatie extends Model {
     public $id;
@@ -441,7 +442,10 @@ class Reservatie extends Model {
                 $data['contact_land'] = $this->contact_land;
 
                 if ($this->contact_land == "België") {
-                    Validator::validateGemeente($data['contact_gemeente'], $data['contact_postcode'], $this->contact_gemeente, $this->contact_postcode, $errors);
+                    if (Adres::validateGemeente($data['contact_gemeente'], $data['contact_postcode'], $errors)) {
+                        $this->contact_gemeente = $data['contact_gemeente'];
+                        $this->contact_postcode =  $data['contact_postcode'];
+                    }
                 } else {
                     if (strlen($data['contact_gemeente']) < 4) {
                         $errors[] = 'Ongeldige gemeente';

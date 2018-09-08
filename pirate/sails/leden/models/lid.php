@@ -383,7 +383,7 @@ class Lid extends Model {
                  $scoutsjaar - 8 => 'wouters', $scoutsjaar - 9 => 'wouters', $scoutsjaar - 10 => 'wouters', 
                  $scoutsjaar - 11 => 'jonggivers', $scoutsjaar - 12 => 'jonggivers', $scoutsjaar - 13 => 'jonggivers',
                  $scoutsjaar - 14 => 'givers', $scoutsjaar - 15 => 'givers', $scoutsjaar - 16 => 'givers',
-                 $scoutsjaar - 17 => 'jin'
+                 $scoutsjaar - 17 => 'jin', $scoutsjaar - 18 => 'jin'
              );
     }
 
