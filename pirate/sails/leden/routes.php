@@ -22,6 +22,10 @@ class LedenRouter extends Route {
             return true;
         }
 
+        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'uitzondering-toelaten') {
+            return true;
+        }
+
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
             // Onbeveiligde sectie
             if (count($parts) == 3 && ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-vergeten')) {
@@ -240,6 +244,11 @@ class LedenRouter extends Route {
         if (!Inschrijving::isInschrijvingsPeriode()) {
             require(__DIR__.'/pages/buiten-inschrijvingen-periode.php');
             return new Pages\BuitenInschrijvingenPeriode();
+        }
+
+        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'uitzondering-toelaten') {
+            require(__DIR__.'/pages/uitzondering-toelaten.php');
+            return new Pages\UitzonderingToelaten();
         }
 
         require(__DIR__.'/pages/nieuw-lid.php');

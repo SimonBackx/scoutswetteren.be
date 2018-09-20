@@ -88,7 +88,8 @@ class VerlengInschrijving extends Page {
             'niet_inschrijfbaar' => $niet_inschrijfbaar,
             'scoutsjaar' => $scoutsjaar,
             'success' => $success,
-            'errors' => $errors
+            'errors' => $errors,
+            'limits_ignored' => Lid::areLimitsIgnored(),
         ));
     }
 }

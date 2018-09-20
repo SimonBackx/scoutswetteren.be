@@ -193,7 +193,13 @@ class Inschrijving extends Model {
         $scoutsjaar = self::getScoutsjaar();
 
         $jaar = self::getDb()->escape_string($scoutsjaar);
-        $tak = self::getDb()->escape_string(Lid::getTak(intval($lid->geboortedatum->format('Y'))));
+
+        $tak = Lid::getTak(intval($lid->geboortedatum->format('Y')), Lid::areLimitsIgnored());
+        if ($tak === false) {
+            return false;
+        }
+        
+        $tak = self::getDb()->escape_string($tak);
 
         $halfjaarlijks = self::isHalfjaarlijksLidgeld();
         $lidgeld = self::getLidgeld($tak, $halfjaarlijks);

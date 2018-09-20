@@ -30,6 +30,10 @@
                                 <h1>Inschrijvingen verlengen</h1>
                                 <p>Selecteer de gezinsleden die je wilt inschrijven voor het nieuwe scoutsjaar. Hieronder vind je de gezinsleden die we kennen, maar je kan altijd broers of zussen toevoegen. Je kan tijdens het jaar ook nog bijkomende broers en zussen inschrijven.</p>
                             {% endif %}
+
+                            {% if limits_ignored %}
+                                <p><strong>Je hebt van de leiding toegang gekregen om leden in te schrijven met een uitzondering op de leeftijd (< 6 jaar, 4e jaar giver, 2e jaar jin).</strong> </p>
+                            {% endif %}
                         </header>
 
 
@@ -56,7 +60,7 @@
                         {% endfor %}
                         {% for lid in al_ingeschreven %}
                             <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" onclick="return false;" checked disabled>
-                            <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} (al ingeschreven bij {{ lid.getTakVoorHuidigScoutsjaar() }})</label>
+                            <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} (al ingeschreven bij {{ lid.getTakVoorInschrijving() }})</label>
                         {% endfor %}
 
                         <div><a href="/ouders/broer-zus-toevoegen" class="icon-button plus">Broer of zus toevoegen die nog niet in het systeem zit</a></div>

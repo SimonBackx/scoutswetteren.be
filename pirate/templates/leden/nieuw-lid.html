@@ -8,6 +8,11 @@
                         
                         <h1>Nieuw gezin inschrijven</h1>
                         <h2>Deze pagina is enkel voor nieuwe leden. Leden die vorig jaar waren ingeschreven kunnen inloggen met hun account om hun inschrijving te verlengen. Broers en zussen moeten ook via die weg worden ingeschreven.</h2>
+
+                        {% if limits_ignored %}
+                            <p><strong>Je hebt van de leiding toegang gekregen om leden in te schrijven met een uitzondering op de leeftijd (< 6 jaar, 4e jaar giver, 2e jaar jin).</strong> </p>
+                        {% endif %}
+
                         {% if fail %}
                         <ul class="error">
                             <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>

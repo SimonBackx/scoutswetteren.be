@@ -12,6 +12,10 @@
                         {% else %}
                             <h1>Algemene gegevens van {{ lid['voornaam'] }} nakijken</h1>
                         {% endif %}
+
+                            {% if limits_ignored %}
+                                <p><strong>Je hebt van de leiding toegang gekregen om leden in te schrijven met een uitzondering op de leeftijd (< 6 jaar, 4e jaar giver, 2e jaar jin).</strong> </p>
+                            {% endif %}
                         </header>
 
                         {% if fail %}
@@ -35,6 +39,7 @@
                          
                         <footer>
                             <input type="submit" class="aubergine fill" value="{% if new %}Inschrijven{% else %}Opslaan{% endif %}">
+                            <a class="button aubergine" href="/ouders">Annuleren</a>
                         </footer>
 
                     </div>

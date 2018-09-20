@@ -88,7 +88,7 @@ class BroerZusToevoegen extends Page {
             }
         }
         $jaar = Inschrijving::getScoutsjaar();
-        $verdeling = Lid::getTakkenVerdeling($jaar);
+        $verdeling = Lid::getTakkenVerdeling($jaar, Lid::areLimitsIgnored());
         $keys = array_keys($verdeling);
         sort($keys);
         $jaren = array();
@@ -111,7 +111,8 @@ class BroerZusToevoegen extends Page {
             'fail' => $fail,
             'success' => $success,
             'errors' => $errors,
-            'takken' => json_encode($verdeling)
+            'takken' => json_encode($verdeling),
+            'limits_ignored' => Lid::areLimitsIgnored(),
         ));
     }
 }

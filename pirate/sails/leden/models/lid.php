@@ -23,6 +23,7 @@ class Lid extends Model {
 
     public $ouders = array(); // wordt enkel door speciale toepassingen gebruikt, niet automatisch opgevuld
     
+    private static $IGNORE_LIMITS = null;
 
     function __construct($row = array(), $inschrijving_object = null) {
         if (count($row) == 0) {
@@ -57,6 +58,28 @@ class Lid extends Model {
             $this->steekkaart = new Steekkaart($row, $this);
         } else {
             $this->steekkaart = null;
+        }
+    }
+
+    static function areLimitsIgnored() {
+        if (!isset(self::$IGNORE_LIMITS)) {
+            if (isset($_COOKIE['ignore_limits_inschrijven'])) {
+                self::$IGNORE_LIMITS = intval($_COOKIE['ignore_limits_inschrijven']) === 1;
+            } else {
+                self::$IGNORE_LIMITS = false;
+            }
+        }
+
+        return self::$IGNORE_LIMITS;
+    }
+
+    static function setLimitsIgnored($bool) {
+        self::$IGNORE_LIMITS = $bool;
+
+        if (!$bool) {
+            setcookie('ignore_limits_inschrijven', "0", time()-604800,'/');
+        } else {
+            setcookie('ignore_limits_inschrijven', "1", time()+51840000,'/', '', true, true); 
         }
     }
 
@@ -363,7 +386,7 @@ class Lid extends Model {
 
     // Bv. Jin van vorig jaar is niet meer inschrijfbaar (of bv na takherverdeling)
     function isInschrijfbaar() {
-        $tak = $this->getTakVoorHuidigScoutsjaar();
+        $tak = $this->getTakVoorHuidigScoutsjaar(self::areLimitsIgnored());
         if ($tak === false) {
             return false;
         }
@@ -377,26 +400,62 @@ class Lid extends Model {
         return $this->steekkaart->isIngevuld();
     }
 
-    static function getTakkenVerdeling($scoutsjaar) {
-        return array(
+    static function getTakkenVerdeling($scoutsjaar, $allow_limits = false) {
+        $data = array(
                  $scoutsjaar - 7 => 'kapoenen', $scoutsjaar - 6 => 'kapoenen',
                  $scoutsjaar - 8 => 'wouters', $scoutsjaar - 9 => 'wouters', $scoutsjaar - 10 => 'wouters', 
                  $scoutsjaar - 11 => 'jonggivers', $scoutsjaar - 12 => 'jonggivers', $scoutsjaar - 13 => 'jonggivers',
                  $scoutsjaar - 14 => 'givers', $scoutsjaar - 15 => 'givers', $scoutsjaar - 16 => 'givers',
                  $scoutsjaar - 17 => 'jin', $scoutsjaar - 18 => 'jin'
              );
+
+
+        if ($allow_limits) {
+            $custom = self::getTakkenVerdelingLimits($scoutsjaar);
+            foreach ($custom as $year => $tak) {
+                if (!isset($data[$year])) {
+                    $data[$year] = $tak;
+                }
+            }
+        }
+
+        return $data;
     }
 
-    static function getTak($geboortejaar) {
+    // when IGNORE_LIMITS
+    static function getTakkenVerdelingLimits($scoutsjaar) {
+        return array(
+                // 1 - 2 jaar te jong voor kapoenen
+                 $scoutsjaar - 5 => 'kapoenen', $scoutsjaar - 4 => 'kapoenen',
+
+                 // 1 jaar te oud voor de givers (als er geen jin is)
+                 $scoutsjaar - 17 => 'givers',
+
+                 // 1 - 2 jaar te oud voor de jin (tenzij er een verlengd jin jaar is)
+                 $scoutsjaar - 18 => 'jin', $scoutsjaar - 19 => 'jin'
+             );
+    }
+
+    static function getTak($geboortejaar, $allow_limits = false) {
         $verdeling = self::getTakkenVerdeling(Inschrijving::getScoutsjaar());
         if (isset($verdeling[$geboortejaar])) {
             return $verdeling[$geboortejaar];
         }
+
+        // Enkel als er geen andere tak mogelijk is, en allow limits expliciet aan staat
+        if ($allow_limits) {
+            $verdeling = self::getTakkenVerdelingLimits(Inschrijving::getScoutsjaar());
+            if (isset($verdeling[$geboortejaar])) {
+                return $verdeling[$geboortejaar];
+            }
+        }
         return false;
     }
 
+    // Deze functie houdt rekening met de cookies van de gebruiker!
     function getTakVoorHuidigScoutsjaar() {
-        return self::getTak(intval($this->geboortedatum->format('Y')));
+        $allow_limits = self::areLimitsIgnored();
+        return self::getTak(intval($this->geboortedatum->format('Y')), $allow_limits);
     }
 
     function getTakVoorInschrijving() {
@@ -453,11 +512,11 @@ class Lid extends Model {
             if ($this->isIngeschreven()) {
                 $tak = $this->inschrijving->tak;
             } else {
-                $tak = self::getTak(intval($data['geboortedatum_jaar']));
+                $tak = self::getTak(intval($data['geboortedatum_jaar']), self::areLimitsIgnored());
             }
 
             if ($tak === false) {
-                $errors[] = 'Uw zoon is te oud  / jong voor de scouts. Kinderen zijn toegelaten vanaf 6 jaar.';
+                $errors[] = 'Uw zoon is te oud  / jong voor de scouts. Kinderen zijn toegelaten vanaf 6 jaar. Kinderen die nog maar 5 jaar zijn, maar wel al in het eerste leerjaar zitten (noodzakelijk) kunnen een uitzondering aanvragen bij de leiding.';
             } else {
                 $data['tak'] = $tak;
 
