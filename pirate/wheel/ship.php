@@ -3,6 +3,7 @@ namespace Pirate;
 use \Pirate\Database\Database;
 use Pirate\Model\Model;
 use Pirate\Model\Migrations\Migration;
+use Pirate\Model\Leiding\Leiding;
 
 class Ship {
     private $router;
@@ -75,6 +76,8 @@ class Ship {
         } catch (\Error $e) {
             http_response_code(500);
             echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>'.$e->getFile().' line '.$e->getLine().' '.$e->getMessage().'</pre>';
+            Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
+            
             exit;
         }
 
@@ -92,6 +95,9 @@ class Ship {
             $this->prepare();
         } catch (\Error $e) {
             echo "Cronjobs failed: \n".$e->getFile().' line '.$e->getLine().' '.$e->getMessage()."\n";
+
+            Leiding::sendErrorMail("Cronjobs failed", "Cronjobs failed \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
+
             exit;
         }
 
@@ -103,6 +109,8 @@ class Ship {
 
         } catch (\Error $e) {
             echo "Cronjobs fatal error \n".$e->getFile().' line '.$e->getLine().' '.$e->getMessage()."\n";
+
+            Leiding::sendErrorMail("Fatal error in cronjobs", "Cronjobs fatal error \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
             exit;
         }
     }

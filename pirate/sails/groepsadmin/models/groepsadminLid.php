@@ -7,6 +7,7 @@ use Pirate\Curl\DataType;
 use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Groepsadmin\Groepsadmin;
 
 class GroepsadminLid {
     public $id;

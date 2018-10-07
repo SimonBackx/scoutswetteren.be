@@ -123,7 +123,7 @@ class Sync extends Cronjob {
                 $aangepaste_leden = [];
                 $toegevoegde_leden = [];
 
-                $schrappen = date('n') != '9';
+                $schrappen = (intval(date('n')) != 9);
                 $failed = false;
                 
                 foreach ($ledenlijst as $groepadminLid) {
