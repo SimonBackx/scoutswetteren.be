@@ -14,8 +14,6 @@ use Pirate\Model\Leiding\Leiding;
 
 class Sync extends Cronjob {
     function needsRunning() {
-        return true;
-
         if (date('G') != '3') {
             return false;
         }
