@@ -43,7 +43,7 @@ class Mail {
         $personalization->addTo($email);
 
         foreach ($substitutions as $key => $value) {
-            $personalization->addSubstitution("%$key%", $value);
+            $personalization->addSubstitution("%$key%", htmlspecialchars($value));
         }
 
         foreach ($bcc as $value) {
