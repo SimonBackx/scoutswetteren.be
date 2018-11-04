@@ -526,6 +526,10 @@ class Lid extends Model {
             }
         }
 
+        if (count($errors) == 0 && $this->isDuplicate()) {
+            $errors[] = 'Dit lid is al bekend in ons systeem. Het is de bedoeling dat je inlogt met het account van een ouder van dit lid om de inschrijving van dit lid te verlengen.';
+        }
+
         return $errors;
     }
 
@@ -551,6 +555,34 @@ class Lid extends Model {
             'gsm' => $this->gsm,
             'geslacht' => $this->geslacht
         );
+    }
+
+    function isDuplicate() {
+        $voornaam = self::getDb()->escape_string($this->voornaam);
+        $achternaam = self::getDb()->escape_string($this->achternaam);
+        $geslacht = self::getDb()->escape_string($this->geslacht);
+        $geboortedatum = self::getDb()->escape_string($this->geboortedatum->format('Y-m-d'));
+
+        if (isset($this->id)) {
+            $id = self::getDb()->escape_string($this->id);
+             // Zoek andere ouders met dit e-mailadres
+            $query = "SELECT *
+            from leden
+            where voornaam = '$voornaam' and achternaam = '$achternaam' and geslacht = '$geslacht' and geboortedatum = '$geboortedatum' and id != '$id'";
+        } else {
+             // Zoek andere ouders met dit e-mailadres
+            $query = "SELECT *
+            from leden
+            where voornaam = '$voornaam' and achternaam = '$achternaam' and geslacht = '$geslacht' and geboortedatum = '$geboortedatum'";
+        }
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0){
+                return true;
+            }
+        } 
+        
+        return false;
     }
 
     function setGezin(Gezin $gezin) {

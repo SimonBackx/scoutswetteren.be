@@ -131,12 +131,35 @@ class Ouder extends Model {
             $errors[] = 'Ongeldige achternaam';
         }
 
-        Validator::validatePhone($data['gsm'], $this->gsm, $errors);
+        if (Validator::validatePhone($data['gsm'], $this->gsm, $errors)) {
+            $escaped = self::getDb()->escape_string($this->gsm);
+
+            if (isset($this->id)) {
+                $id = self::getDb()->escape_string($this->id);
+                 // Zoek andere ouders met dit e-mailadres
+                $query = "SELECT o.*
+                from ouders o
+                where gsm = '$escaped' and id != '$id'";
+            } else {
+                 // Zoek andere ouders met dit e-mailadres
+                $query = "SELECT o.*
+                from ouders o
+                where gsm = '$escaped'";
+            }
+
+            if ($result = self::getDb()->query($query)) {
+                if ($result->num_rows > 0){
+                    $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                }
+            } else {
+                $errors[] = 'Er ging iets mis';
+            }
+        }
+
+        $email = strtolower(trim($data['email']));
+        $data['email'] = $email;
 
         if (Validator::isValidMail($data['email'])) {
-            $email = strtolower(trim($data['email']));
-            $data['email'] = $email;
-
             $escaped = self::getDb()->escape_string($email);
 
             if (isset($this->id)) {
@@ -156,7 +179,7 @@ class Ouder extends Model {
                 if ($result->num_rows == 0){
                     $this->email = $email;
                 } else {
-                    $errors[] = 'Dit e-mailadres is al in gebruik door een andere ouder. Kijk na of je niet hetzelfde e-mailadres gebruikt voor beide ouders, dat is niet toegestaan.';
+                    $errors[] = 'Dit e-mailadres is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
                 }
             } else {
                 $errors[] = 'Er ging iets mis';
