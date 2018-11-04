@@ -92,7 +92,7 @@ class GroepsadminLid {
     }
 
     function markFound($lid) {
-        if ($lid->lidnummer != $this->lidnummer && !empty($this->lidnummer)) {
+        if ((empty($lid->lidnummer) || $lid->lidnummer != $this->lidnummer) && !empty($this->lidnummer)) {
             $lid->lidnummer = $this->lidnummer;
             $lid->save();
         }
@@ -112,6 +112,7 @@ class GroepsadminLid {
     }
 
     function remove($groepsadmin) {
+        
         // Stap 1: huidige data ophalen van de groepsadmin
         $fetchedData = $groepsadmin->downloadLid($this->id);
 

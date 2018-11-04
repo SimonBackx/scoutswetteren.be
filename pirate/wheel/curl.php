@@ -43,6 +43,12 @@ class Curl {
                 CURLOPT_HTTPHEADER => $headers,
             ];
 
+            if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
+                $settings[CURLOPT_SSL_VERIFYPEER] = false;
+                $settings[CURLOPT_SSL_VERIFYSTATUS] = false;
+                $settings[CURLOPT_SSL_VERIFYHOST] = 0;
+            }
+
             if (isset($body)) {
                 $settings[CURLOPT_POSTFIELDS] = $body;
             }

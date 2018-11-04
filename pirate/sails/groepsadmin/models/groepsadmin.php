@@ -27,6 +27,15 @@ class Groepsadmin {
         return Curl::request($method, $url, $headers, $data_type, $data);
     }
 
+    function getURL() {
+        if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
+            // Use development server
+            return 'https://groepsadmin-develop.scoutsengidsenvlaanderen.net/groepsadmin/rest-ga/';
+        }
+
+        return 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/';
+    } 
+
     function login() {
         $response = Curl::request(Method::POST, 'https://login.scoutsengidsenvlaanderen.be/auth/realms/scouts/protocol/openid-connect/token', [], DataType::urlencoded, [
             'client_id' => 'groepsadmin-production-client',

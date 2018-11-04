@@ -15,9 +15,15 @@
     {% if lid.gsm | length > 0 %}<p>{{ lid.gsm }} (van lid zelf)</p>{% endif %}
 
     {% if lid.isIngeschreven() %}
-        <p>{{ lid.voornaam }} is ingeschreven bij de {{ lid.inschrijving.tak }}. <a href="/admin/inschrijvingen/lid-tak/{{ lid.id }}">Wijzigen</a></p>
+        <p>{{ lid.voornaam }} is ingeschreven bij de <strong>{{ lid.inschrijving.tak }}</strong>. <a href="/admin/inschrijvingen/lid-tak/{{ lid.id }}">Wijzigen</a></p>
     {% else %}
         <p><strong>{{ lid.voornaam }} is niet ingeschreven voor het huidige scoutsjaar.</strong></p>
+    {% endif %}
+
+    {% if lid.lidnummer is not null and lid.lidnummer is not empty %}
+        <p><strong>{{ lid.lidnummer }}</strong> is het lidnummer van dit lid (Scouts & Gidsen Vlaanderen).</p>
+    {% else %}
+        <p>Dit lid heeft nog geen lidnummer gekregen. Dit neemt even tijd in beslag en wordt toegekend als Scouts & Gidsen Vlaanderen de inschrijving van dit lid heeft verwerkt.</p>
     {% endif %}
 
     <h1>Gezin</h1>
