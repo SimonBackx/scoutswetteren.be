@@ -27,18 +27,28 @@ class Groepsadmin {
         return Curl::request($method, $url, $headers, $data_type, $data);
     }
 
-    function getURL() {
+    private function getURL() {
         if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
             // Use development server
-            return 'https://groepsadmin-develop.scoutsengidsenvlaanderen.net/groepsadmin/rest-ga/';
+            // return 'http://groepsadmin-develop.scoutsengidsenvlaanderen.net/groepsadmin/rest-ga';
         }
 
-        return 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/';
+        return 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga';
     } 
+
+    private function getOAuthClientId() {
+        if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
+            // Use development server
+            // return 'groepsadmin-staging-client';
+        }
+
+
+        return 'groepsadmin-production-client';
+    }
 
     function login() {
         $response = Curl::request(Method::POST, 'https://login.scoutsengidsenvlaanderen.be/auth/realms/scouts/protocol/openid-connect/token', [], DataType::urlencoded, [
-            'client_id' => 'groepsadmin-production-client',
+            'client_id' => $this->getOAuthClientId(),
             'username' => $this->username,
             'password' => $this->password,
             'grant_type' => 'password',
@@ -59,7 +69,7 @@ class Groepsadmin {
 
     private function filterHuidigeLeden() {
         $columns = GroepsadminLid::getColumns();
-        $response = static::authenticatedRequest(Method::PATCH, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst/filter/huidige', [], DataType::json, [
+        $response = static::authenticatedRequest(Method::PATCH, $this->getURL().'/ledenlijst/filter/huidige', [], DataType::json, [
             'criteria' => [
                 'groepen' => [$this->groepsNummer],
                 'functies' => ["d5f75b320b812440010b812554790354","d5f75b320b812440010b812555de03a2","d5f75b320b812440010b8125567703cb","d5f75b320b812440010b812555db03a1","d5f75b320b812440010b812555d603a0","d5f75b320b812440010b812555c7039d","d5f75b320b812440010b8125565203c1","d5f75b320b812440010b812555380380","d5f75b320b812440010b812555c1039b"],
@@ -76,7 +86,7 @@ class Groepsadmin {
 
     private function filterOudLeden() {
         $columns = GroepsadminLid::getColumns();
-        $response = static::authenticatedRequest(Method::PATCH, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst/filter/huidige', [], DataType::json, [
+        $response = static::authenticatedRequest(Method::PATCH, $this->getURL().'/ledenlijst/filter/huidige', [], DataType::json, [
             'criteria' => [
                 'groepen' => [$this->groepsNummer],
                 'functies' => ["d5f75b320b812440010b812554790354","d5f75b320b812440010b812555de03a2","d5f75b320b812440010b8125567703cb","d5f75b320b812440010b812555db03a1","d5f75b320b812440010b812555d603a0","d5f75b320b812440010b812555c7039d","d5f75b320b812440010b8125565203c1","d5f75b320b812440010b812555380380","d5f75b320b812440010b812555c1039b"],
@@ -93,7 +103,7 @@ class Groepsadmin {
 
     // Return false on fail, array on success
     private function downloadLedenlijst($offset = 0) {
-        $response = static::authenticatedRequest(Method::GET, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/ledenlijst?aantal=100&offset='.urlencode($offset));
+        $response = static::authenticatedRequest(Method::GET, $this->getURL().'/ledenlijst?aantal=100&offset='.urlencode($offset));
         if (!isset($response)) {
             return null;
         }
@@ -125,11 +135,15 @@ class Groepsadmin {
     }
 
     function downloadLid($id) {
-        return static::authenticatedRequest(Method::GET, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/lid/'.$id);
+        return static::authenticatedRequest(Method::GET, $this->getURL().'/lid/'.$id);
     }
 
     function uploadLid($data, $id = null) {
-        $response = static::authenticatedRequest(isset($id) ? Method::PATCH : Method::POST, isset($id) ? 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/lid/'.$id.'?bevestig=true' : 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest-ga/lid', [], DataType::json, $data);
+        if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
+            return true;
+        }
+
+        $response = static::authenticatedRequest(isset($id) ? Method::PATCH : Method::POST, isset($id) ? $this->getURL().'/lid/'.$id.'?bevestig=true' : $this->getURL().'/lid', [], DataType::json, $data);
         return $response;
     }
 

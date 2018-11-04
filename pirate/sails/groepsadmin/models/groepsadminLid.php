@@ -20,6 +20,7 @@ class GroepsadminLid {
     private $linkedLid = null;
 
     public $found = false;
+    public $needsManualSync = false;
 
     function __construct($data = null) {
         if (!isset($data)) {
@@ -85,6 +86,7 @@ class GroepsadminLid {
         }
 
         if ($count >= 2) {
+            $this->needsManualSync = true;
             return true;
         }
 
@@ -95,6 +97,8 @@ class GroepsadminLid {
         if ((empty($lid->lidnummer) || $lid->lidnummer != $this->lidnummer) && !empty($this->lidnummer)) {
             $lid->lidnummer = $this->lidnummer;
             $lid->save();
+
+            echo "- Saved lidnummer of $lid->voornaam as $this->lidnummer\n";
         }
         $this->found = true;
         $this->linkedLid = $lid;
@@ -103,6 +107,10 @@ class GroepsadminLid {
     function needsSync() {
         // Als de groepsadmin hash leeg is
         if (empty($this->hash) || (empty($this->linkedLid->lidnummer) && !empty($this->lidnummer))) {
+            return true;
+        }
+
+        if ($this->needsManualSync) {
             return true;
         }
 
@@ -294,7 +302,7 @@ class GroepsadminLid {
 
             
 
-            if (isset($fetchedData)) {
+            if (isset($fetchedData["adressen"])) {
                 $id = null;
                 // Adres opzoeken
                 foreach($fetchedData["adressen"] as $a) {
@@ -336,7 +344,7 @@ class GroepsadminLid {
                 "email" => $ouder->email
             ];
 
-            if (isset($fetchedData)) {
+            if (isset($fetchedData["contacten"])) {
                 $id = null;
                 // Adres opzoeken
                 foreach($fetchedData["contacten"] as $c) {
@@ -377,7 +385,7 @@ class GroepsadminLid {
         // Functies
         // Niet nodig om elke keer opnieuw te sturen (enkel degene die je wilt verwijderen of toevoegen)
         $functie = $lid->inschrijving->getVerbondTak()['functie'];
-        if (isset($fetchedData)) {
+        if (isset($fetchedData['functies'])) {
             // Staat de gezochte tak nog in de lijst?
             
             $found = false;

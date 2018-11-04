@@ -14,6 +14,8 @@ use Pirate\Model\Leiding\Leiding;
 
 class Sync extends Cronjob {
     function needsRunning() {
+        return true;
+
         if (date('G') != '3') {
             return false;
         }
@@ -40,6 +42,7 @@ class Sync extends Cronjob {
                 echo "Fetching all members from database...\n";
                 $leden = Lid::getLedenFull();
                 $ledenlijst = $groepsadmin->ledenlijst;
+
 
                 $not_equal_leden = [];
 
@@ -82,6 +85,7 @@ class Sync extends Cronjob {
                     } else {
                         $gstr = $lid->geboortedatum->format('d/m/Y');
                         echo "WARNING: Member $lid->id ($lid->voornaam $lid->achternaam $gstr) has been synced previously, but can not be found again!\n";
+                        $not_found[] = $lid;
                     }
                    
                 }
@@ -105,7 +109,12 @@ class Sync extends Cronjob {
                         foreach ($oud_ledenlijst as $groepadminLid) {
                             if (!$groepadminLid->found && $groepadminLid->isEqual($lid)) {
                                 $groepadminLid->markFound($lid);
+
+                                // Forceer herinschrijven
+                                $groepadminLid->needsManualSync = true;
                                 $found = true;
+
+                                $ledenlijst[] = $groepadminLid;
                                 break;
                             }
                         }
