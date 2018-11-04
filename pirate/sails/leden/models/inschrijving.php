@@ -286,9 +286,14 @@ class Inschrijving extends Model {
 
         if (self::getDb()->query($query)) {
             $afrekening = Afrekening::getAfrekening($this->afrekening);
-            if (isset($afrekening)) {
+
+            // Als afrekening nog niet betaald is => dan corrigeren we ze, op voorwaarde
+            // dat het lid minder dan 2 maand was ingecshreven
+            /* lidgeld wordt niet langer herberekend
+            
+            if (isset($afrekening) && !$afrekening->isBetaald()) {
                 $afrekening->recalculate();
-            }
+            }*/
 
             // lid opnieuw ophalen
             $lid = Lid::getLid($this->lid->id);

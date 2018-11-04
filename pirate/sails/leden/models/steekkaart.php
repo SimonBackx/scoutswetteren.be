@@ -333,6 +333,8 @@ class Steekkaart extends Model {
             return false;
         }
 
+        // OPGELET: pas ook query aan in ouder.php voor mails naar ouders die hun steekkaart moeten nakijken
+
         // Als al eens nagekenen geweest...
         
         $jaar = intval($this->laatst_nagekeken->format('Y'));

@@ -52,17 +52,9 @@ class Ouder extends Model {
             'name' => 'Alle ouders',
             'where' => ''
         ),
-        'inschrijvingsgeld' => array(
-            'name' => 'Inschrijvingsgeld niet betaald',
-            'where' => 'i.afrekening_oke = 0'
-        ),
-        'inschrijvingsgeld_in_orde' => array(
-            'name' => 'Inschrijvingsgeld betaald',
-            'where' => 'i.afrekening_oke = 1'
-        ),
-        'steekkaart' => array(
-            'name' => 'Steekkaart niet ingevuld',
-            'where' => 's.laatst_nagekeken is null'
+        'inschrijving_onvolledig' => array(
+            'name' => 'Inschrijving niet voltooid of niet betaald',
+            'where' => 'i.afrekening is null or s.laatst_nagekeken is null or i.afrekening_oke = 0'
         ),
         'verminderd_lidgeld' => array(
             'name' => 'Leden met verminderd lidgeld',
@@ -70,7 +62,7 @@ class Ouder extends Model {
         ),
         'in_orde' => array(
             'name' => 'Inschrijving volledig in orde',
-            'where' => 's.laatst_nagekeken is not null and i.afrekening_oke = 1'
+            'where' => 's.laatst_nagekeken is not null and i.afrekening_oke = 1 and i.afrekening is not null'
         )
     );
 
