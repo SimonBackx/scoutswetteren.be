@@ -122,8 +122,7 @@ class Leiding extends Model {
             ),
             'jin' => array(
                 'name' => 'Jinleiding',
-                'permission' => 'leiding',
-                'tak' => 'jin'
+                'mail' => 'jin@scoutswetteren.be'
             ),
             'kerstactiviteit' => array(
                 'name' => 'Kerstactiviteit',
