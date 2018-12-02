@@ -1,4 +1,4 @@
-Dag {{ leiding.firstname }},
+Dag {{ leiding.user.firstname }},
 
 We hebben een account voor je aangemaakt op www.scoutswetteren.be
 

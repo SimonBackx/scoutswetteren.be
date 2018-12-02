@@ -53,7 +53,7 @@ class Template {
                 $data['admin'] = array();
             }
             $data['admin']['buttons'] = Leiding::getAdminMenu();
-            $data['admin']['name'] = Leiding::getUser()->firstname.' '.Leiding::getUser()->lastname;
+            $data['admin']['name'] = Leiding::getUser()->user->firstname.' '.Leiding::getUser()->user->lastname;
         }
 
         return self::$twig->render($template.'.'.$ext, $data);

@@ -4,7 +4,7 @@ Het contactformulier op de website werd ingevuld.
 
 Naam: {{ data.name }}
 E-mail: {{ data.email }}
-{% if data.phone is defined %}GSM-nummer: {{ data.phone }}
+{% if data.user.phone is defined %}GSM-nummer: {{ data.user.phone }}
 {% endif %}Onderwerp: {{ data.subject }}
 
 Bericht:

@@ -4,49 +4,33 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Mail\Mail;
 use Pirate\Model\Settings\Setting;
+use Pirate\Model\Users\User;
 
 class Leiding extends Model {
     public $id;
-    public $firstname;
-    public $lastname;
-    public $mail;
-    public $phone;
+    public $user; // object
     public $totem;
     public $tak;
-    private $password;
     public $permissions = array();
 
-    private $set_password_key;
-
-    // als didCheckLogin == false, dan is currentToken en user nog niet op de juiste waarde
-    private static $didCheckLogin = false;
-    private static $currentToken = null;
-    private static $user = null;
+    // als didCheckLogin == false, dan hebben we nog niet gecontrolleerd of de huidige gebruiker een leider is
+    /*private static $didCheckLogin = false;
+    private static $currentUser = null;*/
 
     public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
     private static $allPermissions;
     private static $adminMenu;
 
-    private static $login_days = 60;
-
     function __construct($row = null) {
-        if (is_null($row)) {
+        if (!isset($row)) {
             return;
         }
 
         $this->id = $row['id'];
-        $this->firstname = $row['firstname'];
-        $this->lastname = $row['lastname'];
-        $this->mail = $row['mail'];
-        $this->phone = $row['phone'];
+        $this->user = new User($row);
         $this->totem = $row['totem'];
-        $this->password = $row['password'];
         $this->tak = $row['tak'];
-
-        $this->set_password_key = $row['set_password_key'];
-
-        // Hier nog permissions opvullen!
         $this->permissions = explode('±', $row['permissions']);
 
         if (count($this->permissions) == 1 && $this->permissions[0] == '') {
@@ -218,9 +202,10 @@ class Leiding extends Model {
         }
 
         $leiding = array();
-        $query = "SELECT l.*,
+        $query = "SELECT l.*, u.*,
             group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
         from leiding l
+        join users u on u.user_id = l.user_id
         left join _permissions_leiding _pl on _pl._leidingId = l.id
         left join permissions p on p.permissionId = _pl._permissionId
 
@@ -250,15 +235,46 @@ class Leiding extends Model {
 
         $id = self::getDb()->escape_string($id);
 
-        $query = "SELECT l.*,
+        $query = "SELECT l.*, u.*,
             group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
         from leiding l
+        join users u on u.user_id = l.user_id
         left join _permissions_leiding _pl on _pl._leidingId = l.id
         left join permissions p on p.permissionId = _pl._permissionId
         where l.id = '$id'
         group by l.id";
 
         if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 0){
+                return null;
+            }
+            $row = $result->fetch_assoc();
+            return new Leiding($row);
+        }
+
+        return null;
+    }
+
+    static function getLeidingByUserId($id) {
+        if (!is_numeric($id)) {
+            return null;
+        }
+
+        $id = self::getDb()->escape_string($id);
+
+        $query = "SELECT l.*, u.*,
+            group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
+        from leiding l
+        join users u on u.user_id = l.user_id
+        left join _permissions_leiding _pl on _pl._leidingId = l.id
+        left join permissions p on p.permissionId = _pl._permissionId
+        where l.user_id = '$id'
+        group by l.id";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 0){
+                return null;
+            }
             $row = $result->fetch_assoc();
             return new Leiding($row);
         }
@@ -267,23 +283,10 @@ class Leiding extends Model {
     }
 
     static function temporaryLoginWithPasswordKey($key) {
-        $key = self::getDb()->escape_string($key);
-        $query = "SELECT l.*,
-            group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
-        from leiding l
-        left join _permissions_leiding _pl on _pl._leidingId = l.id
-        left join permissions p on p.permissionId = _pl._permissionId
-        where l.set_password_key = '$key'
-        group by l.id";
+        if (User::temporaryLoginWithPasswordKey($key)) {
+            return Self::isLoggedIn();
+        } 
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
-                $row = $result->fetch_assoc();
-                self::$user = new Leiding($row);
-                self::$didCheckLogin = true;
-                return true;
-            }
-        }
         return false;
     }
 
@@ -291,100 +294,10 @@ class Leiding extends Model {
     // Sets cookies if succeeded
     // isLoggedIn() etc kan gebruikt worden hierna
     static function login($mail, $password) {
-        $mail = self::getDb()->escape_string($mail);
-        $query = "SELECT l.*,
-            group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
-        from leiding l
-        left join _permissions_leiding _pl on _pl._leidingId = l.id
-        left join permissions p on p.permissionId = _pl._permissionId
-        where mail = '$mail'
-        group by l.id";
-
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
-                $row = $result->fetch_assoc();
-                $hash = $row['password'];
-
-                // hash_equals kijkt of beide argumenten gelijk zijn
-                // Maar hash_equals is time safe, het duurt dus even lang om gelijke 
-                // en ongelijke argumenten te vergelijken
-                // Meer info: http://blog.ircmaxell.com/2014/11/its-all-about-time.html
-                if (password_verify($password, $hash)) {
-
-                    // Inloggen is gelukt, dat stellen we in zodat
-                    // volgende calls dit object kunnen gebruiken
-                    self::$user = new Leiding($row);
-                    self::$didCheckLogin = true;
-
-                    // Token aanmaken, dan zijn we ingelogd
-                    return self::createToken();
-                }
-            }
+        if (User::login($mail, $password)) {
+            return Self::isLoggedIn();
         }
         return false;
-    }
-
-    // returns if password is correct
-    function confirmPassword($password) {
-        if (password_verify($password, $this->password)) {
-            return true;
-        }
-        return false;
-    }
-
-    //
-    function changePassword($new) {
-        // check if logged in as same account
-        if (!self::isLoggedIn()) {
-            return false;
-        }
-        if (self::$user->id != $this->id) {
-            return false;
-        }
-
-        // Geldigheid controleren
-        
-        if (strlen($new) < 8) {
-            return false;
-        }
-        
-        // Alle tokens wissen en huidige token opnieuw aanmaken
-        $client = intval($this->id);
-        $query = "DELETE FROM tokens WHERE client = '$client'";
-
-        if (!self::getDb()->query($query)) {
-            return false;
-        }
-        self::$currentToken = null;
-        self::createToken();
-
-        return $this->setPassword($new);
-    }
-
-    private function setPassword($new) {
-        $id = self::getDb()->escape_string($this->id);
-        $encrypted = $this->passwordEncrypt($new);
-        $password = self::getDb()->escape_string($encrypted);
-
-        $query = "UPDATE leiding 
-            SET 
-             password = '$password',
-             set_password_key = NULL
-             where id = '$id' 
-        ";
-
-        if (self::getDb()->query($query)) {
-            $this->password = $encrypted;
-            return true;
-        }
-        return false;
-    }
-
-    static function logout() {
-        self::deleteToken(self::$currentToken);
-        self::$currentToken = null;
-        self::$user = null;
-        self::$didCheckLogin = true;
     }
 
     static function getAdminMenu() {
@@ -442,78 +355,7 @@ class Leiding extends Model {
             $sortedButtons = array_merge($buttons, $sortedButtons);
         }
 
-           
-
         return $sortedButtons;
-    }
-
-    // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies
-    // Indien al token op huidige sessie, dan verwijdert hij die eerst
-    private static function createToken() {
-        if (!self::isLoggedIn()) {
-            return false;
-        }
-
-        // Het is mogelijk om ingelogd te zijn zonder token te hebben
-        // namelijk heel even tijdens het inloggen zelf
-        if (!is_null(self::$currentToken)){
-            self::deleteToken(self::$currentToken, false);
-        }
-
-        $token = self::getDb()->escape_string(self::generateToken());
-        $now = new \DateTime();
-        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
-        $client = intval(self::$user->id);
-        $query = "INSERT INTO tokens (client, token, `time`) VALUES ($client, '$token', '$time')";
-
-        if (self::getDb()->query($query)) {
-            self::setCookies($client, $token);
-
-            // Token bij de huidige sessie laten horen
-            self::$currentToken = $token;
-            return true;
-        }
-
-        return false;
-    }
-
-    // Verwijdert de opgegeven token
-    private static function deleteToken($token, $removeCookies = true) {
-        // Token die bij de huidige sessie hoort verwijderen
-        $token = self::getDb()->escape_string($token);
-
-        $now = new \DateTime();
-        $now->sub(new \DateInterval('P'.Self::$login_days.'D'));
-        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
-        $query = "DELETE FROM tokens WHERE token = '$token' OR `time` < '$time'";
-
-        if (self::getDb()->query($query)) {
-            if ($removeCookies)
-                self::removeCookies();
-            return true;
-        }
-        return false;
-    }
-
-    private static function setCookies($id, $token){
-        // We slaan ook de client id op, omdat we hierdoor een time safe operatie kunnen doen
-        setcookie('client', $id, time()+5184000,'/', '', true, true); 
-        setcookie('token', $token, time()+5184000,'/', '', true, true); 
-    }
-
-    private static function removeCookies(){
-        setcookie('client', '', time()-604800,'/');
-        setcookie('token', '', time()-604800,'/');
-    }
-
-    // 256 bit, 44 characters long met speciale characters!!
-    private static function generateToken() {
-        $bytes = openssl_random_pseudo_bytes(32);
-        return base64_encode($bytes);
-    }
-    private static function generateKey() {
-        $bytes = openssl_random_pseudo_bytes(16);
-        return bin2hex($bytes);
     }
 
     /**
@@ -521,59 +363,40 @@ class Leiding extends Model {
      * @return Leiding Geeft leiding object van bezoeker terug indien de gebruiker ingelogd is. NULL indien niet ingelogd
      */
     private static function checkLogin() {
-        if (Self::$didCheckLogin) {
-            return Self::$user;
-        }
-        // Usertoken controleren in cookies
-        // en als succesvol ingelogd: self::$user setten!
-        Self::$didCheckLogin = true;
-        Self::$user = null;
+        $user = User::getUser();
+        if (isset($user)) {
+            // We zijn ingelogd.
+            // Zijn we ook een leider?
+            
+            // Eerst cache checken
+            $didCheckLeiding = false;
 
-        if (!isset($_COOKIE['client'], $_COOKIE['token'])) {
+            if (isset($user->didCheckLeiding)) {
+                $didCheckLeiding = $user->didCheckLeiding;
+            }
+
+            if ($didCheckLeiding) {
+                if (isset($user->leiding)) {
+                    return $user->leiding;
+                }
+
+                // Al eens gekeken, en toen vonden we geen leiding
+                return null;
+            }
+
+            // Eerste keer dat we kijken: zoeken of er een leider bestaat met hetzelfde id
+            $leiding = self::getLeidingByUserId($user->id);
+            $user->didCheckLeiding = true;
+
+            if (isset($leiding)) {
+                // Save in memory cache
+                $user->leiding = $leiding;
+                return $leiding;
+            }
             return null;
         }
 
-        $client = self::getDb()->escape_string($_COOKIE['client']);
-        $token = self::getDb()->escape_string($_COOKIE['token']);
-        $query = "SELECT l.*, t.token, t.time,
-            group_concat(convert(p.permissionCode using utf8) separator '±') as permissions
-        from leiding l
-        left join _permissions_leiding _pl on _pl._leidingId = l.id
-        left join permissions p on p.permissionId = _pl._permissionId
-        join tokens t on t.client = l.id
-        where t.client = $client and token = '$token'
-        group by l.id, t.token";
-
-        // Momenteel niet helemaal time safe, maar performance primeert hier
-        if ($result = self::getDb()->query($query)) {
-            if ($result->num_rows == 1) {
-                $row = $result->fetch_assoc();
-
-                $date = new \DateTime($row['time']);
-                $now = new \DateTime();
-                $interval = $date->diff($now);
-
-                // Als het vervallen is: verwijderen
-                if ($interval->days > self::$login_days) {
-                    self::deleteToken($token, true);
-                    return null;
-                }
-
-                self::$currentToken = $row['token'];
-                self::$user = new Leiding($row);
-
-                if ($interval->days >= 1) {
-                    // Token vernieuwen als hij al een dag oud is
-                    self::createToken();
-                }
-                
-            } else {
-                // ?
-                return null;
-            }
-        }
-
-        return self::$user;
+        return null;
     }
 
     static function isLoggedIn() {
@@ -584,15 +407,11 @@ class Leiding extends Model {
         if (!self::isLoggedIn()) {
             return array();
         }
-        return self::$user->permissions;
+        return self::getUser()->permissions;
     }
 
     static function getUser() {
-        if (!Self::isLoggedIn()) {
-            return null;
-        }
-        
-        return self::$user;
+        return self::checkLogin();
     }
 
     // Case sensitive
@@ -603,32 +422,10 @@ class Leiding extends Model {
         return in_array($permission, self::getPermissions());
     }
 
-    // TODO: private maken
-    private function passwordEncrypt($password){
-        // Voor de eerste keer password hash maken
-        return password_hash($password, PASSWORD_BCRYPT);
-    }
-
     // empty array on success
     // array of errors on failure
     function setProperties(&$data, $admin = false) {
-        $errors = array();
-
-        if (isset($data['firstname'], $data['lastname'])) {
-            if (Validator::isValidFirstname($data['firstname'])) {
-                $this->firstname = ucwords($data['firstname']);
-                $data['firstname'] = $this->firstname;
-            } else {
-                $errors[] = 'Ongeldige voornaam';
-            }
-
-            if (Validator::isValidLastname($data['lastname'])) {
-                $this->lastname = ucwords($data['lastname']);
-                $data['lastname'] = $this->lastname;
-            } else {
-                $errors[] = 'Ongeldige achternaam';
-            }
-        }
+        $errors = $this->user->setProperties($data, $admin);
 
         if (strlen($data['totem']) == 0) {
             $this->totem = null;
@@ -640,19 +437,7 @@ class Leiding extends Model {
             $errors[] = 'Ongeldige totem';
         }
 
-        if (Validator::isValidMail($data['mail'])) {
-            $this->mail = strtolower($data['mail']);
-            $data['mail'] = $this->mail;
-        }  else {
-            $errors[] = 'Ongeldige e-mailadres';
-        }
-
-        if (strlen($data['phone']) > 0 || !$admin) {
-            Validator::validatePhone($data['phone'], $this->phone, $errors);
-        } else {
-            $this->phone = null;
-        }
-
+        // Pas de permissions aan van de leiding (enkel als de huidige user groepsleiding is, niet de user die aangepast wordt)
         if (self::hasPermission('groepsleiding')) {
             if (isset($data['tak'])) {
                 if (empty($data['tak'])) {
@@ -695,45 +480,35 @@ class Leiding extends Model {
             }
         }
 
-
         return $errors;
     }
 
-    function getSetPasswordUrl() {
+    /*function getSetPasswordUrl() {
         return "https://".$_SERVER['SERVER_NAME']."/leiding/set-password/".$this->set_password_key;
-    }
+    }*/
 
-    function hasPassword() {
-        return !empty($this->password);
-    }
-
+    // todo!
     function sendPasswordEmail() {
         $mail = new Mail('Account scoutswebsite', 'leiding-new', array('leiding' => $this));
         $mail->addTo(
-            $this->mail, 
+            $this->user->mail, 
             array(),
-            $this->firstname.' '.$this->lastname
+            $this->user->firstname.' '.$this->user->lastname
         );
         return $mail->send();
     }
 
-    function save(){
+    function save() {
+        if (!$this->user->save()) {
+            return false;
+        }
 
-        
-        $firstname = self::getDb()->escape_string($this->firstname);
-        $lastname = self::getDb()->escape_string($this->lastname);
-        $mail = self::getDb()->escape_string($this->mail);
+        $user_id = self::getDb()->escape_string($this->user->id);
 
         if (!isset($this->tak)) {
             $tak = 'NULL';
         } else {
             $tak = "'".self::getDb()->escape_string($this->tak)."'";
-        }
-
-        if (!isset($this->phone)) {
-            $phone = 'NULL';
-        } else {
-            $phone = "'".self::getDb()->escape_string($this->phone)."'";
         }
 
         if (!isset($this->totem)) {
@@ -751,21 +526,15 @@ class Leiding extends Model {
 
             $query = "UPDATE leiding 
                 SET 
-                 firstname = '$firstname',
-                 lastname = '$lastname',
+                 `user_id` = '$user_id',
                  totem = $totem,
-                 mail = '$mail',
-                 phone = $phone,
                  tak = $tak
                  where id = '$id' 
             ";
         } else {
-            $key = self::generateKey();
-            $this->set_password_key = $key;
-
             $query = "INSERT INTO 
-                leiding (`firstname`, `lastname`, `totem`, `mail`, `phone`, `tak`,`set_password_key`)
-                VALUES ('$firstname', '$lastname', $totem, '$mail', $phone, $tak,  '$key')";
+                leiding (`user_id`, `totem`, `tak`)
+                VALUES ('$user_id', $totem, $tak)";
         }
 
         $result = self::getDb()->query($query);
@@ -811,6 +580,7 @@ class Leiding extends Model {
                     return false;
                 }
             }
+
             if ($new) {
                 $this->sendPasswordEmail();
             }
@@ -830,7 +600,20 @@ class Leiding extends Model {
         $query = "DELETE FROM 
                 leiding WHERE id = '$id' ";
 
-        return self::getDb()->query($query);
+        self::getDb()->autocommit(false);
+
+        if (self::getDb()->query($query)) {
+            if ($this->user->delete()) {
+                self::getDb()->commit();
+                self::getDb()->autocommit(true);
+                return true;
+            } else {
+                self::getDb()->rollback();
+            }
+        }
+
+        self::getDb()->autocommit(true);
+        return false;
     }
 
     static function sendErrorMail($subject, $message, $log) {

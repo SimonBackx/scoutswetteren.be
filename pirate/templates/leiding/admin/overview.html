@@ -16,7 +16,7 @@
         <div class="list-bundle">
         {% for leider in group.leiding %}
             <article class="list">
-                <div class="merlot medium column">{{ leider.firstname }} {{ leider.lastname }}</div>
+                <div class="merlot medium column">{{ leider.user.firstname }} {{ leider.user.lastname }}</div>
                 <div class="max  column">
                     {% for permission in leider.permissions %}
                         {{permission | capitalize }}

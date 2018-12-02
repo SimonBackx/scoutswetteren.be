@@ -101,9 +101,9 @@
                         <label>Jouw e-mailadres</label>
                         <input type="text" name="email" placeholder="Vul je e-mailadres hier in" value="{{ data.email | e('html_attr') }}">
 
-                        {% if data.phone is defined %}
+                        {% if data.user.phone is defined %}
                             <label>Jouw GSM-nummer</label>
-                            <input type="text" name="email" placeholder="Vul je GSM-nummer hier in" value="{{ data.phone | e('html_attr') }}">
+                            <input type="text" name="email" placeholder="Vul je GSM-nummer hier in" value="{{ data.user.phone | e('html_attr') }}">
                         {% endif %}
 
                         <label>Onderwerp</label>
@@ -155,7 +155,7 @@
                                         <h2>{{ tak | capitalize}}</h2>
                                         <p>
                                             {% for leider in leiders %}
-                                                {{ leider.firstname }}: {{ leider.phone }}<br>
+                                                {{ leider.user.firstname }}: {{ leider.user.phone }}<br>
                                             {% endfor %}
                                         </p>
                                     {% endif %}
@@ -167,7 +167,7 @@
                                         <h2>{{ tak | capitalize}}</h2>
                                         <p>
                                             {% for leider in leiders %}
-                                                {{ leider.firstname }}: {{ leider.phone }}<br>
+                                                {{ leider.user.firstname }}: {{ leider.user.phone }}<br>
                                             {% endfor %}
                                         </p>
                                     {% endif %}

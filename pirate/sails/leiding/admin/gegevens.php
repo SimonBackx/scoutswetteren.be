@@ -36,11 +36,11 @@ class Gegevens extends Page {
         $success = false;
 
         $data = array(
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
+            'firstname' => $user->user->firstname,
+            'lastname' => $user->user->lastname,
             'totem' => $user->totem,
-            'mail' => $user->mail,
-            'phone' => $user->phone,
+            'mail' => $user->user->mail,
+            'phone' => $user->user->phone,
             'tak' => $user->tak
         );
 

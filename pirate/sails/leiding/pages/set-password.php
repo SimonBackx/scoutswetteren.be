@@ -25,8 +25,8 @@ class SetPassword extends Page {
         $success = false;
 
         $data = array(
-            'phone' => $leiding->phone,
-            'mail' => $leiding->mail,
+            'phone' => $leiding->user->phone,
+            'mail' => $leiding->user->mail,
             'totem' => $leiding->totem
         );
         $allset = true;

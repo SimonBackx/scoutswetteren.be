@@ -640,13 +640,13 @@ class Reservatie extends Model {
                     $mail = new Mail('Huur aanvraag van '.$this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
                     
                     if (count($leiding) > 0) {
-                        $verhuurder = $leiding[0]->mail;
+                        $verhuurder = $leiding[0]->user->mail;
 
                         foreach ($leiding as $l) {
                             $mail->addTo(
-                                $l->mail, 
+                                $l->user->mail, 
                                 array(),
-                                $l->firstname.' '.$l->lastname
+                                $l->user->firstname.' '.$l->user->lastname
                             );
                         }
 

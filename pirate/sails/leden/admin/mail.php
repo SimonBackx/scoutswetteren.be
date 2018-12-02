@@ -40,7 +40,7 @@ class MailPage extends Page {
             'scoutsjaar' => $scoutsjaar
         );
 
-        $senders[] = $user->mail;
+        $senders[] = $user->user->mail;
 
         $contacts = Leiding::getContacts();
 
@@ -78,9 +78,9 @@ class MailPage extends Page {
             }
         }
 
-        if (!$sender_okay && !$sender_default && $data['sender'] == $user->mail) {
+        if (!$sender_okay && !$sender_default && $data['sender'] == $user->user->mail) {
             $sender_okay = true;
-            $sender_name = $user->firstname.' '.$user->lastname;
+            $sender_name = $user->user->firstname.' '.$user->user->lastname;
             $sender_send_from = false;
         }
         
@@ -185,7 +185,7 @@ class MailPage extends Page {
                             array(
                                 'magic_url' => "https://".$_SERVER['SERVER_NAME'],
                                 'voornaam' => '<voornaam van ouder>',
-                                'reason' => 'Dit bericht is een kopie van het bericht dat naar ouders ('.$data['tak'].') is verzonden via de website door '.$user->firstname.' '.$user->lastname
+                                'reason' => 'Dit bericht is een kopie van het bericht dat naar ouders ('.$data['tak'].') is verzonden via de website door '.$user->user->firstname.' '.$user->user->lastname
                             )
                         );
 
