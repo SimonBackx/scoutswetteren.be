@@ -23,8 +23,8 @@ class WachtwoordWijzigen extends Page {
             if ($new_password != $_POST['new-password-repeated']) {
                 $errors[] = 'Opgegeven wachtwoorden komen niet overeen';
             } else {
-                if ($user->confirmPassword($password)) {
-                    if (!$user->changePassword($new_password)) {
+                if ($user->user->confirmPassword($password)) {
+                    if (!$user->user->changePassword($new_password)) {
                         $errors[] = 'Controleer of je nieuwe wachtwoord langer is dan 9 tekens.';
                     } else {
                         $success = true;

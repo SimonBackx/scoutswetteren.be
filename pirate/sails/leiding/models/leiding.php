@@ -24,6 +24,7 @@ class Leiding extends Model {
 
     function __construct($row = null) {
         if (!isset($row)) {
+            $this->user = new User();
             return;
         }
 
@@ -486,9 +487,9 @@ class Leiding extends Model {
         return $errors;
     }
 
-    /*function getSetPasswordUrl() {
-        return "https://".$_SERVER['SERVER_NAME']."/leiding/set-password/".$this->set_password_key;
-    }*/
+    function getSetPasswordUrl() {
+        return "https://".$_SERVER['SERVER_NAME']."/leiding/set-password/".$this->user->set_password_key;
+    }
 
     // todo!
     function sendPasswordEmail() {

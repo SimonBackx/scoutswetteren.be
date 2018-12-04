@@ -51,7 +51,7 @@ class SetPassword extends Page {
                     if (strlen($_POST['password']) < 8) {
                         $errors[] = 'Wachtwoord moet minimum 8 lang zijn.';
                     } else {
-                        if (!$leiding->changePassword($_POST['password'])) {
+                        if (!$leiding->user->changePassword($_POST['password'])) {
                             $errors[] = 'Er ging iets mis. Contacteer de webmaster';
                         } else {
                             $success = true;
@@ -65,7 +65,7 @@ class SetPassword extends Page {
 
 
         return Template::render('leiding/set-password', array(
-            'new' => (!$leiding->hasPassword()),
+            'new' => (!$leiding->user->hasPassword()),
             'success' => $success,
             'errors' => $errors,
             'leiding' => $leiding,

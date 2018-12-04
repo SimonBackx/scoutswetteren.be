@@ -12,7 +12,7 @@ class User extends Model {
     public $mail;
     public $phone;
     private $password;
-    private $set_password_key;
+    public $set_password_key;
 
     // als didCheckLogin == false, dan is currentToken en user nog niet op de juiste waarde
     private static $didCheckLogin = false;
