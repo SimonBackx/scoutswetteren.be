@@ -49,7 +49,10 @@ class Leiding extends Model {
 
     static function disableLeidingsverdeling() {
         $leidingsverdeling = Setting::getSetting('leidingsverdeling');
-        $leidingsverdeling->delete();
+        if (!isset($leidingsverdeling->id)) {
+            return true;
+        }
+        return $leidingsverdeling->delete();
     }
 
     static function setLeidingsverdeling(&$errors, $date, $time) {

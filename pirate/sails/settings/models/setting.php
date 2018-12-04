@@ -64,9 +64,12 @@ class Setting extends Model {
             if (!isset($this->id)) {
                 $this->id = self::getDb()->insert_id;
             }
+            return true;
+        }  else {
+            echo self::getDb()->error;
         } 
 
-        return $result;
+        return false;
     }
 
     function delete() {

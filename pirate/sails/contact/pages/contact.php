@@ -8,6 +8,7 @@ use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Mail\Mail;
 use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Settings\Setting;
 
 class Contact extends Page {
     function getStatusCode() {
@@ -117,7 +118,9 @@ class Contact extends Page {
         }
 
         $leiding_data = array();
-        if (Leiding::isLoggedIn() || Ouder::isLoggedIn()) {
+        $zichtbaar = Leiding::isLeidingZichtbaar();
+
+        if ($zichtbaar && (Leiding::isLoggedIn() || Ouder::isLoggedIn())) {
             $leiding = Leiding::getLeiding('leiding');
             foreach ($leiding as $value) {
                 if (!isset($value->tak)) {
@@ -132,9 +135,12 @@ class Contact extends Page {
             foreach ($leiding_data as $key => $value) {
                 shuffle($leiding_data[$key]);
             }
-
-
         }
+
+        // Groepsleiding toeveogen
+        $leiding_data['groepsleiding'] = Leiding::getLeiding('groepsleiding');
+        shuffle($leiding_data['groepsleiding']);
+        $groepsleiding_gsm_zichtbaar = Setting::getSetting('groepsleiding_gsm_zichtbaar', false);
 
         return Template::render('contact/contact', array(
             'data' => $data,
@@ -143,7 +149,10 @@ class Contact extends Page {
             'wie' => $wie,
             'takkenverdeling' => $verdeling_string,
             'leiding' => $leiding_data,
-            'leiding_zichtbaar' => Leiding::isLeidingZichtbaar()
+            'logged_in' => Leiding::isLoggedIn() || Ouder::isLoggedIn(),
+            'groepsleiding_gsm_zichtbaar' => $groepsleiding_gsm_zichtbaar->value,
+            'leiding_zichtbaar' => $zichtbaar,
+            'contacts' => Leiding::getContacts(),
             )
         );
     }

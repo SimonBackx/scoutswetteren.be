@@ -3,7 +3,7 @@ namespace Pirate\Sail\Leiding\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
-use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Users\User;
 
 class Logout extends Page {
 
@@ -12,7 +12,7 @@ class Logout extends Page {
     }
 
     function getContent() {
-        Leiding::logout();
+        User::logout();
         header("Location: https://".$_SERVER['SERVER_NAME']."/");
 
         return Template::render('leiding/logout', array(
