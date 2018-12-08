@@ -4,6 +4,7 @@ use \Pirate\Database\Database;
 use Pirate\Model\Model;
 use Pirate\Model\Migrations\Migration;
 use Pirate\Model\Leiding\Leiding;
+use Pirate\Classes\Sentry\Sentry;
 
 class Ship {
     private $router;
@@ -21,10 +22,6 @@ class Ship {
         date_default_timezone_set('Europe/Brussels');
         setlocale(LC_MONETARY, 'nl_BE.UTF-8', 'nl_BE');
 
-        // Catch all errors and warnings
-        // 
-        // 
-       
         require(__DIR__.'/config.php');
 
         // Loading all builtin stuff
@@ -33,6 +30,10 @@ class Ship {
         require(__DIR__.'/classes.php');
         Classes::setupAutoload();
 
+        // Start Sentry error reporting
+        Sentry::shared()->setEnvironment((isset($_ENV["DEBUG"]) && $_ENV["DEBUG"]) ? 'development' : 'production');
+        
+        require(__DIR__.'/functions.php');
         require(__DIR__.'/model.php');
         require(__DIR__.'/mail.php');
         require(__DIR__.'/dependencies.php');
@@ -75,8 +76,10 @@ class Ship {
 
         } catch (\Error $e) {
             http_response_code(500);
+
             echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>'.$e->getFile().' line '.$e->getLine().' '.$e->getMessage().'</pre>';
-            Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
+            Sentry::shared()->logFatalError($e);
+            //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
             
             exit;
         }

@@ -634,9 +634,9 @@ class Leiding extends Model {
 
         foreach($webmasters as $webmaster) {
             $mail->addTo(
-                $webmaster->mail, 
+                $webmaster->user->mail, 
                 array(),
-                $webmaster->firstname.' '.$webmaster->lastname
+                $webmaster->user->firstname.' '.$webmaster->user->lastname
             );
         }
 

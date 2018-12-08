@@ -1,6 +1,7 @@
 {
     "require": {
         "twig/twig": "~2.0",
-        "sendgrid/sendgrid": "~5.0.7"
+        "sendgrid/sendgrid": "~5.0.7",
+        "sentry/sentry": "^1.10"
     }
 }

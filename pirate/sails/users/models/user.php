@@ -4,6 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
 use Pirate\Mail\Mail;
 use Pirate\Model\Settings\Setting;
+use Pirate\Classes\Sentry\Sentry;
 
 class User extends Model {
     public $id;
@@ -330,6 +331,7 @@ class User extends Model {
 
                 self::$currentToken = $row['token'];
                 self::$currentUser = new User($row);
+                Sentry::shared()->setUser(self::$currentUser->id, self::$currentUser->firstname.' '.self::$currentUser->lastname, self::$currentUser->mail);
 
                 if ($interval->days >= 1) {
                     // Token vernieuwen als hij al een dag oud is

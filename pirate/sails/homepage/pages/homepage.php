@@ -15,7 +15,6 @@ class Homepage extends Page {
     function getContent() {
 
         // Block ophalen van maandplanning sail
-
         $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
         $blog = Block::getBlock('Blog', 'Overview')->getContent();
 
