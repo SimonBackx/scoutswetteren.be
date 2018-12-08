@@ -99,6 +99,10 @@ function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
     return $str;
 }
 
+function camelCaseToDashes($className) {
+    return strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $className));
+}
+
 function strposa($haystack, $needles=array(), $offset=0) {
     $chr = array();
     foreach($needles as $needle) {

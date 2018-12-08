@@ -23,10 +23,7 @@ class LeidingAdminRouter extends AdminRoute {
         if (empty($url)) {
             return true;
         }
-        if ($url == 'wachtwoord-wijzigen') {
-            return true;
-        }
-        
+
         if (!Leiding::hasPermission('groepsleiding') && !Leiding::hasPermission('webmaster')) {
             return false;
         }
@@ -63,10 +60,6 @@ class LeidingAdminRouter extends AdminRoute {
     }
 
     function getPage($url, $parts) {
-        if (empty($url)) {
-            require(__DIR__.'/admin/gegevens.php');
-            return new Admin\Gegevens();
-        }
         if ($url == 'leiding') {
             require(__DIR__.'/admin/overview.php');
             return new Admin\Overview();
@@ -85,7 +78,8 @@ class LeidingAdminRouter extends AdminRoute {
             require(__DIR__.'/admin/delete.php');
             return new Admin\Delete($this->leiding);
         }
-        require(__DIR__.'/admin/wachtwoord-wijzigen.php');
-        return new Admin\WachtwoordWijzigen();
+
+        require(__DIR__.'/admin/gegevens.php');
+        return new Admin\Gegevens();
     }
 }

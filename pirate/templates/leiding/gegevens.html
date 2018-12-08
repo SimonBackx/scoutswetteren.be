@@ -31,8 +31,8 @@
                 <label>E-mailadres</label>
                 <input type="text" name="mail" value="{{ leiding.mail }}" placeholder="Vul uw e-mailadres in">
 
-                <label>GSM nummer</label>
-                <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw gsm nummer in">
+                <label>GSM-nummer</label>
+                <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw GSM-nummer in">
 
                 {% if not edit %}
                 <label>Functies</label>
@@ -72,7 +72,7 @@
         <footer>
             <input type="submit" class="aubergine fill" value="Opslaan">
             {% if not edit %}
-                <a href="/admin/wachtwoord-wijzigen" class="button merlot">Wachtwoord aanpassen</a>
+                <a href="/gebruikers/wachtwoord-wijzigen" class="button merlot">Wachtwoord aanpassen</a>
             {% else %}
                 <a href="/admin/leiding/delete/{{ id }}" class="button merlot">Verwijderen</a>
             {% endif %}

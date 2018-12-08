@@ -16,10 +16,15 @@ class UsersRouter extends Route {
 
         if ($match = $this->match($parts, '/gebruikers/wachtwoord-vergeten/@key', ['key' => 'string'])) {        
             if (User::temporaryLoginWithPasswordKey($match->params->key)) {        
-                $this->setPage(new Pages\WachtwoordVergeten());
+                $this->setPage(new Pages\SetPassword());
                 return true;
             }
             return false;
+        }
+
+        if ($match = $this->match($parts, '/gebruikers/wachtwoord-vergeten')) {        
+            $this->setPage(new Pages\WachtwoordVergeten());
+            return true;
         }
 
         if ($match = $this->match($parts, '/gebruikers/login')) {        
@@ -35,9 +40,16 @@ class UsersRouter extends Route {
             return false;
         }
 
-        if ($match = $this->match($parts, '/gebruikers/logout')) {        
-            $this->setPage(new Pages\Logout());
-            return true;
+        if (User::isLoggedIn()) {
+            if ($match = $this->match($parts, '/gebruikers/logout')) {        
+                $this->setPage(new Pages\Logout());
+                return true;
+            }
+    
+            if ($match = $this->match($parts, '/gebruikers/wachtwoord-wijzigen')) {        
+                $this->setPage(new Pages\WachtwoordWijzigen());
+                return true;
+            }        
         }
 
         return false;

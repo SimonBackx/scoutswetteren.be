@@ -47,7 +47,7 @@ class User extends Model {
 
         $query = '
             SELECT u.* from users u
-            where u.mail = "'.$email.'"';
+            where u.user_mail = "'.$email.'"';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows == 1){
@@ -359,7 +359,7 @@ class User extends Model {
     function getMagicTokenUrl() {
         $mail = $this->email;
         $token = $this->getMagicToken();
-        return "https://".$_SERVER['SERVER_NAME']."/login/$mail/$token";
+        return "https://".$_SERVER['SERVER_NAME']."/gebruikers/login/$mail/$token";
     }
 
     // Multiple ouders
@@ -534,36 +534,37 @@ class User extends Model {
         }
 
 
-        if (Validator::isValidMail($data['mail'])) {
-            $mail = strtolower($data['mail']);
-            $escaped = self::getDb()->escape_string($mail);
-
-            if (isset($this->id)) {
-                $id = self::getDb()->escape_string($this->id);
-                 // Zoek andere ouders met dit e-mailadres
-                $query = "SELECT o.*
-                from users o
-                where mail = '$escaped' and id != '$id'";
-            } else {
-                 // Zoek andere ouders met dit e-mailadres
-                $query = "SELECT o.*
-                from users o
-                where mail = '$escaped'";
-            }
-
-            if ($result = self::getDb()->query($query)) {
-                if ($result->num_rows == 0){
-                    $this->mail = $mail;
+        if (isset($data['mail'])) {
+            if (Validator::isValidMail($data['mail'])) {
+                $mail = strtolower($data['mail']);
+                $escaped = self::getDb()->escape_string($mail);
+    
+                if (isset($this->id)) {
+                    $id = self::getDb()->escape_string($this->id);
+                     // Zoek andere ouders met dit e-mailadres
+                    $query = "SELECT *
+                    from users
+                    where user_mail = '$escaped' and `user_id` != '$id'";
                 } else {
-                    $errors[] = 'Dit e-mailadres is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                     // Zoek andere ouders met dit e-mailadres
+                    $query = "SELECT *
+                    from users
+                    where user_mail = '$escaped'";
+                }
+    
+                if ($result = self::getDb()->query($query)) {
+                    if ($result->num_rows == 0){
+                        $this->mail = $mail;
+                    } else {
+                        $errors[] = 'Dit e-mailadres is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                    }
+                } else {
+                    $errors[] = 'Er ging iets mis';
                 }
             } else {
-                $errors[] = 'Er ging iets mis';
+                $errors[] = 'Ongeldig e-mailadres';
             }
-        } else {
-            $errors[] = 'Ongeldig e-mailadres';
         }
-
 
         // Als admin een user aanpast hoeft hij geen telefoon nummer op te geven
         // Anders moet hij wel altijd een telefoonnummer opgeven
@@ -575,14 +576,14 @@ class User extends Model {
                 if (isset($this->id)) {
                     $id = self::getDb()->escape_string($this->id);
                      // Zoek andere ouders met dit e-mailadres
-                    $query = "SELECT o.*
-                    from users o
-                    where phone = '$escaped' and id != '$id'";
+                    $query = "SELECT *
+                    from users
+                    where user_phone = '$escaped' and `user_id` != '$id'";
                 } else {
                      // Zoek andere ouders met dit e-mailadres
-                    $query = "SELECT o.*
-                    from users o
-                    where phone = '$escaped'";
+                    $query = "SELECT *
+                    from users
+                    where user_phone = '$escaped'";
                 }
     
                 if ($result = self::getDb()->query($query)) {
@@ -627,7 +628,6 @@ class User extends Model {
     function save(){
         $firstname = self::getDb()->escape_string($this->firstname);
         $lastname = self::getDb()->escape_string($this->lastname);
-        $mail = self::getDb()->escape_string($this->mail);
 
         if (!isset($this->phone)) {
             $phone = 'NULL';
@@ -635,18 +635,29 @@ class User extends Model {
             $phone = "'".self::getDb()->escape_string($this->phone)."'";
         }
 
-        self::getDb()->autocommit(false);
+        if (!isset($this->mail)) {
+            $mail = 'NULL';
+        } else {
+            $mail = "'".self::getDb()->escape_string($this->mail)."'";
+        }
 
         // Permissions
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
+            
+            if (!isset($this->set_password_key)) {
+                $set_password_key = 'NULL';
+            } else {
+                $set_password_key = "'".self::getDb()->escape_string($this->set_password_key)."'";
+            }
 
             $query = "UPDATE users 
                 SET 
                 user_firstname = '$firstname',
                 user_lastname = '$lastname',
-                user_mail = '$mail',
-                user_phone = $phone
+                user_mail = $mail,
+                user_phone = $phone,
+                user_set_password_key = $set_password_key
                  where `user_id` = '$id' 
             ";
         } else {
@@ -655,7 +666,7 @@ class User extends Model {
 
             $query = "INSERT INTO 
                 users (`user_firstname`, `user_lastname`, `user_mail`, `user_phone`, `user_set_password_key`)
-                VALUES ('$firstname', '$lastname', '$mail', $phone,  '$key')";
+                VALUES ('$firstname', '$lastname', $mail, $phone,  '$key')";
         }
 
         $result = self::getDb()->query($query);
@@ -671,13 +682,7 @@ class User extends Model {
             /*if ($new) {
                 $this->sendPasswordEmail();
             }*/
-
-            self::getDb()->commit();
-        } else {
-            self::getDb()->rollback();
         }
-
-        self::getDb()->autocommit(true);
 
         return $result;
     }

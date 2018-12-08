@@ -25,7 +25,7 @@ class Page {
      * @return  /
      */
     static function loadModel($sail, $name) {
-        $file = __DIR__.'/../sails/'.strtolower($sail).'/pages/'.strtolower($name).'.php';
+        $file = __DIR__.'/../sails/'.strtolower($sail).'/pages/'.camelCaseToDashes($name).'.php';
         //fwrite(STDOUT, 'Autoload ' . $file."\n");
         if (file_exists($file))
             require($file);

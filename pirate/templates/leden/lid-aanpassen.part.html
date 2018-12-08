@@ -55,7 +55,7 @@
 
         <aside class="givers jin"{% if lid.tak != 'givers' and lid.tak != 'jin' %} style="display: none;"{% endif %}>
             <label>GSM van de jongere</label>
-            <input type="text" name="lid-gsm{{ multiple }}" placeholder="Vul GSM nummer in van het lid" value="{{ lid.gsm | e('html_attr') }}">
+            <input type="text" name="lid-gsm{{ multiple }}" placeholder="Vul GSM-nummer in van het lid" value="{{ lid.gsm | e('html_attr') }}">
         </aside>
 
         <aside class="kapoenen"{% if lid.tak != 'kapoenen' %} style="display: none;"{% endif %}>

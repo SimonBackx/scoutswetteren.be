@@ -36,13 +36,10 @@ class Login extends Page {
                 $wrong = true;
             }
         } else {
-            /*
-            // TODO!!
-            if ($_SERVER['REQUEST_URI'] != '/ouders/login' && $_SERVER['REQUEST_URI'] != '/ouders/login/') {
+            if ($_SERVER['REQUEST_URI'] != '/gebruikers/login' && $_SERVER['REQUEST_URI'] != '/gebruikers/login/') {
                 $redirect_to = true;
                 $redirect_to_url = $_SERVER['REQUEST_URI'];
             }
-            */
         }
 
         return Template::render('users/login', array(

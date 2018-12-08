@@ -54,7 +54,7 @@ class Validator extends Model {
     // Returns true on success
     static function validatePhone(&$in, &$out, &$errors, $partial = false) {
         if (!self::isValidPhone($in)) {
-            $errors[] = 'Ongeldig GSM nummer';
+            $errors[] = 'Ongeldig GSM-nummer';
             return false;
         }
 
@@ -62,7 +62,7 @@ class Validator extends Model {
 
         // lengte bepalen
         if (!$partial && (strlen($output) < 10 || strlen($output) == 11)) {
-            $errors[] = 'Ongeldig GSM nummer';
+            $errors[] = 'Ongeldig GSM-nummer';
         } else {
             $original = $output;
             $error = false;
@@ -94,7 +94,7 @@ class Validator extends Model {
                 
                 // Automatisch 04 nummer omvormen in een belgisch nummer, anders melding geven
                 if (substr($output, 0, 2) != '04') {
-                    $errors[] = 'Ongeldig GSM nummer';
+                    $errors[] = 'Ongeldig GSM-nummer';
                     $error = true;
                 } else { 
                     $output = '32'.substr($output, 1);

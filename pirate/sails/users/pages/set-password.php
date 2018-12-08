@@ -21,19 +21,40 @@ class SetPassword extends Page {
         $errors = array();
         $success = false;
 
-        if (isset($_POST['password'], $_POST['password-repeated'])) {
-            if ($_POST['password'] != $_POST['password-repeated']) {
-                $errors[] = 'Wachtwoorden komen niet overeen, probeer het opnieuw.';
+        $data = array(
+            'phone' => $user->phone,
+            'mail' => $user->mail,
+           // 'totem' => $leiding->totem
+        );
+        $allset = true;
+
+        foreach ($data as $key => $value) {
+            if (!isset($_POST[$key])) {
+                $allset = false;
             } else {
-                if (strlen($_POST['password']) < 8) {
-                    $errors[] = 'Wachtwoord moet minimum 8 lang zijn.';
+                $data[$key] = $_POST[$key];
+            }
+        }
+
+        if ($allset && isset($_POST['password'], $_POST['password-repeated'])) {
+            $errors = $user->setProperties($data);
+
+            if (count($errors) == 0) {
+                if (!$user->save()) {
+                    $errors[] = 'Er ging iets mis bij het opslaan';
+                } elseif ($_POST['password'] != $_POST['password-repeated']) {
+                    $errors[] = 'Wachtwoorden komen niet overeen, probeer het opnieuw.';
                 } else {
-                    if (!$user->changePassword($_POST['password'])) {
-                        $errors[] = 'Er ging iets mis. Contacteer de webmaster';
+                    if (strlen($_POST['password']) < 8) {
+                        $errors[] = 'Wachtwoord moet minimum 8 lang zijn.';
                     } else {
-                        $success = true;
-                        header("Location: ".User::getRedirectURL());
-                        return "Doorverwijzen naar ".User::getRedirectURL();
+                        if (!$user->changePassword($_POST['password'])) {
+                            $errors[] = 'Er ging iets mis. Contacteer de webmaster';
+                        } else {
+                            $success = true;
+                            header("Location: ".User::getRedirectURL());
+                            return "Doorverwijzen naar ".User::getRedirectURL();
+                        }
                     }
                 }
             }
@@ -43,6 +64,7 @@ class SetPassword extends Page {
             'new' => (!$user->hasPassword()),
             'success' => $success,
             'errors' => $errors,
+            'data' => $data,
             'user' => $user
         ));
     }
