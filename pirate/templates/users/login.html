@@ -15,10 +15,9 @@
             {% else %}
             <header>
                 <h1>Inloggen</h1>
-                <h2>Enkel voor ouders.</h2>
             </header>
 
-            <form{% if wrong %} class="error"{% endif %} method="post" action="/ouders/login">
+            <form{% if wrong %} class="error"{% endif %} method="post" action="/gebruikers/login">
                 <label for="email_field">E-mailadres</label>
                 <input id="email_field" type="email" name="email" placeholder="Vul hier uw e-mailadres in" value="{{ email | e('html_attr') }}">
 
@@ -35,7 +34,7 @@
                 {% endif %}
                 <footer>
                     <input type="submit" value="Inloggen" class="merlot">
-                    <a href="/ouders/wachtwoord-vergeten" class="noborder aubergine button">Wachtwoord vergeten?</a>
+                    <a href="/gebruikers/wachtwoord-vergeten" class="noborder aubergine button">Wachtwoord vergeten?</a>
                 </footer>
             </form>
 

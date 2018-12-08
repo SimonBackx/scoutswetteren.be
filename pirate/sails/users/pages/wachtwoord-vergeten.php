@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sail\Users\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
-use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Users\User;
 use Pirate\Mail\Mail;
 
 class WachtwoordVergeten extends Page {
@@ -18,25 +18,24 @@ class WachtwoordVergeten extends Page {
 
         if (isset($_POST['email'])) {
             $email = $_POST['email'];
-            $ouder = Ouder::getOuderForEmail($email);
+            $user = User::getForEmail($email);
 
-
-            if (!isset($ouder)) {
+            if (!isset($user)) {
                 $errors[] = "Het opgegeven e-mailadres staat niet geregistreerd in ons systeem. Gebruik het e-mailadres waarop je e-mails van ons ontvangt.";
             } else {
-                if ($ouder->generatePasswordRecoveryKey()) {
+                if ($user->generatePasswordRecoveryKey()) {
                     // Mail versturen enzo
                     // TODO
                     $mail = new Mail(
                         'Wachtwoord opnieuw instellen - Scouts Prins Boudewijn', 
-                        'wachtwoord-ouders', 
-                        array('url' => $ouder->getSetPasswordUrl(), 'naam' => $ouder->voornaam)
+                        'wachtwoord-vergeten', 
+                        array('url' => $user->getSetPasswordUrl(), 'naam' => $user->firstname)
                     );
 
                     $mail->addTo(
-                        $ouder->email, 
+                        $user->mail, 
                         array(),
-                        $ouder->voornaam.' '.$ouder->achternaam
+                        $user->firstname.' '.$user->lastname
                     );
 
                     if ($mail->send()) {
@@ -53,7 +52,7 @@ class WachtwoordVergeten extends Page {
 
         }
 
-        return Template::render('leden/wachtwoord-vergeten', array(
+        return Template::render('users/wachtwoord-vergeten', array(
             'errors' => $errors,
             'email' => $email,
             'success' => $success

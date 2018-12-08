@@ -53,14 +53,14 @@ class OuderAanpassen extends Page {
         )) {
             $data = array(
                 'titel' => $_POST['ouder-titel'],
-                'voornaam' => $_POST['ouder-voornaam'],
-                'achternaam' => $_POST['ouder-achternaam'],
+                'firstname' => $_POST['ouder-voornaam'],
+                'lastname' => $_POST['ouder-achternaam'],
                 'adres' => $_POST['ouder-adres'],
                 'gemeente' => $_POST['ouder-gemeente'],
                 'postcode' => $_POST['ouder-postcode'],
                 'telefoon' => $_POST['ouder-telefoon'],
-                'gsm' => $_POST['ouder-gsm'],
-                'email' => $_POST['ouder-email']
+                'phone' => $_POST['ouder-gsm'],
+                'mail' => $_POST['ouder-email']
             );
 
             // Controleren en errors setten

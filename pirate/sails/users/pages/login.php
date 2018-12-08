@@ -1,9 +1,11 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sail\Users\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
+use Pirate\Model\Users\User;
 use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Leiding\Leiding;
 
 class Login extends Page {
 
@@ -21,26 +23,29 @@ class Login extends Page {
         if (isset($_POST['email'], $_POST['password'])) {
             $email = $_POST['email'];
             $password = $_POST['password'];
-            if (Ouder::login($email, $password)) {
+            if (User::login($email, $password)) {
                 // Doe iets :p
                 $success = true;
                 if (isset($_POST['redirect_to'])) {
                     header("Location: https://".$_SERVER['SERVER_NAME'].$_POST['redirect_to']);
                 } else {
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+                    header("Location: ".User::getRedirectURL());
                 }
                 
             } else {
                 $wrong = true;
             }
         } else {
+            /*
+            // TODO!!
             if ($_SERVER['REQUEST_URI'] != '/ouders/login' && $_SERVER['REQUEST_URI'] != '/ouders/login/') {
                 $redirect_to = true;
                 $redirect_to_url = $_SERVER['REQUEST_URI'];
             }
+            */
         }
 
-        return Template::render('leden/login', array(
+        return Template::render('users/login', array(
             'wrong' => $wrong,
             'success' => $success,
             'email' => $email,

@@ -1,13 +1,9 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sail\Users\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Database\Database;
-use Pirate\Mail\Mail;
+use Pirate\Model\Users\User;
 
 // Deze pagina mag enkel getoond worden als de ouder (tijdelijk) ingelogd is
 class SetPassword extends Page {
@@ -17,10 +13,10 @@ class SetPassword extends Page {
     }
 
     function getContent() {
-        if (!Ouder::isLoggedIn()) {
+        if (!User::isLoggedIn()) {
             return 'Error!';
         }
-        $ouder = Ouder::getUser();
+        $user = User::getUser();
 
         $errors = array();
         $success = false;
@@ -32,23 +28,22 @@ class SetPassword extends Page {
                 if (strlen($_POST['password']) < 8) {
                     $errors[] = 'Wachtwoord moet minimum 8 lang zijn.';
                 } else {
-                    if (!$ouder->changePassword($_POST['password'])) {
+                    if (!$user->changePassword($_POST['password'])) {
                         $errors[] = 'Er ging iets mis. Contacteer de webmaster';
                     } else {
                         $success = true;
-                        header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
-                        return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
+                        header("Location: ".User::getRedirectURL());
+                        return "Doorverwijzen naar ".User::getRedirectURL();
                     }
                 }
             }
         }
 
-
-        return Template::render('leden/set-password', array(
-            'new' => (!$ouder->hasPassword()),
+        return Template::render('users/set-password', array(
+            'new' => (!$user->hasPassword()),
             'success' => $success,
             'errors' => $errors,
-            'ouder' => $ouder
+            'user' => $user
         ));
     }
 }

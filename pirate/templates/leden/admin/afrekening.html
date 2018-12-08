@@ -51,7 +51,7 @@
 
     <h2>Contactgegevens</h2>
     {% for ouder in ouders %}
-        <p>{{ouder.voornaam}} {{ouder.achternaam}}, {{ouder.gsm}}, {{ouder.email}}</p>
+        <p>{{ouder.user.firstname}} {{ouder.user.lastname}}, {{ouder.user.phone}}, {{ouder.user.mail}}</p>
     {% endfor %}
 
     <footer>

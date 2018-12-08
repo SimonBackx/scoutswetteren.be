@@ -259,7 +259,7 @@ class Leiding extends Model {
         return null;
     }
 
-    static function getLeidingByUserId($id) {
+    static function getByUserId($id) {
         if (!is_numeric($id)) {
             return null;
         }
@@ -389,7 +389,7 @@ class Leiding extends Model {
             }
 
             // Eerste keer dat we kijken: zoeken of er een leider bestaat met hetzelfde id
-            $leiding = self::getLeidingByUserId($user->id);
+            $leiding = self::getByUserId($user->id);
             $user->didCheckLeiding = true;
 
             if (isset($leiding)) {

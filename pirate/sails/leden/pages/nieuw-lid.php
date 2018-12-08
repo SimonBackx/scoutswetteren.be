@@ -90,27 +90,27 @@ class NieuwLid extends Page {
             for ($i=0; $i < $aantal_ouders; $i++) { 
                 $data = array(
                     'titel' => $_POST['ouder-titel'][$i],
-                    'voornaam' => $_POST['ouder-voornaam'][$i],
-                    'achternaam' => $_POST['ouder-achternaam'][$i],
+                    'firstname' => $_POST['ouder-voornaam'][$i],
+                    'lastname' => $_POST['ouder-achternaam'][$i],
                     'adres' => $_POST['ouder-adres'][$i],
                     'gemeente' => $_POST['ouder-gemeente'][$i],
                     'postcode' => $_POST['ouder-postcode'][$i],
                     'telefoon' => $_POST['ouder-telefoon'][$i],
-                    'gsm' => $_POST['ouder-gsm'][$i],
-                    'email' => $_POST['ouder-email'][$i]
+                    'phone' => $_POST['ouder-gsm'][$i],
+                    'mail' => $_POST['ouder-email'][$i]
                 );
 
                 // Controleren en errors setten
                 $ouder = new Ouder();
                 $data['errors'] = $ouder->setProperties($data);
-                if (isset($emailadressen[$ouder->email])) {
+                if (isset($emailadressen[$ouder->user->mail])) {
                     $data['errors'][] = 'Het is niet toegestaan dat je hetzelfde e-mailadres gebruikt voor meerdere ouders. Elke ouder krijgt namelijk een apart account waarmee hij/zij kan inloggen.';
                 }
 
                 if (count($data['errors']) > 0) {
                     $fail = true;
                 } else {
-                    $emailadressen[$ouder->email] = true;
+                    $emailadressen[$ouder->user->mail] = true;
                 }
 
                 $ouder_models[] = $ouder;
@@ -138,20 +138,6 @@ class NieuwLid extends Page {
                 $fail = true;
             }
             $gezin_data = $data;
-
-            // todo: check duplicate gezin!
-            
-            $gsm_array = array();
-            $email_array = array();
-            foreach ($ouder_models as $ouder) {
-                $gsm_array[] = $ouder->gsm;
-                $email_array[] = $ouder->email;
-            }
-            $existing_ouders = Ouder::getOuders(array('gsm' => $gsm_array, 'email' => $email_array));
-            if (count($existing_ouders) > 0) {
-                $fail = true;
-                $errors[] = 'Er is al een gezin gekend met een van de opgegeven e-mailadressen of gsm-nummers. Ga naar de loginpagina en log daar in om het inschrijven af te ronden.';
-            }
 
             if ($fail == false) {
                 // Gezin opslaan
@@ -190,9 +176,9 @@ class NieuwLid extends Page {
                             $mail = new Mail('Inschrijving bij de scouts - Account aanmaken', 'nieuw-lid', array('leden' => $leden, 'ouders' => $ouders));
                             foreach ($ouder_models as $ouder) {
                                 $mail->addTo(
-                                    $ouder->email, 
-                                    array('naam' => $ouder->voornaam, 'url' => $ouder->getSetPasswordUrl()),
-                                    $ouder->voornaam.' '.$ouder->achternaam
+                                    $ouder->user->mail, 
+                                    array('naam' => $ouder->user->firstname, 'url' => $ouder->user->getSetPasswordUrl()),
+                                    $ouder->user->firstname.' '.$ouder->user->lastname
                                 );
                             }
                             if (!$mail->send()) {

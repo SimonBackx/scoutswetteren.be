@@ -31,11 +31,11 @@
     <div class="splitted">
          <div class="part column first">
             {% for ouder in ouders %}
-                <h2>{{ouder.voornaam}} {{ouder.achternaam}} ({{ouder.titel}})</h2>
+                <h2>{{ouder.user.firstname}} {{ouder.user.lastname}} ({{ouder.titel}})</h2>
                 <p>{{ouder.adres.toString }}</p>
                 <p>{{ouder.adres.telefoon}}</p>
-                <p>{{ouder.gsm}}</p>
-                <p>{{ouder.email}}</p>
+                <p>{{ouder.user.phone}}</p>
+                <p>{{ouder.user.mail}}</p>
             {% endfor %}
         </div>
         <div class="part column last">

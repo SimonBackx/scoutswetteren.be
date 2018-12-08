@@ -1,5 +1,6 @@
 <?php
 include __DIR__.'/../wheel/config.php';
+include __DIR__.'/../wheel/functions.php';
 
 // Usage php create-migration.php SAIL MIGRATION-NAME
 if (!isset($argv[2])) {

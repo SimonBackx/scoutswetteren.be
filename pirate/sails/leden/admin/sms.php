@@ -103,7 +103,7 @@ class SmsPage extends Page {
                         $ouders = Ouder::getOuders($data['filter'], $data['tak'], false, $selected_scoutsjaar);
                     }
                     foreach ($ouders as $ouder) {
-                        $stripped = preg_replace('/[ \s]+/', '', $ouder->gsm);
+                        $stripped = preg_replace('/[ \s]+/', '', $ouder->user->phone);
                         $numbers[] = $stripped;
                     }
 

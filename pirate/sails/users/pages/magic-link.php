@@ -1,5 +1,5 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sail\Users\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
@@ -11,7 +11,7 @@ class MagicLinkPage extends Page {
     }
 
     function getContent() {
-        header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+        header("Location: ".User::getRedirectURL());
         return 'Bezig met doorverwijzen...';
     }
 }

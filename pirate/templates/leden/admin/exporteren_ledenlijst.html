@@ -2,7 +2,7 @@
 {% for lid in leden %}
 {{ lid.inschrijving.tak | capitalize }};{{lid.inschrijving.getTakJaar()}};{{ lid.voornaam }};{{ lid.achternaam }};{{ lid.geslacht }};{{ lid.geboortedatum | date('d/m/Y')}};{{ lid.gsm }};{% for ouder in lid.ouders %}
 {% if loop.index > 1 %}
-;;;;;;;{%endif%}{{ ouder.voornaam }} {{ ouder.achternaam }};{{ ouder.gsm | replace({' ': " " }) }};{{ ouder.email }};
+;;;;;;;{%endif%}{{ ouder.user.firstname }} {{ ouder.user.lastname }};{{ ouder.user.phone | replace({' ': " " }) }};{{ ouder.user.mail }};
 {% else %}
 
 {% endfor %}

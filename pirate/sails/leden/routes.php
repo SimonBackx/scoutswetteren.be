@@ -7,6 +7,8 @@ use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Afrekening;
 use Pirate\Model\Leden\Inschrijving;
 
+use Pirate\Sail\Users\Pages\Login;
+
 class LedenRouter extends Route {
     private $lid = null;
     private $ouder = null;
@@ -28,38 +30,12 @@ class LedenRouter extends Route {
 
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
             // Onbeveiligde sectie
-            if (count($parts) == 3 && ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-vergeten')) {
-                // Key controleren en tijdelijk inloggen
-                if (Ouder::temporaryLoginWithPasswordKey($parts[2])) {
-                    return true;
-                }
-                return false;
-            }
-
-
 
             // Onbeveiligde sectie
             if (!Ouder::isLoggedIn()) {
-                // magic token
-                if (count($parts) == 4 && ($parts[1] == 'login')) {
-
-                    $this->magicLink = true;
-                    // magic token controleren en inloggen
-                    if (Ouder::loginWithMagicToken($parts[2], $parts[3])) {
-                        return true;
-                    } else {
-                        // ongeldig -> doorverwijzen naar andere pagina
-                        return true;
-                    }
-                    return false;
-                }
-
+                // Als we niet ingelogd zijn tonen we het login scherm voor volgende pagina's
                 if (count($parts) == 1) {
-                    return true;
-                }
-                // Volgende paigna's geven altijd een login scherm (daarna overgaan op beveiligde sectie)
-
-                if (count($parts) == 2 && $parts[1] == 'login') {
+                    // overview
                     return true;
                 }
 
@@ -67,18 +43,7 @@ class LedenRouter extends Route {
                     return true;
                 }
 
-                // Wachtwoord-vergeten zonder loginkey (dus e-mailadres vragen voor key te versturen)
-                if (count($parts) == 2 && $parts[1] == 'wachtwoord-vergeten') {
-                    return true;
-                }
-
                 return false;
-            } else {
-                // Als magic link -> gewoon doorverwijzen
-                if (count($parts) == 4 && ($parts[1] == 'login')) {
-                    $this->magicLink = true;
-                    return true;
-                }
             }
 
             // Beveiligde sectie
@@ -86,16 +51,10 @@ class LedenRouter extends Route {
                 return true;
             }
             if (count($parts) == 2) {
-                if ($parts[1] == 'uitloggen') {
-                    return true;
-                }
                 if ($parts[1] == 'broer-zus-toevoegen') {
                     return true;
                 }
                 if ($parts[1] == 'verleng-inschrijving') {
-                    return true;
-                }
-                if ($parts[1] == 'wachtwoord-wijzigen') {
                     return true;
                 }
                 if ($parts[1] == 'gezin-nakijken') {
@@ -152,51 +111,36 @@ class LedenRouter extends Route {
             return new Pages\Overview();
         }
 
-        if ($this->magicLink) {
-            require(__DIR__.'/pages/magic-link.php');
-            return new Pages\MagicLinkPage();
-        }
-
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
 
             // Niet ingelogd
              if (!Ouder::isLoggedIn()) {
-                if (isset($parts[1]) && $parts[1] == 'wachtwoord-vergeten') {
-                    require(__DIR__.'/pages/wachtwoord-vergeten.php');
-                    return new Pages\WachtwoordVergeten();
-                }
-
-                require(__DIR__.'/pages/login.php');
-                return new Pages\Login();
+                 // Toon de pagina van de users module
+                return new Login();
             }
 
             if (count($parts) == 2) {
-                if ($parts[1] == 'uitloggen') {
-                    require(__DIR__.'/pages/logout.php');
-                    return new Pages\Logout();
-                }
-                if ($parts[1] == 'wachtwoord-wijzigen') {
-                    require(__DIR__.'/pages/wachtwoord-wijzigen.php');
-                    return new Pages\WachtwoordWijzigen();
-                }
-
                 // Broer zus toevoegen of verlengen enkel in inschrijvingsperiode:
                 if (!Inschrijving::isInschrijvingsPeriode()) {
                     require(__DIR__.'/pages/buiten-inschrijvingen-periode.php');
                     return new Pages\BuitenInschrijvingenPeriode();
                 }
+
                 if ($parts[1] == 'broer-zus-toevoegen') {
                     require(__DIR__.'/pages/broer-zus-toevoegen.php');
                     return new Pages\BroerZusToevoegen();
                 }
+
                 if ($parts[1] == 'verleng-inschrijving') {
                     require(__DIR__.'/pages/verleng-inschrijving.php');
                     return new Pages\VerlengInschrijving();
                 }
+
                 if ($parts[1] == 'gezin-nakijken') {
                     require(__DIR__.'/pages/gezin-nakijken.php');
                     return new Pages\GezinNakijken();
                 }
+
                 if ($parts[1] == 'ouder-toevoegen') {
                     require(__DIR__.'/pages/ouder-aanpassen.php');
                     return new Pages\OuderAanpassen();
@@ -227,11 +171,6 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'afrekening' && !empty($this->afrekening)) {
                     require(__DIR__.'/pages/afrekening.php');
                     return new Pages\ViewAfrekening($this->afrekening);
-                }
-
-                if ($parts[1] == 'account-aanmaken' || $parts[1] == 'wachtwoord-vergeten') {
-                    require(__DIR__.'/pages/set-password.php');
-                    return new Pages\SetPassword();
                 }
             }
 

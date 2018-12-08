@@ -254,7 +254,7 @@ class GroepsadminLid {
                
                 //"rekeningnummer" => "BE68 5390 0754 7034"
             ],
-            "email" => $lid->ouders[0]->email,
+            "email" => $lid->ouders[0]->user->mail,
             "vgagegevens" => [
                 "voornaam" => $lid->voornaam,
                 "achternaam" => $lid->achternaam,
@@ -337,11 +337,11 @@ class GroepsadminLid {
             $contact = [
                 "id" => null,
                 "adres" => null,
-                "voornaam" => $ouder->voornaam,
-                "achternaam" => $ouder->achternaam,
+                "voornaam" => $ouder->user->firstname,
+                "achternaam" => $ouder->user->lastname,
                 "rol" => $ouder->getGroepsadminRol(),
-                "gsm" => str_replace(' ', ' ', $ouder->gsm),
-                "email" => $ouder->email
+                "gsm" => str_replace(' ', ' ', $ouder->user->phone),
+                "email" => $ouder->user->mail
             ];
 
             if (isset($fetchedData["contacten"])) {

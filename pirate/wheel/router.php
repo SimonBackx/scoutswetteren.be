@@ -3,6 +3,7 @@ namespace Pirate\Route;
 use Pirate\Page\Page404;
 use Pirate\Page\Page301;
 use Pirate\Page\Page302;
+use Pirate\Page\Page;
 
 class Router {
     function route($url) {
@@ -11,6 +12,7 @@ class Router {
         require(__DIR__.'/page.php');
         require(__DIR__.'/block.php');
         require(__DIR__.'/route.php');
+        Page::setupAutoload();
 
         // This part needs to get rewritten and loaded dynamically
         // based on the sails that are present.
@@ -87,10 +89,10 @@ class Router {
             }
         }
 
-        
-
         // Default
         return new Page404();
     }
+
+
 }
 

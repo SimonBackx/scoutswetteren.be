@@ -12,16 +12,16 @@
         </label>
 
         <label>Voornaam</label>
-        <input type="text" name="ouder-voornaam{{ multiple }}" placeholder="Voornaam van de ouder" value="{{ ouder.voornaam | e('html_attr') }}">
+        <input type="text" name="ouder-voornaam{{ multiple }}" placeholder="Voornaam van de ouder" value="{{ ouder.user.firstname | e('html_attr') }}">
 
         <label>Achternaam</label>
-        <input type="text" name="ouder-achternaam{{ multiple }}" placeholder="Naam van de ouder" value="{{ ouder.achternaam | e('html_attr') }}">
+        <input type="text" name="ouder-achternaam{{ multiple }}" placeholder="Naam van de ouder" value="{{ ouder.user.lastname | e('html_attr') }}">
 
         <label>GSM</label>
-        <input type="text" name="ouder-gsm{{ multiple }}" placeholder="Vul het gsm-nummer van de ouder in" value="{{ ouder.gsm | e('html_attr') }}">
+        <input type="text" name="ouder-gsm{{ multiple }}" placeholder="Vul het gsm-nummer van de ouder in" value="{{ ouder.user.phone | e('html_attr') }}">
 
         <label>E-mailadres</label>
-        <input type="text" name="ouder-email{{ multiple }}" placeholder="Vul e-mailadres van de ouder in" value="{{ ouder.email | e('html_attr') }}">
+        <input type="text" name="ouder-email{{ multiple }}" placeholder="Vul e-mailadres van de ouder in" value="{{ ouder.user.mail | e('html_attr') }}">
 
     </div>
 

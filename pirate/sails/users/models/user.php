@@ -6,6 +6,10 @@ use Pirate\Mail\Mail;
 use Pirate\Model\Settings\Setting;
 use Pirate\Classes\Sentry\Sentry;
 
+// Should remove these dependencies:
+use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Leiding\Leiding;
+
 class User extends Model {
     public $id;
     public $firstname;
@@ -38,6 +42,22 @@ class User extends Model {
         $this->set_password_key = $row['user_set_password_key'];
     }
 
+    static function getForEmail($email) {
+        $email = self::getDb()->escape_string($email);
+
+        $query = '
+            SELECT u.* from users u
+            where u.mail = "'.$email.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new User($row);
+            }
+        }
+        return null;
+    }
+
     static function temporaryLoginWithPasswordKey($key) {
         $key = self::getDb()->escape_string($key);
         $query = "SELECT l.*
@@ -50,6 +70,31 @@ class User extends Model {
                 self::$currentUser = new User($row);
                 self::$didCheckLogin = true;
                 return true;
+            }
+        }
+        return false;
+    }
+
+    static function loginWithMagicToken($mail, $magicToken) {
+        $mail = self::getDb()->escape_string($mail);
+        $magicToken = self::getDb()->escape_string($magicToken);
+
+        $query = "SELECT o.*, t.expires
+        from users o
+        join user_magic_tokens t on t.client = o.id
+        where o.mail = '$mail' and o.password is not null and t.token = '$magicToken'";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                
+                $expires = $row['expires'];
+                // todo: validate magic token
+                
+                self::$user = new User($row);
+                self::$didCheckLogin = true;
+
+                return self::createToken();
             }
         }
         return false;
@@ -288,6 +333,92 @@ class User extends Model {
         return bin2hex($bytes);
     }
 
+    private static function generateLongKey() {
+        $bytes = openssl_random_pseudo_bytes(32);
+        return bin2hex($bytes);
+    }
+
+    function getMagicToken() {
+        if (isset($this->temporaryMagicToken)) {
+            return $this->temporaryMagicToken;
+        }
+
+        $token = self::getDb()->escape_string(self::generateLongKey());
+        $client = intval($this->id);
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        $query = "INSERT INTO user_magic_tokens (client, token, `expires`) VALUES ($client, '$token', '$time')";
+
+        if (self::getDb()->query($query)) {
+            $this->temporaryMagicToken = $token;
+            return $token;
+        }
+        return null;
+    }
+
+    function getMagicTokenUrl() {
+        $mail = $this->email;
+        $token = $this->getMagicToken();
+        return "https://".$_SERVER['SERVER_NAME']."/login/$mail/$token";
+    }
+
+    // Multiple ouders
+    static function createMagicTokensFor($ouders) {
+        $query = '';
+        $query = "";
+
+        // Bijhouden welke we hebben gegenereerd
+        // zodat we weten wanneer het fout loopt
+        $ouders_copy = array();
+        $now = new \DateTime();
+        $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
+        
+        foreach ($ouders as $ouder) {
+            if (!isset($ouder->temporaryMagicToken)) {
+                $token = self::getDb()->escape_string(self::generateLongKey());
+                $client = intval($ouder->id);
+                
+                if ($query != '') {
+                    $query .= ', ';
+                }
+                $query .= "($client, '$token', '$time')";
+
+                $ouder->temporaryMagicToken = $token;
+                $ouders_copy[] = $ouder;
+            }
+        }
+
+        if (count($ouders_copy) == 0) {
+            return true;
+        }
+        
+        $query = 'INSERT INTO ouder_magic_tokens (client, token, `expires`) VALUES '.$query;
+
+        if (self::getDb()->query($query)) {
+            return true;
+        } else {
+            foreach ($ouders_copy as $ouder) {
+                $ouder->temporaryMagicToken = null;
+            }
+        }
+        return false;
+    }
+
+    function generatePasswordRecoveryKey() {
+        // Generate and put in $this->set_password_key
+        $old = $this->set_password_key;
+        $key = self::generateKey();
+        $this->set_password_key = $key;
+
+        // Opslaan
+        if ($this->save()) {
+            return true;
+        } else {
+            $this->set_password_key = $old;
+            return false;
+        }
+    }
+
     /**
      * Controleert of de huidige bezoeker ingelogd is
      * @return User Geeft leiding object van bezoeker terug indien de gebruiker ingelogd is. NULL indien niet ingelogd
@@ -358,6 +489,15 @@ class User extends Model {
         return self::$currentUser->permissions;
     }
 
+    static function getRedirectURL() {
+        if (Ouder::isLoggedIn()) {
+            return "https://".$_SERVER['SERVER_NAME']."/ouders";
+        } elseif (Leiding::isLoggedIn()) {
+            return "https://".$_SERVER['SERVER_NAME']."/admin";
+        }
+        return "https://".$_SERVER['SERVER_NAME'];
+    }
+
     static function getUser() {
         if (!self::isLoggedIn()) {
             return null;
@@ -379,31 +519,83 @@ class User extends Model {
 
         if (isset($data['firstname'], $data['lastname'])) {
             if (Validator::isValidFirstname($data['firstname'])) {
-                $this->firstname = ucwords($data['firstname']);
+                $this->firstname = ucwords(mb_strtolower(trim($data['firstname'])));
                 $data['firstname'] = $this->firstname;
             } else {
                 $errors[] = 'Ongeldige voornaam';
             }
 
             if (Validator::isValidLastname($data['lastname'])) {
-                $this->lastname = ucwords($data['lastname']);
+                $this->lastname = ucwords(mb_strtolower(trim($data['lastname'])));
                 $data['lastname'] = $this->lastname;
             } else {
                 $errors[] = 'Ongeldige achternaam';
             }
         }
 
+
         if (Validator::isValidMail($data['mail'])) {
-            $this->mail = strtolower($data['mail']);
-            $data['mail'] = $this->mail;
-        }  else {
-            $errors[] = 'Ongeldige e-mailadres';
+            $mail = strtolower($data['mail']);
+            $escaped = self::getDb()->escape_string($mail);
+
+            if (isset($this->id)) {
+                $id = self::getDb()->escape_string($this->id);
+                 // Zoek andere ouders met dit e-mailadres
+                $query = "SELECT o.*
+                from users o
+                where mail = '$escaped' and id != '$id'";
+            } else {
+                 // Zoek andere ouders met dit e-mailadres
+                $query = "SELECT o.*
+                from users o
+                where mail = '$escaped'";
+            }
+
+            if ($result = self::getDb()->query($query)) {
+                if ($result->num_rows == 0){
+                    $this->mail = $mail;
+                } else {
+                    $errors[] = 'Dit e-mailadres is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                }
+            } else {
+                $errors[] = 'Er ging iets mis';
+            }
+        } else {
+            $errors[] = 'Ongeldig e-mailadres';
         }
+
 
         // Als admin een user aanpast hoeft hij geen telefoon nummer op te geven
         // Anders moet hij wel altijd een telefoonnummer opgeven
         if (strlen($data['phone']) > 0 || !$admin) {
-            Validator::validatePhone($data['phone'], $this->phone, $errors);
+
+            if (Validator::validatePhone($data['phone'], $this->phone, $errors)) {
+                $escaped = self::getDb()->escape_string($this->phone);
+    
+                if (isset($this->id)) {
+                    $id = self::getDb()->escape_string($this->id);
+                     // Zoek andere ouders met dit e-mailadres
+                    $query = "SELECT o.*
+                    from users o
+                    where phone = '$escaped' and id != '$id'";
+                } else {
+                     // Zoek andere ouders met dit e-mailadres
+                    $query = "SELECT o.*
+                    from users o
+                    where phone = '$escaped'";
+                }
+    
+                if ($result = self::getDb()->query($query)) {
+                    if ($result->num_rows > 0){
+                        $this->phone = null;
+                        $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                    }
+                } else {
+                    $this->phone = null;
+                    $errors[] = 'Er ging iets mis';
+                }
+            }
+
         } else {
             $this->phone = null;
         }

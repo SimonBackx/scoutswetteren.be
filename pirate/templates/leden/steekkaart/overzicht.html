@@ -217,8 +217,8 @@
                             {% endif %}
 
                             {% for ouder in lid.ouders %}
-                                <tr><td>{{ ouder.titel }}</td><td>{{ ouder.voornaam }} {{ ouder.achternaam }}</td></tr>
-                                <tr><td></td><td>{{ ouder.gsm }}</td></tr>
+                                <tr><td>{{ ouder.titel }}</td><td>{{ ouder.user.firstname }} {{ ouder.user.lastname }}</td></tr>
+                                <tr><td></td><td>{{ ouder.user.phone }}</td></tr>
                                 {% if lid.getAdressen | length > 1 %}
                                     <tr><td></td><td>{{ ouder.getAdres }}</td></tr>
                                 {% endif %}

@@ -102,9 +102,9 @@ class OuderOverview extends Page {
 
                 $ouder = Ouder::getUser();
                 $mail->addTo(
-                    $ouder->email, 
-                    array('naam' => $ouder->voornaam, 'url' => "https://".$_SERVER['SERVER_NAME']."/ouders/afrekening/".$afrekening->id.'/'),
-                    $ouder->voornaam.' '.$ouder->achternaam
+                    $ouder->user->mail, 
+                    array('naam' => $ouder->user->firstname, 'url' => "https://".$_SERVER['SERVER_NAME']."/ouders/afrekening/".$afrekening->id.'/'),
+                    $ouder->user->firstname.' '.$ouder->user->lastname
                 );
 
                 $mail->send();

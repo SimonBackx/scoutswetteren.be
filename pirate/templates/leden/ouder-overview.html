@@ -3,7 +3,7 @@
 {% block main %}
     <main>
         <nav class="buttons">
-            Ingelogd als {{ ouder.voornaam }}
+            Ingelogd als {{ ouder.user.firstname }}
             <a href="/ouders/uitloggen" class="button">Uitloggen</a>
             <a href="/ouders/wachtwoord-wijzigen" class="button">Wachtwoord wijzigen</a>
         </nav>
@@ -59,9 +59,9 @@
                 <div class="list-bundle">
                 {% for ouder in ouders %}
                     <article class="list">
-                        <div class="medium merlot column"><a href="/ouders/ouder-aanpassen/{{ ouder.id }}">{{ouder.voornaam}} {{ouder.achternaam}}</a></div>
+                        <div class="medium merlot column"><a href="/ouders/ouder-aanpassen/{{ ouder.id }}">{{ouder.user.firstname}} {{ouder.user.lastname}}</a></div>
                         <div class="small merlot column">{{ouder.titel}}</div>
-                        <div class="max column">{{ouder.email}}<br>{{ouder.gsm}}<br>{{ouder.getAdres}}</div>
+                        <div class="max column">{{ouder.user.mail}}<br>{{ouder.user.phone}}<br>{{ouder.getAdres}}</div>
                         <div class="last column">
                             <a href="/ouders/ouder-aanpassen/{{ ouder.id | e('html_attr')}}" class="icon-button">
                             Wijzigen

@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sail\Users\Pages;
 use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
-use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Users\User;
 
 class WachtwoordWijzigen extends Page {
     function getStatusCode() {
@@ -15,7 +15,7 @@ class WachtwoordWijzigen extends Page {
         $success = false;
 
         if (isset($_POST['password'], $_POST['new-password'], $_POST['new-password-repeated'])) {
-            $user = Ouder::getUser();
+            $user = User::getUser();
 
             $password = $_POST['password'];
             $new_password = $_POST['new-password'];
@@ -28,7 +28,7 @@ class WachtwoordWijzigen extends Page {
                         $errors[] = 'Controleer of je nieuwe wachtwoord langer is dan 9 tekens.';
                     } else {
                         $success = true;
-                        header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+                        header("Location: ".User::getRedirectURL());
                     }
                 } else {
                     $errors[] = 'Foutief wachtwoord';
@@ -36,7 +36,7 @@ class WachtwoordWijzigen extends Page {
             }
         }
 
-        return Template::render('leden/wachtwoord-wijzigen', array(
+        return Template::render('users/wachtwoord-wijzigen', array(
             'errors' => $errors,
             'success' => $success
         ));

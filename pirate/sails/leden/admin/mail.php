@@ -170,13 +170,13 @@ class MailPage extends Page {
                     if (count($errors) == 0) {
                         foreach ($ouders as $ouder) {
                             $mail->addTo(
-                                $ouder->email, 
+                                $ouder->user->mail, 
                                 array(
-                                    'magic_url' => $ouder->getMagicTokenUrl(),
-                                    'voornaam' => $ouder->voornaam,
+                                    'magic_url' => $ouder->user->getMagicTokenUrl(),
+                                    'voornaam' => $ouder->user->firstname,
                                     'reason' => ''
                                 ),
-                                $ouder->voornaam.' '.$ouder->achternaam
+                                $ouder->user->firstname.' '.$ouder->user->lastname
                             );
                         }
 
