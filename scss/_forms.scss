@@ -372,7 +372,9 @@ form {
             list-style: none;
             padding: 0;
             margin: 0;
-            font-size: $size-text;
+            font-size: $size-text-bigger;
+            background: url(../images/error.svg) no-repeat left center;
+            padding-left: 30px;
         }
     }
 

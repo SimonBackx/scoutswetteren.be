@@ -103,6 +103,14 @@ function camelCaseToDashes($className) {
     return strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $className));
 }
 
+function obfuscateEmail($email) {
+    $em   = explode("@",$email);
+    $name = implode(array_slice($em, 0, count($em)-1), '@');
+    $len  = floor(strlen($name)/2);
+
+    return substr($name,0, $len) . str_repeat('*', $len) . "@" . end($em);   
+}
+
 function strposa($haystack, $needles=array(), $offset=0) {
     $chr = array();
     foreach($needles as $needle) {

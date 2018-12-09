@@ -27,11 +27,6 @@ class UsersRouter extends Route {
             return true;
         }
 
-        if ($match = $this->match($parts, '/gebruikers/login')) {        
-            $this->setPage(new Pages\Login());
-            return true;
-        }
-
         if ($match = $this->match($parts, '/gebruikers/login/@mail/@key', ['mail' => 'string', 'key' => 'string'])) {        
             if (User::loginWithMagicToken($match->params->mail, $match->params->key)) {
                 $this->setPage(new Pages\MagicLink());
@@ -50,6 +45,16 @@ class UsersRouter extends Route {
                 $this->setPage(new Pages\WachtwoordWijzigen());
                 return true;
             }        
+        } else {
+            if ($match = $this->match($parts, '/gebruikers/login')) {        
+                $this->setPage(new Pages\Login());
+                return true;
+            }
+    
+            if ($match = $this->match($parts, '/gebruikers/registreren')) {        
+                $this->setPage(new Pages\Registreren());
+                return true;
+            }
         }
 
         return false;
