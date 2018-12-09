@@ -6,7 +6,7 @@ use Pirate\Model\Users\User;
 
 class UsersRouter extends Route {
     function doMatch($url, $parts) {
-        if ($match = $this->match($parts, '/gebruikers/account-aanmaken/@key', ['key' => 'string'])) {        
+        if ($match = $this->match($parts, '/gebruikers/wachtwoord-kiezen/@key', ['key' => 'string'])) {        
             if (User::temporaryLoginWithPasswordKey($match->params->key)) {        
                 $this->setPage(new Pages\SetPassword());
                 return true;

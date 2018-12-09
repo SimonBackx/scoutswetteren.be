@@ -624,22 +624,22 @@ class User extends Model {
         if ($this->hasPassword()) {
             return "https://".$_SERVER['SERVER_NAME']."/gebruikers/wachtwoord-vergeten/".$this->set_password_key;
         }
-        return "https://".$_SERVER['SERVER_NAME']."/gebruikers/account-aanmaken/".$this->set_password_key;
+        return "https://".$_SERVER['SERVER_NAME']."/gebruikers/wachtwoord-kiezen/".$this->set_password_key;
     }
 
     function hasPassword() {
         return !empty($this->password);
     }
 
-    /*function sendPasswordEmail() {
-        $mail = new Mail('Account scoutswebsite', 'leiding-new', array('leiding' => $this));
+    function sendPasswordEmail() {
+        $mail = new Mail('Account scoutswebsite', 'user-new', array('user' => $this));
         $mail->addTo(
             $this->mail, 
             array(),
             $this->firstname.' '.$this->lastname
         );
         return $mail->send();
-    }*/
+    }
 
     function save(){
         $firstname = self::getDb()->escape_string($this->firstname);
