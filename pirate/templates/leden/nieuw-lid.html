@@ -5,20 +5,21 @@
         <div class="white block">
                 <form method="post">
                     <div class="text">
-                        
-                        <h1>Nieuw gezin inschrijven</h1>
-                        <h2>Deze pagina is enkel voor nieuwe leden. Leden die vorig jaar waren ingeschreven kunnen inloggen met hun account om hun inschrijving te verlengen. Broers en zussen moeten ook via die weg worden ingeschreven.</h2>
+                        <h1>Gezin informatie</h1>
 
                         {% if limits_ignored %}
                             <p><strong>Je hebt van de leiding toegang gekregen om leden in te schrijven met een uitzondering op de leeftijd (< 6 jaar, 4e jaar giver, 2e jaar jin).</strong> </p>
                         {% endif %}
 
                         {% if fail %}
-                        <ul class="error">
-                            <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
-                        </ul>{% endif %}
+                            <ul class="error">
+                                <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
+                            </ul>
+                        {% endif %}
+                        
                         {% if success %}
-                        <h2>Gelukt!</h2>{% endif %}
+                            <h2>Gelukt!</h2>
+                        {% endif %}
 
                         {% if errors|length > 0 %}
                             <ul class="error">
@@ -28,28 +29,19 @@
                             </ul>
                         {% endif %}
 
-                        {% set aantal = max(1, leden | length) %}
-                        {% for i in 0..aantal %}
-                            {% set lid = leden[loop.index0] %}
-                            <div class="leden-bundle{% if loop.index > 1 and lid | length == 0 %} leden-new" style="display: none;{% endif %}">
-                                <h2>Gegevens nieuw lid</h2>
-                                {% set multiple = '[]' %}
-                                {% set multipleCount = '[' ~ loop.index0 ~ ']' %}
-                                {{ include('leden/lid-aanpassen.part.html') }}
-                            </div>
-                        {% endfor %}
-                        <button class="icon-button delete delete-count"{% if leden | length <= 1 %} style="display: none;"{% endif %}>Lid verwijderen</button>
-                        <button class="icon-button plus add-count" data-field="leden" data-move="achternaam" data-max="10"{% if max(1, leden | length) >= 10 %} style="display: none;"{% endif %}>Broer of zus inschrijven</button>
+                        <h2>Samenstelling</h2>
 
-                        <h1>Ouders of voogd</h1>
+                        {{ include('leden/gezinsituatie.part.html') }}
 
-                        {% set aantal = max(1, ouders | length) %}
 
-                        {% for i in 0..aantal %}
-                            {% set ouder = ouders[loop.index0] %}
-                            <div class="ouders-bundle{% if loop.index > 1 and ouder | length == 0 %} ouders-new" style="display: none;{% endif %}">
-                                <h2 data-fill="Gegevens">Gegevens ouder</h2>
-                                {% set multiple = '[]' %}
+                        <input id="eenoudergezin" type="checkbox" name="eenoudergezin" value="1">
+                        <label for="eenoudergezin">Dit is een éénoudergezin</label>
+
+                        <div class="checkbox-controllable">
+                            <div class="visible-when-checked">
+                                
+                                <h2>Gegevens van andere ouder</h2>
+                                {% set ouder = [] %}
                                 {{ include('leden/ouder-aanpassen.part.html') }}
 
                                 {% if ouder.errors|length > 0 %}
@@ -59,18 +51,26 @@
                                         {% endfor %}
                                     </ul>
                                 {% endif %}
-
                             </div>
-                        {% endfor %}
+                        </div>
 
-                        <button class="icon-button delete delete-count" data-field="ouders"{% if aantal <= 1 %} style="display: none;"{% endif %}>Ouder verwijderen</button>
-                        <button class="icon-button plus add-count" data-field="ouders" data-move="adres,gemeente,postcode,telefoon" data-max="4"{% if aantal >= 4 %} style="display: none;"{% endif %}>Ouder toevoegen</button>
+                        <h2>Jouw gegevens</h2>
+                        {% set ouder = [] %}
+                        {{ include('leden/ouder-aanpassen.part.html') }}
 
-                        <h1>Gezin</h1>
-                        {{ include('leden/gezin_settings.part.html') }}
+                        {% if ouder.errors|length > 0 %}
+                            <ul class="error">
+                                {% for error in ouder.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                       
+                        {{ include('leden/scouting-op-maat.html') }}
 
                         <footer>
-                            <input type="submit" class="aubergine fill" value="Inschrijven">
+                            <input type="submit" class="aubergine fill" value="Volgende">
                         </footer>
 
                     </div>
