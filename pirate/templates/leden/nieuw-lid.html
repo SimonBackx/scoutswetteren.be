@@ -10,19 +10,15 @@
                         {% if limits_ignored %}
                             <p><strong>Je hebt van de leiding toegang gekregen om leden in te schrijven met een uitzondering op de leeftijd (< 6 jaar, 4e jaar giver, 2e jaar jin).</strong> </p>
                         {% endif %}
-
-                        {% if fail %}
-                            <ul class="error">
-                                <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
-                            </ul>
-                        {% endif %}
                         
                         {% if success %}
                             <h2>Gelukt!</h2>
                         {% endif %}
 
                         {% if errors|length > 0 %}
+
                             <ul class="error">
+                                <li>Niet alles werd correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
                                 {% for error in errors %}
                                     <li>{{ error }}</li>
                                 {% endfor %}
@@ -34,37 +30,40 @@
                         {{ include('leden/gezinsituatie.part.html') }}
 
 
-                        <input id="eenoudergezin" type="checkbox" name="eenoudergezin" value="1">
+                        <input id="eenoudergezin" type="checkbox" name="eenoudergezin" value="1" {% if gezin.eenoudergezin %} checked{% endif %}>
                         <label for="eenoudergezin">Dit is een éénoudergezin</label>
 
                         <div class="checkbox-controllable">
-                            <div class="visible-when-checked">
+                            <h2>Jouw gegevens</h2>
+                            {% set ouder = ouders[0] %}
+                            {% set multiple = '[0]' %}
+                            {% if ouder.errors|length > 0 %}
+                                <ul class="error">
+                                    <li>Jouw gegevens werden niet correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
+                                    {% for error in ouder.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            {{ include('leden/ouder-aanpassen.part.html') }}
+
+                            <div class="hidden-when-checked">
                                 
                                 <h2>Gegevens van andere ouder</h2>
-                                {% set ouder = [] %}
-                                {{ include('leden/ouder-aanpassen.part.html') }}
-
+                                {% set ouder = ouders[1] %}
+                                {% set multiple = '[1]' %}
                                 {% if ouder.errors|length > 0 %}
                                     <ul class="error">
+                                        <li>De gegevens van de andere ouder werden niet correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
                                         {% for error in ouder.errors %}
                                             <li>{{ error }}</li>
                                         {% endfor %}
                                     </ul>
                                 {% endif %}
+
+                                {{ include('leden/ouder-aanpassen.part.html') }}
                             </div>
                         </div>
-
-                        <h2>Jouw gegevens</h2>
-                        {% set ouder = [] %}
-                        {{ include('leden/ouder-aanpassen.part.html') }}
-
-                        {% if ouder.errors|length > 0 %}
-                            <ul class="error">
-                                {% for error in ouder.errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
 
                        
                         {{ include('leden/scouting-op-maat.html') }}

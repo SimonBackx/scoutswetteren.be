@@ -29,11 +29,11 @@
         <label>Adres</label>
         <input type="text" class="adres" name="ouder-adres{{ multiple }}" placeholder="Straat en nummer" value="{{ ouder.adres | e('html_attr') }}">
 
-        <label>Gemeente</label>
-        <input type="text" class="gemeente" name="ouder-gemeente{{ multiple }}" placeholder="Vul de gemeente in van de ouder" value="{{ ouder.gemeente | e('html_attr') }}">
-
         <label>Postcode</label>
         <input type="text" class="postcode" name="ouder-postcode{{ multiple }}" placeholder="Vul de postcode in van de ouder" value="{{ ouder.postcode | e('html_attr') }}">
+
+        <label>Gemeente</label>
+        <input type="text" class="gemeente" name="ouder-gemeente{{ multiple }}" placeholder="Vul de gemeente in van de ouder" value="{{ ouder.gemeente | e('html_attr') }}">
 
         <label>Huistelefoon (optioneel)</label>
         <input type="text" class="telefoon" name="ouder-telefoon{{ multiple }}" placeholder="Vul telefoon bij adres in" value="{{ ouder.telefoon | e('html_attr') }}">

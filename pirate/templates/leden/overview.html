@@ -22,14 +22,21 @@
                     </footer>
                 </div>
                 <div class="part subtext">
-                    <h2>Inschrijven mogelijk na inloggen</h2>
-                    <p>Ouders kunnen inloggen met hun account of een nieuw account aanmaken om leden in te schrijven of inschrijvingen te beheren.</p>
-                    
-                    <a href="/gebruikers/login" rel="nofollow" class="fill button aubergine">
-                    Inloggen</a>
-                    <a href="/gebruikers/registreren" rel="nofollow" class="button aubergine">
-                        Registreren</a>
-
+                    {% if logged_in %}
+                        <h1>Schrijf leden in</h1>
+                        <p>Je bent ingelogd en kan leden inschrijven.</p>
+                        
+                        <a href="/inschrijven/nieuw-gezin" rel="nofollow" class="fill button aubergine">
+                            Begin met inschrijven</a>
+                    {% else %}
+                        <h2>Inschrijven mogelijk na inloggen</h2>
+                        <p>Ouders kunnen inloggen met hun account of een nieuw account aanmaken om leden in te schrijven of inschrijvingen te beheren.</p>
+                        
+                        <a href="/gebruikers/login" rel="nofollow" class="fill button aubergine">
+                        Inloggen</a>
+                        <a href="/gebruikers/registreren" rel="nofollow" class="button aubergine">
+                            Registreren</a>
+                    {% endif %}
                 </div>
             </div>
         </article>

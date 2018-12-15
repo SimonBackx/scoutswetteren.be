@@ -9,8 +9,9 @@ use Pirate\Model\Leden\Gezin;
 use Pirate\Database\Database;
 use Pirate\Mail\Mail;
 use Pirate\Model\Leden\Inschrijving;
+use Pirate\Model\Users\User;
 
-class NieuwLid extends Page {
+class NieuwGezin extends Page {
 
     function getStatusCode() {
         return 200;
@@ -19,24 +20,40 @@ class NieuwLid extends Page {
     function getContent() {
         global $config;
 
+        // todo: require logged in!
+
         $fail = false;
         $success = false;
 
-        $leden = array();
-        $leden_models = array();
+        /*$leden = array();
+        $leden_models = array();*/
         $errors = array();
 
-        $ouders = array();
+        $user = User::getUser();
+        $ouders = [
+            [
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'phone' => $user->phone,
+                'mail' => $user->mail
+            ]
+        ];
         $ouders_models = array();
+
+
+
         $gezin_data = array();
+
+
+
         // check of vanalles is geset
         if (isset(
-            $_POST['lid-voornaam'], 
+            /*$_POST['lid-voornaam'], 
             $_POST['lid-achternaam'], 
             $_POST['lid-geboortedatum-dag'],
             $_POST['lid-geboortedatum-maand'],
             $_POST['lid-geboortedatum-jaar'],
-            $_POST['lid-gsm'],
+            $_POST['lid-gsm'],*/
             $_POST['ouder-titel'],
             $_POST['ouder-voornaam'],
             $_POST['ouder-achternaam'],
@@ -49,7 +66,7 @@ class NieuwLid extends Page {
             $_POST['gezinssituatie']
         )) {
             // Hoeveel leden opgegeven?
-            $aantal_leden = count($_POST['lid-voornaam']) - 1;
+            /*$aantal_leden = count($_POST['lid-voornaam']) - 1;
             for ($i=0; $i < $aantal_leden; $i++) { 
                 $data = array(
                     'voornaam' => $_POST['lid-voornaam'][$i],
@@ -81,10 +98,10 @@ class NieuwLid extends Page {
             if (count($leden_models) < 1) {
                 $errors[] = 'Er ging iets mis. Controleer of javascript ingeschakeld is en of het formulier dat u heeft doorgestuurd niet door malware werd aangepast. Controleer ook of u een moderne browser gebruikt.';
                 $fail = true;
-            }
+            }*/
 
             // Alle ouders overlopen
-            $aantal_ouders = count($_POST['ouder-voornaam']) - 1;
+            $aantal_ouders = min(isset($_POST['eenoudergezin']) ? 1 : 2, count($_POST['ouder-voornaam']));
             $emailadressen = [];
 
             for ($i=0; $i < $aantal_ouders; $i++) { 
@@ -102,6 +119,10 @@ class NieuwLid extends Page {
 
                 // Controleren en errors setten
                 $ouder = new Ouder();
+                if ($i == 0) {
+                    $ouder->user = User::getUser();
+                } 
+
                 $data['errors'] = $ouder->setProperties($data);
                 if (isset($emailadressen[$ouder->user->mail])) {
                     $data['errors'][] = 'Het is niet toegestaan dat je hetzelfde e-mailadres gebruikt voor meerdere ouders. Elke ouder krijgt namelijk een apart account waarmee hij/zij kan inloggen.';
@@ -116,7 +137,7 @@ class NieuwLid extends Page {
                 $ouder_models[] = $ouder;
 
                 // Opslaan
-                $ouders[] = $data;
+                $ouders[$i] = $data;
                 
             }
 
@@ -137,6 +158,8 @@ class NieuwLid extends Page {
             if (count($gezin->setProperties($data)) > 0) {
                 $fail = true;
             }
+
+            $data['eenoudergezin'] = isset($_POST['eenoudergezin']);
             $gezin_data = $data;
 
             if ($fail == false) {
@@ -148,14 +171,14 @@ class NieuwLid extends Page {
                 } else {
 
                     // Leden aan gezin toevoegen
-                    foreach ($leden_models as $lid) {
+                    /*foreach ($leden_models as $lid) {
                         $lid->setGezin($gezin);
                         $success = $lid->save();
                         if ($success == false) {
                              $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
                             break;
                         }
-                    }
+                    }*/
 
                     if ($success) {
                         // Ouders aan gezin toevoegen
@@ -163,16 +186,15 @@ class NieuwLid extends Page {
                             $ouder->setGezin($gezin);
                             $success = $ouder->save();
                             if ($success == false) {
-                             $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
+                                $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
                                 break;
                             }
                         }
 
                         if ($success) {
                         
-                            // Password generator mails maken en versturen
-                            
-                            // yay!
+                            // Password generator mails maken en versturen (ENKEL VOOR TWEEDE OUDER!)
+                            /*
                             $mail = new Mail('Inschrijving bij de scouts - Account aanmaken', 'nieuw-lid', array('leden' => $leden, 'ouders' => $ouders));
                             foreach ($ouder_models as $ouder) {
                                 $mail->addTo(
@@ -184,39 +206,49 @@ class NieuwLid extends Page {
                             if (!$mail->send()) {
                                 $errors[] = 'Er ging iets mis met het versturen van de e-mails. Contacteer de webmaster.';
                                 $success = false;
-                            } else {
+                            } else {*/
+
+                            /// Gelukt: redirect naar /overview page
+
+                            /*
                                 return Template::render('leden/nieuw-lid-gelukt', array(
                                     'leden' => $leden,
                                     'ouders' => $ouders,
                                     'gezin' => $gezin_data
                                 ));
-                            }
+                            */
+                            //}
+
+                            header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+                            return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
                         }
                     }
                 }
             }
         }
-        $jaar = Inschrijving::getScoutsjaar();
+        
+        
+        /*$jaar = Inschrijving::getScoutsjaar();
         $verdeling = Lid::getTakkenVerdeling($jaar, Lid::areLimitsIgnored());
         $keys = array_keys($verdeling);
         sort($keys);
         $jaren = array();
         for ($i=$keys[0] - 5; $i < $jaar; $i++) { 
             $jaren[] = $i;
-        }
+        }*/
 
         return Template::render('leden/nieuw-lid', array(
-            'leden' => $leden,
+            //'leden' => $leden,
             'ouders' => $ouders,
             'gezin' => $gezin_data,
             'titels' => Ouder::$titels,
-            'maanden' => $config["months"],
-            'jaren' => $jaren,
+            //'maanden' => $config["months"],
+            //'jaren' => $jaren,
             'fail' => $fail,
             'success' => $success,
             'errors' => $errors,
-            'takken' => json_encode($verdeling),
-            'limits_ignored' => Lid::areLimitsIgnored(),
+            //'takken' => json_encode($verdeling),
+            //'limits_ignored' => Lid::areLimitsIgnored(),
         ));
     }
 }

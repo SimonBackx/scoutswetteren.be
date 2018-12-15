@@ -6,7 +6,7 @@ use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Afrekening;
 use Pirate\Model\Leden\Inschrijving;
-
+use Pirate\Model\Users\User;
 use Pirate\Sail\Users\Pages\Login;
 
 class LedenRouter extends Route {
@@ -20,7 +20,7 @@ class LedenRouter extends Route {
             return true;
         }
 
-        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'nieuw-lid' && !Ouder::isLoggedIn()) {
+        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'nieuw-gezin' && !Ouder::isLoggedIn() && User::isLoggedIn() ) {
             return true;
         }
 
@@ -190,7 +190,7 @@ class LedenRouter extends Route {
             return new Pages\UitzonderingToelaten();
         }
 
-        require(__DIR__.'/pages/nieuw-lid.php');
-        return new Pages\NieuwLid();
+        require(__DIR__.'/pages/nieuw-gezin.php');
+        return new Pages\NieuwGezin();
     }
 }

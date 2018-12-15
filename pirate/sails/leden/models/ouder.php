@@ -116,6 +116,10 @@ class Ouder extends Model {
         $model = Adres::find($data['adres'], $data['gemeente'], $data['postcode'], $data['telefoon'], $errors);
         if (isset($model)) {
             $this->adres = $model; 
+        } else {
+            if (strlen($data['adres']) < 2) {
+                $data['adres'] = '';
+            }
         }
 
         return $errors;
@@ -174,6 +178,7 @@ class Ouder extends Model {
  
         $adres = self::getDb()->escape_string($this->adres->id);
         $titel = self::getDb()->escape_string($this->titel);
+        $user_id = self::getDb()->escape_string($this->user->id);
 
         if (empty($this->id)) {
             if (empty($this->gezin)) {
@@ -182,12 +187,13 @@ class Ouder extends Model {
             $gezin = self::getDb()->escape_string($this->gezin->id);
 
             $query = "INSERT INTO 
-                ouders (`gezin`, `titel`, `adres`)
-                VALUES ('$gezin', '$titel','$adres')";
+                ouders (`user_id`, `gezin`, `titel`, `adres`)
+                VALUES ('$user_id','$gezin', '$titel','$adres')";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE ouders 
                 SET 
+                `user_id` = '$user_id',
                  `titel` = '$titel',
                  `adres` = '$adres',
                  where id = '$id' 
@@ -277,7 +283,7 @@ class Ouder extends Model {
                 left join gezinnen g on g.gezin_id = o.gezin
                 left join adressen a on a.adres_id = o.adres
                 join users u on o.user_id = u.user_id
-            where u.id = "'.$id.'"';
+            where u.user_id = "'.$id.'"';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows == 1){
