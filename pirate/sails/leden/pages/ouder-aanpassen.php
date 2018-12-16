@@ -9,6 +9,7 @@ use Pirate\Model\Leden\Gezin;
 use Pirate\Database\Database;
 use Pirate\Mail\Mail;
 use Pirate\Model\Leden\Inschrijving;
+use Pirate\Model\Users\User;
 
 class OuderAanpassen extends Page {
     private $ouder = null;
@@ -69,6 +70,10 @@ class OuderAanpassen extends Page {
             if (count($errors) == 0) {
                 if ($this->ouder->save()) {
                     $success = true;
+
+                    if ($new) {
+                        $this->ouder->sendCreatedMail(User::getUser());
+                    }
                     header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
                     return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
                 } else {

@@ -81,15 +81,19 @@
                 {% endif %}
                 
             {% else %}
-                {% if not lid.inschrijving.isBetaald %}
-                    {% if lid.steekkaart.laatst_nagekeken is empty %}
-                        <div class="large merlot column">Lidgeld niet betaald + steekkaart niet ingevuld</div>
-                    {% else %}
-                        <div class="large merlot column">Lidgeld niet betaald</div>
-                    {% endif %}   
+                {% if not lid.inschrijving.isAfgerekend %}
+                    <div class="large merlot column">Inschrijving niet voltooid (nog geen afrekening gemaakt)</div>
                 {% else %}
-                    {% if lid.steekkaart.laatst_nagekeken is empty %}
-                        <div class="large merlot column">Steekkaart nog niet ingevuld</div>
+                    {% if not lid.inschrijving.isBetaald %}
+                        {% if lid.steekkaart.laatst_nagekeken is empty %}
+                            <div class="large merlot column">Lidgeld niet betaald + steekkaart niet ingevuld</div>
+                        {% else %}
+                            <div class="large merlot column">Lidgeld niet betaald</div>
+                        {% endif %}   
+                    {% else %}
+                        {% if lid.steekkaart.laatst_nagekeken is empty %}
+                            <div class="large merlot column">Steekkaart nog niet ingevuld</div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% endif %}

@@ -124,6 +124,10 @@ class Inschrijving extends Model {
         return $this->afrekening_oke;
     }
 
+    function isAfgerekend() {
+        return !empty($this->afrekening);
+    }
+
     function getPrijs() {
         return '€ '.money_format('%!.2n', $this->prijs);
     }
@@ -194,6 +198,11 @@ class Inschrijving extends Model {
 
     static function schrijfIn(Lid $lid) {
         $scoutsjaar = self::getScoutsjaar();
+
+        if (isset($lid->inschrijving) && !empty($lid->inschrijving->datum_uitschrijving) && $lid->inschrijving->scoutsjaar == $scoutsjaar) {
+            $lid->inschrijving->datum_uitschrijving = null;
+            return $lid->inschrijving->save();
+        }
 
         $jaar = self::getDb()->escape_string($scoutsjaar);
 

@@ -6,6 +6,7 @@ use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Users\User;
+use Pirate\Mail\Mail;
 
 class Ouder extends Model {
     public $id;
@@ -452,6 +453,16 @@ class Ouder extends Model {
 
     static function getUser() {
         return self::checkLogin();
+    }
+
+    function sendCreatedMail(User $created_by) {
+        $mail = new Mail('Account scoutswebsite', 'user-new-gezin', array('user' => $this->user, 'creator' => $created_by));
+        $mail->addTo(
+            $this->user->mail, 
+            array(),
+            $this->user->firstname.' '.$this->user->lastname
+        );
+        return $mail->send();
     }
     
 }

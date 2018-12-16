@@ -3,9 +3,10 @@
 {% for result in results %}
     <article class="result{% if loop.last %} last{% endif %}">
         <h1>{{ result.voornaam }} {{ result.achternaam }}</h1>
-        {% for ouder in result.ouders %}
-        <p>{{ ouder.user.firstname }} {{ ouder.user.lastname }} ({{ouder.user.phone}})</p>
-        {% endfor %}
+        <p>{{ result.tak | capitalize }}</p>
+        {% if (result.gsm is not empty) %}
+            <p>{{ result.gsm }}</p>
+        {% endif %}
         <p><a href="/admin/inschrijvingen/lid/{{ result.id }}" class="button aubergine noborder">Steekkaart</a></p>
     </article>
 {% else %}

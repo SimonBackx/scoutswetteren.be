@@ -160,8 +160,8 @@ class Leiding extends Model {
             }
             
             if (count($leiding) > 0) {
-                $email = $leiding[0]->mail;
-                $naam = $leiding[0]->firstname.' '.$leiding[0]->lastname;
+                $email = $leiding[0]->user->mail;
+                $naam = $leiding[0]->user->firstname.' '.$leiding[0]->user->lastname;
             }
         } else {
             $email = $contact_data['mail'];

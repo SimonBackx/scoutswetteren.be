@@ -171,78 +171,39 @@ class Lid extends Model {
         $duplicate_fields = array('id', 'gsm', 'voornaam', 'achternaam');
 
         $errors = array();
-        if (Validator::validateBothPhone($text, $phone, $errors, true)) {
-            $text = self::getDb()->escape_string($phone);
-            $query = '
-                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.*, a.* from ouders o
-                    join leden l on l.gezin = o.gezin
-                    left join adressen a on a.adres_id = o.adres
-                    left join steekkaarten s on s.lid = l.id
-                    left join gezinnen g on g.gezin_id = l.gezin
-                    left join inschrijvingen i on i.lid = l.id
-                    left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-                where 
-                    i2.inschrijving_id is null
-                    AND i.inschrijving_id is not null
-                    AND
-                    (
-                        l.gsm LIKE "'.$text.'%" OR 
-                        o.gsm LIKE "'.$text.'%" OR 
-                        a.telefoon LIKE "'.$text.'%" 
-                    )';
 
-        } else {
-            // todo: remove +,*,-
-
-            // Add + before every word longer then 3 characters, add * at the end
-            /*$newText = "";
-            $currentWord = "";
-
-            for ($i=0; $i < strlen($text); $i++) { 
-                $char = substr($text, $i, 1);
-                if ($char == " ") {
-                    if (strlen($currentWord) > 3) {
-                        $newText .=" +".$currentWord;
-                    } else {
-                        $newText .=" ".$currentWord;
-                    }
-                    $currentWord = "";
-                } else {
-                    $currentWord .= $char;
-                }
+        $words = explode(' ', $text);
+        $subtext = '';
+        foreach ($words as $word) {
+            if (empty($word)) {
+                continue;
             }
-
-            if (strlen($currentWord) > 3) {
-                $newText .=" +".$currentWord."*";
-            } else {
-                if (strlen($currentWord) > 0) {
-                    $newText .=" ".$currentWord."*";
-                }
-            }*/
-
-            $text = self::getDb()->escape_string($text);
-
-            $query = '
-                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.*, a.*, u.* from ouders o
-                    join leden l on l.gezin = o.gezin
-                    join users u on o.user_id  = u.user_id
-                    left join adressen a on a.adres_id = o.adres
-                    left join steekkaarten s on s.lid = l.id
-                    left join gezinnen g on g.gezin_id = l.gezin
-                    left join inschrijvingen i on i.lid = l.id
-                    left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-                where 
-                    i2.inschrijving_id is null
-                    AND i.inschrijving_id is not null
-                    AND
-                    (
-                        MATCH(l.voornaam,l.achternaam,l.gsm) 
-                        AGAINST("'.$text.'" IN BOOLEAN MODE)
-                        OR
-                        MATCH(u.user_firstname,u.user_lastname,u.user_phone) 
-                        AGAINST("'.$text.'" IN BOOLEAN MODE)
-                    )';//
+            if (!empty($subtext)) {
+                $subtext .= ' ';
+            }
+            $subtext .= '+'.self::getDb()->escape_string(str_replace(['+', '-', '*'], ['\\+', '', ''], $word)).'*';
         }
+
+        $text = $subtext;
+
+        $query = '
+        SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.*, a.*, u.* from leden_search
+            join leden l on l.id = leden_search.search_lid
+            join ouders o on l.gezin = o.gezin
+            join users u on o.user_id  = u.user_id
+            left join adressen a on a.adres_id = o.adres
+            left join steekkaarten s on s.lid = l.id
+            left join gezinnen g on g.gezin_id = l.gezin
+            left join inschrijvingen i on i.lid = l.id
+            left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
+        where 
+            i2.inschrijving_id is null
+            AND i.inschrijving_id is not null
+            AND
+            (
+                MATCH(leden_search.search_text) 
+                AGAINST(\''.$text.'\' IN BOOLEAN MODE)
+            )';//
 
         $leden_dict = array();
 
@@ -473,6 +434,7 @@ class Lid extends Model {
         if (!$this->isInschrijfbaar()) {
             return false;
         }
+
         return Inschrijving::schrijfIn($this);
     }
 
@@ -638,6 +600,34 @@ class Lid extends Model {
             if (!isset($this->id)) {
                 $this->id = self::getDb()->insert_id;
             }
+
+            $this->updateSearchIndex();
+            return true;
+        }
+        return false;
+    }
+
+    function updateSearchIndex() {
+        // Generate text here:
+        $text = '';
+        $text .= "$this->voornaam $this->achternaam\n";
+        $text .= str_replace([' '], [' '], $this->gsm)."\n"; // remove non breaking spaces
+
+        // Withotu spaces
+        $text .= str_replace([' ', ' '], ['', ''], $this->gsm)."\n";
+
+        // With land code replaced by a zero
+        $text .= str_replace(['+32', '+31'], ['0', '0'],str_replace([' ', ' '], ['', ''], $this->gsm))."\n";
+        
+        // Todo: add ouders
+
+        $id = self::getDb()->escape_string($this->id);
+        $text = self::getDb()->escape_string($text);
+
+        $query = "INSERT INTO leden_search (`search_lid`, `search_text`) VALUES ('$id', '$text')
+        ON DUPLICATE KEY UPDATE search_text='$text';";
+
+        if (self::getDb()->query($query)) {
             return true;
         }
         return false;

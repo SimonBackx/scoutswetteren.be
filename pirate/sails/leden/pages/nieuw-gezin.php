@@ -192,35 +192,18 @@ class NieuwGezin extends Page {
                         }
 
                         if ($success) {
-                        
-                            // Password generator mails maken en versturen (ENKEL VOOR TWEEDE OUDER!)
-                            /*
-                            $mail = new Mail('Inschrijving bij de scouts - Account aanmaken', 'nieuw-lid', array('leden' => $leden, 'ouders' => $ouders));
+
+                            $first = true;
                             foreach ($ouder_models as $ouder) {
-                                $mail->addTo(
-                                    $ouder->user->mail, 
-                                    array('naam' => $ouder->user->firstname, 'url' => $ouder->user->getSetPasswordUrl()),
-                                    $ouder->user->firstname.' '.$ouder->user->lastname
-                                );
+                                if ($first) {
+                                    $first = false;
+                                    continue;
+                                }
+                                $ouder->sendCreatedMail($ouder_models[0]->user);
                             }
-                            if (!$mail->send()) {
-                                $errors[] = 'Er ging iets mis met het versturen van de e-mails. Contacteer de webmaster.';
-                                $success = false;
-                            } else {*/
-
-                            /// Gelukt: redirect naar /overview page
-
-                            /*
-                                return Template::render('leden/nieuw-lid-gelukt', array(
-                                    'leden' => $leden,
-                                    'ouders' => $ouders,
-                                    'gezin' => $gezin_data
-                                ));
-                            */
-                            //}
-
-                            header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
-                            return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
+                        
+                            header("Location: https://".$_SERVER['SERVER_NAME']."/ouders/broer-zus-toevoegen");
+                            return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders/broer-zus-toevoegen";
                         }
                     }
                 }

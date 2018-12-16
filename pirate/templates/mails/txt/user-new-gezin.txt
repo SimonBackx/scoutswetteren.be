@@ -1,0 +1,11 @@
+Dag {{ user.firstname }},
+
+{{ creator.firstname }} heeft je opgegeven als ouder bij het inschrijven van kinderen in jullie gezin op onze scouts. Dat wil zeggen dat ook jij de mogelijkheid krijgt om informatie aan te passen op de website en in de toekomst inschrijvingen te verlengen. Jij bent dus ook opgegeven als noodcontract en ontvangt nu ook communicatie via e-mail of sms.
+
+Het is belangrijk dat je al jouw gegevens nakijkt op de website. Stel daarom eerst een wachtwoord in zodat je kan inloggen, en je ook toegang hebt tot alles op onze website.
+
+Je kan je wachtwoord instellen door de link hieronder aan te klikken of te kopiëren in je adresbalk:
+{{ user.getSetPasswordUrl() }}
+
+Bedankt voor het vertrouwen in onze scouts,
+Scouts Prins Boudewijn Wetteren

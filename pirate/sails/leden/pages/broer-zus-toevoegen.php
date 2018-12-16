@@ -81,9 +81,13 @@ class BroerZusToevoegen extends Page {
                 if ($success == false) {
                      $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
                 } else {
-                    // Redirecten hier!!!
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/ouders/verleng-inschrijving");
-                    return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders/verleng-inschrijving";
+                    if ($new) {
+                        header("Location: https://".$_SERVER['SERVER_NAME']."/ouders/verleng-inschrijving");
+                        return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders/verleng-inschrijving";
+                    }
+
+                    header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+                    return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
                 }
             }
         }

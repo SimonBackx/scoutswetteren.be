@@ -4,6 +4,7 @@ use Pirate\Page\Page;
 use Pirate\Block\Block;
 use Pirate\Template\Template;
 use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Users\User;
 use Pirate\Model\Leden\Steekkaart;
 use Pirate\Database\Database;
 
@@ -77,7 +78,7 @@ class EditSteekkaart extends Page {
             'toestemming_fotos' => '',
             'aanvullend_voeding' => '',
             'aanvullend_andere' => '',
-            'nagekeken_door' => Ouder::getUser()->voornaam.' '.Ouder::getUser()->achternaam,
+            'nagekeken_door' => User::getUser()->firstname.' '.User::getUser()->lastname,
             'nagekeken_door_titel' => ''
         );
 
