@@ -1,5 +1,6 @@
 <?php
 
+// Todo: replace with configs
 $_SERVER['HTTPS'] = true;
 $_SERVER['SERVER_NAME'] = 'www.scoutswetteren.be';
 require(__DIR__ . '/../vendor/autoload.php');

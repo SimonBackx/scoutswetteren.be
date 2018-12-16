@@ -1,0 +1,9 @@
+Dag {{ user.firstname }} en {{ cleared.firstname }},
+
+We hebben gemerkt dat jullie hetzelfde e-mailadres delen voor jullie account op de scoutswebsite. Dit zorgt voor technische problemen en daarom is het niet langer mogelijk om dit te doen. We hebben het e-mailadres van {{ cleared.firstname }} leeg gemaakt en vragen jullie om zo snel mogelijk een alternatief e-mailadres in te vullen. Dit kan door in te loggen met het account van {{ user.firstname }} en bij de sectie 'ouders' de andere ouder te wijzigen en een e-mailadres in te vullen.
+
+Gebruik de onderstaande link om meteen in te loggen zodat je snel de nodige aanpassingen kan doen:
+{{ user.getMagicTokenUrl }}
+
+Alvast bedankt,
+Scouts Prins Boudewijn Wetteren

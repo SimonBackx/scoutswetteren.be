@@ -196,7 +196,7 @@ class Ouder extends Model {
                 SET 
                 `user_id` = '$user_id',
                  `titel` = '$titel',
-                 `adres` = '$adres',
+                 `adres` = '$adres'
                  where id = '$id' 
             ";
         }

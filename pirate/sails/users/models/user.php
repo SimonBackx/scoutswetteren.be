@@ -97,8 +97,8 @@ class User extends Model {
 
         $query = "SELECT o.*, t.expires
         from users o
-        join user_magic_tokens t on t.client = o.id
-        where o.mail = '$mail' and o.password is not null and t.token = '$magicToken'";
+        join user_magic_tokens t on t.client = o.user_id
+        where o.user_mail = '$mail' and o.user_password is not null and t.token = '$magicToken'";
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows == 1){
@@ -107,7 +107,7 @@ class User extends Model {
                 $expires = $row['expires'];
                 // todo: validate magic token
                 
-                self::$user = new User($row);
+                self::$currentUser = new User($row);
                 self::$didCheckLogin = true;
 
                 return self::createToken();
@@ -373,7 +373,7 @@ class User extends Model {
     }
 
     function getMagicTokenUrl() {
-        $mail = $this->email;
+        $mail = $this->mail;
         $token = $this->getMagicToken();
         return "https://".$_SERVER['SERVER_NAME']."/gebruikers/login/$mail/$token";
     }
