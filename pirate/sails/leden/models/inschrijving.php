@@ -13,6 +13,7 @@ class Inschrijving extends Model {
     public $datum;
     public $scoutsjaar;
     public $tak;
+    public $datum_uitschrijving; // Wanneer de inschrijving wordt ongedaan gemaakt
     
     //public $betaald_cash;
 
@@ -46,6 +47,8 @@ class Inschrijving extends Model {
         }
         
         $this->datum = new \DateTime($row['datum']);
+        $this->datum_uitschrijving = isset($row['datum_uitschrijving']) ? new \DateTime($row['datum_uitschrijving']) : null;
+
         $this->scoutsjaar = $row['scoutsjaar'];
         $this->tak = $row['tak'];
         
@@ -261,10 +264,15 @@ class Inschrijving extends Model {
 
         $id = self::getDb()->escape_string($this->id);
         $tak = self::getDb()->escape_string($this->tak);
+        $datum_uitschrijving = 'NULL';
+        if (isset($this->datum_uitschrijving)) {
+            $datum_uitschrijving = "'".$this->datum_uitschrijving->format('Y-m-d  H:i:s')."'";
+        }
 
         $query = "UPDATE inschrijvingen 
                 SET 
-                 `tak` = '$tak'
+                 `tak` = '$tak',
+                 `datum_uitschrijving` = $datum_uitschrijving
                  where `inschrijving_id` = '$id'
             ";
 
@@ -273,6 +281,11 @@ class Inschrijving extends Model {
         }
 
        return true;
+    }
+
+    function uitschrijven() {
+        $this->datum_uitschrijving = new \DateTime();
+        return $this->save();
     }
 
     function delete() {
@@ -298,10 +311,10 @@ class Inschrijving extends Model {
             // lid opnieuw ophalen
             $lid = Lid::getLid($this->lid->id);
 
-            if (empty($lid->inschrijving)) {
+            /*if (empty($lid->inschrijving)) {
                 // enigste inschrijving is weg -> verwijderen
                 $lid->delete();
-            }
+            }*/
 
             return true;
         }

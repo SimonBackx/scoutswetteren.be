@@ -28,7 +28,7 @@ class LidUitschrijven extends Page {
 
         if (isset($_POST['confirm-delete'])) {
             // Echt verwijderen en doorverwijzen
-            $success = $this->lid->inschrijving->delete();
+            $success = $this->lid->inschrijving->uitschrijven();
             header("Location: https://".$_SERVER['SERVER_NAME']."/admin/inschrijvingen/lid/".$this->lid->id);
         }
 

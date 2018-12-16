@@ -33,28 +33,23 @@ class VerlengInschrijving extends Page {
                 continue;
             }
 
-            if (!$lid->isIngeschreven() && isset($lid->inschrijving)) {
+            if (!$lid->isIngeschreven()) {
                 $leden[] = $lid;
             } else {
-                // leden die nog nooit zijn ingeschreven rekenen we ook bij 'al ingeschreven' omdat deze toch automatisch zullen worden
-                // ingeschreven bij de volgende pagina herlading
                 $al_ingeschreven[] = $lid;
             }
         }
 
 
         if (isset($_POST['annuleren'])) {
-            if (count($al_ingeschreven) == 0) {
-                $errors[] = 'Doorverwijzen naar hoofdpagina...'; // Dit zal nooit optreden, toch extra veiligheid
-                header("Location: https://".$_SERVER['SERVER_NAME']);
-            } else {
-                header("Location: https://".$_SERVER['SERVER_NAME'].'/ouders');
-            }   
+            header("Location: https://".$_SERVER['SERVER_NAME'].'/ouders');
+            return '';
         }
         elseif (isset($_POST['leden']) && is_array($_POST['leden'])) {
-            if (count($_POST['leden']) == 0 && count($al_ingeschreven) == 0) {
+            if (count($_POST['leden']) == 0) {
                 $errors[] = 'U moet zeker één iemand selecteren';
             } else {
+                /// Schrijf alle leden in die geselecteerd werden
                 foreach ($leden as $lid) {
                     foreach ($_POST['leden'] as $id) {
                         # code...
@@ -62,24 +57,14 @@ class VerlengInschrijving extends Page {
                             $lid->schrijfIn();
                         }
                     }
-                    $success = true;
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
-                }
-            }
-        }
-        elseif (isset($_POST['submit'])) {
-            if (count($al_ingeschreven) == 0) {
-                $errors[] = 'U moet zeker één iemand selecteren'; 
-            } else {
-                // Alle nieuwe leden nu al inschrijven om redirect te voorkomen
-                foreach ($leden_allemaal as $lid) {
-                    if (empty($lid->inschrijving)) {
-                        $lid->schrijfIn();
-                    }
                 }
                 $success = true;
                 header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+                return;
             }
+        }
+        elseif (isset($_POST['submit'])) {
+            $errors[] = 'U moet zeker één iemand selecteren'; 
         }
         
         return Template::render('leden/verleng-inschrijving', array(

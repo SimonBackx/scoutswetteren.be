@@ -64,11 +64,11 @@ class OuderOverview extends Page {
         
         // Alle nog nooit ingeschreven leden (nieuwe leden), nu pas inschrijven (nadat hun steekkaart dus is ingevuld)
         
-        foreach ($leden as $lid) {
+        /*foreach ($leden as $lid) {
             if ($lid->isInschrijfbaar() && empty($lid->inschrijving)) {
                 $lid->schrijfIn();
             }
-        }
+        }*/
 
         // Nakijken
         foreach ($leden as $lid) {

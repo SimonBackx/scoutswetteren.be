@@ -13,39 +13,45 @@
                 <header>
                 <h1>Ingeschreven leden ({{ scoutsjaar }} - {{ scoutsjaar + 1 }})</h1>
                 </header>
-                <div class="list-bundle">
-                {% for lid in leden %}
-                    <article class="list">
-                        <div class="medium merlot column"><a href="/ouders/lid-aanpassen/{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }}</a></div>
-                        <div class="small merlot column">{{ lid.inschrijving.tak | capitalize }}</div>
-                        <div class="max column{% if not lid.heeftSteekkaart() %} bold{% endif %}">
-                            {% if not lid.heeftSteekkaart() %}
-                                Individuele steekkaart nog niet ingevuld
-                            {% else %}
-                                Laatst nagekeken op {{ lid.steekkaart.getNagekekenString() }}
-                            {% endif %}
-                        </div>
-                        <div class="last column">
-                            <a href="/ouders/lid-aanpassen/{{ lid.id | e('html_attr')}}" class="icon-button">
-                            Wijzigen
-                            </a>
+                {% if leden is not empty %}
+                    <div class="list-bundle">
+                        {% for lid in leden %}
+                            <article class="list">
+                                <div class="medium merlot column"><a href="/ouders/lid-aanpassen/{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }}</a></div>
+                                <div class="small merlot column">{{ lid.inschrijving.tak | capitalize }}</div>
+                                <div class="max column{% if not lid.heeftSteekkaart() %} bold{% endif %}">
+                                    {% if not lid.heeftSteekkaart() %}
+                                        Individuele steekkaart nog niet ingevuld
+                                    {% else %}
+                                        Laatst nagekeken op {{ lid.steekkaart.getNagekekenString() }}
+                                    {% endif %}
+                                </div>
+                                <div class="last column">
+                                    <a href="/ouders/lid-aanpassen/{{ lid.id | e('html_attr')}}" class="icon-button">
+                                    Wijzigen
+                                    </a>
 
-                            <a href="/ouders/steekkaart/{{ lid.id | e('html_attr')}}" class="{% if lid.heeftSteekkaart() %}icon-button{% else %}icon-button plus{% endif %}">
-                            {% if not lid.heeftSteekkaart() %}
-                                Steekkaart invullen
-                            {% else %}
-                                Steekkaart nakijken
-                            {% endif %}
-                            </a>
-                        </div>
-                    </article>
+                                    <a href="/ouders/steekkaart/{{ lid.id | e('html_attr')}}" class="{% if lid.heeftSteekkaart() %}icon-button{% else %}icon-button plus{% endif %}">
+                                    {% if not lid.heeftSteekkaart() %}
+                                        Steekkaart invullen
+                                    {% else %}
+                                        Steekkaart nakijken
+                                    {% endif %}
+                                    </a>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                    <footer>
+                        <a href="{% if niet_ingeschreven_aantal > 0 %}/ouders/verleng-inschrijving{% else %}/ouders/broer-zus-toevoegen{% endif %}" class="aubergine fill button">Broer of zus inschrijven</a>
+                    </footer>
                 {% else %}
                     <p>Er is nog niemand ingeschreven voor het huidige scoutsjaar.</p>
-                {% endfor %}
-                </div>
-                <footer>
-                    <a href="{% if niet_ingeschreven_aantal > 0 %}/ouders/verleng-inschrijving{% else %}/ouders/broer-zus-toevoegen{% endif %}" class="aubergine fill button">Broer of zus inschrijven</a>
-                </footer>
+                    <footer>
+                        <a href="{% if niet_ingeschreven_aantal > 0 %}/ouders/verleng-inschrijving{% else %}/ouders/broer-zus-toevoegen{% endif %}" class="aubergine fill button">Leden inschrijven</a>
+                    </footer>
+                {% endif %}
+                
 
             </div>
         </div>
@@ -89,7 +95,9 @@
                 <div class="list-bundle">
                    {% for afrekening in afrekeningen %}
                     <article class="list">
-                        <div class="small column">{{ afrekening.inschrijvingen[0].scoutsjaar }} - {{ afrekening.inschrijvingen[0].scoutsjaar + 1 }}</div>
+                        <div class="small column">
+                            {{ afrekening.inschrijvingen[0].scoutsjaar }} - {{ afrekening.inschrijvingen[0].scoutsjaar + 1 }}
+                        </div>
                         <div class="max merlot column">{{ afrekening.mededeling }}</div>
                         <div class="large merlot column">
                             {{ afrekening.getNogTeBetalen() }}

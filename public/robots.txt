@@ -1,5 +1,4 @@
 User-agent: *
 Disallow: /ouders
 Disallow: /admin
-Disallow: /login
 Sitemap: https://www.scoutswetteren.be/sitemap.xml

@@ -195,7 +195,7 @@ class Lid extends Model {
             // todo: remove +,*,-
 
             // Add + before every word longer then 3 characters, add * at the end
-            $newText = "";
+            /*$newText = "";
             $currentWord = "";
 
             for ($i=0; $i < strlen($text); $i++) { 
@@ -218,13 +218,14 @@ class Lid extends Model {
                 if (strlen($currentWord) > 0) {
                     $newText .=" ".$currentWord."*";
                 }
-            }
+            }*/
 
-            $text = self::getDb()->escape_string($newText);
+            $text = self::getDb()->escape_string($text);
 
             $query = '
-                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.*, a.* from ouders o
+                SELECT l.id as id_lid, l.gsm as gsm_lid, l.voornaam as voornaam_lid, l.achternaam as achternaam_lid, l.*, i.*, s.*, g.*, o.*, a.*, u.* from ouders o
                     join leden l on l.gezin = o.gezin
+                    join users u on o.user_id  = u.user_id
                     left join adressen a on a.adres_id = o.adres
                     left join steekkaarten s on s.lid = l.id
                     left join gezinnen g on g.gezin_id = l.gezin
@@ -238,7 +239,7 @@ class Lid extends Model {
                         MATCH(l.voornaam,l.achternaam,l.gsm) 
                         AGAINST("'.$text.'" IN BOOLEAN MODE)
                         OR
-                        MATCH(o.voornaam,o.achternaam,o.gsm) 
+                        MATCH(u.user_firstname,u.user_lastname,u.user_phone) 
                         AGAINST("'.$text.'" IN BOOLEAN MODE)
                     )';//
         }
@@ -264,7 +265,10 @@ class Lid extends Model {
                     $lid->ouders[] = $ouder;
                 }
             }
+        } else {
+            echo self::getDb()->error;
         }
+        
         
         return $leden;
     }
@@ -304,7 +308,7 @@ class Lid extends Model {
                 left join steekkaarten s on s.lid = l.id
                 left join gezinnen g on g.gezin_id = l.gezin
                 join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
-            where i.tak = "'.$tak.'"
+            where i.tak = "'.$tak.'" and i.datum_uitschrijving is null
             order by year(l.geboortedatum) desc, l.voornaam';
 
 
@@ -349,6 +353,7 @@ class Lid extends Model {
     }
 
     // Geeft ook ouders mee
+    /// Redelijk zware query momenteel
     static function getLedenForTakFull($tak) {
         $tak = self::getDb()->escape_string($tak);
 
@@ -360,9 +365,8 @@ class Lid extends Model {
                 left join steekkaarten s on s.lid = l.id
                 left join gezinnen g on g.gezin_id = l.gezin
                 join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
-            where i.tak = "'.$tak.'"
+            where i.tak = "'.$tak.'" and i.datum_uitschrijving is null
             order by l.voornaam, l.achternaam';
-
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -381,7 +385,7 @@ class Lid extends Model {
         if (empty($this->inschrijving)) {
             return false;
         }
-        return $this->inschrijving->scoutsjaar == Inschrijving::getScoutsjaar();
+        return $this->inschrijving->scoutsjaar == Inschrijving::getScoutsjaar() && empty($this->inschrijving->datum_uitschrijving);
     }
 
     // Bv. Jin van vorig jaar is niet meer inschrijfbaar (of bv na takherverdeling)

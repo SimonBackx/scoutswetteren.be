@@ -350,6 +350,10 @@ class Ouder extends Model {
         }
 
         if (strlen($where) > 0)
+            $where .= ' AND ';
+        $where .= 'i.datum_uitschrijving is null';
+
+        if (strlen($where) > 0)
             $where = 'WHERE '.$where;
 
         if (!isset($scoutsjaar)) {
