@@ -37,11 +37,6 @@ class OuderAanpassen extends Page {
             $new = false;
             $data = $this->ouder->getProperties();
             $id = $this->ouder->id;
-
-            if (empty($this->ouder->user->mail)) {
-                $errors[] = 'Vul het ontbrekende e-mailadres van '.$this->ouder->user->firstname.' aan en sla de gegevens op alvorens verder te gaan.';
-                $cancelable = false;
-            }
         } else {
             $this->ouder = new Ouder();
             $this->ouder->gezin = Ouder::getUser()->gezin;

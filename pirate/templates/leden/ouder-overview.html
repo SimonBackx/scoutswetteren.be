@@ -67,7 +67,17 @@
                     <article class="list">
                         <div class="medium merlot column"><a href="/ouders/ouder-aanpassen/{{ ouder.id }}">{{ouder.user.firstname}} {{ouder.user.lastname}}</a></div>
                         <div class="small merlot column">{{ouder.titel}}</div>
-                        <div class="max column">{{ouder.user.mail}}<br>{{ouder.user.phone}}<br>{{ouder.getAdres}}</div>
+                        <div class="max column">
+                            {% if ouder.user.mail is not empty %}
+                                {{ouder.user.mail}}
+                            {% else %}
+                                <strong>Geen e-mailadres ingesteld</strong>
+                            {% endif %}
+                            <br>
+                            {{ouder.user.phone}}
+                            <br>
+                            {{ouder.getAdres}}
+                        </div>
                         <div class="last column">
                             <a href="/ouders/ouder-aanpassen/{{ ouder.id | e('html_attr')}}" class="icon-button">
                             Wijzigen

@@ -4,6 +4,7 @@ use Twig_Loader_Filesystem;
 use Twig_Environment;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Users\User;
 
 class Template {
     static public $twig;
@@ -44,9 +45,14 @@ class Template {
         }
 
         $data['general'] = array(
-            'logged_in' => Leiding::isLoggedIn(),
+            'logged_in' => User::isLoggedIn(),
+            'logged_in_leiding' => Leiding::isLoggedIn(),
             'logged_in_ouders' => Ouder::isLoggedIn()
         );
+
+        if (User::isLoggedIn()) {
+            $data['logged_in_user']['name'] = User::getUser()->firstname.' '.User::getUser()->lastname;
+        }
 
         if (Leiding::isLoggedIn()) {
             if (!isset($data['admin']) || !is_array($data['admin'])) {

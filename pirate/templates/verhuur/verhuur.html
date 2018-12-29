@@ -45,7 +45,7 @@
         grid.margin = 8;
         grid.max_height = 300;
 
-        var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+        var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
 
         {% for image in images %}
             var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
@@ -255,7 +255,7 @@
         <section class="block" id="fotos">
             <div id="album_container"></div>
             <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
-            {% if general.logged_in %}
+            {% if general.logged_in_leiding %}
                 <div class="button-bar">
                     <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
                 </div>

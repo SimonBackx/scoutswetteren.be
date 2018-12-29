@@ -13,7 +13,7 @@
     grid.margin = 8;
     grid.max_height = 400;
 
-    var is_admin = {% if general.logged_in %}true{% else %}false{% endif %};
+    var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
 
     {% for image in images %}
         var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
@@ -56,7 +56,7 @@
                     {% endif %}
                     
                     <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}/fotos/album/{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button aubergine noborder">Deel op facebook</a>
-                    {% if general.logged_in %}
+                    {% if general.logged_in_leiding %}
                     <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
                     {% endif %}
             </div>
