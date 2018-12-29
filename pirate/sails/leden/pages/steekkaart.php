@@ -110,7 +110,7 @@ class EditSteekkaart extends Page {
                 'toestemming_fotos' => $steekkaart->toestemming_fotos,
                 'aanvullend_voeding' => $steekkaart->aanvullend_voeding,
                 'aanvullend_andere' => $steekkaart->aanvullend_andere,
-                'nagekeken_door' => Ouder::getUser()->voornaam.' '.Ouder::getUser()->achternaam,
+                'nagekeken_door' => User::getUser()->firstname.' '.User::getUser()->lastname,
                 'nagekeken_door_titel' => ''
             );
         }
