@@ -12,10 +12,23 @@ use Pirate\Mail\Mail;
 class OuderOverview extends Page {
     public $redirect = null;
     public $leden = array();
+    protected $ouders = array();
 
     function getStatusCode() {
         // Controle of alles in orde is, anders doorverwijzen
-        $leden = Lid::getLedenForOuder(Ouder::getUser()->id);
+        $user = Ouder::getUser();
+        $this->ouders = Ouder::getOudersForGezin($user->gezin->id);
+
+        // Check if all ouders have a valid e-mailaddress
+        foreach ($this->ouders as $ouder) {
+            if (empty($ouder->user->mail)) {
+                $this->redirect = 'ouders/ouder-aanpassen/'.$ouder->id;
+                return 302;
+            }
+        }
+
+
+        $leden = Lid::getLedenForOuder($user->id);
         $this->leden = $leden;
         $scoutsjaar = Inschrijving::getScoutsjaar();
 
@@ -135,7 +148,6 @@ class OuderOverview extends Page {
             }
         }
         $user = Ouder::getUser();
-        $ouders = Ouder::getOudersForGezin($user->gezin->id);
         $afrekeningen = Afrekening::getAfrekeningenForGezin($user->gezin);
         $scoutsjaar = Inschrijving::getScoutsjaar();
         
@@ -145,7 +157,7 @@ class OuderOverview extends Page {
             'ouder' => $user,
             'afrekeningen' => $afrekeningen,
             'gezin' => $user->gezin,
-            'ouders' => $ouders,
+            'ouders' => $this->ouders,
             'scoutsjaar' => $scoutsjaar
         ));
     }

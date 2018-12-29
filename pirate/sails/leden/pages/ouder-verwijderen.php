@@ -27,6 +27,7 @@ class OuderVerwijderen extends Page {
         $data = array();
         $errors = array();
 
+
         if (isset($this->ouder)) {
             $new = false;
             $data = $this->ouder->getProperties();
@@ -34,20 +35,27 @@ class OuderVerwijderen extends Page {
             return 'Internal error';
         }
 
-        // check of vanalles is geset
-        if (isset(
-            $_POST['confirm']
-        )) {
-            if (count($errors) == 0) {
-                if ($this->ouder->delete()) {
-                    $success = true;
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
-                    return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
-                } else {
-                    $errors[] = 'Fout bij opslaan ('.Database::getDb()->error.'), neem contact op met de webmaster.';
-                }
-            }
+        $ouders = Ouder::getOudersForGezin($this->ouder->gezin->id);
 
+        if (count($ouders) <= 1) {
+            $errors[] = 'Het is niet mogelijk om de enige ouder in dit gezin te verwijderen';
+        } else {
+
+            // check of vanalles is geset
+            if (isset(
+                $_POST['confirm']
+            )) {
+                if (count($errors) == 0) {
+                    if ($this->ouder->delete()) {
+                        $success = true;
+                        header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
+                        return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
+                    } else {
+                        $errors[] = 'Fout bij opslaan ('.Database::getDb()->error.'), neem contact op met de webmaster.';
+                    }
+                }
+
+            }
         }
 
         return Template::render('leden/ouder-verwijderen', array(

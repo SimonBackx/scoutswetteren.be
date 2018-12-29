@@ -10,7 +10,7 @@
                         {% if new %}
                             <h1>Ouder toevoegen</h1>
                         {% else %}
-                            <h1>Gegevens van {{ ouder['voornaam'] }} nakijken</h1>
+                            <h1>Gegevens van {{ ouder['firstname'] }} nakijken</h1>
                         {% endif %}
                         </header>
 
@@ -34,8 +34,9 @@
                             {% if not new %}
                                 <a class="button aubergine" href="/ouders/ouder-verwijderen/{{ id }}">Verwijderen</a>
                             {% endif %}
-
-                            <a class="button aubergine" href="/ouders">Annuleren</a>
+                            {% if cancelable %}
+                                <a class="button aubergine" href="/ouders">Annuleren</a>
+                            {% endif %}
                         </footer>
 
                     </div>
