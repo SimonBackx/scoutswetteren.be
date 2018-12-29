@@ -316,6 +316,17 @@ class Ouder extends Model {
         return $ouders;
     }
 
+    /// True als er leden zijn ingeschreven voor huidig scoutsjaar, ookal is er nog geen afrekenign gemaakt
+    function isStillActive() {
+        $leden = Lid::getLedenForOuder($this->id);
+        foreach ($leden as $lid) {
+            if ($lid->isIngeschreven()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     static function getOuders($filter = null, $tak = null, $return_leden = false, $scoutsjaar = null) {
         $where = '';
 

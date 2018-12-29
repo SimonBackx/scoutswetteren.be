@@ -66,7 +66,7 @@ class LedenRouter extends Route {
             }
 
             if (count($parts) == 3) {
-                if ($parts[1] == 'ouder-aanpassen' || $parts[1] == 'ouder-verwijderen') {
+                if ($parts[1] == 'ouder-aanpassen' || $parts[1] == 'ouder-verwijderen' || $parts[1] == 'wachtwoord-instellen') {
                     // kijken of gezin wel in orde is
                     $ouder = Ouder::getOuderForId($parts[2]);
                     if (!is_null($ouder) && $ouder->gezin->id == Ouder::getUser()->gezin->id) {
@@ -157,6 +157,11 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'ouder-verwijderen' && !empty($this->ouder)) {
                     require(__DIR__.'/pages/ouder-verwijderen.php');
                     return new Pages\OuderVerwijderen($this->ouder);
+                }
+
+                if ($parts[1] == 'wachtwoord-instellen' && !empty($this->ouder)) {
+                    require(__DIR__.'/pages/ouder-wachtwoord-instellen.php');
+                    return new Pages\OuderWachtwoordInstellen($this->ouder);
                 }
 
                 if ($parts[1] == 'lid-aanpassen' && !empty($this->lid)) {

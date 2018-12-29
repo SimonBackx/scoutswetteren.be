@@ -73,15 +73,24 @@
                             {% else %}
                                 <strong>Geen e-mailadres ingesteld</strong>
                             {% endif %}
+                            {% if not ouder.user.hasPassword() %}
+                                <br><strong>Heeft nog geen wachtwoord ingesteld</strong>
+                            {% endif %}
                             <br>
                             {{ouder.user.phone}}
                             <br>
                             {{ouder.getAdres}}
+                            
                         </div>
-                        <div class="last column">
+                        <div class="last column right">
                             <a href="/ouders/ouder-aanpassen/{{ ouder.id | e('html_attr')}}" class="icon-button">
                             Wijzigen
                             </a>
+                            {% if not ouder.user.hasPassword() %}
+                                <a href="/ouders/wachtwoord-instellen/{{ ouder.id | e('html_attr')}}" class="icon-button">
+                                    Wachtwoord instellen
+                                </a>
+                            {% endif %}
                         </div>
                     </article>
                 {% endfor %}

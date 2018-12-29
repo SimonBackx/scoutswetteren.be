@@ -7,13 +7,11 @@
                     <div class="text">
                         
                         <header>
-                            <h1>Ouder {{ ouder['firstname'] }} verwijderen</h1>
+                            <h1>Wachtwoord voor {{ ouder['firstname'] }} instellen </h1>
                             <p>
-                                Ben je zeker dat je deze ouder wilt verwijderen? Gebruik deze functie enkel om fouten te corrigeren, niet om een ouder de toegang tot de website te ontzeggen.
+                                Via deze weg kan je opnieuw een e-mail versturen naar {{ ouder['firstname'] }} met een link om een wachtwoord in te stellen.
                             </p>
                         </header>
-
-                        
 
                         {% if errors|length > 0 %}
                             <ul class="error">
@@ -24,7 +22,7 @@
                         {% endif %}
                          
                         <footer>
-                            <input type="submit" name="confirm" class="aubergine fill" value="Ja, {{ ouder['firstname'] }} is geen wettelijke ouder">
+                            <input type="submit" name="confirm" class="aubergine fill" value="Mail versturen">
                             <a class="button aubergine" href="/ouders">Annuleren</a>
                         </footer>
 

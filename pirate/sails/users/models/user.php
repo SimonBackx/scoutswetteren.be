@@ -572,7 +572,11 @@ class User extends Model {
                     if ($result->num_rows == 0){
                         $this->mail = $mail;
                     } else {
-                        $errors[] = 'Dit e-mailadres is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                        if (static::isLoggedIn()) {
+                            $errors[] = 'Dit e-mailadres is al bekend in ons systeem. Kijk na of je niet al voor een ander account hebt.';
+                        } else {
+                            $errors[] = 'Dit e-mailadres is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                        }
                     }
                 } else {
                     $errors[] = 'Er ging iets mis';
@@ -605,7 +609,13 @@ class User extends Model {
                 if ($result = self::getDb()->query($query)) {
                     if ($result->num_rows > 0){
                         $this->phone = null;
-                        $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+
+                        if (static::isLoggedIn()) {
+                            $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet voor een ander account gebruikt en pas het daar eerst aan.';
+
+                        } else {
+                            $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                        }
                     }
                 } else {
                     $this->phone = null;
