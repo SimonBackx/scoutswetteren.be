@@ -429,6 +429,22 @@ class Leiding extends Model {
     // empty array on success
     // array of errors on failure
     function setProperties(&$data, $admin = false) {
+        if (!isset($this->user->id) && isset($data['mail'])) {
+            // Kijk of we een bestaande user kunnen koppelen
+            $user = User::getForEmail($data['mail']);
+            if (isset($user)) {
+                $leiding = static::getByUserId($user->id);
+                if (isset($leiding)) {
+                    $errors[] = 'Er bestaat al een gebruiker met dit e-mailadres';
+                } else {
+                    $this->user = $user;
+                    if (isset($data['phone']) && strlen($data['phone']) == 0) {
+                        // Hou bestaand gsm-nummer
+                        $data['phone'] = $user->phone;
+                    }
+                }
+            }
+        }
         $errors = $this->user->setProperties($data, $admin);
 
         if (strlen($data['totem']) == 0) {
@@ -487,13 +503,8 @@ class Leiding extends Model {
         return $errors;
     }
 
-    function getSetPasswordUrl() {
-        return "https://".$_SERVER['SERVER_NAME']."/leiding/set-password/".$this->user->set_password_key;
-    }
-
-    // todo!
     function sendPasswordEmail() {
-        $mail = new Mail('Account scoutswebsite', 'leiding-new', array('leiding' => $this));
+        $mail = new Mail('Account scoutswebsite', 'user-new-leiding', array('user' => $this->user));
         $mail->addTo(
             $this->user->mail, 
             array(),
@@ -604,19 +615,12 @@ class Leiding extends Model {
         $query = "DELETE FROM 
                 leiding WHERE id = '$id' ";
 
-        self::getDb()->autocommit(false);
 
         if (self::getDb()->query($query)) {
-            if ($this->user->delete()) {
-                self::getDb()->commit();
-                self::getDb()->autocommit(true);
-                return true;
-            } else {
-                self::getDb()->rollback();
-            }
+            // We houden de user
+            return true;
         }
 
-        self::getDb()->autocommit(true);
         return false;
     }
 

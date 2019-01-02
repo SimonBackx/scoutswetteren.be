@@ -217,19 +217,11 @@ class Ouder extends Model {
         $query = "DELETE FROM 
                 ouders WHERE id = '$id' ";
 
-        self::getDb()->autocommit(false);
-
         if (self::getDb()->query($query)) {
-            if ($this->user->delete()) {
-                self::getDb()->commit();
-                self::getDb()->autocommit(true);
-                return true;
-            } else {
-                self::getDb()->rollback();
-            }
+            // We houden de user
+            return true;
         }
 
-        self::getDb()->autocommit(true);
         return false;
     }
 
