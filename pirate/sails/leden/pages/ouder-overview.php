@@ -17,7 +17,7 @@ class OuderOverview extends Page {
     function getStatusCode() {
         // Controle of alles in orde is, anders doorverwijzen
         $user = Ouder::getUser();
-        $leden = Lid::getLedenForOuder($user->id);
+        $leden = Lid::getLedenForOuder($user);
         $this->leden = $leden;
         $scoutsjaar = Inschrijving::getScoutsjaar();
 

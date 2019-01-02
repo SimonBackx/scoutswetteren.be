@@ -90,6 +90,97 @@ class Gezin extends Model {
         return false;
     }
 
+    function delete() {
+        $id = self::getDb()->escape_string($this->id);
+        $query = "DELETE FROM 
+                gezinnen WHERE gezin_id = '$id' ";
 
+
+        if (self::getDb()->query($query)) {
+           return true;
+        }
+
+        return false;
+    }
+
+    /// Voeg alle data van een gezin bij elkaar tot één gezin en verwijder het meegegeven gezin
+    /// Het meegegeven gezin moet het oudste gezin zijn (minst up to date gezin)
+    function merge($gezin) {
+        if ($gezin->id == $this->id) {
+            // Prevent data loss
+            return false;
+        }
+
+        $ouders_this = Ouder::getOudersForGezin($this->id);
+        $leden_this = Lid::getLedenForGezin($this->id);
+
+        $ouders_other = Ouder::getOudersForGezin($gezin->id);
+        $leden_other = Lid::getLedenForGezin($gezin->id);
+
+        /// Merge ouders with same name
+        foreach ($ouders_other as $ouder_other) {
+
+            $found = false;
+            foreach ($ouders_this as $ouder_this) {
+                if ($ouder_this->isProbablyEqual($ouder_other)) {
+                    $found = true;
+                    if (!$ouder_this->merge($ouder_other)) {
+                        return false;
+                    }
+                    break;
+                }
+            }
+
+            if (!$found) {
+                // Move $ouder_other to this gezin
+                $ouder_other->gezin = $this;
+                if (!$ouder_other->save()) {
+                    return false;
+                }
+            }
+        }
+
+        /// Merge ouders with same name
+        foreach ($leden_other as $lid_other) {
+
+            $found = false;
+            foreach ($leden_this as $lid_this) {
+                if ($lid_this->isProbablyEqual($lid_other)) {
+                    $found = true;
+                    if (!$lid_this->merge($lid_other)) {
+                        return false;
+                    }
+                    break;
+                }
+            }
+
+            if (!$found) {
+                // Move $ouder_other to this gezin
+                $lid_other->gezin = $this;
+                if (!$lid_other->save()) {
+                    return false;
+                }
+            }
+        }
+
+
+        /// Update afrekeningen
+        $id = self::getDb()->escape_string($gezin->id);
+        $new_id = self::getDb()->escape_string($this->id);
+
+        $query = "UPDATE afrekeningen 
+            SET 
+             `gezin` = '$new_id'
+             where gezin = '$id' 
+        ";
+
+        if (!self::getDb()->query($query)) {
+            return false;
+        }
+
+        return $gezin->delete();
+
+
+    }
     
 }

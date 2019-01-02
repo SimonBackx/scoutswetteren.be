@@ -205,6 +205,25 @@ class User extends Model {
         return false;
     }
 
+    /// Zet het wachtwoord van deze user gelijk aan die van een andere user (tijdelijke functie voor migrations)
+    function setPasswordToUser($user) {
+        $id = self::getDb()->escape_string($this->id);
+        $encrypted = $user->password;
+        $password = self::getDb()->escape_string($encrypted);
+
+        $query = "UPDATE users 
+            SET 
+            user_password = '$password'
+             where `user_id` = '$id' 
+        ";
+
+        if (self::getDb()->query($query)) {
+            $this->password = $encrypted;
+            return true;
+        }
+        return false;
+    }
+
     static function logout() {
         self::deleteToken(self::$currentToken);
         self::$currentToken = null;
@@ -719,5 +738,16 @@ class User extends Model {
                 users WHERE `user_id` = '$id' ";
 
         return self::getDb()->query($query);
+    }
+
+    /// Return true when users are probably the same
+    function isProbablyEqual($user) {
+        if (
+            trim(clean_special_chars($user->firstname)) == trim(clean_special_chars($this->firstname))
+            && trim(clean_special_chars($user->lastname)) == trim(clean_special_chars($this->lastname))
+        ) {
+            return true;
+        }
+        return false;
     }
 }

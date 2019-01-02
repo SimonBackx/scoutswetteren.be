@@ -17,7 +17,7 @@ class VerlengInschrijving extends Page {
 
     function getContent() {
         // Controle of alles in orde is, anders doorverwijzen
-        $leden_allemaal = Lid::getLedenForOuder(Ouder::getUser()->id);
+        $leden_allemaal = Lid::getLedenForOuder(Ouder::getUser());
         $leden = array();
         $this->leden = $leden;
         $scoutsjaar = Inschrijving::getScoutsjaar();

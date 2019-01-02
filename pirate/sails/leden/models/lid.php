@@ -140,17 +140,20 @@ class Lid extends Model {
     }
 
     static function getLedenForOuder($ouder) {
-        $ouder = self::getDb()->escape_string($ouder);
+        return static::getLedenForGezin($ouder->gezin->id);
+    }
+
+    static function getLedenForGezin($gezin_id) {
+        $gezin_id = self::getDb()->escape_string($gezin_id);
 
         $leden = array();
         $query = '
-            SELECT l.*, i.*, s.*, g.* from ouders o
-                join leden l on l.gezin = o.gezin
+            SELECT l.*, i.*, s.*, g.* from leden l
                 left join steekkaarten s on s.lid = l.id
                 left join gezinnen g on g.gezin_id = l.gezin
                 left join inschrijvingen i on i.lid = l.id
                 left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-            where o.id = "'.$ouder.'" and i2.inschrijving_id is null
+            where g.gezin_id = "'.$gezin_id.'" and i2.inschrijving_id is null
             order by year(l.geboortedatum) desc, l.voornaam';
 
         if ($result = self::getDb()->query($query)){
@@ -568,16 +571,18 @@ class Lid extends Model {
             $lidnummer = "'".self::getDb()->escape_string($this->lidnummer)."'";
         }
 
+        if (!isset($this->gezin)) {
+            return false;
+        }
+        $gezin = self::getDb()->escape_string($this->gezin->id);
+
         $voornaam = self::getDb()->escape_string($this->voornaam);
         $achternaam = self::getDb()->escape_string($this->achternaam);
         $geslacht = self::getDb()->escape_string($this->geslacht);
         $geboortedatum = self::getDb()->escape_string($this->geboortedatum->format('Y-m-d'));
 
         if (!isset($this->id)) {
-            if (!isset($this->gezin)) {
-                return false;
-            }
-            $gezin = self::getDb()->escape_string($this->gezin->id);
+
 
             $query = "INSERT INTO 
                 leden (`gezin`, `lidnummer`, `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`)
@@ -587,6 +592,7 @@ class Lid extends Model {
             $query = "UPDATE leden 
                 SET 
                  `voornaam` = '$voornaam',
+                 `gezin` = '$gezin',
                  `achternaam` = '$achternaam',
                  `geslacht` = '$geslacht',
                  `geboortedatum` = '$geboortedatum',
@@ -642,6 +648,42 @@ class Lid extends Model {
             return true;
         }
         
+        return false;
+    }
+
+    /// Voeg alle data van een ouder lid $lid toe aan dit lid (inschrijvingen, steekkaarten)
+    /// Afrekeningen worden niet aangepast, dat moet gebeuren bij het mergen van Gezinnen
+    function merge($lid) {
+        if ($lid->id == $this->id) {
+            // Prevent data loss
+            return false;
+        }
+
+        $id = self::getDb()->escape_string($lid->id);
+        $new_id = self::getDb()->escape_string($this->id);
+
+        $query = "UPDATE inschrijvingen 
+            SET 
+             `lid` = '$new_id'
+             where lid = '$id' 
+        ";
+
+        if (!self::getDb()->query($query)) {
+            return false;
+        }
+
+        // Verwijder lid + steekkaaretn
+        return $lid->delete();
+    }
+
+    /// Return true when users are probably the same
+    function isProbablyEqual($lid) {
+        if (
+            trim(clean_special_chars($lid->voornaam)) == trim(clean_special_chars($this->voornaam))
+            && (trim(clean_special_chars($lid->achternaam)) == trim(clean_special_chars($this->achternaam)) || $lid->geboortedatum->format('Y-m-d') == $this->geboortedatum->format('Y-m-d'))
+        ) {
+            return true;
+        }
         return false;
     }
 

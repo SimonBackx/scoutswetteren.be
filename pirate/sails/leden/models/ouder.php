@@ -176,25 +176,27 @@ class Ouder extends Model {
         if (!$this->user->save()) {
             return false;
         }
- 
+
+        if (empty($this->gezin)) {
+            return false;
+        }
+        $gezin = self::getDb()->escape_string($this->gezin->id);
         $adres = self::getDb()->escape_string($this->adres->id);
         $titel = self::getDb()->escape_string($this->titel);
         $user_id = self::getDb()->escape_string($this->user->id);
 
         if (empty($this->id)) {
-            if (empty($this->gezin)) {
-                return false;
-            }
-            $gezin = self::getDb()->escape_string($this->gezin->id);
 
             $query = "INSERT INTO 
                 ouders (`user_id`, `gezin`, `titel`, `adres`)
                 VALUES ('$user_id','$gezin', '$titel','$adres')";
         } else {
+            
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE ouders 
                 SET 
-                `user_id` = '$user_id',
+                 `user_id` = '$user_id',
+                 `gezin` = '$gezin',
                  `titel` = '$titel',
                  `adres` = '$adres'
                  where id = '$id' 
@@ -318,7 +320,7 @@ class Ouder extends Model {
 
     /// True als er leden zijn ingeschreven voor huidig scoutsjaar, ookal is er nog geen afrekenign gemaakt
     function isStillActive() {
-        $leden = Lid::getLedenForOuder($this->id);
+        $leden = Lid::getLedenForOuder($this);
         foreach ($leden as $lid) {
             if ($lid->isIngeschreven()) {
                 return true;
@@ -474,6 +476,17 @@ class Ouder extends Model {
             $this->user->firstname.' '.$this->user->lastname
         );
         return $mail->send();
+    }
+
+    /// Return true when users are probably the same
+    function isProbablyEqual($ouder) {
+        return $this->user->isProbablyEqual($ouder->user);
+    }
+
+    /// Voeg alle data van een ouder bij een andere ouder. Meegegeven ouder moet de oudste versie zijn
+    function merge($ouder) {
+        // Voorlopig is er geen data dat overgezet moet worden
+        return $ouder->delete();
     }
     
 }
