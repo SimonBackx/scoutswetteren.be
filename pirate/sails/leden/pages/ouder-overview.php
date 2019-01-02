@@ -50,7 +50,7 @@ class OuderOverview extends Page {
         
         // Tweede: controleren of alles steekkaarten van deze leden recent zijn nagekeken of bestaan
         foreach ($leden as $lid) {
-            if ($lid->isInschrijfbaar() && ($lid->isIngeschreven() || empty($lid->inschrijving)) // Ingeschreven of zal automatisch worden ingeschreven
+            if ($lid->isIngeschreven() // Steekkaart nakijken enkel als al ingeschreven
                   && 
                  (empty($lid->steekkaart) || $lid->steekkaart->moetNagekekenWorden()) // Steekkaart niet in orde
             ) {
