@@ -2,6 +2,7 @@
 namespace Pirate\Model\Maandplanning;
 use Pirate\Model\Model;
 use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Webshop\OrderSheet;
 
 class Event extends Model {
     public $name;
@@ -13,6 +14,9 @@ class Event extends Model {
     public $group;
     public $group_order;
     public $in_past = false;
+
+    /// Only filled if requesting by id
+    public $order_sheet; /// object
 
     static $groups = array('Kapoenen', 'Wouters', 'Jonggivers', 'Givers', 'Jin', 'Leiding', 'Oudercomité', 'Alle takken', 'Familie en vrienden', '(Jong)givers');
     static $defaultLocation = 'Scoutsterrein';
@@ -41,6 +45,10 @@ class Event extends Model {
         $this->group = $row['group'];
         $this->group_order = $row['group_order'];
 
+        if (isset($row['sheet_id'])) {
+            $this->order_sheet = new OrderSheet($row);
+        }
+
         if (isset($row['in_past']))
             $this->in_past = $row['in_past'];
     }
@@ -66,7 +74,10 @@ class Event extends Model {
     // Maximaal 30 events! Rest wordt weg geknipt
     static function getEvent($id) {
         $id = self::getDb()->escape_string($id);
-        $query = 'SELECT * FROM events WHERE id = "'.$id.'"';
+        $query = 'SELECT e.*, o.*, b.* FROM events e 
+        left join order_sheets o on e.order_sheet_id = o.sheet_id
+        left join bank_accounts b on b.account_id = o.sheet_bank_account
+        WHERE id = "'.$id.'"';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -213,6 +224,29 @@ class Event extends Model {
             $this->group = $data['group'];
         }
 
+        if (isset($data['order_sheet']) && $data['order_sheet']) {
+            if (!isset($this->order_sheet)) {
+                $this->order_sheet = new OrderSheet();
+            }
+
+            try {
+                $this->order_sheet->setProperties($data);
+                $this->order_sheet->name = "Inschrijven voor $this->name";
+                $this->order_sheet->subtitle = datetimeToDateString($this->startdate) . " om ".$this->startdate->format('H:i');
+            } catch (\Exception $ex) {
+                $errors[] = $ex->getMessage();
+            }
+            
+        } else {
+            if (isset($this->order_sheet) && count($errors) == 0) {
+                if (!$this->order_sheet->delete()) {
+                    $errors[] = 'Er ging iets mis bij het opslaan';
+                } else {
+                    $this->order_sheet = null;
+                }
+            }
+        }
+
 
         return $errors;
     }
@@ -230,6 +264,14 @@ class Event extends Model {
             $endlocation = "'".self::getDb()->escape_string($this->endlocation)."'";
         }
 
+        if (is_null($this->order_sheet)) {
+            $order_sheet = "NULL";
+        } else {
+            if (!$this->order_sheet->save()) {
+                return false;
+            }
+            $order_sheet = "'".self::getDb()->escape_string($this->order_sheet->id)."'";
+        }
 
         $name = self::getDb()->escape_string($this->name);
         $startdate = self::getDb()->escape_string($this->startdate->format('Y-m-d H:i:s'));
@@ -242,8 +284,8 @@ class Event extends Model {
 
         if (empty($this->id)) {
             $query = "INSERT INTO 
-                events (`name`,  `startdate`, `enddate`, `location`, `endlocation`, `group`, `group_order`, `leiding_id`)
-                VALUES ('$name', '$startdate', '$enddate', $location, $endlocation, '$group', '$group_order', '$leiding_id')";
+                events (`name`,  `startdate`, `enddate`, `location`, `endlocation`, `group`, `group_order`, `leiding_id`, `order_sheet_id`)
+                VALUES ('$name', '$startdate', '$enddate', $location, $endlocation, '$group', '$group_order', '$leiding_id', $order_sheet)";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE events 
@@ -254,7 +296,8 @@ class Event extends Model {
                  `location` = $location,
                  `endlocation` = $endlocation,
                  `group` = '$group',
-                 `group_order` = '$group_order'
+                 `group_order` = '$group_order',
+                 `order_sheet_id` = $order_sheet
                  where id = '$id' 
             ";
         }
@@ -269,6 +312,11 @@ class Event extends Model {
     }
 
     function delete() {
+        if (isset($this->order_sheet)) {
+            if (!$this->order_sheet->delete()) {
+                return false;
+            }
+        }
         $id = self::getDb()->escape_string($this->id);
         $query = "DELETE FROM 
                 events WHERE id = '$id' ";

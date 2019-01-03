@@ -5,6 +5,7 @@ use Pirate\Block\Block;
 use Pirate\Template\Template;
 use Pirate\Model\Maandplanning\Event;
 use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Webshop\BankAccount;
 
 class Edit extends Page {
     private $id = null;
@@ -22,6 +23,7 @@ class Edit extends Page {
         $new = true;
         $errors = array();
         $success = false;
+        $accounts = BankAccount::getAll();
 
         $data = array(
             'id' => '',
@@ -33,7 +35,12 @@ class Edit extends Page {
             'endlocation' => '',
             'group' => '',
             'starttime' => '',
-            'endtime' => ''
+            'endtime' => '',
+
+            'order_sheet' => false,
+            'order_sheet_account' => null,
+            'order_sheet_due_date' => '',
+            'order_sheet_description' => '',
         );
 
         if (!empty(Leiding::getUser()->tak)) {
@@ -69,6 +76,11 @@ class Edit extends Page {
                     'group' => $event->group,
                     'starttime' => $event->startdate->format('H:i'),
                     'endtime' => $event->enddate->format('H:i'),
+
+                    'order_sheet' => false,
+                    'order_sheet_account' => null,
+                    'order_sheet_due_date' => '',
+                    'order_sheet_description' => '',
                 );
 
                 $data['id'] = $event->id;
@@ -78,6 +90,13 @@ class Edit extends Page {
                 }
                 if (is_null($event->endlocation)) {
                     $data['endlocation'] = Event::$defaultLocation;
+                }
+
+                if (isset($event->order_sheet)) {
+                    $data['order_sheet'] = true;
+                    $data['order_sheet_account'] = $event->order_sheet->bank_account->id;
+                    $data['order_sheet_due_date'] = isset($event->order_sheet->due_date) ? $event->order_sheet->due_date->format('d-m-Y') : '';
+                    $data['order_sheet_description'] = $event->order_sheet->description;
                 }
 
             } else {
@@ -91,10 +110,13 @@ class Edit extends Page {
         foreach ($data as $key => $value) {
             if ($key == 'overnachting' || $key == 'id')
                 continue;
+            if ($key == 'order_sheet')
+                continue;
 
             if (!isset($_POST[$key])) {
                 if ($key == 'group')
                     continue;
+
                 
                 $allset = false;
                 break;
@@ -107,6 +129,12 @@ class Edit extends Page {
         if ($allset) {
             if (isset($_POST['overnachting'])) {
                 $data['overnachting'] = true;
+            }
+
+            if (isset($_POST['order_sheet'])) {
+                $data['order_sheet'] = true;
+            } else {
+                $data['order_sheet'] = false;
             }
 
             // Nu één voor één controleren
@@ -130,6 +158,7 @@ class Edit extends Page {
             'default_locatie' => Event::$defaultLocation,
             'default_start_hour' => Event::getDefaultStartHour(),
             'default_end_hour' => Event::getDefaultEndHour(),
+            'accounts' => $accounts,
             'success' => $success
         ));
     }
