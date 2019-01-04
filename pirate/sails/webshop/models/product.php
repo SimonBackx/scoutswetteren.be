@@ -19,17 +19,17 @@ class Product extends Model {
     ];
 
     // Linked fields:
-    public $option_sets = null;
+    public $optionsets = null;
     public $prices = null;
 
     // Helper properties
     private $_delete_prices = [];
-    private $_delete_option_sets = [];
+    private $_delete_optionsets = [];
 
     function __construct($row = null) {
         if (is_null($row)) {
             $this->prices = [];
-            $this->option_sets = [];
+            $this->optionsets = [];
             return;
         }
 
@@ -47,7 +47,7 @@ class Product extends Model {
         $id = self::getDb()->escape_string($id);
         $query = 'SELECT p.*, pp.* FROM products p
         left join product_prices pp on pp.price_product = p.product_id
-        WHERE p.product_id = "'.$id.'"';
+        WHERE p.product_id = "'.$id.'" order by pp.price_id asc';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -66,6 +66,7 @@ class Product extends Model {
                 }
 
                 $product->prices = $prices;
+                $product->optionsets = Optionset::getForProduct($product);
                 return $product;
             }
         }
@@ -145,6 +146,51 @@ class Product extends Model {
             }
         }
 
+        if (!is_null($this->optionsets)) {
+            if (isset($data['optionsets']) && is_array($data['optionsets'])) {
+                $new_optionsets = [];
+
+                // Allow product changes
+                foreach ($data['optionsets'] as $optionset_data) {
+                    if (!empty($optionset_data['id'])) {
+                        foreach($this->optionsets as $optionset) {
+                            if ($optionset->id == $optionset_data['id']) {
+                                $optionset_model = $optionset;
+                                break;
+                            }
+                        }
+                        if (!isset($optionset_model)) {
+                            $errors->extend(new ValidationError("Het keuzemenu dat je wilt aanpassen bestaat niet meer. Kijk na of niet iemand anders ook dit product aan het bewerken is.", "optionsets")); 
+                            break;
+                        }
+                    } else {
+                        $optionset_model = new OptionSet();
+                    }
+
+                    try {
+                        $optionset_model->setProperties($optionset_data);
+                        $optionset_model->product = $this;
+                        $new_optionsets[] = $optionset_model;
+                    } catch (ValidationErrorBundle $bundle) {
+                        $errors->extend(...$bundle->getErrors());
+                    }
+                }
+
+                foreach($this->optionsets as $optionset) {
+                    if (!in_array($optionset, $new_optionsets)) {
+                        $this->_delete_optionsets[] = $optionset;
+                    }
+                }
+
+                $this->optionsets = $new_optionsets;
+            }
+           
+        } else {
+            if (isset($data['optionsets'])) {
+                $errors->extend(new ValidationError("Aanpassingen aan keuzemenu's niet mogelijk", "prices"));
+            }
+        }
+
 
         if (count($errors->getErrors()) > 0) {
             throw $errors;
@@ -182,7 +228,7 @@ class Product extends Model {
         } else {
 
             $query = "INSERT INTO 
-                products (`product_name`, `product_type`, `price_name`, `product_description`)
+                products (`product_name`, `product_type`, `product_price_name`, `product_description`)
                 VALUES ('$name', '$type', $price_name, $description)";
         }
 
@@ -200,9 +246,9 @@ class Product extends Model {
                 }
             }
 
-            if (isset($this->option_sets)) {
-                foreach($this->option_sets as $option_set) {
-                    if (!$option_set->save()) {
+            if (isset($this->optionsets)) {
+                foreach($this->optionsets as $optionset) {
+                    if (!$optionset->save()) {
                         return false;
                     }
                 }    
@@ -214,8 +260,8 @@ class Product extends Model {
                 }
             }
 
-            foreach($this->_delete_option_sets as $option_set) {
-                if (!$option_set->delete()) {
+            foreach($this->_delete_optionsets as $optionset) {
+                if (!$optionset->delete()) {
                     return false;
                 }
             }

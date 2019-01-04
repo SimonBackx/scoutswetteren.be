@@ -11,9 +11,11 @@ use Pirate\Classes\Validating\ValidationErrorBundle;
 
 class EditProduct extends Page {
     private $product = null;
+    private $order_sheet = null;
 
-    function __construct($product = null) {
+    function __construct($product = null, $order_sheet = null) {
         $this->product = $product;
+        $this->order_sheet = $order_sheet;
     }
 
     function getStatusCode() {
@@ -79,6 +81,24 @@ class EditProduct extends Page {
                     'name' => $price->name,
                     'price' => $price->getPrice(),
                 ];
+            } 
+
+            foreach ($this->product->optionsets as $optionset) {
+                $options = [];
+
+                foreach ($optionset->options as $option) {
+                    $options[] = [
+                        'id' => $option->id,
+                        'name' => $option->name,
+                        'price_change' => $option->getPrice(),
+                    ];
+                } 
+
+                $data_product['optionsets'][] = [
+                    'id' => $optionset->id,
+                    'name' => $optionset->name,
+                    'options' => $options,
+                ];            
             } 
 
             // todo: optionsets
@@ -153,6 +173,19 @@ class EditProduct extends Page {
                 if (!$this->product->save()) {
                     throw new ValidationError("Opslaan mislukt");
                 }
+
+                if ($new && isset($this->order_sheet)) {
+                    if (!$this->order_sheet->linkProduct($this->product)) {
+                        throw new ValidationError("Linken mislukt");
+                    }
+                }
+
+                if (isset($this->order_sheet)) {
+                    $id = $this->order_sheet->id;
+                    header("Location: https://".$_SERVER['SERVER_NAME']."/admin/order-sheets/$id");
+                } else {
+                    header("Location: https://".$_SERVER['SERVER_NAME']."/admin/products");
+                }
             } catch (ValidationErrorBundle $ex) {
                 foreach ($ex->getErrors() as $error) {
                     $errors[] = $error->message;
@@ -168,8 +201,10 @@ class EditProduct extends Page {
         return Template::render('webshop/admin/edit-product', array(
             'new' => $new,
             'data' => $data_product,
+            'product' => $this->product,
             'errors' => $errors,
             'success' => $success,
+            'order_sheet' => $this->order_sheet,
             'types' => Product::$types,
         ));
     }

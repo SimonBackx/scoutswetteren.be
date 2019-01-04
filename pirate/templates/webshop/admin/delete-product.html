@@ -1,0 +1,23 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+             <header>
+                <h1>Verwijderen gelukt!</h1>
+            </header>
+        {% else %}
+             <header>
+                <h1>Ben je zeker dat je dit product wilt verwijderen?</h1>
+                <h2>"{{ product.name }}"</h2>
+            </header>
+
+            <footer>
+                <input type="submit" class="aubergine fill" name="confirm-delete" value="Ja, verwijderen">
+                {% if order_sheet is not empty %}
+                    <a href="/admin/order-sheets/{{ order_sheet.id }}" class="aubergine button">Annuleren</a>
+                {% else %}
+                    <a href="/admin/products" class="aubergine button">Annuleren</a>
+                {% endif %}
+            </footer>
+        {% endif %}
+    </div>
+</form>

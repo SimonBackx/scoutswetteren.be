@@ -149,6 +149,24 @@ class OrderSheet extends Model {
         return false;
     }
 
+    function linkProduct($product) {
+        $order_sheet_id = self::getDb()->escape_string($this->id);
+        $product_id = self::getDb()->escape_string($product->id);
+        
+        $query = "INSERT INTO 
+                _order_sheet_products (`product_id`, `order_sheet_id`)
+                VALUES ('$product_id', '$order_sheet_id')";
+
+        $result = self::getDb()->query($query);
+
+        if ($result) {
+            $this->products[] = $product;
+            return true;
+        }
+
+        return false;
+    }
+
     function delete() {
         $id = self::getDb()->escape_string($this->id);
         $query = "DELETE FROM 

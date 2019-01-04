@@ -34,7 +34,8 @@ class Overview extends Page {
             'date' => ucfirst(datetimeToWeekday($event->startdate)).' '.$event->startdate->format('d/m'),
             'time' => $event->startdate->format('H:i') . ' tot '.$event->enddate->format('H:i'),
             'description' => $event->name,
-            'id' => $event->id
+            'id' => $event->id,
+            'event' => $event,
         );
     }
 

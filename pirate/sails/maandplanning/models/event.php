@@ -15,7 +15,9 @@ class Event extends Model {
     public $group_order;
     public $in_past = false;
 
-    /// Only filled if requesting by id
+    public $order_sheet_id; 
+
+    /// Only filled if requesting by id$
     public $order_sheet; /// object
 
     static $groups = array('Kapoenen', 'Wouters', 'Jonggivers', 'Givers', 'Jin', 'Leiding', 'Oudercomité', 'Alle takken', 'Familie en vrienden', '(Jong)givers');
@@ -45,6 +47,7 @@ class Event extends Model {
         $this->group = $row['group'];
         $this->group_order = $row['group_order'];
 
+        $this->order_sheet_id = $row['order_sheet_id'];
         if (isset($row['sheet_id'])) {
             $this->order_sheet = new OrderSheet($row);
         }

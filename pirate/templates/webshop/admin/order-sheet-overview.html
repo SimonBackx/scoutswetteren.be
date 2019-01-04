@@ -1,0 +1,61 @@
+<div class="text">
+        <h1>Aankoopformulier</h1>
+        <p>Wijzig hier de producten of inschrijvingen die je kan doen via het aankoopformulier “{{ sheet.name }}”</p>
+
+        <div>
+            <a href="/admin/maandplanning" class="aubergine fill button">Terug</a>
+            <a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/edit" class="aubergine button">Wijzigen</a>
+        </div>
+
+    <div class="splitted">
+        <div class="part column first">
+            <h2>Algemeen</h2>
+
+            <p><strong>Naam: </strong>{{ sheet.name }}</p>
+            <p><strong>Bankrekening: </strong>{{ sheet.bank_account.name }}</p>
+
+            {% if sheet.due_date is empty %}
+                <p><strong>Geen deadline</strong></p>
+            {% else %}
+                <p><strong>Deadline: </strong> bestel voor {{ sheet.due_date | date("d/m/Y") }}</p>
+            {% endif %}
+
+            <p>{{ sheet.description }}</p>
+                
+        </div>
+        <div class="part column last">
+            <h2>Bestellingen</h2>
+
+            <p>Er zijn nog geen bestellingen geplaatst.</p>
+                
+            <footer><a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/orders" class="aubergine button">Bekijken</a></footer>
+        </div>
+    </div>
+
+
+  
+    
+    <h2>Producten</h2>
+    <div class="list-bundle">
+    {% for product in sheet.products %}
+        <article class="list">
+            <div class="medium merlot column"><a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/products/{{ product.id | e('html_attr')}}">{{ product.name }}</a></div>
+            <div class="max column">
+                {{ product.description }}
+            </div>
+            <div class="last column right">
+                <a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/products/{{ product.id | e('html_attr')}}" class="icon-button">
+                    Wijzigen
+                </a>
+            </div>
+        </article>
+    {% endfor %}
+    </div>
+
+
+    <footer>
+        <a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/products/new" class="aubergine fill button">Product toevoegen</a>
+
+    </footer>
+
+</div>

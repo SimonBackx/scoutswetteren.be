@@ -120,9 +120,18 @@
         <footer>
             <input type="submit" class="aubergine fill" value="Opslaan">
             {% if not new %}
-                <a href="/admin/verhuur/delete/{{ data.id }}" class="button aubergine">Verwijderen</a>
+                {% if order_sheet is not empty %}
+                    <a href="/admin/order-sheets/{{ order_sheet.id }}/products/delete/{{ product.id }}" class="aubergine button">Verwijderen</a>
+                {% else %}
+                <a href="/admin/products/delete/{{ product.id }}" class="aubergine button">Verwijderen</a>
+                {% endif %}
             {% endif %}
-            <a href="/admin/verhuur" class="aubergine button">Annuleren</a>
+
+            {% if order_sheet is not empty %}
+                <a href="/admin/order-sheets/{{ order_sheet.id }}" class="aubergine button">Annuleren</a>
+            {% else %}
+                <a href="/admin/products" class="aubergine button">Annuleren</a>
+            {% endif %}
         </footer>
 
     </div>
