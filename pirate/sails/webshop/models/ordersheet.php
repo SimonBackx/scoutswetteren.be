@@ -28,6 +28,38 @@ class OrderSheet extends Model {
         $this->bank_account = new BankAccount($row);
     }
 
+    static function getById($id) {
+        $id = self::getDb()->escape_string($id);
+        $query = 'SELECT o.*, b.*, p.* FROM order_sheets o
+        left join bank_accounts b on b.account_id = o.sheet_bank_account
+        left join _order_sheet_products _o_p on _o_p.order_sheet_id = o.sheet_id
+        left join products p on _o_p.product_id = p.product_id
+        WHERE o.sheet_id = "'.$id.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+
+                $products = [];
+                $order_sheet = null;
+                while ($row = $result->fetch_assoc()) {
+                    if (isset($row['product_id'])) {
+                        $product = new Product($row);
+                        $products[] = $product;
+                    }
+
+                    if (!isset($order_sheet)) {
+                        $order_sheet = new OrderSheet($row);
+                    }
+                }
+
+                $order_sheet->products = $products;
+                return $order_sheet;
+            }
+        }
+
+        return null;
+    }
+
     /// Set the properties of this model. Throws an error if the data is not valid
     function setProperties(&$data) {
         if (isset($data['order_sheet_account'])) {

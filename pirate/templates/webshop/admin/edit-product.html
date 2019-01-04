@@ -1,0 +1,185 @@
+<form method="post" id="edit-product">
+    <div class="text">
+        <header>
+            <h1>Product {% if new %}aanmaken{% else %}aanpassen{% endif %}</h1>
+            {% if success %}<h2>Opgeslagen!</h2>{% endif %}
+        </header>
+
+         {% if errors|length > 0 %}
+            <ul class="error">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h2>Algemeen</h2>
+        <div class="splitted">
+            <div class="part column first">
+                <label>Naam</label>
+                <input type="text" name="name" value="{{ data.name }}" placeholder="Naam van het product">
+
+                <label>Beschrijving</label>
+                <textarea placeholder="Optionele beschrijving van het product" name="description">{{ data.description }}</textarea>
+
+            </div>
+            <div class="part column last">
+                <label>Type</label>
+                <label class="select-box">
+                    <select name="type">
+                        <option>Maak een keuze</option>
+                        {% for key, type in types %}
+                            <option value="{{ key }}"{% if data.type == key %} selected{% endif %}>
+                                {{ type }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <h2>
+            Prijzen
+        </h2>
+
+        <p>Je kan meerdere varianten toevoegen van een product. De gebruiker kan dan een variant kiezen uit een keuzemenu, en die prijs zal van toepassing zijn. Als je meerdere varianten toevoegt moet je het keuzemenu ook een naam geven (bv. kleur). Elke variant geef je ook een naam, bv. 'rood'.</p>
+
+        <label v-if="product.prices.length > 1">Naam</label>
+        <input v-if="product.prices.length > 1" type="text" name="price_name" v-model="product.price_name" placeholder="Naam keuzemenu">
+        <template v-else><input type="hidden" name="price_name" value=""></template>
+
+        <div class="table-form">
+            <header>
+                <label v-if="product.prices.length > 1">Prijsnaam</label>
+                <label>Prijs</label>
+                <label v-if="product.prices.length > 1"></label>
+            </header>
+
+            <div v-for="(price, index) in product.prices">
+                <!-- Tood: hidden input: id -->
+                <input type="hidden" :name="'prices['+index+'][id]'" v-model="price.id">
+
+                <div v-if="product.prices.length > 1">
+                    <input type="text" :name="'prices['+index+'][name]'" v-model="price.name" placeholder="Prijsnaam">
+                </div>
+                <template v-else><input type="hidden" :name="'prices['+index+'][name]'" value=""></template>
+                <div>
+                    <input type="text" :name="'prices['+index+'][price]'" v-model="price.price" placeholder="Prijs">
+                </div>
+                <button type="button" v-on:click="deletePrice(index);" v-if="product.prices.length > 1">Verwijderen</button>
+            </div>
+        </div>
+
+        <button type="button" class="icon-button plus" v-on:click="addPrice()">Prijs toevoegen</button>
+
+        <h2 v-if="product.optionsets.length == 0">Keuzemenu's</h2>
+        <p v-if="product.optionsets.length == 0">Je kan nog wat extra kenmerken toevoegen, en daar eventueel een meerprijs of korting voor aanrekenen door keuzemenu's toe te voegen.</p>
+
+        <template v-for="(optionset, index) in product.optionsets">
+            <h2>
+                Keuzemenu [[ index+1 ]]
+                <button class="button noborder aubergine" type="button" v-on:click="deleteOptionset(index);" style="margin-left: 20px;">Verwijderen</button>
+            </h2>
+
+            <!-- Todo: hidden input: id -->
+            <input type="hidden" :name="'optionsets['+index+'][id]'" v-model="optionset.id">
+
+            <label>Naam</label>
+            <input type="text" :name="'optionsets['+index+'][name]'" v-model="optionset.name" placeholder="Naam keuzemenu">
+            
+            <div class="table-form">
+                <header>
+                    <label>Keuze</label>
+                    <label>Prijs aanpassing</label>
+                    <label v-if="optionset.options.length > 2"></label>
+                </header>
+    
+                <div v-for="(option, option_index) in optionset.options">
+                    <!-- Todo: hidden input: id -->
+                    <input type="hidden" :name="'optionsets['+index+'][options]['+option_index+'][id]'" v-model="option.id">
+
+                    <div>
+                        <input type="text" :name="'optionsets['+index+'][options]['+option_index+'][name]'" v-model="option.name" placeholder="Keuzenaam">
+                    </div>
+                    <div>
+                        <input type="text" :name="'optionsets['+index+'][options]['+option_index+'][price_change]'" v-model="option.price_change" placeholder="Prijs aanpassing">
+                    </div>
+                    <button type="button" v-on:click="deleteOption(optionset, option_index);" v-if="optionset.options.length > 2">Verwijderen</button>
+                </div>
+
+                <button type="button" class="icon-button plus" v-on:click="addOption(optionset)">Keuze toevoegen</button>
+            </div>
+
+        </template>
+
+        <button type="button" class="icon-button plus" v-on:click="addOptionset()">Keuzemenu toevoegen</button>
+
+
+
+
+        <footer>
+            <input type="submit" class="aubergine fill" value="Opslaan">
+            {% if not new %}
+                <a href="/admin/verhuur/delete/{{ data.id }}" class="button aubergine">Verwijderen</a>
+            {% endif %}
+            <a href="/admin/verhuur" class="aubergine button">Annuleren</a>
+        </footer>
+
+    </div>
+</form>
+
+<!-- development version, includes helpful console warnings -->
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript" async>
+    var product = {{ (data|json_encode|raw) }};
+    var app = new Vue({
+        el: '#edit-product',
+        delimiters: ['[[',']]'],
+        data: {
+            product: product,
+        },
+        methods: {
+            deletePrice: function(index) {
+                if (this.product.prices.length <= 1) {
+                    return;
+                }
+                this.product.prices.splice(index, 1);
+            },
+
+            addPrice: function() {
+                this.product.prices.push({
+                    id: null,
+                    name: "",
+                    price: "€ 0,00",
+                });
+            },
+
+            addOptionset: function() {
+                var optionset = {
+                    id: null,
+                    name: "",
+                    options: [],
+                };
+                this.addOption(optionset);
+                this.addOption(optionset);
+                this.product.optionsets.push(optionset);
+            },
+
+            addOption: function(optionset) {
+                optionset.options.push({
+                    id: null,
+                    name: "",
+                    price_change: "+ € 0,00",
+                });
+            },
+
+            deleteOption: function(optionset, index) {
+                optionset.options.splice(index, 1);
+            },
+
+            deleteOptionset: function(index) {
+                this.product.optionsets.splice(index, 1);
+            },
+        }
+    });
+</script>

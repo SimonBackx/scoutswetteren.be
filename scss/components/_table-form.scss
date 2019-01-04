@@ -1,0 +1,25 @@
+form .table-form {
+    width: 100%;
+    max-width: 500px;
+
+    &> * {
+        display: flex;
+        flex-direction: horizontal;
+        flex-wrap: nowrap;
+        align-items: baseline;
+
+        &> * {
+            flex-grow: 1;
+            padding: 5px 5px;
+            flex-basis: 100%;
+
+            &:first-child {
+                padding-left: 0;
+            }
+
+            &> input {
+                margin-bottom: 0;
+            }
+        } 
+    }
+}

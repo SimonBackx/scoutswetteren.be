@@ -12,6 +12,10 @@ class Page {
             if (count($parts) == 5 && $parts[0] == 'Pirate' && $parts[1] == 'Sail' && $parts[3] == 'Pages') {
                 Page::loadModel($parts[2], $parts[4]);
             }
+
+            if (count($parts) == 5 && $parts[0] == 'Pirate' && $parts[1] == 'Sail' && $parts[3] == 'Admin') {
+                Page::loadAdminModel($parts[2], $parts[4]);
+            }
         });
     }
 
@@ -33,6 +37,17 @@ class Page {
             fwrite(STDOUT, 'Autoload not found!'."\n");*/
 
     }    
+
+    static function loadAdminModel($sail, $name) {
+        $file = __DIR__.'/../sails/'.strtolower($sail).'/admin/'.camelCaseToDashes($name).'.php';
+        //fwrite(STDOUT, 'Autoload ' . $file."\n");
+        if (file_exists($file))
+            require($file);
+        /*else
+            fwrite(STDOUT, 'Autoload not found!'."\n");*/
+
+    }  
+
     function customHeaders() {
         return false;
     }

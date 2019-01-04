@@ -232,7 +232,9 @@ class Event extends Model {
             try {
                 $this->order_sheet->setProperties($data);
                 $this->order_sheet->name = "Inschrijven voor $this->name";
-                $this->order_sheet->subtitle = datetimeToDateString($this->startdate) . " om ".$this->startdate->format('H:i');
+                if (isset($this->startdate)) {
+                    $this->order_sheet->subtitle = datetimeToDateString($this->startdate) . " om ".$this->startdate->format('H:i');
+                }
             } catch (\Exception $ex) {
                 $errors[] = $ex->getMessage();
             }

@@ -1,0 +1,28 @@
+<div class="text">
+    <header>
+        <h1>{{ sheet.name }}</h1>
+        <p>{{ sheet.description }}</p>
+    </header>
+
+    <div class="list-bundle">
+    {% for product in sheet.products %}
+        <article class="list">
+            <div class="medium merlot column"><a href="/ouders/ouder-aanpassen/{{ ouder.id }}">{{ product.name }}</a></div>
+            <div class="max column">
+                {{ product.description }}
+            </div>
+            <div class="last column right">
+                <a href="/admin/products/{{ product.id | e('html_attr')}}" class="icon-button">
+                    Wijzigen
+                </a>
+            </div>
+        </article>
+    {% endfor %}
+    </div>
+
+
+    <footer>
+        <a href="/admin/products?order_sheet={{ sheet.id | e('html_attr')}}" class="aubergine fill button">Product toevoegen</a>
+    </footer>
+
+</div>
