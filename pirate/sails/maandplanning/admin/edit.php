@@ -6,6 +6,7 @@ use Pirate\Template\Template;
 use Pirate\Model\Maandplanning\Event;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Webshop\BankAccount;
+use Pirate\Model\Webshop\OrderSheet;
 
 class Edit extends Page {
     private $id = null;
@@ -39,6 +40,7 @@ class Edit extends Page {
 
             'order_sheet' => false,
             'order_sheet_account' => null,
+            'order_sheet_type' => null,
             'order_sheet_due_date' => '',
             'order_sheet_description' => '',
         );
@@ -78,6 +80,7 @@ class Edit extends Page {
                     'endtime' => $event->enddate->format('H:i'),
 
                     'order_sheet' => false,
+                    'order_sheet_type' => null,
                     'order_sheet_account' => null,
                     'order_sheet_due_date' => '',
                     'order_sheet_description' => '',
@@ -97,6 +100,8 @@ class Edit extends Page {
                     $data['order_sheet_account'] = $event->order_sheet->bank_account->id;
                     $data['order_sheet_due_date'] = isset($event->order_sheet->due_date) ? $event->order_sheet->due_date->format('d-m-Y') : '';
                     $data['order_sheet_description'] = $event->order_sheet->description;
+                    $data['order_sheet_type'] = $event->order_sheet->type;
+
                 }
 
             } else {
@@ -159,6 +164,8 @@ class Edit extends Page {
             'default_start_hour' => Event::getDefaultStartHour(),
             'default_end_hour' => Event::getDefaultEndHour(),
             'accounts' => $accounts,
+            'ordersheet_types' => OrderSheet::$types,
+
             'success' => $success
         ));
     }

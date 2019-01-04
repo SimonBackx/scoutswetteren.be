@@ -62,7 +62,11 @@ class Event extends Model {
         $enddate = self::getDb()->escape_string($enddate);
 
         $events = array();
-        $query = 'SELECT *, case when startdate < CURDATE() then 1 else 0 end as in_past FROM events WHERE (startdate >= "'.$startdate.'" AND startdate < "'.$enddate.'") OR (enddate >= "'.$startdate.'" AND enddate < "'.$enddate.'") OR (startdate <= "'.$startdate.'" AND enddate >= "'.$enddate.'") ORDER BY startdate, group_order LIMIT 30';
+        $query = 'SELECT e.*, o.*, b.*, case when startdate < CURDATE() then 1 else 0 end as in_past FROM events e
+        left join order_sheets o on e.order_sheet_id = o.sheet_id
+        left join bank_accounts b on b.account_id = o.sheet_bank_account
+        
+        WHERE (startdate >= "'.$startdate.'" AND startdate < "'.$enddate.'") OR (enddate >= "'.$startdate.'" AND enddate < "'.$enddate.'") OR (startdate <= "'.$startdate.'" AND enddate >= "'.$enddate.'") ORDER BY startdate, group_order LIMIT 30';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -96,7 +100,10 @@ class Event extends Model {
         $needle = self::getDb()->escape_string($needle);
         
         $events = array();
-        $query = 'SELECT *, case when startdate < CURDATE() then 1 else 0 end as in_past FROM events WHERE `name` like "%'.$needle.'%" OR `group` like "%'.$needle.'%" ORDER BY in_past, startdate, group_order LIMIT 30';
+        $query = 'SELECT e.*, o.*, b.*, case when startdate < CURDATE() then 1 else 0 end as in_past FROM events e
+        left join order_sheets o on e.order_sheet_id = o.sheet_id
+        left join bank_accounts b on b.account_id = o.sheet_bank_account
+        WHERE `name` like "%'.$needle.'%" OR `group` like "%'.$needle.'%" ORDER BY in_past, startdate, group_order LIMIT 30';
         
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -112,7 +119,10 @@ class Event extends Model {
         $tak = self::getDb()->escape_string($tak);
 
         $events = array();
-        $query = 'SELECT * FROM events WHERE startdate >= CURDATE() AND (`group` = "'.ucfirst($tak).'" OR `group` = "Familie en vrienden" OR `group` = "Alle takken" OR `group` = "(Jong)givers") ORDER BY startdate LIMIT 30';
+        $query = 'SELECT e.*, o.*, b.* FROM events e
+        left join order_sheets o on e.order_sheet_id = o.sheet_id
+        left join bank_accounts b on b.account_id = o.sheet_bank_account
+        WHERE startdate >= CURDATE() AND (`group` = "'.ucfirst($tak).'" OR `group` = "Familie en vrienden" OR `group` = "Alle takken" OR `group` = "(Jong)givers") ORDER BY startdate LIMIT 30';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -234,7 +244,13 @@ class Event extends Model {
 
             try {
                 $this->order_sheet->setProperties($data);
-                $this->order_sheet->name = "Inschrijven voor $this->name";
+
+                if ($this->order_sheet->type == 'registrations') {
+                    $this->order_sheet->name = "Inschrijven voor $this->name";
+                } else {
+                    $this->order_sheet->name = "Bestellingen voor $this->name";
+                }
+                
                 if (isset($this->startdate)) {
                     $this->order_sheet->subtitle = datetimeToDateString($this->startdate) . " om ".$this->startdate->format('H:i');
                 }

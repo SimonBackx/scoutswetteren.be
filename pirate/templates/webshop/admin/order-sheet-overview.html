@@ -1,6 +1,11 @@
 <div class="text">
-        <h1>Aankoopformulier</h1>
-        <p>Wijzig hier de producten of inschrijvingen die je kan doen via het aankoopformulier “{{ sheet.name }}”</p>
+        <h1>{{ sheet.name }}</h1>
+
+        {% if sheet.type == 'registrations' %}
+            <p>Wijzig hier de inschrijvingen die je kan doen via het formulier “{{ sheet.name }}”</p>
+        {% else %}
+            <p>Wijzig hier de bestellingen die je kan doen via het formulier “{{ sheet.name }}”</p>
+        {% endif %}
 
         <div>
             <a href="/admin/maandplanning" class="aubergine fill button">Terug</a>
@@ -24,9 +29,9 @@
                 
         </div>
         <div class="part column last">
-            <h2>Bestellingen</h2>
+            <h2>{{ sheet.getButtonName() }}</h2>
 
-            <p>Er zijn nog geen bestellingen geplaatst.</p>
+            <p>Er zijn nog geen {{ sheet.getButtonName() }} geplaatst.</p>
                 
             <footer><a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/orders" class="aubergine button">Bekijken</a></footer>
         </div>

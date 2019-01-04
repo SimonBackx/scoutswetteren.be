@@ -15,7 +15,7 @@
                     <div class="max column">{{ event.description }}</div>
                     <div class="last column">
                         {% if event.event.order_sheet_id is not null %}
-                            <a href="/admin/order-sheets/{{ event.event.order_sheet_id }}" class="button noborder">Aankoopformulier</a>
+                            <a href="/admin/order-sheets/{{ event.event.order_sheet_id }}" class="button noborder">{{ event.event.order_sheet.getButtonName() }}</a>
                         {% endif %}
                         <a href="/admin/maandplanning/edit/{{ event.id }}" class="aubergine button noborder">Aanpassen</a>
                     </div>

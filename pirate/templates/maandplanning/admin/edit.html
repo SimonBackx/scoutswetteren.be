@@ -70,18 +70,29 @@
         </div>
 
         <input id="order_sheet" type="checkbox" name="order_sheet" value="1" {% if event.order_sheet %} checked{% endif %}>
-        <label for="order_sheet">Aankoopformulier toevoegen</label>
+        <label for="order_sheet">Formulier toevoegen</label>
 
         <div class="checkbox-controllable">
             <div class="visible-when-checked">
 
                 <div class="splitted">
                     <div class="part column first">
-                        <label>Aankopen mogelijk tot</label>
-                        <input type="text" class="datepicker" name="order_sheet_due_date" value="{{ event.order_sheet_due_date }}" placeholder="Tot dag voor begin activiteit">
+                        <label>Soort formulier</label>
+                        <label class="select-box">
+                            <select name="order_sheet_type">
+                                <option>Maak een keuze</option>
+                                {% for key, type in ordersheet_types %}
+                                    <option value="{{ key }}"{% if key == event.order_sheet_type %} selected{% endif %}>
+                                        {{ type }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </label>
 
                         <label>Beschrijving</label>
-                        <textarea placeholder="Uitleg die bovenaan zichtbaar is" name="order_sheet_description">{{ event.order_sheet_description }}</textarea>
+                        <textarea placeholder="Uitleg bovenaan het formulier zichtbaar" name="order_sheet_description">{{ event.order_sheet_description }}</textarea>
+
+                       
                     </div>
                     <div class="part column last">
                         <label>Betalen op bankrekening</label>
@@ -95,6 +106,10 @@
                                 {% endfor %}
                             </select>
                         </label>
+
+                        <label>Beschikbaar tot</label>
+                        <input type="text" class="datepicker" name="order_sheet_due_date" value="{{ event.order_sheet_due_date }}" placeholder="Tot dag voor begin activiteit">
+                        
                     </div>
                 </div>
             </div>
