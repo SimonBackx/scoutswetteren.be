@@ -5,7 +5,7 @@ use Pirate\Classes\Validating\ValidationError;
 use Pirate\Classes\Validating\ValidationErrors;
 use Pirate\Classes\Validating\ValidationErrorBundle;
 
-class ProductPrice extends Model {
+class ProductPrice extends Model implements \JsonSerializable {
     public $id;
     public $name;
     public $price;
@@ -19,7 +19,7 @@ class ProductPrice extends Model {
 
         $this->id = $row['price_id'];
         $this->name = $row['price_name'];
-        $this->price = $row['price_price'];
+        $this->price = intval($row['price_price']);
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid
@@ -44,6 +44,14 @@ class ProductPrice extends Model {
         $decimals = str_pad(''.($this->price - $int*100), 2, "0");
 
         return "€ $int,$decimals";
+    }
+
+    function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'price' => $this->price,
+        ];
     }
 
     function save() {

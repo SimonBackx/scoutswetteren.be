@@ -3,41 +3,49 @@
         <button class="button noborder arrow-left aubergine" onclick="previousWeek();">Vorige</button>
         <button class="button noborder arrow-right aubergine" onclick="nextWeek();">Volgende week</button>
     </div>
-    
+
     {% for day in days %}
-        <h1>{{ day.weekday }}<time datetime="{{ day.date_raw }}">{{ day.date }}</time></h1>
         {% for activity in day.activities %}
             <script type="application/ld+json">
                 {
-                "@context": "http://schema.org/",
-                "@type": "Event",
-                "name": {{ activity.name_js | raw}},
-                "organizer": {
-                    "@type": "Organization",
-                    "name": "Scouts Prins Boudewijn Wetteren",
-                    "url": "https://www.scoutswetteren.be"
-                },
-                "startDate": "{{ activity.time_start_js }}",
-                "endDate": "{{ activity.time_start_js }}",
-                "location": {{ activity.location_js | raw }},
-                "performer": {
-                    "@type": "Organization",
-                    "name": "{{ activity.group }}"
-                },
-                "url": "https://www.scoutswetteren.be"
+                    "@context": "http://www.schema.org",
+                    "@type": "Event",
+                    "name": {{ activity.name_js | raw}},
+                    "url": "https://www.scoutswetteren.be",
+                    "organizer": {
+                        "@type": "Organization",
+                        "name": "Scouts Prins Boudewijn Wetteren",
+                        "url": "https://www.scoutswetteren.be"
+                    },
+                    "startDate": "{{ activity.time_start_js }}",
+                    "endDate": "{{ activity.time_start_js }}",
+                    "location": {
+                        "@type": "Place",
+                        "name": {{ activity.location_js | raw }}
+                    }
                 }
-                </script>
+            </script>
+        {% endfor %}
+    {% endfor %}
+
+    {% for day in days %}
+        <h1>{{ day.weekday }}<time datetime="{{ day.date_raw }}">{{ day.date }}</time></h1>
+        {% for activity in day.activities %}
 
             <article>
-                <div class="group column">
-                    {{ activity.group }}
-                </div>
-                <time class="time column" datetime="{{ activity.time_raw }}">
-                    {{ activity.time }}
-                </time>
-                <div class="description column">
-                    {{ activity.description }}
-                </div>
+                <header>
+                    <div>
+                        <span class="group">{{ activity.group }}</span>
+                        <span class="time" datetime="{{ activity.time_raw }}">{{ activity.time }}</span>
+                    </div>
+                    <h1>{{ activity.description }}</h1>
+                </header>
+
+                {% if activity.event.order_sheet_id is not null %}
+                    <div class="buttons column">
+                        <a href="{{ activity.event.order_sheet.getUrl() }}" class="small aubergine button noborder">{{ activity.event.order_sheet.getButtonName() }}</a>
+                    </div>
+                {% endif %}
             </article>
         {% endfor %}
     {% else %}

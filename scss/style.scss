@@ -217,6 +217,10 @@ a.button, button.button, input[type=submit] {
         vertical-align: text-top;
     }
 
+    &.small {
+        font-size: $size-text;
+    }
+
     &.merlot {
         color: $merlot;
         border-color: $merlot;
@@ -361,3 +365,4 @@ a.icon-button, button.icon-button {
 @import "photos";
 
 @import "components/table-form";
+@import "components/price-floater";

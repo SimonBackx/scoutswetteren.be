@@ -5,7 +5,7 @@ use Pirate\Classes\Validating\ValidationError;
 use Pirate\Classes\Validating\ValidationErrors;
 use Pirate\Classes\Validating\ValidationErrorBundle;
 
-class OrderSheet extends Model {
+class OrderSheet extends Model implements \JsonSerializable {
     public $id;
     public $name;
     public $subtitle;
@@ -42,6 +42,18 @@ class OrderSheet extends Model {
         $this->bank_account = new BankAccount($row);
     }
 
+    function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'subtitle' => $this->subtitle,
+            'description' => $this->description,
+            'type' => $this->type,
+            'due_date' => empty($this->due_date) ? null : $this->due_date->format('Y-m-d'),
+            'products' => $this->products,
+        ];
+    }
+
     static function getById($id) {
         $id = self::getDb()->escape_string($id);
         $query = 'SELECT o.*, b.*, p.* FROM order_sheets o
@@ -57,7 +69,7 @@ class OrderSheet extends Model {
                 $order_sheet = null;
                 while ($row = $result->fetch_assoc()) {
                     if (isset($row['product_id'])) {
-                        $product = new Product($row);
+                        $product = Product::getById($row['product_id']);//new Product($row);
                         $products[] = $product;
                     }
 
@@ -175,6 +187,12 @@ class OrderSheet extends Model {
         }
 
         return false;
+    }
+
+    function getUrl() {
+        $type_url = strtolower(static::$types[$this->type]);
+        $slug = sluggify($this->name);
+        return "/$type_url/$this->id/$slug";
     }
 
     function linkProduct($product) {

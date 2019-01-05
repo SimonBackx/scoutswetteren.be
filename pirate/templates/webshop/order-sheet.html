@@ -1,0 +1,242 @@
+{% set title = order_sheet.name %}
+{% set description = order_sheet.description %}
+{% extends "base.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <script>
+    // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd
+    if (!String.prototype.padEnd) {
+        String.prototype.padEnd = function padEnd(targetLength,padString) {
+            targetLength = targetLength>>0; //floor if number or convert non-number to 0;
+            padString = String((typeof padString !== 'undefined' ? padString : ' '));
+            if (this.length > targetLength) {
+                return String(this);
+            }
+            else {
+                targetLength = targetLength-this.length;
+                if (targetLength > padString.length) {
+                    padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+                }
+                return String(this) + padString.slice(0,targetLength);
+            }
+        };
+    }
+</script>
+    <script type="text/javascript">
+        var order_sheet = {{ (order_sheet|json_encode|raw) }};
+        var items = {};
+        for (var index = 0; index < order_sheet.products.length; index++) {
+            var product = order_sheet.products[index];
+            items[product.id] = []; 
+        }
+
+        function formatPrice(price) {
+            if (isNaN(price)) {
+                return "€ -";
+            }
+            var int = Math.floor(price/100);
+            var decimals = (""+(price - int*100)).padEnd(2, "0");
+
+            return "€ "+int+","+decimals;
+        }
+
+        var app = new Vue({
+            el: '#order-sheet',
+            delimiters: ['[[',']]'],
+            data: {
+                order_sheet: order_sheet,
+                cart: {
+                    items: items,
+                },
+            },
+            methods: {
+                addItemForProduct: function(product) {
+                    var item = {
+                        amount: 1,
+                        options: {},
+                        price: null,
+                        product: product,
+                        name: "",
+                    };
+
+                    for (var option_index = 0; option_index < product.optionsets.length; option_index++) {
+                        var optionset = product.optionsets[option_index];
+                        item.options[optionset.id] = null;
+                    }
+
+                    if (product.prices.length == 1) {
+                        item.price = product.prices[0];
+                    }
+
+                    // Push item to the cart
+                    items[product.id].push(item);
+                },
+
+                getItemPrice: function(item, total) {
+                    if (!item.price) {
+                        return NaN;
+                    }
+
+                    var price = item.price.price;
+
+                    for (var optionset_id in item.options) {
+                        var option = item.options[optionset_id];
+                        if (option && option.price_change) {
+                            price += option.price_change;
+                        }
+                    }
+
+                    if (total) {
+                        price *= item.amount;
+                    }
+
+                    return price;         
+                },
+
+                getItemPriceString: function(item, total) {
+                    var price = this.getItemPrice(item, total);
+
+                    if (!total && item.product.type == "unit") {
+                        return formatPrice(price) + " / stuk";
+                    }
+
+                    if (!total && item.product.type == "person") {
+                        return formatPrice(price) + " / persoon";
+                    }
+                    return formatPrice(price);
+                },
+
+                getTotal: function() {
+                    var price = 0;
+
+                    for (var product_id in this.cart.items) {
+                        for (var index = 0; index < this.cart.items[product_id].length; index++) {
+                            var item = this.cart.items[product_id][index];
+                            price += this.getItemPrice(item, true);
+                        }
+                    }
+
+                    return price;
+                },
+
+                getTotalString: function() {
+                    return formatPrice(this.getTotal());
+                },
+
+                isValid: function() {
+                    var items = 0;
+
+                    for (var product_id in this.cart.items) {
+                        items += this.cart.items[product_id].length;
+                    }
+
+                    return items > 0 && !isNaN(this.getTotal());
+                }
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <form method="POST" id="order-sheet">
+            <section class="white block">
+                 <div class="text">
+                     <header>
+                        <h1>{{ order_sheet.name }}</h1>
+                        <h2>{{ order_sheet.subtitle }}</h2>
+                        <p>{{ order_sheet.description }}</p>
+                    </header>
+
+                    <template v-for="product in order_sheet.products">
+                        <h2>[[ product.name ]]</h2>
+                        <p>[[ product.description ]]</p>
+
+                        <div class="table-form wide">
+                            <header v-if="cart.items[product.id].length > 0">
+                                <label v-if="product.type == 'name'">Naam</label>
+                                <label v-if="product.prices.length > 1">[[ product.price_name ]]</label>
+                                <label v-for="optionset in product.optionsets">[[ optionset.name ]]</label>
+
+                                <label>Prijs</label>
+                                <label v-if="product.type == 'unit'">Aantal</label>
+                                <label v-if="product.type == 'unit'">Totaal</label>
+
+                                <label></label>
+                            </header>
+                
+                            <div v-for="(cartitem, index) in cart.items[product.id]">    
+                                <div v-if="product.type == 'name'">
+                                    <input type="text" v-model="cartitem.name" placeholder="Wie schrijf je in?">
+                                </div>
+
+                                <div v-if="product.prices.length > 1">
+                                    <label class="select-box">
+                                        <select v-model="cartitem.price">
+                                            <option :value="null">Maak een keuze</option>
+                                            <option :value="price" v-for="price in product.prices">
+                                                [[ price.name ]]
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div v-for="optionset in product.optionsets">
+                                    <label class="select-box">
+                                        <select v-model="cartitem.options[optionset.id]">
+                                            <option :value="null">Maak een keuze</option>
+                                            <option :value="option" v-for="option in optionset.options">
+                                                [[ option.name ]]
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    [[ getItemPriceString(cartitem, false) ]]
+                                </div>
+
+                                <div v-if="product.type == 'unit'">
+                                    <input type="text" v-model.number="cartitem.amount" placeholder="Wie schrijf je in?">
+                                </div>
+
+                                <div v-if="product.type == 'unit'">
+                                    [[ getItemPriceString(cartitem, true) ]]
+                                </div>
+                               
+                                <div class="smallest">
+                                    <button type="button" v-on:click="deleteCartItem(product.id, index);">Verwijderen</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="icon-button plus" v-on:click="addItemForProduct(product);">
+                            [[ product.type == 'unit' ? 'Toevoegen' : 'Persoon toevoegen' ]]
+                        </button>
+                    </template>
+
+
+                    <footer>
+                        <div class="price-floater">
+                            <div>
+                                Totaal
+                                <span>voor 2 personen</span>
+                            </div>
+                            <div>[[ getTotalString() ]]</div>
+                        </div>
+
+                        <input type="submit" class="aubergine" :class="{'fill': isValid()}" value="Volgende">
+                    </footer>
+                </div>
+            </section>
+        </form>
+    </main>
+
+{% endblock %}

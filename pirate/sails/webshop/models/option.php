@@ -4,7 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Classes\Validating\ValidationError;
 use Pirate\Classes\Validating\ValidationErrors;
 use Pirate\Classes\Validating\ValidationErrorBundle;
-class Option extends Model {
+class Option extends Model implements \JsonSerializable {
     public $id;
     public $name;
     public $price_change;
@@ -20,10 +20,18 @@ class Option extends Model {
 
         $this->id = $row['option_id'];
         $this->name = $row['option_name'];
-        $this->price_change = $row['option_price_change'];
+        $this->price_change = intval($row['option_price_change']);
 
         // temp
         $this->optionset_id = $row['option_set'];
+    }
+
+    function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'price_change' => $this->price_change,
+        ];
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid

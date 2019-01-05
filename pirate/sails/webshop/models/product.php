@@ -5,7 +5,7 @@ use Pirate\Classes\Validating\ValidationError;
 use Pirate\Classes\Validating\ValidationErrors;
 use Pirate\Classes\Validating\ValidationErrorBundle;
 
-class Product extends Model {
+class Product extends Model implements \JsonSerializable {
     public $id;
     public $name;
     public $description;
@@ -72,6 +72,18 @@ class Product extends Model {
         }
 
         return null;
+    }
+
+    function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
+            'type' => $this->type,
+            'price_name' => $this->price_name,
+            'prices' => $this->prices,
+            'optionsets' => $this->optionsets,
+        ];
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid

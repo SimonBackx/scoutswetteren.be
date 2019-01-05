@@ -4,7 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Classes\Validating\ValidationError;
 use Pirate\Classes\Validating\ValidationErrors;
 use Pirate\Classes\Validating\ValidationErrorBundle;
-class OptionSet extends Model {
+class OptionSet extends Model implements \JsonSerializable {
     public $id;
     public $name;
 
@@ -22,6 +22,14 @@ class OptionSet extends Model {
 
         $this->id = $row['set_id'];
         $this->name = $row['set_name'];
+    }
+
+    function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'options' => $this->options,
+        ];
     }
 
     /// Return a list of optionsets

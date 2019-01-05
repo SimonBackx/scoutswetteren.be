@@ -1,24 +1,36 @@
 form .table-form {
     width: 100%;
     max-width: 500px;
+    display: table;
+
+    &.wide {
+        max-width: none;
+    }
 
     &> * {
-        display: flex;
+        /*display: flex;
         flex-direction: horizontal;
         flex-wrap: nowrap;
-        align-items: baseline;
+        align-items: baseline;*/
+        display: table-row;
+        width: 100%;
 
         &> * {
-            flex-grow: 1;
             padding: 5px 5px;
-            flex-basis: 100%;
+            display: table-cell;
 
             &:first-child {
                 padding-left: 0;
             }
 
-            &> input {
-                margin-bottom: 0;
+            &> input, &> .select-box {
+                margin: 0;
+            }
+
+            &.smallest {
+                word-wrap: none;
+                white-space: nowrap;
+                width: 1%;
             }
         } 
     }

@@ -98,7 +98,8 @@ class Kalender extends Block {
                         'location_js' => $event->location,
                         'time_start_js' => $event->startdate->format('c'),
                         'time_end_js' => $event->enddate->format('c'),
-                        'location_js' => $location_js
+                        'location_js' => $location_js,
+                        'event' => $event,
                     );
                 }
 
@@ -131,7 +132,8 @@ class Kalender extends Block {
                 'location_js' => $event->location,
                 'time_start_js' => $event->startdate->format('c'),
                 'time_end_js' => $event->enddate->format('c'),
-                'location_js' => $location_js
+                'location_js' => $location_js,
+                'event' => $event,
             );
         }
 
