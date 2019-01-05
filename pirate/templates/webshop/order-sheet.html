@@ -6,6 +6,154 @@
 
 {% endblock %}
 
+{% block main %}
+    <main>
+        <form id="order-sheet">
+            <section class="white block">
+                <div class="text">
+                    <header>
+                        <h1>{{ order_sheet.name }}</h1>
+                        <h2>{{ order_sheet.subtitle }}</h2>
+                        <p>{{ order_sheet.description }}</p>
+                    </header>
+
+                    <template v-for="product in order_sheet.products">
+                        <h2>[[ product.name ]]</h2>
+                        <p>[[ product.description ]]</p>
+
+                        <div class="table-form wide">
+                            <header v-if="cart.items[product.id].length > 0">
+                                <label v-if="product.type == 'name'">Naam</label>
+                                <label v-if="product.prices.length > 1">[[ product.price_name ]]</label>
+                                <label v-for="optionset in product.optionsets">[[ optionset.name ]]</label>
+
+                                <label>Prijs</label>
+                                <label v-if="product.type == 'unit'">Aantal</label>
+                                <label v-if="product.type == 'unit'">Totaal</label>
+
+                                <label></label>
+                            </header>
+                
+                            <div v-for="(cartitem, index) in cart.items[product.id]">    
+                                <div v-if="product.type == 'name'">
+                                    <input type="text" v-model="cartitem.name" placeholder="Wie schrijf je in?">
+                                </div>
+
+                                <div v-if="product.prices.length > 1">
+                                    <label class="select-box">
+                                        <select v-model="cartitem.price">
+                                            <option :value="null">Maak een keuze</option>
+                                            <option :value="price" v-for="price in product.prices">
+                                                [[ price.name ]]
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div v-for="optionset in product.optionsets">
+                                    <label class="select-box">
+                                        <select v-model="cartitem.options[optionset.id]">
+                                            <option :value="null">Maak een keuze</option>
+                                            <option :value="option" v-for="option in optionset.options">
+                                                [[ option.name ]]
+                                            </option>
+                                        </select>
+                                    </label>
+                                </div>
+
+                                <div>
+                                    [[ getItemPriceString(cartitem, false) ]]
+                                </div>
+
+                                <div v-if="product.type == 'unit'">
+                                    <input type="text" v-model.number="cartitem.amount" placeholder="Wie schrijf je in?">
+                                </div>
+
+                                <div v-if="product.type == 'unit'">
+                                    [[ getItemPriceString(cartitem, true) ]]
+                                </div>
+                                
+                                <div class="smallest">
+                                    <button type="button" v-on:click="deleteCartItem(product.id, index);">Verwijderen</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="icon-button plus" v-on:click="addItemForProduct(product);">
+                            [[ product.type == 'unit' ? 'Toevoegen' : 'Persoon toevoegen' ]]
+                        </button>
+                    </template>
+
+
+                    <footer>
+                        <div class="price-floater">
+                            <div>
+                                Totaal
+                                <span>voor 2 personen</span>
+                            </div>
+                            <div>[[ getTotalString() ]]</div>
+                        </div>
+
+                        <input type="submit" class="aubergine" :class="{'fill': isValid()}" value="Volgende">
+                    </footer>
+                </div>
+            </section>
+
+            <section class="white block">
+                <div class="text">
+                    <header>
+                        <h1>Jouw gegevens</h1>
+                        <p>Je ontvangt een bevestiging via e-mail na het plaatsen van de bestelling.</p>
+                    </header>
+
+                    <label>Voornaam</label>
+                    <input type="text" placeholder="Vul je voornaam hier in">
+
+                    <label>Achternaam</label>
+                    <input type="text" placeholder="Vul je achternaam hier in">
+                
+                    <label>E-mailadres</label>
+                    <input type="text" placeholder="Vul je e-mailadres hier in">
+
+                    <label>GSM-nummer</label>
+                    <input type="text" placeholder="Typ je GSM-nummer in">
+
+                    <footer>
+                        <input type="submit" class="aubergine fill" value="Volgende">
+                    </footer>
+
+                </div>
+            </section>
+
+            <section class="white block">
+                <div class="text">
+                    <header>
+                        <h1>Betaalmethode</h1>
+                    </header>
+
+                    
+
+                    <footer>
+                        <div class="price-floater">
+                            <div>
+                                Totaal
+                                <span>voor 2 personen</span>
+                            </div>
+                            <div>[[ getTotalString() ]]</div>
+                        </div>
+
+                        <input type="submit" class="aubergine fill" value="Betalen">
+                    </footer>
+
+                </div>
+            </section>
+        </form>
+    </main>
+    
+
+{% endblock %}
+
+
 {% block javascript %}
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
@@ -142,101 +290,4 @@
             }
         });
     </script>
-{% endblock %}
-
-{% block main %}
-    <main>
-        <form method="POST" id="order-sheet">
-            <section class="white block">
-                 <div class="text">
-                     <header>
-                        <h1>{{ order_sheet.name }}</h1>
-                        <h2>{{ order_sheet.subtitle }}</h2>
-                        <p>{{ order_sheet.description }}</p>
-                    </header>
-
-                    <template v-for="product in order_sheet.products">
-                        <h2>[[ product.name ]]</h2>
-                        <p>[[ product.description ]]</p>
-
-                        <div class="table-form wide">
-                            <header v-if="cart.items[product.id].length > 0">
-                                <label v-if="product.type == 'name'">Naam</label>
-                                <label v-if="product.prices.length > 1">[[ product.price_name ]]</label>
-                                <label v-for="optionset in product.optionsets">[[ optionset.name ]]</label>
-
-                                <label>Prijs</label>
-                                <label v-if="product.type == 'unit'">Aantal</label>
-                                <label v-if="product.type == 'unit'">Totaal</label>
-
-                                <label></label>
-                            </header>
-                
-                            <div v-for="(cartitem, index) in cart.items[product.id]">    
-                                <div v-if="product.type == 'name'">
-                                    <input type="text" v-model="cartitem.name" placeholder="Wie schrijf je in?">
-                                </div>
-
-                                <div v-if="product.prices.length > 1">
-                                    <label class="select-box">
-                                        <select v-model="cartitem.price">
-                                            <option :value="null">Maak een keuze</option>
-                                            <option :value="price" v-for="price in product.prices">
-                                                [[ price.name ]]
-                                            </option>
-                                        </select>
-                                    </label>
-                                </div>
-
-                                <div v-for="optionset in product.optionsets">
-                                    <label class="select-box">
-                                        <select v-model="cartitem.options[optionset.id]">
-                                            <option :value="null">Maak een keuze</option>
-                                            <option :value="option" v-for="option in optionset.options">
-                                                [[ option.name ]]
-                                            </option>
-                                        </select>
-                                    </label>
-                                </div>
-
-                                <div>
-                                    [[ getItemPriceString(cartitem, false) ]]
-                                </div>
-
-                                <div v-if="product.type == 'unit'">
-                                    <input type="text" v-model.number="cartitem.amount" placeholder="Wie schrijf je in?">
-                                </div>
-
-                                <div v-if="product.type == 'unit'">
-                                    [[ getItemPriceString(cartitem, true) ]]
-                                </div>
-                               
-                                <div class="smallest">
-                                    <button type="button" v-on:click="deleteCartItem(product.id, index);">Verwijderen</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="button" class="icon-button plus" v-on:click="addItemForProduct(product);">
-                            [[ product.type == 'unit' ? 'Toevoegen' : 'Persoon toevoegen' ]]
-                        </button>
-                    </template>
-
-
-                    <footer>
-                        <div class="price-floater">
-                            <div>
-                                Totaal
-                                <span>voor 2 personen</span>
-                            </div>
-                            <div>[[ getTotalString() ]]</div>
-                        </div>
-
-                        <input type="submit" class="aubergine" :class="{'fill': isValid()}" value="Volgende">
-                    </footer>
-                </div>
-            </section>
-        </form>
-    </main>
-
 {% endblock %}
