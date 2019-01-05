@@ -10,6 +10,7 @@ use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Validating\Validator;
 use Pirate\Mail\Mail;
 use Pirate\Model\Files\File;
+use Pirate\Model\Users\User;
 
 class MailPage extends Page {
     function getStatusCode() {
@@ -163,7 +164,12 @@ class MailPage extends Page {
                         }
                     }
 
-                    if (count($errors) == 0 && !Ouder::createMagicTokensFor($ouders)) {
+                    $users = [];
+                    foreach($ouders as $ouder) {
+                        $users[] = $ouder->user;
+                    }
+
+                    if (count($errors) == 0 && !User::createMagicTokensFor($users)) {
                         $errors[] = 'Kon geen link genereren om ouders automatisch in te loggen. Contacteer webmaster.';
                     }
 
@@ -185,7 +191,7 @@ class MailPage extends Page {
                             array(
                                 'magic_url' => "https://".$_SERVER['SERVER_NAME'],
                                 'voornaam' => '<voornaam van ouder>',
-                                'reason' => 'Dit bericht is een kopie van het bericht dat naar ouders ('.$data['tak'].') is verzonden via de website door '.$user->user->firstname.' '.$user->user->lastname
+                                'reason' => "\n".'Dit bericht is een kopie van het bericht dat naar ouders ('.$data['tak'].') is verzonden via de website door '.$user->user->firstname.' '.$user->user->lastname
                             )
                         );
 
