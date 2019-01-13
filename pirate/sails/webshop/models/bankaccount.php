@@ -6,7 +6,7 @@ class BankAccount extends Model {
     public $id;
     public $name;
     public $iban;
-    public $stripe;
+    public $stripe_public;
 
     function __construct($row = null) {
         if (is_null($row)) {
@@ -16,12 +16,18 @@ class BankAccount extends Model {
         $this->id = $row['account_id'];
         $this->name = $row['account_name'];
         $this->iban = $row['account_iban'];
-        $this->stripe = $row['account_stripe'];
+        $this->stripe_public = $row['account_stripe_public'];
+        $this->stripe_secret = $row['account_stripe_secret'];
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid
     function setProperties(&$data) {
         throw new \Exception("Not yet implemented");
+    }
+
+    function getPaymentMethods() {
+        /// Currently only stripe supported
+        return ['stripe'];
     }
 
     static function getAll() {
@@ -68,10 +74,16 @@ class BankAccount extends Model {
             $iban = "'".self::getDb()->escape_string($this->iban)."'";
         }
 
-        if (!isset($this->stripe)) {
-            $stripe = 'NULL';
+        if (!isset($this->stripe_public)) {
+            $stripe_public = 'NULL';
         } else {
-            $stripe = "'".self::getDb()->escape_string($this->stripe)."'";
+            $stripe_public = "'".self::getDb()->escape_string($this->stripe_public)."'";
+        }
+
+        if (!isset($this->stripe_secret)) {
+            $stripe_secret = 'NULL';
+        } else {
+            $stripe_secret = "'".self::getDb()->escape_string($this->stripe_secret)."'";
         }
 
 
@@ -82,14 +94,15 @@ class BankAccount extends Model {
                 SET 
                 account_name = '$name',
                 account_iban = $iban,
-                account_stripe = $stripe
+                account_stripe_public = $stripe_public,
+                account_stripe_secret = $stripe_secret
                  where `account_id` = '$id' 
             ";
         } else {
 
             $query = "INSERT INTO 
-                bank_accounts (`account_name`, `account_iban`, `account_stripe`)
-                VALUES ('$name', $iban, $stripe)";
+                bank_accounts (`account_name`, `account_iban`, `account_stripe_public`, `account_stripe_secret`)
+                VALUES ('$name', $iban, $stripe_public, $stripe_secret)";
         }
 
         $result = self::getDb()->query($query);

@@ -3,6 +3,7 @@ namespace Pirate\Sail\Webshop;
 use Pirate\Page\Page;
 use Pirate\Route\Route;
 use Pirate\Model\Webshop\OrderSheet;
+use Pirate\Model\Webshop\Order;
 
 class WebshopRouter extends Route {
     function doMatch($url, $parts) {
@@ -13,6 +14,16 @@ class WebshopRouter extends Route {
             }
             return false;
         }*/
+
+        if ($result = $this->match($parts, '/order/@id/@secret', ['id' => 'string', 'secret' => 'string'])) {
+            $order = Order::getById($result->params->id);
+            if (!isset($order) || $order->secret != $result->params->secret) {
+                return false;
+            }
+            $this->setPage(new Pages\Order($order));
+            return true;
+        }
+
 
         if ($result = $this->match($parts, '/inschrijvingen/@id/@slug', ['id' => 'string', 'slug' => 'string'])) {
             $order_sheet = OrderSheet::getById($result->params->id);

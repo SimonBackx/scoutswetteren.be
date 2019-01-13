@@ -58,6 +58,22 @@ class User extends Model {
         return null;
     }
 
+    static function getById($id) {
+        $id = self::getDb()->escape_string($id);
+
+        $query = '
+            SELECT u.* from users u
+            where u.user_id = "'.$id.'"';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows == 1){
+                $row = $result->fetch_assoc();
+                return new User($row);
+            }
+        }
+        return null;
+    }
+
     static function getForPhone($phone) {
         $phone = self::getDb()->escape_string($phone);
 

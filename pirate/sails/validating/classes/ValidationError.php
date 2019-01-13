@@ -1,7 +1,7 @@
 <?php
 namespace Pirate\Classes\Validating;
 
-class ValidationError extends ValidationErrorBundle {
+class ValidationError extends ValidationErrorBundle implements \JsonSerializable {
     public $message;
     public $field;
 
@@ -12,5 +12,18 @@ class ValidationError extends ValidationErrorBundle {
 
     function getErrors() {
         return [$this];
+    }
+
+    function jsonSerialize() {
+        if (isset($this->field)) {
+            return [
+                "message" => $this->message,
+                "field" => $this->field,
+            ];
+        }
+
+        return [
+            "message" => $this->message
+        ];
     }
 }

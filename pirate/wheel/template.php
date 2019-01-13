@@ -51,6 +51,12 @@ class Template {
         );
 
         if (User::isLoggedIn()) {
+            $data['logged_in_user']['firstname'] = User::getUser()->firstname;
+            $data['logged_in_user']['lastname'] = User::getUser()->lastname;
+            $data['logged_in_user']['mail'] = User::getUser()->mail;
+            $data['logged_in_user']['phone'] = User::getUser()->phone;
+            $data['logged_in_user']['id'] = User::getUser()->id;
+
             $data['logged_in_user']['name'] = User::getUser()->firstname.' '.User::getUser()->lastname;
         }
 

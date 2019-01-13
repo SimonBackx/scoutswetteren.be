@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="white block">
+            <div class="text">
+                {% if order.isFailed() %}
+                    <header>
+                        <h1>Betaling is mislukt</h1>
+                        <h2>De betaling werd geannuleerd of geweigderd door de bank. Kijk het saldo op uw bankkaart na en probeer het opnieuw.</h2>
+                    </header>
+                {% else %}
+                    {% if not order.isValid() %}
+                        <header>
+                            <h1>Wachten op betaling...</h1>
+                            <h2>Zodra we van de bank het signaal krijgen dat de betaling is gelukt wordt je bestelling geplaatst.</h2>
+                        </header>
+
+                    {% else %}
+                        <header>
+                            <h1>Jouw bestelling is geplaatst!</h1>
+                            <h2>Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</h2>
+                        </header>
+
+                        <h2>Producten</h2>
+                        <div class="list-bundle">
+                            {% for item in order.items %}
+                                <article class="list">
+                                    <div class="medium merlot column">
+                                            {{ item.product.name }}
+                                    </div>
+                                    <div class="max column">
+                                        <p>
+                                            {% if item.product.type == 'unit' %}
+                                                <strong>Aantal:</strong> {{ item.amount }}<br>
+                                            {% endif %}
+
+                                            {% if item.product.type == 'name' %}
+                                                <strong>Naam:</strong> {{ item.person_name }}<br>
+                                            {% endif %}
+        
+                                            {% if item.product.type == 'person' %}
+                                                <strong>Aantal personen:</strong> {{ item.amount }}<br>
+                                            {% endif %}
+        
+                                            <strong>{{ item.product.price_name }}:</strong> {{ item.product_price.name }}<br>
+        
+                                            {% for option in item.options %}
+                                                <strong>{{ option.optionset.name }}:</strong> {{ option.name }}<br>
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                    <div class="last column right">
+                                        {{ item.getPrice() }}
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+
+                        <footer>
+                            <div class="price-floater">
+                                <div>
+                                    Totaal
+                                    {% if not order.isPaid() %}
+                                        <span>Nog niet betaald ({{ order.payment.getName() }})</span>
+                                    {% else %}
+                                        <span>Betaald via {{ order.payment.getName() }}</span>
+                                    {% endif%}
+                                </div>
+                                <div>{{ order.getPrice() }}</div>
+                            </div>
+                        </footer>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </section>
+    </main>
+
+{% endblock %}
+
+{% block javascript %}
+   
+{% endblock %}

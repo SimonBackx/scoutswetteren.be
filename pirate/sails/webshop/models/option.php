@@ -24,6 +24,10 @@ class Option extends Model implements \JsonSerializable {
 
         // temp
         $this->optionset_id = $row['option_set'];
+
+        if (isset($row['set_id'])) {
+            $this->optionset = new OptionSet($row);
+        }
     }
 
     function jsonSerialize() {
