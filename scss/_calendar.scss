@@ -76,7 +76,7 @@
                 h1 {
                     color: $aubergine;
                     display: block;
-                    font-size: $size-text;
+                    font-size: $size-question;
                     font-weight: normal;
                     margin: 0;
                     padding: 0;
@@ -94,63 +94,18 @@
                 }
             }
 
-            &> .column {
-                //display: table-cell;
-
-                &.description {
-                    flex-grow: 1;
-
-                    .group {
-                        color: $merlot;
-                        display: block;
-                    }
-
-                    .time {
-                        color: $merlot;
-                        display: block;
-                        font-size: 12px;
-                        margin-bottom: 5px;
-                        font-weight: bold;
-                    }
-
-                    .description {
-                        color: $aubergine;
-                        display: block;
-                    }
-                }
-
-                
-
-            }
-
             @media screen and (max-width: $width-reduce-padding + 100px) {
                 display: block;
 
-                .column {
-                    padding: 5px 0;
+                &> .buttons {
+                    padding-left: 0;
                     display: block;
+                    text-align: left;
 
-                    &.group {
-                        font-weight: bold;
-                        width: auto;
-                        display: inline-block;
-                        padding-right: 15px;
+                    a.button {
+                        color: $merlot;
                     }
-                    &.time {
-                        width: auto;
-                        display: inline-block;
-                    }
-
-                    &.buttons {
-                        padding-left: 0;
-                        display: block;
-                        text-align: left;
-
-                        a.button {
-                            color: $merlot;
-                        }
-                    }
-                 }
+                }
             }
         }
 

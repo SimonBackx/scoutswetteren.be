@@ -9,9 +9,48 @@
 {% block main %}
     <main>
         <form id="order-sheet">
+            <section class="white block" v-if="step == 0">
+                <div class="text">
+                    <header>
+                        <h1>{{ order_sheet.name }}</h1>
+                        <h2>{{ order_sheet.subtitle }}</h2>
+                        <p>Je hebt al personen ingeschreven. Je kan de inschrijvingen hieronder raadplegen. Je kan indien nodig nog extra personen inschrijven via de knop onderaan.</p>
+                    </header>
+
+                    <div class="list-bundle">
+                        <article class="list" v-for="order in orders">
+                            <div class="medium merlot column">
+                                [[ order.date ]]
+                            </div>
+                            <div class="max column">
+                               <template v-if="order.persons.length > 0">
+                                    <template v-for="person in order.persons">
+                                        <strong>Ingeschreven: </strong>[[ person ]]<br>
+                                    </template>
+                               </template>
+                               <template v-if="order.items.length > 0">
+                                    <template v-for="item in order.items">
+                                        <strong>Besteld: </strong>[[ item ]]<br>
+                                    </template>
+                               </template>
+                            </div>
+                            <div class="last column right">
+                                <a :href="order.url" class="icon-button">
+                                    Bekijken
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+
+                    <footer>
+                        <button type="button" class="icon-button plus" v-on:click="nextStep(0);">Nog personen inschrijven</button>
+                    </footer>
+                </div>
+            </section>
             <section class="white block" v-if="step == 1">
                 <div class="text">
                     <header>
+                        <button v-if="orders.length > 0" type="button" class="button aubergine noborder arrow-left" v-on:click="step = 0;">Terug</button>
                         <h1>{{ order_sheet.name }}</h1>
                         <h2>{{ order_sheet.subtitle }}</h2>
                         <p>{{ order_sheet.description }}</p>
@@ -270,17 +309,34 @@
             name: "Bankoverschrijving"
         }];
 
+        // Fetch a list of orders that were placed on this device for this order sheet
+        var orders = [];
+        try {
+            var _orders = localStorage.getItem('order-sheet.{{ order_sheet.id }}.orders');
+            _orders = JSON.parse(_orders);
+
+            if (_orders) {
+                for (var order_id in _orders) {
+                    orders.push(_orders[order_id]);
+                }
+            }
+        } catch (ex) {
+            // nothing
+        }
+
+
         var app = new Vue({
             el: '#order-sheet',
             delimiters: ['[[',']]'],
             data: {
+                orders: orders,
                 order_sheet: order_sheet,
                 cart: {
                     items: items,
                 },
                 user: user,
                 payment_method: payment_methods[0],
-                step: 1,
+                step: orders.length > 0 ? 0 : 1,
                 errors: {
                     step1: [],
                     step2: [],
@@ -378,7 +434,6 @@
                 },
 
                 loadFromLocalstorage: function() {
-                    data = JSON.stringify(data);
 
                     try {
                         var data = localStorage.getItem('order-sheet.{{ order_sheet.id }}');

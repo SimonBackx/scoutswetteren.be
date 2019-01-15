@@ -11,8 +11,12 @@
                 {% if order.isFailed() %}
                     <header>
                         <h1>Betaling is mislukt</h1>
-                        <h2>De betaling werd geannuleerd of geweigderd door de bank. Kijk het saldo op uw bankkaart na en probeer het opnieuw.</h2>
                     </header>
+
+                    <ul class="error">
+                        <li>De betaling werd geannuleerd of geweigderd door de bank. Kijk het saldo op uw bankkaart na en probeer het opnieuw.</li>
+                    </ul>
+                
                 {% else %}
                     {% if not order.isValid() %}
                         <header>
@@ -83,5 +87,23 @@
 {% endblock %}
 
 {% block javascript %}
-   
+    {% if order.isValid() and order.order_sheet_id is not empty %}
+        <script type="text/javascript">
+            var data = {};
+            try {
+                data = localStorage.getItem('order-sheet.{{ order.order_sheet_id }}.orders');
+                data = JSON.parse(data);
+            } catch (exc) {
+                // nothing
+                data = {};
+            }
+
+            if (!data) {
+                data = {};
+            }
+            data[{{ order.id }}] = {{ (order.getSummary()|json_encode|raw) }};
+            localStorage.setItem('order-sheet.{{ order.order_sheet_id }}.orders', JSON.stringify(data));
+            localStorage.removeItem('order-sheet.{{ order.order_sheet_id }}');
+        </script>
+    {% endif %}
 {% endblock %}

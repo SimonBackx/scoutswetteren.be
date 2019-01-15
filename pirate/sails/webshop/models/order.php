@@ -16,12 +16,14 @@ class Order extends Model implements \JsonSerializable {
     public $user;
     public $secret;
     public $valid;
+    public $order_sheet_id;
 
     // Linked fields:
     public $items = null;
 
     // only for creation
     public $payment = null;
+    public $order_sheet = null; // only used on creation
 
     function __construct($row = null) {
         if (is_null($row)) {
@@ -37,6 +39,43 @@ class Order extends Model implements \JsonSerializable {
         $this->user = new OrderUser($row);
         $this->secret = $row['order_secret'];
         $this->valid = ($row['order_valid'] == 1);
+        $this->order_sheet_id = $row['order_sheet'];
+    }
+
+    function fetchPayment() {
+        if ($this->payment_method == 'stripe') {
+            $this->payment = StripePayment::getByOrderId($this->id);
+            $this->payment->order = $this;
+        }
+    }
+
+    function getSummary() {
+        $persons = [];
+        $items = [];
+        foreach ($this->items as $item) {
+            if (isset($item->person_name)) {
+                $persons[] = $item->person_name;
+            } else {
+                $amount = '';
+                if ($item->product->type == 'unit' && $item->amount > 1) {
+                    $amount = "$item->amount x ";
+                } elseif ($item->product->type == 'person') {
+                    $amount = "$item->amount personen x ";
+                }
+                if (isset($item->product->price_name)) {
+                    $items[] = $amount.$item->product->name . ' ('.$item->product_price->name.')';
+                } else {
+                    $items[] = $amount.$item->product->name;
+                }
+            }
+        }
+        return [
+            "id" => $this->id,
+            "url" => $this->getUrl(),
+            "date" => 'Geplaatst op '.$this->created_at->format('d/m/Y').' om '.$this->created_at->format('H:i'),
+            "persons" => $persons,
+            "items" => $items,
+        ];
     }
 
     static function getById($id) {
@@ -65,16 +104,47 @@ class Order extends Model implements \JsonSerializable {
                 }
 
                 $order->items = $items;
-
-                if ($order->payment_method == 'stripe') {
-                    $order->payment = StripePayment::getByOrderId($order->id);
-                    $order->payment->order = $order;
-                }
+                $order->fetchPayment();
+                
                 return $order;
             }
         }
 
         return null;
+    }
+
+    static function getByOrderSheet($id) {
+        $id = self::getDb()->escape_string($id);
+        $query = 'SELECT o.*, u.*, o_i.* FROM orders o
+        left join order_users u on u.order_user_id = o.order_user
+        left join order_items o_i on o_i.item_order = o.order_id
+        WHERE o.order_sheet = "'.$id.'" order by o.order_id, o_i.item_id asc';
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+
+                $order = null;
+                $orders = [];
+                while ($row = $result->fetch_assoc()) {
+                    if (!isset($order) || $order->id != $row['order_id']) {
+                        $order = new Order($row);
+                        $order->fetchPayment();
+                        $order->items = [];
+                        $orders[] = $order;
+                    }
+                    if (isset($row['item_id'])) {
+                        $item = OrderItem::getById($row['item_id']);
+                        if (isset($item)) {
+                            $order->items[] = $item;
+                        }
+                    }
+                }
+
+                return $orders;
+            }
+        }
+
+        return [];
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid
@@ -278,9 +348,15 @@ class Order extends Model implements \JsonSerializable {
         } else {
             $created_at = self::getDb()->escape_string((new \DateTime())->format("Y-m-d H:i:s"));
 
+            if (!isset($this->order_sheet->id)) {
+                $order_sheet = 'NULL';
+            } else {
+                $order_sheet = "'".self::getDb()->escape_string($this->order_sheet->id)."'";
+            }
+
             $query = "INSERT INTO 
-                orders (`order_price`, `order_payment_method`, `order_secret`, `order_valid`, `order_user`, `order_paid_at`, `order_created_at`, `order_failed_at`)
-                VALUES ('$price', '$payment_method', '$secret', '$valid', '$user', $paid_at, '$created_at', $failed_at)";
+                orders (`order_price`, `order_payment_method`, `order_secret`, `order_valid`, `order_user`, `order_paid_at`, `order_created_at`, `order_failed_at`, `order_sheet`)
+                VALUES ('$price', '$payment_method', '$secret', '$valid', '$user', $paid_at, '$created_at', $failed_at, $order_sheet)";
         }
 
         $result = self::getDb()->query($query);

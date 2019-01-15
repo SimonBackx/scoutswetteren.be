@@ -74,7 +74,7 @@ form {
         display: block;
     }
 
-    input, textarea, select, a.button {
+    input, textarea, select, a.button, .StripeElement {
         font-size: $size-text-bigger;
     }
 
@@ -105,7 +105,7 @@ form {
         }
     }
 
-    input[type=text], input[type=password], input[type=email], .input-box, .select-box, textarea {
+    input[type=text], input[type=password], input[type=email], .input-box, .select-box, textarea, .StripeElement {
         display: block;
         box-sizing: border-box;
         width: 100%;
@@ -362,22 +362,6 @@ form {
         cursor: pointer;
     }
 
-    ul.error {
-        padding: 0;
-        margin: 20px 0;
-
-
-        li {
-            color: $error-red;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: $size-text-bigger;
-            background: url(../images/error.svg) no-repeat left center;
-            padding-left: 30px;
-        }
-    }
-
     &.error {
         input[type=text], input[type=password], input[type=email] {
             border-color: $error-red;
@@ -385,5 +369,21 @@ form {
         label {
             color: $error-red;
         }
+    }
+}
+
+ul.error {
+    padding: 0;
+    margin: 20px 0;
+
+
+    li {
+        color: $error-red;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: $size-text-bigger;
+        background: url(../images/error.svg) no-repeat left center;
+        padding-left: 30px;
     }
 }
