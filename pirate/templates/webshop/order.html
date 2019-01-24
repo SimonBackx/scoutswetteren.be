@@ -21,16 +21,19 @@
                     {% if not order.isValid() %}
                         <header>
                             <h1>Wachten op betaling...</h1>
-                            <h2>Zodra we van de bank het signaal krijgen dat de betaling is gelukt wordt je bestelling geplaatst.</h2>
+                            <h2>Zodra we van de bank het signaal krijgen dat de betaling is gelukt wordt je bestelling geplaatst. Als dit langer duurt dan 15 minuten is de betaling waarschijnlijk mislukt. Neem contact op met website@scoutswetteren.be in geval van problemen.</h2>
                         </header>
 
                     {% else %}
                         <header>
-                            <h1>Jouw bestelling is geplaatst!</h1>
+                            {% if order.isRegistration() %}
+                                <h1>Jouw inschrijving is geplaatst!</h1>
+                            {% else %}
+                                <h1>Jouw bestelling is geplaatst!</h1>
+                            {% endif %}
                             <h2>Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</h2>
                         </header>
 
-                        <h2>Producten</h2>
                         <div class="list-bundle">
                             {% for item in order.items %}
                                 <article class="list">
@@ -105,5 +108,14 @@
             localStorage.setItem('order-sheet.{{ order.order_sheet_id }}.orders', JSON.stringify(data));
             localStorage.removeItem('order-sheet.{{ order.order_sheet_id }}');
         </script>
+    {% else %}
+        {% if not order.isValid() and not order.isFailed() %}
+            <script type="text/javascript">
+                window.setTimeout(function() {
+                    console.log("reload");
+                    window.location.reload(true);
+                }, 5000);
+            </script>
+        {% endif %}
     {% endif %}
 {% endblock %}

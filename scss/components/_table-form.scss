@@ -15,9 +15,38 @@ form .table-form {
         display: table-row;
         width: 100%;
 
+        @media screen and (max-width: 480px) {
+            display: table;
+
+            border-bottom: 2px solid $line-gray;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+        }
+
+
         &> * {
             padding: 5px 5px;
             display: table-cell;
+
+            @media screen and (max-width: 480px) {
+                display: table-row;
+                height: 50px;
+
+                &::before {
+                    content: 'Title';
+                    display: table-cell;
+                    vertical-align: middle;
+                    padding-right: 20px;
+                    content: attr(data-title);
+                }
+
+                &> * {
+                    display: table-cell;
+                    vertical-align: middle;
+                }
+            }
 
             &:first-child {
                 padding-left: 0;
@@ -34,4 +63,12 @@ form .table-form {
             }
         } 
     }
+
+    @media screen and (max-width: 480px) {
+        &> header {
+            display: none;
+        }
+    }
+
+    
 }

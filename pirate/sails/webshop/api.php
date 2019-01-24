@@ -24,6 +24,11 @@ class WebshopApiRouter extends Route {
             return false;
         }
 
+        if ($result = $this->match($parts, '/stripe-webhook', [])) {
+            $this->setPage(new Api\StripeWebhook());
+            return true;
+        }
+
         return false;
     }
 }

@@ -26,7 +26,7 @@ $size-text-bigger: 14pt;
 $size-question: 16pt;
 
 $size-subtitle: 20pt;
-$size-smartphone-subtitle: 10pt;
+$size-smartphone-subtitle: 14pt;
 
 $size-button: 12pt;
 $size-button-big: 15pt;
@@ -34,7 +34,7 @@ $size-button-big: 15pt;
 $width-stop-splitted: 1000px;
 
 $width-reduce-padding: 500px;
-$smartphone-padding: 25px;
+$smartphone-padding: 15px;
 
 body, html {
     color: $cod-gray;
@@ -300,6 +300,7 @@ a.icon-button, button.icon-button {
     margin: 5px 0 20px 0;
     font-size: $size-button;
     display: block;
+    text-align: left;
     background: url(../images/icon-button.png) no-repeat left center;
     background-image: linear-gradient(transparent, transparent), url(../images/icon-button.svg);
 

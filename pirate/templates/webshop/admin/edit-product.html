@@ -59,11 +59,11 @@
                 <!-- Tood: hidden input: id -->
                 <input type="hidden" :name="'prices['+index+'][id]'" v-model="price.id">
 
-                <div v-if="product.prices.length > 1">
+                <div v-if="product.prices.length > 1" data-title="Prijsnaam">
                     <input type="text" :name="'prices['+index+'][name]'" v-model="price.name" placeholder="Prijsnaam">
                 </div>
                 <template v-else><input type="hidden" :name="'prices['+index+'][name]'" value=""></template>
-                <div>
+                <div data-title="Prijs">
                     <input type="text" :name="'prices['+index+'][price]'" v-model="price.price" placeholder="Prijs">
                 </div>
                 <button type="button" v-on:click="deletePrice(index);" v-if="product.prices.length > 1">Verwijderen</button>
@@ -90,7 +90,7 @@
             <div class="table-form">
                 <header>
                     <label>Keuze</label>
-                    <label>Prijs aanpassing</label>
+                    <label>Prijsaanpassing</label>
                     <label v-if="optionset.options.length > 2"></label>
                 </header>
     
@@ -98,10 +98,10 @@
                     <!-- Todo: hidden input: id -->
                     <input type="hidden" :name="'optionsets['+index+'][options]['+option_index+'][id]'" v-model="option.id">
 
-                    <div>
+                    <div data-title="Keuze">
                         <input type="text" :name="'optionsets['+index+'][options]['+option_index+'][name]'" v-model="option.name" placeholder="Keuzenaam">
                     </div>
-                    <div>
+                    <div data-title="Prijsaanpassing">
                         <input type="text" :name="'optionsets['+index+'][options]['+option_index+'][price_change]'" v-model="option.price_change" placeholder="Prijs aanpassing">
                     </div>
                     <button type="button" v-on:click="deleteOption(optionset, option_index);" v-if="optionset.options.length > 2">Verwijderen</button>

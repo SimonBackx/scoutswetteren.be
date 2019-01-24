@@ -62,23 +62,25 @@
 
                         <div class="table-form wide">
                             <header v-if="cart.items[product.id].length > 0">
-                                <label v-if="product.type == 'name'">Naam</label>
-                                <label v-if="product.prices.length > 1">[[ product.price_name ]]</label>
-                                <label v-for="optionset in product.optionsets">[[ optionset.name ]]</label>
+                                <div v-if="product.type == 'name'"><label>Naam</label></div>
+                                <div v-if="product.prices.length > 1"><label>[[ product.price_name ]]</label></div>
+                                <div v-for="optionset in product.optionsets"><label>[[ optionset.name ]]</label></div>
 
-                                <label>Prijs</label>
-                                <label v-if="product.type == 'unit'">Aantal</label>
-                                <label v-if="product.type == 'unit'">Totaal</label>
+                                <div><label>Prijs</label></div>
+                                <div v-if="product.type == 'unit'"><label>Aantal</label></div>
+                                <div v-if="product.type == 'person'"><label>Aantal personen</label></div>
 
-                                <label></label>
+                                <div v-if="product.type != 'name'"><label>Totaal</label></div>
+
+                                <div><label></label></div>
                             </header>
                 
                             <div v-for="(cartitem, index) in cart.items[product.id]">    
-                                <div v-if="product.type == 'name'">
+                                <div v-if="product.type == 'name'" data-title="Naam">
                                     <input type="text" v-model="cartitem.person_name" placeholder="Wie schrijf je in?">
                                 </div>
 
-                                <div v-if="product.prices.length > 1">
+                                <div v-if="product.prices.length > 1" :data-title="product.price_name">
                                     <label class="select-box">
                                         <select v-model="cartitem.price">
                                             <option :value="null">Maak een keuze</option>
@@ -89,7 +91,7 @@
                                     </label>
                                 </div>
 
-                                <div v-for="optionset in product.optionsets">
+                                <div v-for="optionset in product.optionsets" :data-title="optionset.name">
                                     <label class="select-box">
                                         <select v-model="cartitem.options[optionset.id]">
                                             <option :value="null">Maak een keuze</option>
@@ -100,16 +102,20 @@
                                     </label>
                                 </div>
 
-                                <div>
-                                    [[ getItemPriceString(cartitem, false) ]]
+                                <div data-title="Prijs">
+                                    <span>[[ getItemPriceString(cartitem, false) ]]</span>
                                 </div>
 
-                                <div v-if="product.type == 'unit'">
-                                    <input type="text" v-model.number="cartitem.amount" placeholder="Wie schrijf je in?">
+                                <div v-if="product.type == 'unit'" data-title="Aantal">
+                                    <input type="text" v-model.number="cartitem.amount" placeholder="Aantal stuks">
                                 </div>
 
-                                <div v-if="product.type == 'unit'">
-                                    [[ getItemPriceString(cartitem, true) ]]
+                                <div v-if="product.type == 'person'" data-title="Personen">
+                                    <input type="text" v-model.number="cartitem.amount" placeholder="Aantal personen">
+                                </div>
+
+                                <div v-if="product.type != 'name'" data-title="Totaal">
+                                    <span>[[ getItemPriceString(cartitem, true) ]]</span>
                                 </div>
                                 
                                 <div class="smallest">
@@ -212,6 +218,7 @@
                         </div>
 
                         <button type="button" v-on:click="submit();" class="button aubergine fill">Betalen</button>
+                        <span v-if="isSubmitting">Laden...</span>
                     </footer>
 
                 </div>
@@ -344,6 +351,7 @@
                 },
                 cardError: null,
                 payment_methods: payment_methods,
+                isSubmitting: false,
             },
             mounted: function() {
                 card = elements.create('card');
@@ -738,6 +746,10 @@
                 },
 
                 submit: function() {
+                    if (this.isSubmitting) {
+                        return;
+                    }
+                    this.isSubmitting = true;
 
                     if (this.payment_method.type == "stripe" && this.payment_method.data.method == "card") {
                         this.cardError = null;
@@ -748,6 +760,7 @@
                             if (result.error) {
                                 // Inform the customer that there was an error.
                                 this.cardError = result.error.message;
+                                this.isSubmitting = false;
                             } else {
                                 console.log("got token: "+result.token.id);
                                 this.payment_method.data.token = result.token.id;
@@ -781,7 +794,7 @@
                             window.location.href = response.redirect;
                         }
                     }, function(response) {
-
+                        this.isSubmitting = false;
                         this.errors.step3 = response;
                         /// failure
                         console.log(JSON.stringify(response, null, "\t"));

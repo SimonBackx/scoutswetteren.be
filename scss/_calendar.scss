@@ -101,6 +101,7 @@
                     padding-left: 0;
                     display: block;
                     text-align: left;
+                    padding-top: 5px;
 
                     a.button {
                         color: $merlot;
@@ -118,14 +119,25 @@
                 &> div {
                     padding: 15px $smartphone-padding;
                 }
+
+                &> h1 {
+                    margin: 30px 30px 15px $smartphone-padding;
+
+                    time {
+                        font-size: $size-text;
+                        padding-left: 15px;
+                    }
+                }
             }
 
-            h1 {
-                margin: 30px 30px 15px $smartphone-padding;
-            }
+            
 
             article {
-                padding: 10px $smartphone-padding;
+                padding: 15px $smartphone-padding;
+
+                &> header h1 {
+                    font-size: $size-text-bigger;
+                }
             }
         }
     }

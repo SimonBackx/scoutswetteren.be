@@ -198,12 +198,12 @@ main {
         .text {
             padding: 40px $smartphone-padding;
 
-            header {
-                padding-bottom: 20px;
+            &> header {
+                margin-bottom: 20px;
             }
 
             footer {
-                padding-top: 30px;
+                margin-top: 30px;
             }
 
             .list-bundle {

@@ -21,4 +21,25 @@
             display: block;
         }
     }
+
+    @media screen and (max-width: $width-reduce-padding) {
+        float: none;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        padding-bottom: 10px;
+        align-items: center;
+
+        &> div {
+            
+            &:first-child {
+                flex-grow: 1;
+            }
+
+            &:last-child {
+                white-space: nowrap;
+            }
+        }
+
+    }
 } 

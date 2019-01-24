@@ -1,0 +1,12 @@
+Dag %firstname%,
+
+We hebben de betaling van jouw inschrijving ontvangen. De inschrijving is dus gelukt en staat genoteerd. Het is niet meer mogelijk om wijzigingen aan te brengen aan de inschrijving.
+
+Je kan alle details van de inschrijving nakijken via onderstaande link:
+
+{{ url }}
+
+Als je later nog inschrijvingen wilt toevoegen kan dat via de website.
+
+Bedankt,
+Scouts Prins Boudewijn

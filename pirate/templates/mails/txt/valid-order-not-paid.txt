@@ -1,0 +1,12 @@
+Dag %firstname%,
+
+We hebben jouw bestelling ontvangen en hebben deze genoteerd. Vergeet niet om de betaling ook af te ronden (informatie hierover vind je terug op de link hieronder).
+
+Je kan alle details van de bestelling nakijken via onderstaande link:
+
+{{ url }}
+
+Als je later nog bestellingen wilt toevoegen kan dat via de website.
+
+Bedankt,
+Scouts Prins Boudewijn

@@ -5,6 +5,7 @@ use Pirate\Classes\Validating\ValidationError;
 use Pirate\Classes\Validating\ValidationErrors;
 use Pirate\Classes\Validating\ValidationErrorBundle;
 use Pirate\Classes\Validating\DatabaseError;
+use Pirate\Mail\Mail;
 
 class Order extends Model implements \JsonSerializable {
     public $id;
@@ -76,6 +77,10 @@ class Order extends Model implements \JsonSerializable {
             "persons" => $persons,
             "items" => $items,
         ];
+    }
+
+    function isRegistration() {
+        return count($this->getSummary()['persons']) > 0;
     }
 
     static function getById($id) {
@@ -274,17 +279,48 @@ class Order extends Model implements \JsonSerializable {
     }
 
     function markAsValid() {
+        if ($this->valid) {
+            return;
+        }
         $this->valid = true;
         $this->save();
 
         /// Send an e-mail to the user with order details
         if (!$this->isPaid()) {
             // Send an email with information about how to make the payment
-
+            if ($this->isRegistration()) {
+                $template = 'valid-registration-not-paid';
+            } else {
+                $template = 'valid-order-not-paid';
+            }
+    
         } else {
             // Send an email that we received the payment and the order is complete
-
+            if ($this->isRegistration()) {
+                $template = 'valid-registration-paid';
+            } else {
+                $template = 'valid-order-paid';
+            }
         }
+
+        $mail = new Mail(
+            isset($this->order_sheet) ? $this->order_sheet->name : ($this->isRegistration() ? 'Jouw inschrijving' : 'Jouw bestelling'), 
+            $template, 
+            array(
+                'url' => $this->getUrl()
+            )
+        );
+
+        $mail->addTo(
+            $this->user->mail, 
+            array(
+                'firstname' => $this->user->firstname,
+            ),
+            $this->user->firstname.' '.$this->user->lastname
+        );
+
+        $mail->send();
+
     }
 
     function markAsFailed() {
@@ -411,7 +447,7 @@ class Order extends Model implements \JsonSerializable {
     }
 
     function getUrl() {
-        return "/order/$this->id/$this->secret";
+        return "https://{$_SERVER['SERVER_NAME']}/order/$this->id/$this->secret";
     }
 
 }

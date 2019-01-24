@@ -61,8 +61,9 @@ class StripePayment extends Payment {
                     //"email" => $order->user->mail,
                 ],
                 "redirect" => [
-                    "return_url" => "https://{$_SERVER['SERVER_NAME']}".$order->getUrl(),
+                    "return_url" => $order->getUrl(),
                 ],
+                "usage" => 'single_use',
             ]);
 
             // Check status codes: payment_method_not_available, processing_error, invalid_owner_name
@@ -83,9 +84,10 @@ class StripePayment extends Payment {
                     //"email" => $order->user->mail,
                 ],
                 "redirect" => [
-                    "return_url" => "https://{$_SERVER['SERVER_NAME']}".$order->getUrl(),
+                    "return_url" => $order->getUrl(),
                 ],
-                "token" => $data['token']
+                "token" => $data['token'],
+                "usage" => 'single_use',
             ]);
 
             // Check 3D secure
@@ -106,8 +108,9 @@ class StripePayment extends Payment {
                         //"email" => $order->user->mail,
                     ],
                     "redirect" => [
-                        "return_url" => "https://{$_SERVER['SERVER_NAME']}".$order->getUrl(),
-                    ]
+                        "return_url" => $order->getUrl(),
+                    ],
+                    "usage" => 'single_use',
                 ]);
                 error_log($this->_stripe_source, JSON_PRETTY_PRINT);
 
@@ -125,40 +128,69 @@ class StripePayment extends Payment {
     /// Update the status, and charge if possible. Cancel order if possible
     /// The status of the source, one of canceled, chargeable, consumed, failed, or pending. Only chargeable sources can be used to create a charge.
     function updateStatus() {
-        if ($this->status == 'failed' || $this->status == 'canceled' || $this->status == "consumed") {
+        $fileName = __DIR__.'/../extra/stripe-lock-'.$this->id.'.txt';
+ 
+        $fp = fopen($fileName, 'w+');
+        if (!$fp) return;
+
+        $unlock = function() use ($fp) {
+            flock($fp, LOCK_UN);
+            fclose($fp); //Unlock the file
+        };
+
+        if ($this->status == 'failed' || $this->status == 'canceled' || $this->status == 'consumed') {
             // can't change anymore
+
+            // Unlock and remove file
+            $unlock();
+            unlink($fileName);
+
             return;
         }
 
-        // Check source is chargeable
-        \Stripe\Stripe::setApiKey($this->bank_account->stripe_secret);
-        $this->_stripe_source = \Stripe\Source::retrieve($this->source);
-
-        $this->status = $this->_stripe_source->status;
-
-        if ($this->status == 'chargeable') {
-            try {
-                $charge = \Stripe\Charge::create([
-                    "amount" => $this->order->price,
-                    "currency" => "eur",
-                    "source" => $this->source,
-                ]);
-                // Charged :D
-                $this->order->markAsPaid();
-                $this->updateStatus();
-                return;
-            } catch (\Exception $ex) {
-                // Failed to charge
-                // keep status
-            }
-        } elseif ($this->status == 'failed') {
-            $this->order->markAsFailed();
-        } elseif ($this->status == 'canceled') {
-            $this->order->markAsFailed();
+        // Lock
+       
+        if (!flock($fp, LOCK_EX)) {
+            // Can't create lock
+            return;
         }
 
-        $this->save();
+        try {
+            // Check source is chargeable
+            \Stripe\Stripe::setApiKey($this->bank_account->stripe_secret);
+            $this->_stripe_source = \Stripe\Source::retrieve($this->source);
 
+            //echo '<pre>'.json_encode($this->_stripe_source, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+            $this->status = $this->_stripe_source->status;
+
+            if ($this->status == 'chargeable') {
+                try {
+                    $charge = \Stripe\Charge::create([
+                        "amount" => $this->order->price,
+                        "currency" => "eur",
+                        "source" => $this->source,
+                    ]);
+                    // Charged :D
+                    $this->order->markAsPaid();
+                    $unlock();
+                    $this->updateStatus();
+                    return;
+                } catch (\Exception $ex) {
+                    //echo $ex->getMessage();
+                    // Failed to charge
+                    // keep status
+                }
+            } elseif ($this->status == 'failed') {
+                $this->order->markAsFailed();
+            } elseif ($this->status == 'canceled') {
+                $this->order->markAsFailed();
+            }
+
+            $this->save();
+        } finally {
+            $unlock();
+        }
     }
 
     function getName() {
@@ -186,6 +218,29 @@ class StripePayment extends Payment {
             if ($result->num_rows>0){
                 while ($row = $result->fetch_assoc()) {
                     return new StripePayment($row);
+                }
+            }
+        }
+        
+        return null;
+    }
+
+    static function getBySourceId($id) {
+        $id = self::getDb()->escape_string($id);
+        $query = "SELECT p.*, b.* from payment_stripe p
+            left join bank_accounts b on b.account_id = p.stripe_bank_account
+            where stripe_source = '$id'";
+
+        if ($result = self::getDb()->query($query)){
+            if ($result->num_rows>0){
+                while ($row = $result->fetch_assoc()) {
+                    $stripe = new StripePayment($row);
+                    $order = Order::getById($row['stripe_order']);
+                    if (!isset($order)) {
+                        return null;
+                    }
+                    $stripe->order = $order; 
+                    return $stripe;
                 }
             }
         }

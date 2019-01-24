@@ -1,0 +1,12 @@
+Dag %firstname%,
+
+We hebben de betaling van jouw bestelling ontvangen. De bestelling is dus gelukt en staat genoteerd. Het is niet meer mogelijk om wijzigingen aan te brengen aan de bestelling.
+
+Je kan alle details van de bestelling nakijken via onderstaande link:
+
+{{ url }}
+
+Als je later nog bestellingen wilt toevoegen kan dat via de website.
+
+Bedankt,
+Scouts Prins Boudewijn
