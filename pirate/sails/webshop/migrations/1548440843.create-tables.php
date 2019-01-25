@@ -213,9 +213,7 @@ class CreateTables1548440843 extends Migration {
         SET FOREIGN_KEY_CHECKS=1;
         ";
 
-        if (!self::getDb()->multi_query($query)) {
-            throw new \Exception(self::getDb()->error);
-        }
+        self::getDb()->multi_query($query);
         return true;
     }
 
