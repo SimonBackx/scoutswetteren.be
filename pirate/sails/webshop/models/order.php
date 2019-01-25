@@ -73,7 +73,7 @@ class Order extends Model implements \JsonSerializable {
         return [
             "id" => $this->id,
             "url" => $this->getUrl(),
-            "date" => 'Geplaatst op '.$this->created_at->format('d/m/Y').' om '.$this->created_at->format('H:i'),
+            "date" => isset($this->created_at) ? 'Geplaatst op '.$this->created_at->format('d/m/Y').' om '.$this->created_at->format('H:i') : '',
             "persons" => $persons,
             "items" => $items,
         ];
@@ -233,6 +233,7 @@ class Order extends Model implements \JsonSerializable {
 
     /// After creating the order, you need to initialise the payment settings
     function setPayment(&$data, $bank_account) {
+        $errors = new ValidationErrors();
         if (isset($data['payment_method']['type'], $data['payment_method']['data']) && is_array($data['payment_method']['data'])) {
             $type = $data['payment_method']['type'];
             
@@ -254,6 +255,10 @@ class Order extends Model implements \JsonSerializable {
             // Validate
         } else {
             $errors->extend(new ValidationError("payment_method is missing", "payment_method"));
+        }
+
+        if (count($errors->getErrors()) > 0) {
+            throw $errors;
         }
     }
 

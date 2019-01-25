@@ -16,7 +16,7 @@ class StripePayment extends Payment {
 
     private $_stripe_source = null;
 
-    static $supported_methods = ['bancontact', 'card'];
+    static $supported_methods = ['bancontact', 'ideal', 'card'];
 
     function __construct($row = null) {
         if (is_null($row)) {
@@ -45,63 +45,19 @@ class StripePayment extends Payment {
             throw new ValidationError("De geselecteerde betaalmethode wordt niet ondersteund.");
         }
 
-        $this->method = $data['method'];
-        \Stripe\Stripe::setApiKey($bank_account->stripe_secret);
+        try {
+            $this->method = $data['method'];
+            \Stripe\Stripe::setApiKey($bank_account->stripe_secret);
+            $this->order = $order;
+            $statement = $this->order->isRegistration() ? "Inschrijving {$this->order->id} Scouts Wetteren" : "Bestelling {$this->order->id} Scouts Wetteren";
 
-        // Create the source.
-
-        if ($this->method === 'bancontact') {
-            $this->_stripe_source = \Stripe\Source::create([
-                "type" => "bancontact",
-                "currency" => "eur",
-                "amount" => $order->price,
-                "owner" => [
-                    "name" => $order->user->firstname.' '.$order->user->lastname,
-                    "phone" => $order->user->phone,
-                    //"email" => $order->user->mail,
-                ],
-                "redirect" => [
-                    "return_url" => $order->getUrl(),
-                ],
-                "usage" => 'single_use',
-            ]);
-
-            // Check status codes: payment_method_not_available, processing_error, invalid_owner_name
-            error_log($this->_stripe_source, JSON_PRETTY_PRINT);
-
-        } elseif ($this->method == 'card') {
-            if (!isset($data['token']) || !is_string($data['token'])) {
-                throw new ValidationError("token missing");
-            }
-
-            $this->_stripe_source = \Stripe\Source::create([
-                "type" => "card",
-                "currency" => "eur",
-                "amount" => $order->price,
-                "owner" => [
-                    "name" => $order->user->firstname.' '.$order->user->lastname,
-                    "phone" => $order->user->phone,
-                    //"email" => $order->user->mail,
-                ],
-                "redirect" => [
-                    "return_url" => $order->getUrl(),
-                ],
-                "token" => $data['token'],
-                "usage" => 'single_use',
-            ]);
-
-            // Check 3D secure
-            error_log($this->_stripe_source, JSON_PRETTY_PRINT);
-
-            if (isset($this->_stripe_source->card->three_d_secure) && ($this->_stripe_source->card->three_d_secure == 'required' || $this->_stripe_source->card->three_d_secure == 'recommended'))  {
-                error_log( "3D secure has been used");
+            // Create the source.
+    
+            if ($this->method === 'bancontact') {
                 $this->_stripe_source = \Stripe\Source::create([
-                    "type" => "three_d_secure",
+                    "type" => "bancontact",
                     "currency" => "eur",
                     "amount" => $order->price,
-                    "three_d_secure" => [
-                        "card" => $this->_stripe_source->id
-                    ],
                     "owner" => [
                         "name" => $order->user->firstname.' '.$order->user->lastname,
                         "phone" => $order->user->phone,
@@ -111,91 +67,141 @@ class StripePayment extends Payment {
                         "return_url" => $order->getUrl(),
                     ],
                     "usage" => 'single_use',
+                    "statement_descriptor" => $statement,
                 ]);
+    
+                // Check status codes: payment_method_not_available, processing_error, invalid_owner_name
                 error_log($this->_stripe_source, JSON_PRETTY_PRINT);
-
+    
+            } elseif ($this->method === 'ideal') {
+                $this->_stripe_source = \Stripe\Source::create([
+                    "type" => "ideal",
+                    "currency" => "eur",
+                    "amount" => $order->price,
+                    "owner" => [
+                        "name" => $order->user->firstname.' '.$order->user->lastname,
+                        "phone" => $order->user->phone,
+                        //"email" => $order->user->mail,
+                    ],
+                    "redirect" => [
+                        "return_url" => $order->getUrl(),
+                    ],
+                    "usage" => 'single_use',
+                    "statement_descriptor" => $statement,
+                ]);
+    
+                // Check status codes: payment_method_not_available, processing_error, invalid_owner_name
+                error_log($this->_stripe_source, JSON_PRETTY_PRINT);
+    
+            } elseif ($this->method == 'card') {
+                if (!isset($data['token']) || !is_string($data['token'])) {
+                    throw new ValidationError("token missing");
+                }
+    
+                $this->_stripe_source = \Stripe\Source::create([
+                    "type" => "card",
+                    "currency" => "eur",
+                    "amount" => $order->price,
+                    "owner" => [
+                        "name" => $order->user->firstname.' '.$order->user->lastname,
+                        "phone" => $order->user->phone,
+                        //"email" => $order->user->mail,
+                    ],
+                    "redirect" => [
+                        "return_url" => $order->getUrl(),
+                    ],
+                    "token" => $data['token'],
+                    "usage" => 'single_use',
+                    "statement_descriptor" => $statement,
+                ]);
+    
+                // Check 3D secure
+                error_log($this->_stripe_source, JSON_PRETTY_PRINT);
+    
+                if (isset($this->_stripe_source->card->three_d_secure) && ($this->_stripe_source->card->three_d_secure == 'required' || $this->_stripe_source->card->three_d_secure == 'recommended'))  {
+                    error_log( "3D secure has been used");
+                    $this->_stripe_source = \Stripe\Source::create([
+                        "type" => "three_d_secure",
+                        "currency" => "eur",
+                        "amount" => $order->price,
+                        "three_d_secure" => [
+                            "card" => $this->_stripe_source->id
+                        ],
+                        "owner" => [
+                            "name" => $order->user->firstname.' '.$order->user->lastname,
+                            "phone" => $order->user->phone,
+                            //"email" => $order->user->mail,
+                        ],
+                        "redirect" => [
+                            "return_url" => $order->getUrl(),
+                        ],
+                        "usage" => 'single_use',
+                    ]);
+                    error_log($this->_stripe_source, JSON_PRETTY_PRINT);
+    
+                }
+    
             }
+    
+            $this->bank_account = $bank_account;
+            $this->source = $this->_stripe_source->id;
 
+            $this->status = 'pending';
+            $this->updateStatus();     
+        } catch (\Exception $ex) {
+            throw new ValidationError("Er ging iets mis bij het aanmaken van de betaling. Neem contact op met website@scoutswetteren.be of probeer het opnieuw.".$ex->getMessage().' '.$ex->getFile().' '.$ex->getLine());
+        } catch (\Error $ex) {
+            throw new ValidationError("Er ging iets mis bij het aanmaken van de betaling. Neem contact op met website@scoutswetteren.be of probeer het opnieuw. ".$ex->getMessage().' '.$ex->getFile().' '.$ex->getLine());
         }
-
-        $this->bank_account = $bank_account;
-        $this->source = $this->_stripe_source->id;
-        $this->order = $order;   
-        $this->status = 'pending';
-        $this->updateStatus();     
     }
 
     /// Update the status, and charge if possible. Cancel order if possible
     /// The status of the source, one of canceled, chargeable, consumed, failed, or pending. Only chargeable sources can be used to create a charge.
-    function updateStatus() {
-        $fileName = __DIR__.'/../extra/stripe-lock-'.$this->id.'.txt';
- 
-        $fp = fopen($fileName, 'w+');
-        if (!$fp) return;
-
-        $unlock = function() use ($fp) {
-            flock($fp, LOCK_UN);
-            fclose($fp); //Unlock the file
-        };
+    function updateStatus() { 
 
         if ($this->status == 'failed' || $this->status == 'canceled' || $this->status == 'consumed') {
-            // can't change anymore
-
-            // Unlock and remove file
-            $unlock();
-            unlink($fileName);
-
             return;
         }
 
-        // Lock
-       
-        if (!flock($fp, LOCK_EX)) {
-            // Can't create lock
-            return;
-        }
+        // Check source is chargeable
+        \Stripe\Stripe::setApiKey($this->bank_account->stripe_secret);
+        $this->_stripe_source = \Stripe\Source::retrieve($this->source);
 
-        try {
-            // Check source is chargeable
-            \Stripe\Stripe::setApiKey($this->bank_account->stripe_secret);
-            $this->_stripe_source = \Stripe\Source::retrieve($this->source);
+        //echo '<pre>'.json_encode($this->_stripe_source, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-            //echo '<pre>'.json_encode($this->_stripe_source, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $this->status = $this->_stripe_source->status;
 
-            $this->status = $this->_stripe_source->status;
-
-            if ($this->status == 'chargeable') {
-                try {
-                    $charge = \Stripe\Charge::create([
-                        "amount" => $this->order->price,
-                        "currency" => "eur",
-                        "source" => $this->source,
-                    ]);
-                    // Charged :D
-                    $this->order->markAsPaid();
-                    $unlock();
-                    $this->updateStatus();
-                    return;
-                } catch (\Exception $ex) {
-                    //echo $ex->getMessage();
-                    // Failed to charge
-                    // keep status
-                }
-            } elseif ($this->status == 'failed') {
-                $this->order->markAsFailed();
-            } elseif ($this->status == 'canceled') {
-                $this->order->markAsFailed();
+        if ($this->status == 'chargeable') {
+            try {
+                $charge = \Stripe\Charge::create([
+                    "amount" => $this->order->price,
+                    "currency" => "eur",
+                    "source" => $this->source,
+                ]);
+                // Charged :D
+                $this->order->markAsPaid();
+                $this->updateStatus();
+                return;
+            } catch (\Exception $ex) {
+                //echo $ex->getMessage();
+                // Failed to charge
+                // keep status
             }
-
-            $this->save();
-        } finally {
-            $unlock();
+        } elseif ($this->status == 'failed') {
+            $this->order->markAsFailed();
+        } elseif ($this->status == 'canceled') {
+            $this->order->markAsFailed();
         }
+
+        $this->save();
     }
 
     function getName() {
         if ($this->method == 'bancontact') {
             return 'Bancontact';
+        }
+        if ($this->method == 'ideal') {
+            return 'iDEAL';
         }
         return 'Visa / Mastercard';
     }

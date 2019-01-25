@@ -46,6 +46,10 @@ body, html {
     position: static;
 }
 
+[v-cloak] {
+    display: none;
+}
+
 .ie-only {
     display: none;
     position: absolute;

@@ -7,13 +7,30 @@
 {% endblock %}
 
 {% block main %}
+    {% if order_sheet.isDue() %}
+        <main>
+            <section class="white block">
+                <div class="text">
+                    <header>
+                        {% if order_sheet.type == 'registrations' %}
+                            <h1>Inschrijvingen zijn gesloten</h1>
+                            <p>Je kan niet meer inschrijven</p>
+                        {% else %}
+                            <h1>Bestellingen zijn gesloten</h1>
+                            <p>Je kan niet meer bestellen.</p>
+                        {% endif %}
+                    </header>
+                </div>
+            </section>
+        </main>
+    {% else %}
     <main>
-        <form id="order-sheet">
+        <form id="order-sheet" v-cloak>
             <section class="white block" v-if="step == 0">
                 <div class="text">
                     <header>
                         <h1>{{ order_sheet.name }}</h1>
-                        <h2>{{ order_sheet.subtitle }}</h2>
+                        <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
                         <p>Je hebt al personen ingeschreven. Je kan de inschrijvingen hieronder raadplegen. Je kan indien nodig nog extra personen inschrijven via de knop onderaan.</p>
                     </header>
 
@@ -52,7 +69,7 @@
                     <header>
                         <button v-if="orders.length > 0" type="button" class="button aubergine noborder arrow-left" v-on:click="step = 0;">Terug</button>
                         <h1>{{ order_sheet.name }}</h1>
-                        <h2>{{ order_sheet.subtitle }}</h2>
+                        <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
                         <p>{{ order_sheet.description }}</p>
                     </header>
 
@@ -225,583 +242,594 @@
             </section>
         </form>
     </main>
-    
+    {% endif %}
 
 {% endblock %}
 
 
 {% block javascript %}
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    {% if not order_sheet.isDue() %}
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
-    <script>
-        // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd
-        if (!String.prototype.padEnd) {
-            String.prototype.padEnd = function padEnd(targetLength,padString) {
-                targetLength = targetLength>>0; //floor if number or convert non-number to 0;
-                padString = String((typeof padString !== 'undefined' ? padString : ' '));
-                if (this.length > targetLength) {
-                    return String(this);
-                }
-                else {
-                    targetLength = targetLength-this.length;
-                    if (targetLength > padString.length) {
-                        padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+        <script>
+            // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
+            // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd
+            if (!String.prototype.padEnd) {
+                String.prototype.padEnd = function padEnd(targetLength,padString) {
+                    targetLength = targetLength>>0; //floor if number or convert non-number to 0;
+                    padString = String((typeof padString !== 'undefined' ? padString : ' '));
+                    if (this.length > targetLength) {
+                        return String(this);
                     }
-                    return String(this) + padString.slice(0,targetLength);
-                }
-            };
-        }
-    </script>
-    <script src="https://js.stripe.com/v3/"></script>
-    <script type="text/javascript">
-        var order_sheet = {{ (order_sheet|json_encode|raw) }};
-        var items = {};
-        for (var index = 0; index < order_sheet.products.length; index++) {
-            var product = order_sheet.products[index];
-            items[product.id] = []; 
-        }
-
-        {% if (general.logged_in) %}
-            var user = {{ (logged_in_user|json_encode|raw) }};
-        {% else %}
-            var user = {
-                id: null,
-                firstname: "",
-                lastname: "",
-                mail: "",
-                phone: ""
-            };
-        {% endif %}
-
-        // Payment methods:
-        var stripe = Stripe('pk_test_BrW32elKhNJzoNSJah0o0rB4');
-        var elements = stripe.elements();
-
-        // Create an instance of the card Element.
-        var card = null; //
-
-        function formatPrice(price) {
-            if (isNaN(price)) {
-                return "€ -";
+                    else {
+                        targetLength = targetLength-this.length;
+                        if (targetLength > padString.length) {
+                            padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+                        }
+                        return String(this) + padString.slice(0,targetLength);
+                    }
+                };
             }
-            var int = Math.floor(price/100);
-            var decimals = (""+(price - int*100)).padEnd(2, "0");
-
-            return "€ "+int+","+decimals;
-        }
-
-        function isValidEmail(email) {
-            return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );	
-        }
-
-        var payment_methods = [ {
-            type: "stripe",
-            data: {
-                method: "bancontact",
-            },
-            name: "Bancontact"
-        }, {
-            type: "stripe",
-            data: {
-                method: "card",
-                token: null,
-            },
-            name: "Visa / Mastercard"
-        }, {
-            type: "transfer",
-            data: {
-                // todo
-            },
-            name: "Bankoverschrijving"
-        }];
-
-        // Fetch a list of orders that were placed on this device for this order sheet
-        var orders = [];
-        try {
-            var _orders = localStorage.getItem('order-sheet.{{ order_sheet.id }}.orders');
-            _orders = JSON.parse(_orders);
-
-            if (_orders) {
-                for (var order_id in _orders) {
-                    orders.push(_orders[order_id]);
-                }
+        </script>
+        <script src="https://js.stripe.com/v3/"></script>
+        <script type="text/javascript">
+            var order_sheet = {{ (order_sheet|json_encode|raw) }};
+            var items = {};
+            for (var index = 0; index < order_sheet.products.length; index++) {
+                var product = order_sheet.products[index];
+                items[product.id] = []; 
             }
-        } catch (ex) {
-            // nothing
-        }
 
+            {% if (general.logged_in) %}
+                var user = {{ (logged_in_user|json_encode|raw) }};
+            {% else %}
+                var user = {
+                    id: null,
+                    firstname: "",
+                    lastname: "",
+                    mail: "",
+                    phone: ""
+                };
+            {% endif %}
 
-        var app = new Vue({
-            el: '#order-sheet',
-            delimiters: ['[[',']]'],
-            data: {
-                orders: orders,
-                order_sheet: order_sheet,
-                cart: {
-                    items: items,
+            // Payment methods:
+            var stripe = Stripe('pk_test_BrW32elKhNJzoNSJah0o0rB4');
+            var elements = stripe.elements();
+
+            // Create an instance of the card Element.
+            var card = null; //
+
+            function formatPrice(price) {
+                if (isNaN(price)) {
+                    return "€ -";
+                }
+                var int = Math.floor(price/100);
+                var decimals = (""+(price - int*100)).padEnd(2, "0");
+
+                return "€ "+int+","+decimals;
+            }
+
+            function isValidEmail(email) {
+                return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );	
+            }
+
+            var payment_methods = [ {
+                type: "stripe",
+                data: {
+                    method: "bancontact",
                 },
-                user: user,
-                payment_method: payment_methods[0],
-                step: orders.length > 0 ? 0 : 1,
-                errors: {
-                    step1: [],
-                    step2: [],
-                    step3: [],
+                name: "Bancontact"
+            }, {
+                type: "stripe",
+                data: {
+                    method: "card",
+                    token: null,
                 },
-                cardError: null,
-                payment_methods: payment_methods,
-                isSubmitting: false,
-            },
-            mounted: function() {
-                card = elements.create('card');
+                name: "Visa / Mastercard"
+            }, {
+                type: "stripe",
+                data: {
+                    method: "ideal"
+                },
+                name: "iDEAL"
+            }/*, {
+                type: "transfer",
+                data: {
+                    // todo
+                },
+                name: "Bankoverschrijving"
+            }*/];
 
-                card.addEventListener('change', function(event) {
-                    if (app) {
-                        if (event.error) {
-                            app.cardError = event.error.message;
-                        } else {
-                            app.cardError = null;
+            // Fetch a list of orders that were placed on this device for this order sheet
+            var orders = [];
+            try {
+                var _orders = localStorage.getItem('order-sheet.{{ order_sheet.id }}.orders');
+                _orders = JSON.parse(_orders);
+
+                if (_orders) {
+                    for (var order_id in _orders) {
+                        orders.push(_orders[order_id]);
+                    }
+                }
+            } catch (ex) {
+                // nothing
+            }
+
+
+            var app = new Vue({
+                el: '#order-sheet',
+                delimiters: ['[[',']]'],
+                data: {
+                    orders: orders,
+                    order_sheet: order_sheet,
+                    cart: {
+                        items: items,
+                    },
+                    user: user,
+                    payment_method: payment_methods[0],
+                    step: orders.length > 0 ? 0 : 1,
+                    errors: {
+                        step1: [],
+                        step2: [],
+                        step3: [],
+                    },
+                    cardError: null,
+                    payment_methods: payment_methods,
+                    isSubmitting: false,
+                },
+                mounted: function() {
+                    card = elements.create('card');
+
+                    card.addEventListener('change', function(event) {
+                        if (app) {
+                            if (event.error) {
+                                app.cardError = event.error.message;
+                            } else {
+                                app.cardError = null;
+                            }
                         }
-                    }
-                });
+                    });
 
-                // Add an instance of the card Element into the `card-element` <div>.
-                card.mount('#card-element');
+                    // Add an instance of the card Element into the `card-element` <div>.
+                    card.mount('#card-element');
 
-                this.loadFromLocalstorage();
-            },
-            methods: {
-                addItemForProduct: function(product) {
-                    var item = {
-                        amount: 1,
-                        options: {},
-                        price: null,
-                        product: product,
-                    };
-
-                    if (product.type == "name") {
-                        item.person_name = "";
-                    }
-
-                    for (var option_index = 0; option_index < product.optionsets.length; option_index++) {
-                        var optionset = product.optionsets[option_index];
-                        item.options[optionset.id] = null;
-                    }
-
-                    if (product.prices.length == 1) {
-                        item.price = product.prices[0];
-                    }
-
-                    // Push item to the cart
-                    this.cart.items[product.id].push(item);
+                    this.loadFromLocalstorage();
                 },
+                methods: {
+                    addItemForProduct: function(product) {
+                        var item = {
+                            amount: 1,
+                            options: {},
+                            price: null,
+                            product: product,
+                        };
 
-                saveToLocalstorage: function() {
-                    var data = {
-                        cart: this.cart,
-                    };
-
-                    if (!this.user.id) {
-                        data.user = this.user;
-                    }
-
-                    data = JSON.stringify(data);
-
-                    localStorage.setItem('order-sheet.{{ order_sheet.id }}', data);
-                },
-
-                getProductById: function(id) {
-                    for (var index = 0; index < this.order_sheet.products.length; index++) {
-                        var element = this.order_sheet.products[index];
-                        if (element.id == id) {
-                            return element;
+                        if (product.type == "name") {
+                            item.person_name = "";
                         }
-                    }
-                    return null;
-                },
 
-                getProductPriceById: function(product, id) {
-                    for (var index = 0; index < product.prices.length; index++) {
-                        var element = product.prices[index];
-                        if (element.id == id) {
-                            return element;
+                        for (var option_index = 0; option_index < product.optionsets.length; option_index++) {
+                            var optionset = product.optionsets[option_index];
+                            item.options[optionset.id] = null;
                         }
-                    }
-                    return null;
-                },
 
-                getOptionById: function(optionset, id) {
-                    for (var _index = 0; _index < optionset.options.length; _index++) {
-                        var option = optionset.options[_index];
-                        if (option.id == id) {
-                            return option;
+                        if (product.prices.length == 1) {
+                            item.price = product.prices[0];
                         }
-                    }
-                    return null;
-                },
 
-                loadFromLocalstorage: function() {
+                        // Push item to the cart
+                        this.cart.items[product.id].push(item);
+                    },
 
-                    try {
-                        var data = localStorage.getItem('order-sheet.{{ order_sheet.id }}');
-                        data = JSON.parse(data);
-                        if (data.cart && data.cart.items) {
-                            for (var product_id in data.cart.items) {
-                                var product = this.getProductById(product_id);
-                                if (!product) {
-                                    continue;
+                    saveToLocalstorage: function() {
+                        var data = {
+                            cart: this.cart,
+                        };
+
+                        if (!this.user.id) {
+                            data.user = this.user;
+                        }
+
+                        data = JSON.stringify(data);
+
+                        localStorage.setItem('order-sheet.{{ order_sheet.id }}', data);
+                    },
+
+                    getProductById: function(id) {
+                        for (var index = 0; index < this.order_sheet.products.length; index++) {
+                            var element = this.order_sheet.products[index];
+                            if (element.id == id) {
+                                return element;
+                            }
+                        }
+                        return null;
+                    },
+
+                    getProductPriceById: function(product, id) {
+                        for (var index = 0; index < product.prices.length; index++) {
+                            var element = product.prices[index];
+                            if (element.id == id) {
+                                return element;
+                            }
+                        }
+                        return null;
+                    },
+
+                    getOptionById: function(optionset, id) {
+                        for (var _index = 0; _index < optionset.options.length; _index++) {
+                            var option = optionset.options[_index];
+                            if (option.id == id) {
+                                return option;
+                            }
+                        }
+                        return null;
+                    },
+
+                    loadFromLocalstorage: function() {
+
+                        try {
+                            var data = localStorage.getItem('order-sheet.{{ order_sheet.id }}');
+                            data = JSON.parse(data);
+                            if (data.cart && data.cart.items) {
+                                for (var product_id in data.cart.items) {
+                                    var product = this.getProductById(product_id);
+                                    if (!product) {
+                                        continue;
+                                    }
+                                    for (var index = 0; index < data.cart.items[product_id].length; index++) {
+                                        var item_old = data.cart.items[product_id][index];
+                                        var item = {
+                                            amount: item_old.amount ? item_old.amount : 1,
+                                            options: {},
+                                            price: null,
+                                            product: product,
+                                        };
+
+                                        if (product.type == "name") {
+                                            item.person_name = item_old.person_name ? item_old.person_name : "";
+                                        }
+
+                                        for (var option_index = 0; option_index < product.optionsets.length; option_index++) {
+                                            var optionset = product.optionsets[option_index];
+                                            item.options[optionset.id] = (item_old.options[optionset.id] && item_old.options[optionset.id].id) ? this.getOptionById(optionset, item_old.options[optionset.id].id) : null;
+                                        }
+
+                                        if (product.prices.length == 1) {
+                                            item.price = product.prices[0];
+                                        } else {
+                                            // try to read (todo)
+                                            item.price = (item_old.price && item_old.price.id) ? this.getProductPriceById(product, item_old.price.id) : null;
+                                        }
+
+                                        // Push item to the cart
+                                        this.cart.items[product.id].push(item);
+                                    }
                                 }
-                                for (var index = 0; index < data.cart.items[product_id].length; index++) {
-                                    var item_old = data.cart.items[product_id][index];
-                                    var item = {
-                                        amount: item_old.amount ? item_old.amount : 1,
-                                        options: {},
-                                        price: null,
-                                        product: product,
-                                    };
-
-                                    if (product.type == "name") {
-                                        item.person_name = item_old.person_name ? item_old.person_name : "";
-                                    }
-
-                                    for (var option_index = 0; option_index < product.optionsets.length; option_index++) {
-                                        var optionset = product.optionsets[option_index];
-                                        item.options[optionset.id] = (item_old.options[optionset.id] && item_old.options[optionset.id].id) ? this.getOptionById(optionset, item_old.options[optionset.id].id) : null;
-                                    }
-
-                                    if (product.prices.length == 1) {
-                                        item.price = product.prices[0];
-                                    } else {
-                                        // try to read (todo)
-                                        item.price = (item_old.price && item_old.price.id) ? this.getProductPriceById(product, item_old.price.id) : null;
-                                    }
-
-                                    // Push item to the cart
-                                    this.cart.items[product.id].push(item);
-                                }
-                            }
-                        }
-
-                        if (data.user && !this.user.id) {
-                            this.user.firstname = data.user.firstname;
-                            this.user.lastname = data.user.lastname;
-                            this.user.mail = data.user.mail;
-                            this.user.phone = data.user.phone;
-                        }
-
-                    } catch (exception) {
-                        // Invald: don't load
-                    }
-                    
-
-                },
-
-                deleteCartItem: function(product, index) {
-                    this.cart.items[product.id].splice(index, 1);
-                },
-
-                getItemPrice: function(item, total) {
-                    if (!item.price) {
-                        return NaN;
-                    }
-
-                    var price = item.price.price;
-
-                    for (var optionset_id in item.options) {
-                        var option = item.options[optionset_id];
-                        if (option && option.price_change) {
-                            price += option.price_change;
-                        }
-                        if (!option) {
-                            return NaN;
-                        }
-                    }
-                    
-
-                    if (total) {
-                        var amount = parseInt(item.amount);
-                        if (isNaN(amount)) {
-                            return NaN;
-                        }
-
-                        if (amount < 1) {
-                            return NaN;
-                        }
-
-                        price *= amount;
-                    }
-
-                    return price;         
-                },
-
-                getItemPriceString: function(item, total) {
-                    var price = this.getItemPrice(item, total);
-
-                    if (!total && item.product.type == "unit") {
-                        return formatPrice(price) + " / stuk";
-                    }
-
-                    if (!total && item.product.type == "person") {
-                        return formatPrice(price) + " / persoon";
-                    }
-                    return formatPrice(price);
-                },
-
-                getTotal: function() {
-                    var price = 0;
-
-                    for (var product_id in this.cart.items) {
-                        for (var index = 0; index < this.cart.items[product_id].length; index++) {
-                            var item = this.cart.items[product_id][index];
-                            price += this.getItemPrice(item, true);
-                        }
-                    }
-
-                    return price;
-                },
-
-                getTotalDescription: function() {
-                    var persons = 0;
-                    var amount = 0;
-
-                    for (var product_id in this.cart.items) {
-                        for (var index = 0; index < this.cart.items[product_id].length; index++) {
-                            var item = this.cart.items[product_id][index];
-
-                            if (item.product.type == 'name') {
-                                persons += 1;
                             }
 
-                            if (isNaN(parseInt(item.amount))) {
-                                continue;
+                            if (data.user && !this.user.id) {
+                                this.user.firstname = data.user.firstname;
+                                this.user.lastname = data.user.lastname;
+                                this.user.mail = data.user.mail;
+                                this.user.phone = data.user.phone;
                             }
 
-                            if (item.product.type == 'person') {
-                                persons += parseInt(item.amount);
-                            }
-
-                            if (item.product.type == 'unit') {
-                                amount += parseInt(item.amount);
-                            }
-                        }
-                    }
-
-                    if (persons > 0) {
-                        if (persons == 1) {
-                            return "Voor één persoon";
-                        }
-                        return "Voor "+persons+" personen";
-                    }
-
-                    if (amount == 0) {
-                        return "";
-                    }
-
-                    if (amount == 1) {
-                        return "Voor één item";
-                    }
-
-                    return "Voor "+amount+" items";
-                },
-
-                getTotalString: function() {
-                    return formatPrice(this.getTotal());
-                },
-
-                isValid: function(step, showErrors) {
-                    if (step >= 1) {
-                        var items = 0;
-
-                        for (var product_id in this.cart.items) {
-                            items += this.cart.items[product_id].length;
-
-                            for (var index = 0; index < this.cart.items[product_id].length; index++) {
-                                var item = this.cart.items[product_id][index];
-                                if (item.product.type == 'name' && item.person_name.length < 3) {
-                                    if (showErrors) {
-                                        this.errors.step1 = [
-                                            {
-                                                message: "Vul eerst overal een naam in voordat je verder gaat.",
-                                            }
-                                        ];
-                                        this.step = 1;
-                                    }
-                                    
-                                    return false;
-                                }
-
-                            }
-                            
+                        } catch (exception) {
+                            // Invald: don't load
                         }
                         
-                        if (items == 0) {
-                            if (showErrors) {
-                                this.errors.step1 = [
-                                    {
-                                        message: "Je moet minimum één product bestellen",
+
+                    },
+
+                    deleteCartItem: function(product, index) {
+                        this.cart.items[product.id].splice(index, 1);
+                    },
+
+                    getItemPrice: function(item, total) {
+                        if (!item.price) {
+                            return NaN;
+                        }
+
+                        var price = item.price.price;
+
+                        for (var optionset_id in item.options) {
+                            var option = item.options[optionset_id];
+                            if (option && option.price_change) {
+                                price += option.price_change;
+                            }
+                            if (!option) {
+                                return NaN;
+                            }
+                        }
+                        
+
+                        if (total) {
+                            var amount = parseInt(item.amount);
+                            if (isNaN(amount)) {
+                                return NaN;
+                            }
+
+                            if (amount < 1) {
+                                return NaN;
+                            }
+
+                            price *= amount;
+                        }
+
+                        return price;         
+                    },
+
+                    getItemPriceString: function(item, total) {
+                        var price = this.getItemPrice(item, total);
+
+                        if (!total && item.product.type == "unit") {
+                            return formatPrice(price) + " / stuk";
+                        }
+
+                        if (!total && item.product.type == "person") {
+                            return formatPrice(price) + " / persoon";
+                        }
+                        return formatPrice(price);
+                    },
+
+                    getTotal: function() {
+                        var price = 0;
+
+                        for (var product_id in this.cart.items) {
+                            for (var index = 0; index < this.cart.items[product_id].length; index++) {
+                                var item = this.cart.items[product_id][index];
+                                price += this.getItemPrice(item, true);
+                            }
+                        }
+
+                        return price;
+                    },
+
+                    getTotalDescription: function() {
+                        var persons = 0;
+                        var amount = 0;
+
+                        for (var product_id in this.cart.items) {
+                            for (var index = 0; index < this.cart.items[product_id].length; index++) {
+                                var item = this.cart.items[product_id][index];
+
+                                if (item.product.type == 'name') {
+                                    persons += 1;
+                                }
+
+                                if (isNaN(parseInt(item.amount))) {
+                                    continue;
+                                }
+
+                                if (item.product.type == 'person') {
+                                    persons += parseInt(item.amount);
+                                }
+
+                                if (item.product.type == 'unit') {
+                                    amount += parseInt(item.amount);
+                                }
+                            }
+                        }
+
+                        if (persons > 0) {
+                            if (persons == 1) {
+                                return "Voor één persoon";
+                            }
+                            return "Voor "+persons+" personen";
+                        }
+
+                        if (amount == 0) {
+                            return "";
+                        }
+
+                        if (amount == 1) {
+                            return "Voor één item";
+                        }
+
+                        return "Voor "+amount+" items";
+                    },
+
+                    getTotalString: function() {
+                        return formatPrice(this.getTotal());
+                    },
+
+                    isValid: function(step, showErrors) {
+                        if (step >= 1) {
+                            var items = 0;
+
+                            for (var product_id in this.cart.items) {
+                                items += this.cart.items[product_id].length;
+
+                                for (var index = 0; index < this.cart.items[product_id].length; index++) {
+                                    var item = this.cart.items[product_id][index];
+                                    if (item.product.type == 'name' && item.person_name.length < 3) {
+                                        if (showErrors) {
+                                            this.errors.step1 = [
+                                                {
+                                                    message: "Vul eerst overal een naam in voordat je verder gaat.",
+                                                }
+                                            ];
+                                            this.step = 1;
+                                        }
+                                        
+                                        return false;
                                     }
-                                ];
-                                this.step = 1;
+
+                                }
+                                
                             }
-                            return false;
+                            
+                            if (items == 0) {
+                                if (showErrors) {
+                                    this.errors.step1 = [
+                                        {
+                                            message: "Je moet minimum één product bestellen",
+                                        }
+                                    ];
+                                    this.step = 1;
+                                }
+                                return false;
+                            }
+
+                            if (isNaN(this.getTotal())) {
+                                if (showErrors) {
+                                    this.errors.step1 = [
+                                        {
+                                            message: "Vul alle keuzemenu's en informatie in voor je verder gaat.",
+                                        }
+                                    ];
+                                    this.step = 1;
+                                }
+                                return false;
+                            }
                         }
 
-                        if (isNaN(this.getTotal())) {
-                            if (showErrors) {
-                                this.errors.step1 = [
-                                    {
-                                        message: "Vul alle keuzemenu's en informatie in voor je verder gaat.",
-                                    }
-                                ];
-                                this.step = 1;
+                        this.errors.step1 = [];
+
+
+                        if (step >= 2) {
+                            if (user.firstname.length < 3) {
+                                if (showErrors) {
+                                    this.errors.step2 = [
+                                        {
+                                            message: "De ingevulde voornaam is te kort",
+                                        }
+                                    ];
+                                    this.step = 2;
+                                }
+                                return false;
                             }
-                            return false;
-                        }
-                    }
 
-                    this.errors.step1 = [];
-
-
-                    if (step >= 2) {
-                        if (user.firstname.length < 3) {
-                            if (showErrors) {
-                                this.errors.step2 = [
-                                    {
-                                        message: "De ingevulde voornaam is te kort",
-                                    }
-                                ];
-                                this.step = 2;
+                            if (user.lastname.length < 3) {
+                                if (showErrors) {
+                                    this.errors.step2 = [
+                                        {
+                                            message: "De ingevulde achternaam is te kort",
+                                        }
+                                    ];
+                                    this.step = 2;
+                                }
+                                return false;
                             }
-                            return false;
-                        }
 
-                        if (user.lastname.length < 3) {
-                            if (showErrors) {
-                                this.errors.step2 = [
-                                    {
-                                        message: "De ingevulde achternaam is te kort",
-                                    }
-                                ];
-                                this.step = 2;
+                            if (user.mail.length < 3 || !isValidEmail(user.mail)) {
+                                if (showErrors) {
+                                    this.errors.step2 = [
+                                        {
+                                            message: "Je hebt een ongeldig e-mailadres ingevuld",
+                                        }
+                                    ];
+                                    this.step = 2;
+                                }
+                                return false;
                             }
-                            return false;
-                        }
 
-                        if (user.mail.length < 3 || !isValidEmail(user.mail)) {
-                            if (showErrors) {
-                                this.errors.step2 = [
-                                    {
-                                        message: "Je hebt een ongeldig e-mailadres ingevuld",
-                                    }
-                                ];
-                                this.step = 2;
+                            if (user.phone.length < 3) {
+                                if (showErrors) {
+                                    this.errors.step2 = [
+                                        {
+                                            message: "Je hebt een ongeldig telefoonnummer ingevuld",
+                                        }
+                                    ];
+                                    this.step = 2;
+                                }
+                                return false;
                             }
-                            return false;
+                        }
+                        this.errors.step2 = [];
+
+                        if (step >= 3) {
+                            // no validation
                         }
 
-                        if (user.phone.length < 3) {
-                            if (showErrors) {
-                                this.errors.step2 = [
-                                    {
-                                        message: "Je hebt een ongeldig telefoonnummer ingevuld",
-                                    }
-                                ];
-                                this.step = 2;
+
+                        return true;
+                    },
+
+                    nextStep: function(current) {
+                        this.saveToLocalstorage();
+
+                        if (current != this.step) {
+                            return;
+                        }
+                        if (!this.isValid(current, true)) {
+                            return;
+                        }
+                        this.step = current + 1;
+
+                        // Scroll back to the top
+                        window.scrollTo(0, 0);
+                    },
+                    
+                    getItems: function() {
+                        var items = [];
+                        for (var product_id in this.cart.items) {
+                            for (var index = 0; index < this.cart.items[product_id].length; index++) {
+                                var item = this.cart.items[product_id][index];
+                                items.push(item);
                             }
-                            return false;
                         }
-                    }
-                    this.errors.step2 = [];
+                        return items;
+                    },
 
-                    if (step >= 3) {
-                        // no validation
-                    }
-
-
-                    return true;
-                },
-
-                nextStep: function(current) {
-                    this.saveToLocalstorage();
-
-                    if (current != this.step) {
-                        return;
-                    }
-                    if (!this.isValid(current, true)) {
-                        return;
-                    }
-                    this.step = current + 1;
-                },
-                
-                getItems: function() {
-                    var items = [];
-                    for (var product_id in this.cart.items) {
-                        for (var index = 0; index < this.cart.items[product_id].length; index++) {
-                            var item = this.cart.items[product_id][index];
-                            items.push(item);
+                    submit: function() {
+                        if (this.isSubmitting) {
+                            return;
                         }
-                    }
-                    return items;
-                },
+                        this.isSubmitting = true;
 
-                submit: function() {
-                    if (this.isSubmitting) {
-                        return;
-                    }
-                    this.isSubmitting = true;
+                        if (this.payment_method.type == "stripe" && this.payment_method.data.method == "card") {
+                            this.cardError = null;
 
-                    if (this.payment_method.type == "stripe" && this.payment_method.data.method == "card") {
-                        this.cardError = null;
+                            // If we chose card method: create token and send it to the server
+                            // to be able to create a charge
+                            stripe.createToken(card).then(function(result) {
+                                if (result.error) {
+                                    // Inform the customer that there was an error.
+                                    this.cardError = result.error.message;
+                                    this.isSubmitting = false;
+                                } else {
+                                    console.log("got token: "+result.token.id);
+                                    this.payment_method.data.token = result.token.id;
+                                    this.createOrder();
+                                }
+                            }.bind(this));
+                            return;
+                        }
 
-                        // If we chose card method: create token and send it to the server
-                        // to be able to create a charge
-                        stripe.createToken(card).then(function(result) {
-                            if (result.error) {
-                                // Inform the customer that there was an error.
-                                this.cardError = result.error.message;
-                                this.isSubmitting = false;
-                            } else {
-                                console.log("got token: "+result.token.id);
-                                this.payment_method.data.token = result.token.id;
-                                this.createOrder();
+                        this.createOrder();
+                    },
+
+                    createOrder: function() {
+                        var total = this.getTotal();
+                        var data = {
+                            price: total,
+                            user: this.user,
+                            items: this.getItems(),
+                            payment_method: this.payment_method,
+                        };
+
+                        console.log(JSON.stringify(data, null, "\t"));
+
+
+                        // Place order
+                        Ajax.post("/api/webshop/place-order/{{ order_sheet.id }}", data, function(response) {
+                            /// Success
+                            console.log(JSON.stringify(response, null, "\t"));
+                            console.log("Succeeded placing order");
+                            if (response.redirect) {
+                                window.location.href = response.redirect;
                             }
+                        }, function(response) {
+                            this.isSubmitting = false;
+                            this.errors.step3 = response;
+                            /// failure
+                            console.log(JSON.stringify(response, null, "\t"));
+                            console.log("Failed placing order");
                         }.bind(this));
-                        return;
                     }
-
-                    this.createOrder();
-                },
-
-                createOrder: function() {
-                    var total = this.getTotal();
-                    var data = {
-                        price: total,
-                        user: this.user,
-                        items: this.getItems(),
-                        payment_method: this.payment_method,
-                    };
-
-                    console.log(JSON.stringify(data, null, "\t"));
-
-
-                    // Place order
-                    Ajax.post("/api/webshop/place-order/{{ order_sheet.id }}", data, function(response) {
-                        /// Success
-                        console.log(JSON.stringify(response, null, "\t"));
-                        console.log("Succeeded placing order");
-                        if (response.redirect) {
-                            window.location.href = response.redirect;
-                        }
-                    }, function(response) {
-                        this.isSubmitting = false;
-                        this.errors.step3 = response;
-                        /// failure
-                        console.log(JSON.stringify(response, null, "\t"));
-                        console.log("Failed placing order");
-                    }.bind(this));
                 }
-            }
-        });
-    </script>
+            });
+        </script>
+    {% endif %}
 {% endblock %}

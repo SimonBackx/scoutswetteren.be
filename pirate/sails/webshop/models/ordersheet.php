@@ -128,6 +128,29 @@ class OrderSheet extends Model implements \JsonSerializable {
         }
     }
 
+    function isDue() {
+        if (!isset($this->due_date)) {
+            return false;
+        }
+        $due = $this->due_date->format('Y-m-d');
+        $today = (new \DateTime())->format('Y-m-d');
+
+        return $due < $today;
+    }
+
+    function getDueText() {
+        if (!isset($this->due_date)) {
+            return '';
+        }
+        $due = $this->due_date->format('d/m/Y');
+
+        if ($this->type == "registrations") {
+            return "Inschrijven mogelijk tot $due";
+        } else {
+            return "Bestellen mogelijk tot $due";
+        }
+    }
+
     function save() {
         $name = self::getDb()->escape_string($this->name);
         $type = self::getDb()->escape_string($this->type);
