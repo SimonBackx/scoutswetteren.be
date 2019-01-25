@@ -92,6 +92,8 @@
                         <label>Beschrijving</label>
                         <textarea placeholder="Uitleg bovenaan het formulier zichtbaar" name="order_sheet_description">{{ event.order_sheet_description }}</textarea>
 
+                        <label>Beschikbaar tot en met (optioneel)</label>
+                        <input type="text" class="datepicker" name="order_sheet_due_date" value="{{ event.order_sheet_due_date }}" placeholder="Tot dag voor begin activiteit">
                        
                     </div>
                     <div class="part column last">
@@ -107,8 +109,11 @@
                             </select>
                         </label>
 
-                        <label>Beschikbaar tot en met (optioneel)</label>
-                        <input type="text" class="datepicker" name="order_sheet_due_date" value="{{ event.order_sheet_due_date }}" placeholder="Tot dag voor begin activiteit">
+                        <label>GSM-nummer (optioneel)</label>
+                        <input type="tel" name="order_sheet_phone" value="{{ event.order_sheet_phone }}" placeholder="GSM-nummer voor meer info">
+
+                        <label>E-mailadres (optioneel)</label>
+                        <input type="email" name="order_sheet_mail" value="{{ event.order_sheet_mail }}" placeholder="E-mailadres voor meer info">
                         
                     </div>
                 </div>

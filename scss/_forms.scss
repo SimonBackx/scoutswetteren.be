@@ -105,7 +105,7 @@ form {
         }
     }
 
-    input[type=text], input[type=password], input[type=email], .input-box, .select-box, textarea, .StripeElement {
+    input[type=text], input[type=password], input[type=email], input[type=tel], .input-box, .select-box, textarea, .StripeElement {
         display: block;
         box-sizing: border-box;
         width: 100%;
@@ -363,7 +363,7 @@ form {
     }
 
     &.error {
-        input[type=text], input[type=password], input[type=email] {
+        input[type=text], input[type=password], input[type=email], input[type=tel] {
             border-color: $error-red;
         }
         label {

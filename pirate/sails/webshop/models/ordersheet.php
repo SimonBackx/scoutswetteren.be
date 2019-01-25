@@ -4,6 +4,7 @@ use Pirate\Model\Model;
 use Pirate\Classes\Validating\ValidationError;
 use Pirate\Classes\Validating\ValidationErrors;
 use Pirate\Classes\Validating\ValidationErrorBundle;
+use Pirate\Model\Validating\Validator;
 
 class OrderSheet extends Model implements \JsonSerializable {
     public $id;
@@ -39,6 +40,9 @@ class OrderSheet extends Model implements \JsonSerializable {
 
         $this->due_date = isset($row['sheet_due_date']) ? new \DateTime($row['sheet_due_date']) : null;
 
+        $this->phone = $row['sheet_phone'];
+        $this->mail = $row['sheet_mail'];
+
         $this->bank_account = new BankAccount($row);
     }
 
@@ -47,6 +51,8 @@ class OrderSheet extends Model implements \JsonSerializable {
             'id' => $this->id,
             'name' => $this->name,
             'subtitle' => $this->subtitle,
+            'phone' => $this->phone,
+            'mail' => $this->mail,
             'description' => $this->description,
             'type' => $this->type,
             'due_date' => empty($this->due_date) ? null : $this->due_date->format('Y-m-d'),
@@ -123,6 +129,28 @@ class OrderSheet extends Model implements \JsonSerializable {
             } 
         }
 
+        if (isset($data['order_sheet_mail']) && !empty($data['order_sheet_mail'])) {
+            if (!Validator::isValidMail($data['order_sheet_mail'])) {
+                $errors->extend(new ValidationError('Ongeldig e-mailadres'));
+            } else {
+                $this->mail = $data['order_sheet_mail'];
+            }
+        } else {
+            $this->mail = null;
+        }
+
+        if (isset($data['order_sheet_phone']) && strlen($data['order_sheet_phone']) > 0) {
+            $errors_list = [];
+            if (!Validator::validatePhone($data['order_sheet_phone'], $this->phone, $errors_list)) {
+                foreach ($errors_list as $error) {
+                    $errors->extend(new ValidationError($error));
+                }
+            }
+
+        } else {
+            $this->phone = null;
+        }
+
         if (count($errors->getErrors()) > 0) {
             throw $errors;
         }
@@ -179,6 +207,18 @@ class OrderSheet extends Model implements \JsonSerializable {
 
         $bank_account = self::getDb()->escape_string($this->bank_account->id);
 
+        if (!isset($this->phone)) {
+            $phone = 'NULL';
+        } else {
+            $phone = "'".self::getDb()->escape_string($this->phone)."'";
+        }
+
+        if (!isset($this->mail)) {
+            $mail = 'NULL';
+        } else {
+            $mail = "'".self::getDb()->escape_string($this->mail)."'";
+        }
+
 
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
@@ -190,14 +230,16 @@ class OrderSheet extends Model implements \JsonSerializable {
                 sheet_subtitle = $subtitle,
                 sheet_description = $description,
                 sheet_bank_account = '$bank_account',
-                sheet_due_date = $due_date
+                sheet_due_date = $due_date,
+                sheet_phone = $phone,
+                sheet_mail = $mail
                  where `sheet_id` = '$id' 
             ";
         } else {
 
             $query = "INSERT INTO 
-                order_sheets (`sheet_name`, `sheet_type`, `sheet_subtitle`, `sheet_description`, `sheet_bank_account`, `sheet_due_date`)
-                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date)";
+                order_sheets (`sheet_name`, `sheet_type`, `sheet_subtitle`, `sheet_description`, `sheet_bank_account`, `sheet_due_date`, `sheet_phone`, `sheet_mail`)
+                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $sheet_phone, $sheet_mail)";
         }
 
         $result = self::getDb()->query($query);

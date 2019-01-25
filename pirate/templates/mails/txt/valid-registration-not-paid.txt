@@ -8,5 +8,10 @@ Je kan alle details van de inschrijving nakijken via onderstaande link:
 
 Als je later nog inschrijvingen wilt toevoegen kan dat via de website.
 
+{% if order_sheet is defined and order_sheet.phone is not empty or order_sheet.mail is not empty %}
+Bij vragen of problemen kan je terecht op {% if order_sheet.phone is not empty %}{{ order_sheet.phone }}{% endif %}{% if order_sheet.mail is not empty %}{% if order_sheet.phone is not empty %} of {% endif %}{{ order_sheet.mail }}{% endif %}
+
+{% endif %}
+
 Bedankt,
 Scouts Prins Boudewijn

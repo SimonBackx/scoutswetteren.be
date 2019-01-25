@@ -76,17 +76,19 @@ class CreateTables1548440843 extends Migration {
         # ------------------------------------------------------------
         
         CREATE TABLE `order_sheets` (
-          `sheet_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-          `sheet_name` varchar(100) NOT NULL DEFAULT '',
-          `sheet_subtitle` text,
-          `sheet_description` text,
-          `sheet_due_date` date DEFAULT NULL,
-          `sheet_bank_account` int(11) unsigned NOT NULL,
-          `sheet_type` enum('registrations','orders') NOT NULL DEFAULT 'registrations',
-          PRIMARY KEY (`sheet_id`),
-          KEY `sheet_bank_account` (`sheet_bank_account`),
-          CONSTRAINT `order_sheets_ibfk_1` FOREIGN KEY (`sheet_bank_account`) REFERENCES `bank_accounts` (`account_id`) ON UPDATE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            `sheet_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `sheet_name` varchar(100) NOT NULL DEFAULT '',
+            `sheet_subtitle` text,
+            `sheet_description` text,
+            `sheet_due_date` date DEFAULT NULL,
+            `sheet_bank_account` int(11) unsigned NOT NULL,
+            `sheet_type` enum('registrations','orders') NOT NULL DEFAULT 'registrations',
+            `sheet_phone` varchar(40) DEFAULT NULL,
+            `sheet_mail` varchar(60) DEFAULT NULL,
+            PRIMARY KEY (`sheet_id`),
+            KEY `sheet_bank_account` (`sheet_bank_account`),
+            CONSTRAINT `order_sheets_ibfk_1` FOREIGN KEY (`sheet_bank_account`) REFERENCES `bank_accounts` (`account_id`) ON UPDATE CASCADE
+          ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
         
         
         
@@ -134,20 +136,19 @@ class CreateTables1548440843 extends Migration {
         # ------------------------------------------------------------
         
         CREATE TABLE `payment_stripe` (
-          `stripe_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-          `stripe_source` varchar(60) NOT NULL DEFAULT '',
-          `stripe_method` varchar(30) NOT NULL DEFAULT '',
-          `stripe_order` int(11) unsigned NOT NULL,
-          `stripe_bank_account` int(11) unsigned NOT NULL,
-          `stripe_status` varchar(40) NOT NULL DEFAULT 'pending',
-          PRIMARY KEY (`stripe_id`),
-          KEY `stripe_order` (`stripe_order`),
-          KEY `stripe_bank_account` (`stripe_bank_account`),
-          CONSTRAINT `payment_stripe_ibfk_1` FOREIGN KEY (`stripe_order`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-          CONSTRAINT `payment_stripe_ibfk_2` FOREIGN KEY (`stripe_bank_account`) REFERENCES `bank_accounts` (`account_id`) ON UPDATE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
+            `stripe_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `stripe_source` varchar(60) NOT NULL DEFAULT '',
+            `stripe_method` varchar(30) NOT NULL DEFAULT '',
+            `stripe_order` int(11) unsigned NOT NULL,
+            `stripe_bank_account` int(11) unsigned NOT NULL,
+            `stripe_status` varchar(40) NOT NULL DEFAULT 'pending',
+            `stripe_charge` varchar(60) DEFAULT NULL,
+            PRIMARY KEY (`stripe_id`),
+            KEY `stripe_order` (`stripe_order`),
+            KEY `stripe_bank_account` (`stripe_bank_account`),
+            CONSTRAINT `payment_stripe_ibfk_1` FOREIGN KEY (`stripe_order`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+            CONSTRAINT `payment_stripe_ibfk_2` FOREIGN KEY (`stripe_bank_account`) REFERENCES `bank_accounts` (`account_id`) ON UPDATE CASCADE
+          ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
         
         # Dump of table product_option_sets
         # ------------------------------------------------------------

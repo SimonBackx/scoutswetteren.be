@@ -13,6 +13,7 @@ class StripePayment extends Payment {
     public $method;
     public $order;
     public $status;
+    public $charge;
 
     private $_stripe_source = null;
 
@@ -28,6 +29,7 @@ class StripePayment extends Payment {
         $this->source = $row['stripe_source'];
         $this->method = $row['stripe_method'];
         $this->status = $row['stripe_status'];
+        $this->charge = $row['stripe_charge'];
     }
 
     /// A function to create a stripe payment based on the source that was provided by the frontend
@@ -180,12 +182,15 @@ class StripePayment extends Payment {
                 ]);
                 // Charged :D
                 $this->order->markAsPaid();
+                $this->charge = $charge->id;
                 $this->updateStatus();
                 return;
             } catch (\Exception $ex) {
                 //echo $ex->getMessage();
                 // Failed to charge
-                // keep status
+                // check status
+                $this->updateStatus();
+                return;
             }
         } elseif ($this->status == 'failed') {
             $this->order->markAsFailed();
@@ -261,6 +266,13 @@ class StripePayment extends Payment {
         $bank_account = self::getDb()->escape_string($this->bank_account->id);
         $status = self::getDb()->escape_string($this->status);
 
+        if (!isset($this->id)) {
+            $charge = 'NULL';
+
+        } else {
+            $charge = "'".self::getDb()->escape_string($this->charge)."'";
+        }
+
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
             
@@ -270,14 +282,15 @@ class StripePayment extends Payment {
                 stripe_method = '$method',
                 stripe_bank_account = '$bank_account',
                 stripe_order = '$order',
-                stripe_status = '$status'
+                stripe_status = '$status',
+                stripe_charge = $charge
                  where `stripe_id` = '$id' 
             ";
         } else {
 
             $query = "INSERT INTO 
-                payment_stripe (`stripe_source`, `stripe_method`, `stripe_order`, `stripe_bank_account`, `stripe_status`)
-                VALUES ('$source', '$method', '$order', '$bank_account', '$status')";
+                payment_stripe (`stripe_source`, `stripe_method`, `stripe_order`, `stripe_bank_account`, `stripe_status`, `stripe_charge`)
+                VALUES ('$source', '$method', '$order', '$bank_account', '$status', $charge)";
         }
 
         $result = self::getDb()->query($query);

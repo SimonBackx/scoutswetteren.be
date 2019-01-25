@@ -43,6 +43,12 @@ class Order extends Model implements \JsonSerializable {
         $this->order_sheet_id = $row['order_sheet'];
     }
 
+    function fetchOrderSheet() {
+        if (!isset($this->order_sheet) && isset($this->order_sheet_id)) {
+            $this->order_sheet = OrderSheet::getById($this->order_sheet_id);
+        }
+    }
+
     function fetchPayment() {
         if ($this->payment_method == 'stripe') {
             $this->payment = StripePayment::getByOrderId($this->id);
@@ -290,6 +296,7 @@ class Order extends Model implements \JsonSerializable {
         $this->valid = true;
         $this->save();
 
+
         /// Send an e-mail to the user with order details
         if (!$this->isPaid()) {
             // Send an email with information about how to make the payment
@@ -307,12 +314,15 @@ class Order extends Model implements \JsonSerializable {
                 $template = 'valid-order-paid';
             }
         }
+        
+        $this->fetchOrderSheet();
 
         $mail = new Mail(
             isset($this->order_sheet) ? $this->order_sheet->name : ($this->isRegistration() ? 'Jouw inschrijving' : 'Jouw bestelling'), 
             $template, 
             array(
-                'url' => $this->getUrl()
+                'url' => $this->getUrl(),
+                'order_sheet' => isset($this->order_sheet) ? $this->order_sheet : null,
             )
         );
 

@@ -43,6 +43,8 @@ class Edit extends Page {
             'order_sheet_type' => null,
             'order_sheet_due_date' => '',
             'order_sheet_description' => '',
+            'order_sheet_mail' => '',
+            'order_sheet_phone' => '',
         );
 
         if (!empty(Leiding::getUser()->tak)) {
@@ -84,6 +86,8 @@ class Edit extends Page {
                     'order_sheet_account' => null,
                     'order_sheet_due_date' => '',
                     'order_sheet_description' => '',
+                    'order_sheet_mail' => '',
+                    'order_sheet_phone' => '',
                 );
 
                 $data['id'] = $event->id;
@@ -101,6 +105,8 @@ class Edit extends Page {
                     $data['order_sheet_due_date'] = isset($event->order_sheet->due_date) ? $event->order_sheet->due_date->format('d-m-Y') : '';
                     $data['order_sheet_description'] = $event->order_sheet->description;
                     $data['order_sheet_type'] = $event->order_sheet->type;
+                    $data['order_sheet_mail'] = $event->order_sheet->mail;
+                    $data['order_sheet_phone'] = $event->order_sheet->phone;
 
                 }
 

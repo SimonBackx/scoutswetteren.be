@@ -34,6 +34,22 @@
                         <p>Je hebt al personen ingeschreven. Je kan de inschrijvingen hieronder raadplegen. Je kan indien nodig nog extra personen inschrijven via de knop onderaan.</p>
                     </header>
 
+                    {% if order_sheet.phone is not empty or order_sheet.mail is not empty %}
+                        <h2>Contactgegevens</h2>
+                        {% if order_sheet.phone is not empty %}
+                            <p><strong>Tel. </strong>{{ order_sheet.phone }}</p>
+                        {% endif %}
+                        {% if order_sheet.mail is not empty %}
+                            <p><strong>Mail: </strong>{{ order_sheet.mail }}</p>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if order_sheet.type == 'registrations' %}
+                        <h2>Inschrijvingen</h2>
+                    {% else %}
+                        <h2>Bestellingen</h2>
+                    {% endif %}
+
                     <div class="list-bundle">
                         <article class="list" v-for="order in orders">
                             <div class="medium merlot column">
@@ -189,7 +205,7 @@
 
                     <ul class="error" v-if="errors.step2.length > 0">
                         <li v-for="error in errors.step2">[[ error.message ]]</li>
-                    </ul>
+                    </ul>                    
 
                     <footer>
                         <button type="button" class="button aubergine" :class="{'fill': isValid(2)}" v-on:click="nextStep(2);">Volgende</button>
@@ -237,6 +253,16 @@
                         <button type="button" v-on:click="submit();" class="button aubergine fill">Betalen</button>
                         <span v-if="isSubmitting">Laden...</span>
                     </footer>
+
+                    {% if order_sheet.phone is not empty or order_sheet.mail is not empty %}
+                        <h2>Problemen?</h2>
+                        {% if order_sheet.phone is not empty %}
+                            <p><strong>Tel. </strong>{{ order_sheet.phone }}</p>
+                        {% endif %}
+                        {% if order_sheet.mail is not empty %}
+                            <p><strong>Mail: </strong>{{ order_sheet.mail }}</p>
+                        {% endif %}
+                    {% endif %}
 
                 </div>
             </section>
