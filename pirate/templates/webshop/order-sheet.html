@@ -710,8 +710,9 @@
                             }
                         }
 
-                        this.errors.step1 = [];
-
+                        if (showErrors) {
+                            this.errors.step1 = [];
+                        }
 
                         if (step >= 2) {
                             if (user.firstname.length < 3) {
@@ -762,7 +763,10 @@
                                 return false;
                             }
                         }
-                        this.errors.step2 = [];
+
+                        if (showErrors) {
+                            this.errors.step2 = [];
+                        }
 
                         if (step >= 3) {
                             // no validation
