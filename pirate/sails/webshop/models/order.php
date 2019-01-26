@@ -52,7 +52,9 @@ class Order extends Model implements \JsonSerializable {
     function fetchPayment() {
         if ($this->payment_method == 'stripe') {
             $this->payment = StripePayment::getByOrderId($this->id);
-            $this->payment->order = $this;
+            if (isset($this->payment)) {
+                $this->payment->order = $this;
+            }
         }
     }
 
@@ -124,12 +126,16 @@ class Order extends Model implements \JsonSerializable {
         return null;
     }
 
+    // where paid
     static function getByOrderSheet($id) {
         $id = self::getDb()->escape_string($id);
         $query = 'SELECT o.*, u.*, o_i.* FROM orders o
         left join order_users u on u.order_user_id = o.order_user
         left join order_items o_i on o_i.item_order = o.order_id
-        WHERE o.order_sheet = "'.$id.'" order by o.order_id, o_i.item_id asc';
+        WHERE 
+        o.order_sheet = "'.$id.'" 
+        and o.order_valid = 1
+        order by o.order_id, o_i.item_id asc';
 
         if ($result = self::getDb()->query($query)){
             if ($result->num_rows>0){
@@ -277,7 +283,11 @@ class Order extends Model implements \JsonSerializable {
     }
 
     function isFailed() {
-        return isset($this->failed_at);
+        if (isset($this->failed_at)) {
+            $this->fetchOrderSheet();
+            return true;
+        }
+        return false;
     }
 
     function markAsPaid() {

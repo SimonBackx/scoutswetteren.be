@@ -1,0 +1,29 @@
+<div class="text">
+    <h1>{{ sheet.name }}</h1>
+    <p>Deze pagina wordt later uitgebreid met meer functies.</p>
+
+    <div>
+        <a href="/admin/order-sheets/{{ sheet.id }}" class="aubergine fill button">Terug</a>
+    </div>
+  
+    <div class="list-bundle">
+    {% for order in orders %}
+        <article class="list">
+            <div class="medium merlot column">
+                {{ order.user.firstname }} {{ order.user.lastname }}<br>
+                {{ order.user.phone }}<br>
+                {{ order.user.mail }}
+            </div>
+            <div class="max column">
+                
+            </div>
+            <div class="last column right">
+                <a href="{{ order.getUrl() }}" class="icon-button">
+                    Bekijken
+                </a>
+            </div>
+        </article>
+    {% endfor %}
+    </div>
+
+</div>

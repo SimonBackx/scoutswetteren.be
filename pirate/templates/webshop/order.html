@@ -14,8 +14,14 @@
                     </header>
 
                     <ul class="error">
-                        <li>De betaling werd geannuleerd of geweigderd door de bank. Kijk het saldo op uw bankkaart na en probeer het opnieuw.</li>
+                        <li>De betaling werd geannuleerd of geweigerd door de bank. Kijk het saldo op uw bankkaart na en probeer het opnieuw.</li>
                     </ul>
+
+                    {% if order.order_sheet is defined %}
+                    <footer>
+                            <a href="{{ order.order_sheet.getUrl() }}" class="button aubergine fill">Opnieuw proberen</a>
+                    </footer>
+                    {% endif %}
                 
                 {% else %}
                     {% if not order.isValid() %}

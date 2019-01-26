@@ -17,6 +17,15 @@ class WebshopAdminRouter extends AdminRoute {
             return true;
         }
 
+        if ($result = $this->match($parts, '/order-sheets/@id/orders', ['id' => 'string'])) {
+            $order_sheet = OrderSheet::getById($result->params->id);
+            if (!isset($order_sheet)) {
+                return false;
+            }
+            $this->setPage(new Admin\OrderSheetOrders($order_sheet));
+            return true;
+        }
+
         if ($result = $this->match($parts, '/order-sheets/@id/products/new', ['id' => 'string'])) {
             $order_sheet = OrderSheet::getById($result->params->id);
             if (!isset($order_sheet)) {

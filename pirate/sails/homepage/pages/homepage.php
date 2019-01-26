@@ -29,6 +29,13 @@ class Homepage extends Page {
                 ),*/
 
                 array(
+                    'title' => 'Schrijf je in voor het Winterfeest!',
+                    'text' => "Op zondag 24 februari organiseren we ons jaarlijks eetfestijn. Inschrijven kan enkel online.",
+                    "button" => array('text' => 'Inschrijven', 'url' => '/inschrijvingen/1/inschrijven-voor-winterfeest'),
+                    "extra_button" => array('text' => 'Meer info', 'url' => '/blog/2019/02/24/winterfeest-2019'),
+                ),
+
+                array(
                     'title' => 'Kerstactiviteit en jincafé',
                     'text' => "Kom op vrijdagavond 21 december naar onze jaarlijkse kerstactiviteit. Hierna zijn jullie welkom op het jincafé om onze Jin-tak te steunen! Meer info volgt.",
                 )
