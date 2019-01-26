@@ -97,8 +97,8 @@ ini_set('display_errors', 1);
                     static::create($migration->id);
 
                     if (!self::getDb()->commit()) {
-                        echo "Failed to rollback transaction\n\n";
-                        throw new \Exception("Failed to rollback transaction");
+                        echo "WARNING: Failed to commit transaction\n\n";
+                        //throw new \Exception("Failed to commit transaction");
                     } else {
                         echo "Successfully commited database changes\n\n";
                     }

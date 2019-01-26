@@ -73,7 +73,21 @@ class Ship {
         try {
             $this->prepare();
             $page = $this->router->route($url);
+            // Return the page, set the status code etc.
+            // 
+            
+            $page->execute();
 
+            $page->goodbye();
+
+        } catch (\Exception $e) {
+            http_response_code(500);
+
+            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>'.$e->getFile().' line '.$e->getLine().' '.$e->getMessage().'</pre>';
+            Sentry::shared()->logFatalError($e);
+            //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
+            
+            exit;
         } catch (\Error $e) {
             http_response_code(500);
 
@@ -83,13 +97,7 @@ class Ship {
             
             exit;
         }
-
-        // Return the page, set the status code etc.
-        // 
-        
-        $page->execute();
-
-        $page->goodbye();
+     
     }
 
     function cronjobs() {

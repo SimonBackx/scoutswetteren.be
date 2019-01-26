@@ -239,7 +239,7 @@ class OrderSheet extends Model implements \JsonSerializable {
 
             $query = "INSERT INTO 
                 order_sheets (`sheet_name`, `sheet_type`, `sheet_subtitle`, `sheet_description`, `sheet_bank_account`, `sheet_due_date`, `sheet_phone`, `sheet_mail`)
-                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $sheet_phone, $sheet_mail)";
+                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $phone, $mail)";
         }
 
         $result = self::getDb()->query($query);
@@ -250,6 +250,8 @@ class OrderSheet extends Model implements \JsonSerializable {
             }
             return true;
         }
+
+       // throw new \Exception($query.': '.self::getDb()->error);
 
         return false;
     }

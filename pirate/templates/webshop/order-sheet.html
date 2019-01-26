@@ -86,12 +86,12 @@
                         <button v-if="orders.length > 0" type="button" class="button aubergine noborder arrow-left" v-on:click="step = 0;">Terug</button>
                         <h1>{{ order_sheet.name }}</h1>
                         <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
-                        <p>{{ order_sheet.description }}</p>
+                        <p style="white-space: pre-line;">{{ order_sheet.description }}</p>
                     </header>
 
                     <template v-for="product in order_sheet.products">
                         <h2>[[ product.name ]]</h2>
-                        <p>[[ product.description ]]</p>
+                        <p style="white-space: pre-line;">[[ product.description ]]</p>
 
                         <div class="table-form wide">
                             <header v-if="cart.items[product.id].length > 0">

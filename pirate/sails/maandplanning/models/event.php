@@ -329,7 +329,9 @@ class Event extends Model {
             }
             return true;
         }
+
         return false;
+        //throw new \Exception(self::getDb()->error);
     }
 
     function delete() {
