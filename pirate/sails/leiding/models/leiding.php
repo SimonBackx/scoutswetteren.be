@@ -116,6 +116,10 @@ class Leiding extends Model {
                 'name' => 'Kerstactiviteit',
                 'mail' => 'kerstactiviteit@scoutswetteren.be'
             ),
+            'winterfeest' => [
+                "name" => 'Winterfeest',
+                'mail' => "winterfeest@scoutswetteren.be",
+            ],
             'wafelbak' => array(
                 'name' => 'Wafelbak',
                 'mail' => 'wafels@scoutswetteren.be'
