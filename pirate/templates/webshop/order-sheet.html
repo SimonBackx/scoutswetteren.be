@@ -319,11 +319,41 @@
             {% endif %}
 
             // Payment methods:
-            var stripe = Stripe('pk_test_BrW32elKhNJzoNSJah0o0rB4');
-            var elements = stripe.elements();
+            var payment_methods = [];
+            {% if order_sheet.bank_account.stripe_public is defined %}
+                var stripe = Stripe('{{ order_sheet.bank_account.stripe_public }}');
+                var elements = stripe.elements();
 
-            // Create an instance of the card Element.
-            var card = null; //
+                // Create an instance of the card Element.
+                var card = null; //
+
+                payment_methods = [ {
+                    type: "stripe",
+                    data: {
+                        method: "bancontact",
+                    },
+                    name: "Bancontact"
+                }, {
+                    type: "stripe",
+                    data: {
+                        method: "card",
+                        token: null,
+                    },
+                    name: "Visa / Mastercard"
+                }, {
+                    type: "stripe",
+                    data: {
+                        method: "ideal"
+                    },
+                    name: "iDEAL"
+                }/*, {
+                    type: "transfer",
+                    data: {
+                        // todo
+                    },
+                    name: "Bankoverschrijving"
+                }*/];
+            {% endif %}
 
             function formatPrice(price) {
                 if (isNaN(price)) {
@@ -338,33 +368,6 @@
             function isValidEmail(email) {
                 return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test( email );	
             }
-
-            var payment_methods = [ {
-                type: "stripe",
-                data: {
-                    method: "bancontact",
-                },
-                name: "Bancontact"
-            }, {
-                type: "stripe",
-                data: {
-                    method: "card",
-                    token: null,
-                },
-                name: "Visa / Mastercard"
-            }, {
-                type: "stripe",
-                data: {
-                    method: "ideal"
-                },
-                name: "iDEAL"
-            }/*, {
-                type: "transfer",
-                data: {
-                    // todo
-                },
-                name: "Bankoverschrijving"
-            }*/];
 
             // Fetch a list of orders that were placed on this device for this order sheet
             var orders = [];
@@ -404,21 +407,22 @@
                     isSubmitting: false,
                 },
                 mounted: function() {
-                    card = elements.create('card');
-
-                    card.addEventListener('change', function(event) {
-                        if (app) {
-                            if (event.error) {
-                                app.cardError = event.error.message;
-                            } else {
-                                app.cardError = null;
+                    if (elements) {
+                        card = elements.create('card');
+                        card.addEventListener('change', function(event) {
+                            if (app) {
+                                if (event.error) {
+                                    app.cardError = event.error.message;
+                                } else {
+                                    app.cardError = null;
+                                }
                             }
-                        }
-                    });
+                        });
 
-                    // Add an instance of the card Element into the `card-element` <div>.
-                    card.mount('#card-element');
-
+                        // Add an instance of the card Element into the `card-element` <div>.
+                        card.mount('#card-element');
+                    }
+                   
                     this.loadFromLocalstorage();
                 },
                 methods: {
