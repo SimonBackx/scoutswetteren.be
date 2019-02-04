@@ -1,13 +1,15 @@
 <?php
 namespace Pirate\Sail\Webshop;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
+
 use Pirate\Model\Webshop\OrderSheet;
 use Pirate\Model\Webshop\Product;
+use Pirate\Route\AdminRoute;
 
-class WebshopAdminRouter extends AdminRoute {
+class WebshopAdminRouter extends AdminRoute
+{
 
-    function doMatch($url, $parts) {
+    public function doMatch($url, $parts)
+    {
         if ($result = $this->match($parts, '/order-sheets/@id', ['id' => 'string'])) {
             $order_sheet = OrderSheet::getById($result->params->id);
             if (!isset($order_sheet)) {
@@ -23,6 +25,15 @@ class WebshopAdminRouter extends AdminRoute {
                 return false;
             }
             $this->setPage(new Admin\OrderSheetOrders($order_sheet));
+            return true;
+        }
+
+        if ($result = $this->match($parts, '/order-sheets/@id/excel', ['id' => 'string'])) {
+            $order_sheet = OrderSheet::getById($result->params->id);
+            if (!isset($order_sheet)) {
+                return false;
+            }
+            $this->setPage(new Admin\OrderSheetExcel($order_sheet));
             return true;
         }
 
