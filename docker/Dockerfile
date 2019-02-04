@@ -9,4 +9,9 @@ RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
 RUN apt-get install -y zip
 
+RUN apt-get update && \
+    apt-get install -y \
+        zlib1g-dev \ 
+    && docker-php-ext-install zip
+
 cmd php-fpm
