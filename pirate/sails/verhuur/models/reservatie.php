@@ -1,12 +1,14 @@
 <?php
 namespace Pirate\Model\Verhuur;
+
+use Pirate\Mail\Mail;
+use Pirate\Model\Leden\Adres;
+use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Model;
 use Pirate\Model\Validating\Validator;
-use Pirate\Mail\Mail;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Leden\Adres;
 
-class Reservatie extends Model {
+class Reservatie extends Model
+{
     public $id;
     public $contract_nummer;
     public $startdatum;
@@ -40,18 +42,19 @@ class Reservatie extends Model {
 
     public $aanvraag_datum;
 
-    static public $max_gebouw = 35;
-    static public $max_tenten = 20;
+    public static $max_gebouw = 35;
+    public static $max_tenten = 20;
 
-    static public $prijzen = array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102, 2020 => 105);
-    static public $waarborg_weekend = 400;
-    static public $waarborg_kamp = 750;
-    static public $prijs_tent_dag = 20;
-    static public $prijs_tent_persoon = 2;
+    public static $prijzen = array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102, 2020 => 105, 2021 => 110);
+    public static $waarborg_weekend = 400;
+    public static $waarborg_kamp = 750;
+    public static $prijs_tent_dag = 20;
+    public static $prijs_tent_persoon = 2;
 
     private $no_mail = false;
 
-    function calculateWaarborg() {
+    public function calculateWaarborg()
+    {
         $difference = $this->startdatum->diff($this->einddatum);
         $days = $difference->d;
 
@@ -61,94 +64,101 @@ class Reservatie extends Model {
         return self::$waarborg_kamp;
     }
 
-    static function getPrijzenString() {
+    public static function getPrijzenString()
+    {
         $year = date("Y");
         if (!isset(self::$prijzen[$year])) {
             return 'De huurprijs is onbekend door een technische fout';
         }
-        $current_price = '€ '.money_format('%!.2n', self::$prijzen[$year]);
+        $current_price = '€ ' . money_format('%!.2n', self::$prijzen[$year]);
 
         $other = '';
-        $i = $year+1;
+        $i = $year + 1;
         while (isset(self::$prijzen[$i])) {
             if ($other != '') {
                 $other .= ', ';
             } else {
                 $other .= ' (';
             }
-            $other .= $i.': € '.money_format('%!.2n', self::$prijzen[$i]);
+            $other .= $i . ': € ' . money_format('%!.2n', self::$prijzen[$i]);
             $i++;
         }
         if ($other != '') {
             $other .= ')';
-        } 
+        }
 
         return "De huurprijs bedraagt  $current_price / nacht voor verblijven in $year$other";
     }
 
-    function getExcelSafeTelephone() {
+    public function getExcelSafeTelephone()
+    {
         return str_replace(" ", " ", $this->contact_gsm);
     }
 
-    function getWaarborg($excelsafe = false) {
+    public function getWaarborg($excelsafe = false)
+    {
         if ($excelsafe) {
-            return 'EUR '.money_format('%!.2n', $this->waarborg);
+            return 'EUR ' . money_format('%!.2n', $this->waarborg);
         }
-        return '€ '.money_format('%!.2n', $this->waarborg);
+        return '€ ' . money_format('%!.2n', $this->waarborg);
     }
 
-    function getHuur($excelsafe = false) {
+    public function getHuur($excelsafe = false)
+    {
         if ($excelsafe) {
-            return 'EUR '.money_format('%!.2n', $this->huur);
+            return 'EUR ' . money_format('%!.2n', $this->huur);
         }
-        return '€ '.money_format('%!.2n', $this->huur);
+        return '€ ' . money_format('%!.2n', $this->huur);
     }
 
-    function calculateHuur() {
+    public function calculateHuur()
+    {
         $difference = $this->startdatum->diff($this->einddatum);
         $days = $difference->d;
 
         $plus = 0;
         if ($this->personen_tenten > 0) {
-            $plus += self::$prijs_tent_dag*$days + self::$prijs_tent_persoon*$this->personen_tenten*$days;
+            $plus += self::$prijs_tent_dag * $days + self::$prijs_tent_persoon * $this->personen_tenten * $days;
         }
-
 
         $jaar = $this->startdatum->format('Y');
         if (isset(self::$prijzen[$jaar])) {
-            return self::$prijzen[$jaar]*$days + $plus;
+            return self::$prijzen[$jaar] * $days + $plus;
         }
 
         return $plus;
     }
 
-    static public function js_calculateHuur() {
+    public static function js_calculateHuur()
+    {
         // function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten)
         return '
-        var prices = '.json_encode(self::$prijzen).';
+        var prices = ' . json_encode(self::$prijzen) . ';
 
         var base_price = diffDays * prices[startdate.getFullYear()];
         if (persons_tenten > 0) {
-            base_price += persons_tenten*'.self::$prijs_tent_dag.'*diffDays + '.self::$prijs_tent_persoon.'*diffDays;
+            base_price += persons_tenten*' . self::$prijs_tent_dag . '*diffDays + ' . self::$prijs_tent_persoon . '*diffDays;
         }
         return base_price;';
     }
 
-    static public function js_calculateBorg() {
+    public static function js_calculateBorg()
+    {
         // function calculateBorg(startdate, enddate, diffDays, persons, persons_tenten)
         return '
-        var borg = '.self::$waarborg_weekend.';
+        var borg = ' . self::$waarborg_weekend . ';
 
         if (diffDays > 2) {
-            borg = '.self::$waarborg_kamp.';
+            borg = ' . self::$waarborg_kamp . ';
         }
         return borg;';
     }
 
     //public $prijzen = array(2016 => );
 
-    function __construct($row = array()) {
-        if (count($row) == 0){
+    public function __construct($row = array())
+    {
+        if (count($row) == 0) {
             return;
         }
 
@@ -187,27 +197,27 @@ class Reservatie extends Model {
 
     }
 
-
     // Beide grensen inclusief
     // startdate en enddate in y-m-d formaat
-    static function getReservaties($startdate, $enddate, $ligt_vast = null, $not_include = null) {
+    public static function getReservaties($startdate, $enddate, $ligt_vast = null, $not_include = null)
+    {
         $ligt_vast_str = '';
         if (!is_null($ligt_vast)) {
-            $ligt_vast_str = ' AND ligt_vast = "'.self::getDb()->escape_string($ligt_vast).'"';
+            $ligt_vast_str = ' AND ligt_vast = "' . self::getDb()->escape_string($ligt_vast) . '"';
         }
         $not_include_str = '';
         if (!is_null($not_include)) {
-            $not_include_str = ' AND id <> "'.self::getDb()->escape_string($not_include).'"';
+            $not_include_str = ' AND id <> "' . self::getDb()->escape_string($not_include) . '"';
         }
 
         $startdate = self::getDb()->escape_string($startdate);
         $enddate = self::getDb()->escape_string($enddate);
 
         $reservaties = array();
-        $query = 'SELECT * FROM verhuur WHERE ((startdatum >= "'.$startdate.'" AND startdatum <= "'.$enddate.'") OR (einddatum >= "'.$startdate.'" AND einddatum <= "'.$enddate.'") OR (startdatum <= "'.$startdate.'" AND einddatum >= "'.$enddate.'"))'.$ligt_vast_str.$not_include_str.' ORDER BY startdatum';
+        $query = 'SELECT * FROM verhuur WHERE ((startdatum >= "' . $startdate . '" AND startdatum <= "' . $enddate . '") OR (einddatum >= "' . $startdate . '" AND einddatum <= "' . $enddate . '") OR (startdatum <= "' . $startdate . '" AND einddatum >= "' . $enddate . '"))' . $ligt_vast_str . $not_include_str . ' ORDER BY startdatum';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $reservaties[] = new Reservatie($row);
                 }
@@ -216,7 +226,8 @@ class Reservatie extends Model {
         return $reservaties;
     }
 
-    static function getReservatiesOverview($future_only = true) {
+    public static function getReservatiesOverview($future_only = true)
+    {
         $reservaties = array();
 
         if ($future_only) {
@@ -225,8 +236,8 @@ class Reservatie extends Model {
             $query = 'SELECT * FROM verhuur ORDER BY startdatum';
         }
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $reservaties[] = new Reservatie($row);
                 }
@@ -236,27 +247,29 @@ class Reservatie extends Model {
         return $reservaties;
     }
 
-    static function getAantalInWeek($week) {
+    public static function getAantalInWeek($week)
+    {
         $week = self::getDb()->escape_string($week);
-        $query = 'SELECT * FROM verhuur WHERE week(startdatum, 3) = "'.$week.'" and contract_nummer is not null';
+        $query = 'SELECT * FROM verhuur WHERE week(startdatum, 3) = "' . $week . '" and contract_nummer is not null';
 
-        if ($result = self::getDb()->query($query)){
+        if ($result = self::getDb()->query($query)) {
             return $result->num_rows;
         }
         return 0;
     }
 
     // Maximaal 30 events! Rest wordt weg geknipt
-    static function getReservatie($id) {
+    public static function getReservatie($id)
+    {
         if (!is_numeric($id)) {
             return null;
         }
 
         $id = self::getDb()->escape_string($id);
-        $query = 'SELECT * FROM verhuur WHERE id = "'.$id.'"';
+        $query = 'SELECT * FROM verhuur WHERE id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 return new Reservatie($row);
             }
@@ -264,12 +277,13 @@ class Reservatie extends Model {
         return null;
     }
 
-    static function getReservatieForContractNummer($contract_nummer) {
+    public static function getReservatieForContractNummer($contract_nummer)
+    {
         $contract_nummer = self::getDb()->escape_string($contract_nummer);
-        $query = 'SELECT * FROM verhuur WHERE contract_nummer = "'.$contract_nummer.'"';
+        $query = 'SELECT * FROM verhuur WHERE contract_nummer = "' . $contract_nummer . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 return new Reservatie($row);
             }
@@ -278,7 +292,8 @@ class Reservatie extends Model {
         return null;
     }
 
-    function setProperties(&$data, $basic = false) {
+    public function setProperties(&$data, $basic = false)
+    {
         $admin = false;
         if (isset($data['huur']) && Leiding::isLoggedIn() && (Leiding::hasPermission('verhuur') || Leiding::hasPermission('oudercomite'))) {
             $admin = true;
@@ -381,8 +396,6 @@ class Reservatie extends Model {
             }
         }
 
-
-
         // Als nieuw: controleren of er al niet vaststaande verhuren zijn op deze datums
         if ((empty($this->id) || $this->ligt_vast) && $startdatum !== false && $einddatum !== false) {
             if (!empty($this->id)) {
@@ -423,7 +436,6 @@ class Reservatie extends Model {
 
             Validator::validateBothPhone($data['contact_gsm'], $this->contact_gsm, $errors);
 
-
             if (Validator::isValidAddress($data['contact_adres'])) {
                 $this->contact_adres = ucwords(mb_strtolower($data['contact_adres']));
                 $data['contact_adres'] = $this->contact_adres;
@@ -444,7 +456,7 @@ class Reservatie extends Model {
                 if ($this->contact_land == "België") {
                     if (Adres::validateGemeente($data['contact_gemeente'], $data['contact_postcode'], $errors)) {
                         $this->contact_gemeente = $data['contact_gemeente'];
-                        $this->contact_postcode =  $data['contact_postcode'];
+                        $this->contact_postcode = $data['contact_postcode'];
                     }
                 } else {
                     if (strlen($data['contact_gemeente']) < 4) {
@@ -462,7 +474,6 @@ class Reservatie extends Model {
 
                 }
             }
-
 
             if (strlen($data['info']) < 10) {
                 $errors[] = 'Geef wat meer info over jouw groep.';
@@ -519,7 +530,8 @@ class Reservatie extends Model {
 
     // Slaat het object op (of voegt het toe)
     // En stelt huur en waarborg ook juist in, stuurt evt mail naar verantwoordelijke
-    function save() {
+    public function save()
+    {
 
         $startdatum = self::getDb()->escape_string($this->startdatum->format('Y-m-d'));
         $einddatum = self::getDb()->escape_string($this->einddatum->format('Y-m-d'));
@@ -538,19 +550,19 @@ class Reservatie extends Model {
             $ligt_vast = 1;
 
             if (!isset($this->id)) {
-                $query = "INSERT INTO 
+                $query = "INSERT INTO
                     verhuur (`startdatum`,  `einddatum`, `door_leiding`, `groep`, `ligt_vast`, `aanvraag_datum`)
                     VALUES ('$startdatum', '$einddatum', '$door_leiding', '$groep', '$ligt_vast', '$aanvraag_datum')";
             } else {
                 $id = self::getDb()->escape_string($this->id);
-                $query = "UPDATE verhuur 
-                    SET 
+                $query = "UPDATE verhuur
+                    SET
                      `startdatum` = '$startdatum',
                      `einddatum` = '$einddatum',
                      `door_leiding` = '$door_leiding',
                      `groep` = '$groep',
                      `ligt_vast` = '$ligt_vast'
-                     where id = '$id' 
+                     where id = '$id'
                 ";
             }
         } else {
@@ -580,27 +592,26 @@ class Reservatie extends Model {
 
             if (!isset($this->contract_nummer)) {
                 $aantal = self::getAantalInWeek($this->startdatum->format('W')) + 1;
-                $this->contract_nummer = substr($this->startdatum->format('o'), 2).$this->startdatum->format('W').'-'.$aantal;
+                $this->contract_nummer = substr($this->startdatum->format('o'), 2) . $this->startdatum->format('W') . '-' . $aantal;
             }
 
             if (!isset($this->contract_nummer)) {
                 $contract_nummer = 'NULL';
-            }
-            else {
-                $contract_nummer = "'".self::getDb()->escape_string($this->contract_nummer)."'";
+            } else {
+                $contract_nummer = "'" . self::getDb()->escape_string($this->contract_nummer) . "'";
             }
 
             if (empty($this->id)) {
 
-                $query = "INSERT INTO 
+                $query = "INSERT INTO
                     verhuur (`contract_nummer`, `door_leiding`, `startdatum`,`einddatum`,`personen`,`personen_tenten`,`groep`,`contact_naam`,`contact_email`,`contact_gsm`,`contact_adres`,`contact_gemeente`,`contact_postcode`,`contact_land`,`info`,`opmerkingen`,`waarborg`,`huur`,`ligt_vast`, `waarborg_betaald`, `huur_betaald`, `aanvraag_datum`)
-                    
+
                     VALUES ($contract_nummer, NULL, '$startdatum','$einddatum','$personen','$personen_tenten','$groep','$contact_naam','$contact_email','$contact_gsm','$contact_adres','$contact_gemeente','$contact_postcode','$contact_land','$info','$opmerkingen', '$waarborg', '$huur', '$ligt_vast', '$waarborg_betaald', '$huur_betaald', '$aanvraag_datum')";
             } else {
                 $id = self::getDb()->escape_string($this->id);
 
-                $query = "UPDATE verhuur 
-                    SET 
+                $query = "UPDATE verhuur
+                    SET
                         `contract_nummer` = $contract_nummer,
                         `door_leiding` = NULL,
                         `startdatum` = '$startdatum',
@@ -622,10 +633,10 @@ class Reservatie extends Model {
                         `ligt_vast` = '$ligt_vast',
                         `waarborg_betaald` = '$waarborg_betaald',
                         `huur_betaald` = '$huur_betaald'
-                     where id = '$id' 
+                     where id = '$id'
                 ";
             }
-            
+
         }
 
         if (self::getDb()->query($query)) {
@@ -633,20 +644,20 @@ class Reservatie extends Model {
                 $this->id = self::getDb()->insert_id;
 
                 if (!isset($this->door_leiding) && !$this->no_mail) {
-                    
+
                     // Mail voor verantwoordelijke(n)
                     $leiding = Leiding::getLeiding('verhuur');
                     $verhuurder = 'website@scoutswetteren.be';
-                    $mail = new Mail('Huur aanvraag van '.$this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
-                    
+                    $mail = new Mail('Huur aanvraag van ' . $this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
+
                     if (count($leiding) > 0) {
                         $verhuurder = $leiding[0]->user->mail;
 
                         foreach ($leiding as $l) {
                             $mail->addTo(
-                                $l->user->mail, 
+                                $l->user->mail,
                                 array(),
-                                $l->user->firstname.' '.$l->user->lastname
+                                $l->user->firstname . ' ' . $l->user->lastname
                             );
                         }
 
@@ -662,7 +673,7 @@ class Reservatie extends Model {
                     $mail = new Mail('Verhuur aanvraag', 'huurder-aanvraag', array('reservatie' => $this));
 
                     $mail->addTo(
-                        $this->contact_email, 
+                        $this->contact_email,
                         array(),
                         $this->contact_naam
                     );
@@ -681,22 +692,25 @@ class Reservatie extends Model {
         return false;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 verhuur WHERE id = '$id' ";
 
         return self::getDb()->query($query);
     }
 
-    function getTitle() {
+    public function getTitle()
+    {
         if ($this->door_leiding) {
-            return "[Vrijgehouden] ".$this->groep;
+            return "[Vrijgehouden] " . $this->groep;
         }
-        return "[".$this->contract_nummer."] ".$this->groep;
+        return "[" . $this->contract_nummer . "] " . $this->groep;
     }
 
-    function getDescription() {
+    public function getDescription()
+    {
         if ($this->door_leiding) {
             return "Vrijgehouden voor scouts";
         }
