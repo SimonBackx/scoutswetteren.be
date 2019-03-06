@@ -1,18 +1,22 @@
 <?php
 namespace Pirate\Sail\Homepage\Pages;
+
 use Pirate\Block\Block;
 use Pirate\Page\Page;
 
 // temp
 use Pirate\Template\Template;
 
-class Homepage extends Page {
+class Homepage extends Page
+{
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
 
         // Block ophalen van maandplanning sail
         $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
@@ -23,10 +27,11 @@ class Homepage extends Page {
             'maandplanning' => $maandplanning,
             'blog' => $blog,
             'slideshows' => array(
-                /*array(
-                    'title' => 'Soepverkoop Jin',
-                    'text' => "Op zondag 18 november verkoopt de Jin zelfgemaakte pompoepsoep. Bestellen kan via jin@scoutswetteren.be",
-                ),*/
+                array(
+                    'title' => 'Wij zoeken wafelbakkers!',
+                    'text' => "Op 31/03 organiseren we onze wafelbak. Daarvoor zijn we nog op zoek naar enthousiaste bakkers! Wil jij graag wafeltjes bakken? Laat het ons weten via wafels@scoutswetteren.be",
+                    "button" => array('text' => 'Meer info', 'url' => 'https://files.scoutswetteren.be/download/wafelbak-algemeen-2019.pdf'),
+                ),
 
                 array(
                     'title' => 'Schrijf je in voor het Winterfeest!',
@@ -38,7 +43,7 @@ class Homepage extends Page {
                 array(
                     'title' => 'Kerstactiviteit en jincafé',
                     'text' => "Kom op vrijdagavond 21 december naar onze jaarlijkse kerstactiviteit. Hierna zijn jullie welkom op het jincafé om onze Jin-tak te steunen! Meer info volgt.",
-                )
+                ),
 
             ),
             'call_to_action' => array(
