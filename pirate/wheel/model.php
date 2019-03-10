@@ -1,10 +1,13 @@
 <?php
 namespace Pirate\Model;
+
 use Pirate\Database\Database;
 
-class Model {
+class Model
+{
 
-    static function setupAutoload() {
+    public static function setupAutoload()
+    {
         spl_autoload_register(function ($class) {
             //if(!defined('STDOUT')) define('STDOUT', fopen('php://stdout', 'w'));
             //fwrite(STDOUT, 'Autoload ' . $class."\n");
@@ -25,17 +28,27 @@ class Model {
      * @param  [type] $name klassenaam van de block = bestandsnaam
      * @return  /
      */
-    static function loadModel($sail, $name) {
-        $file = __DIR__.'/../sails/'.strtolower($sail).'/models/'.strtolower($name).'.php';
+    public static function loadModel($sail, $name)
+    {
+        $file = __DIR__ . '/../sails/' . strtolower($sail) . '/models/' . strtolower($name) . '.php';
         //fwrite(STDOUT, 'Autoload ' . $file."\n");
-        if (file_exists($file))
-            require($file);
+        if (file_exists($file)) {
+            require $file;
+        } else {
+            $file = __DIR__ . '/../sails/' . strtolower($sail) . '/models/' . $name . '.php';
+            //fwrite(STDOUT, 'Autoload ' . $file."\n");
+            if (file_exists($file)) {
+                require $file;
+            }
+        }
+
         /*else
-            fwrite(STDOUT, 'Autoload not found!'."\n");*/
+    fwrite(STDOUT, 'Autoload not found!'."\n");*/
 
     }
 
-    protected static function getDb() {
+    protected static function getDb()
+    {
         return Database::getDb();
     }
 }
