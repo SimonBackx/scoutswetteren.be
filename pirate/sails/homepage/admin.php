@@ -2,6 +2,7 @@
 namespace Pirate\Sail\Homepage;
 
 use Pirate\Model\Homepage\Slideshow;
+use Pirate\Model\Leiding\Leiding;
 use Pirate\Route\AdminRoute;
 
 class HomepageAdminRouter extends AdminRoute
@@ -9,6 +10,10 @@ class HomepageAdminRouter extends AdminRoute
 
     public function doMatch($url, $parts)
     {
+        if (!Leiding::hasPermission('redacteur')) {
+            return false;
+        }
+
         if ($result = $this->match($parts, '/slideshows/edit/@id', ['id' => 'string'])) {
             $slideshow = Slideshow::getById($result->params->id);
             if (!isset($slideshow)) {

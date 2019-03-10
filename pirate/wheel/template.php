@@ -1,34 +1,37 @@
 <?php
 namespace Pirate\Template;
-use Twig_Loader_Filesystem;
-use Twig_Environment;
-use Pirate\Model\Leiding\Leiding;
+
 use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Users\User;
+use Twig_Environment;
+use Twig_Loader_Filesystem;
 
-class Template {
-    static public $twig;
+class Template
+{
+    public static $twig;
 
-    private static function getTemplatePath($template, $sail, $ext) {
-         if ( is_null($sail) ) {
+    private static function getTemplatePath($template, $sail, $ext)
+    {
+        if (is_null($sail)) {
             // Use the global defined one
-            $url = '/../templates/'.$template.'.'.$ext;
+            $url = '/../templates/' . $template . '.' . $ext;
 
         } else {
 
             // First check if overwritten
-            $url = '/../templates/'.strtolower($sail).'/'.$template.'.'.$ext;
+            $url = '/../templates/' . strtolower($sail) . '/' . $template . '.' . $ext;
 
-            if ( !file_exists(__DIR__.$url) ) {
+            if (!file_exists(__DIR__ . $url)) {
                 // Not overwritten, so use the default one
-                $url = '/../sails/'.strtolower($sail).'/templates/'.$template.'.'.$ext;   
+                $url = '/../sails/' . strtolower($sail) . '/templates/' . $template . '.' . $ext;
             }
         }
-        return __DIR__.$url;
+        return __DIR__ . $url;
     }
 
     // Kijkt eerst of de default template overschreven werd (in layout map)
-    // in dat geval gebruikt deze functie die template, anders de default zelf in de 
+    // in dat geval gebruikt deze functie die template, anders de default zelf in de
     // sail zelf (layout map in de sail)
     /**
      * [template description]
@@ -37,7 +40,8 @@ class Template {
      * @param  (optioneel) [type] $sail     Optioneel
      * @return String    HTML
      */
-    static function render($template, $data = array(), $ext = 'html') {
+    public static function render($template, $data = array(), $ext = 'html')
+    {
         if (empty($_SERVER['HTTPS'])) {
             $data['http'] = "http://{$_SERVER['SERVER_NAME']}";
         } else {
@@ -47,7 +51,8 @@ class Template {
         $data['general'] = array(
             'logged_in' => User::isLoggedIn(),
             'logged_in_leiding' => Leiding::isLoggedIn(),
-            'logged_in_ouders' => Ouder::isLoggedIn()
+            'logged_in_leiding_redacteur' => Leiding::hasPermission('redacteur'),
+            'logged_in_ouders' => Ouder::isLoggedIn(),
         );
 
         if (User::isLoggedIn()) {
@@ -57,7 +62,7 @@ class Template {
             $data['logged_in_user']['phone'] = User::getUser()->phone;
             $data['logged_in_user']['id'] = User::getUser()->id;
 
-            $data['logged_in_user']['name'] = User::getUser()->firstname.' '.User::getUser()->lastname;
+            $data['logged_in_user']['name'] = User::getUser()->firstname . ' ' . User::getUser()->lastname;
         }
 
         if (Leiding::isLoggedIn()) {
@@ -65,15 +70,17 @@ class Template {
                 $data['admin'] = array();
             }
             $data['admin']['buttons'] = Leiding::getAdminMenu();
-            $data['admin']['name'] = Leiding::getUser()->user->firstname.' '.Leiding::getUser()->user->lastname;
+
+            $data['admin']['buttons'] = Leiding::getAdminMenu();
+            $data['admin']['name'] = Leiding::getUser()->user->firstname . ' ' . Leiding::getUser()->user->lastname;
         }
 
-        return self::$twig->render($template.'.'.$ext, $data);
+        return self::$twig->render($template . '.' . $ext, $data);
     }
 
 }
 
-$loader = new Twig_Loader_Filesystem(__DIR__.'/../templates/');
+$loader = new Twig_Loader_Filesystem(__DIR__ . '/../templates/');
 Template::$twig = new Twig_Environment($loader/*, array(
-    'cache' => __DIR__.'/../tmp/twig/',
+'cache' => __DIR__.'/../tmp/twig/',
 )*/);
