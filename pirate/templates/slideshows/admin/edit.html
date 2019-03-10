@@ -1,0 +1,80 @@
+<form method="post" enctype="multipart/form-data">
+    <div class="text">
+        {% if success %}
+        <header>
+            <h1>Slideshow opgeslagen</h1>
+        </header>
+
+        <footer>
+            <a href="/admin/slideshows" class="aubergine button">Terug</a>
+        </footer>
+
+        {% else %}
+        <header>
+            <h1>Slideshow {% if new %}aanmaken{% else %}aanpassen{% endif %}</h1>
+        </header>
+
+         {% if errors|length > 0 %}
+            <ul class="error">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <label>Titel</label>
+        <input type="text" name="title" value="{{ data.title }}" placeholder="Titel">
+
+        <label>Tekst</label>
+        <textarea name="text" placeholder="Tekst">{{ data.text }}</textarea>
+
+        <label>Prioriteit (bepaalt volgorde)</label>
+        <label class="select-box">
+            <select name="priority">
+                <option>Maak een keuze</option>
+                <option value="0"{% if data.priority == 0 %} selected{% endif %}>★</option>
+                <option value="1"{% if data.priority == 1 %} selected{% endif %}>★★</option>
+                <option value="2"{% if data.priority == 2 %} selected{% endif %}>★★★</option>
+                <option value="3"{% if data.priority == 3 %} selected{% endif %}>★★★★</option>
+                <option value="4"{% if data.priority == 4 %} selected{% endif %}>★★★★★</option>
+            </select>
+        </label>
+
+        <input id="add-button" type="checkbox" name="button" value="1" {% if data.button %} checked{% endif %}>
+        <label for="add-button">Voeg een knop toe</label>
+
+        <div class="checkbox-controllable">
+            <div class="visible-when-checked">
+                <label>Tekst op knop</label>
+                <input type="text" name="button_text" value="{{ data.button_text }}" placeholder="Tekst op knop">
+
+                <label>Koppeling (URL) waarnaar de knop wijst</label>
+                <input type="text" name="button_url" value="{{ data.button_url }}" placeholder="URL van de knop">
+            
+                <input id="add-extra-button" type="checkbox" name="extra_button" value="1" {% if data.extra_button %} checked{% endif %}>
+                <label for="add-extra-button">Voeg nog een knop toe</label>
+
+                <div class="checkbox-controllable">
+                    <div class="visible-when-checked">
+                        <label>Tekst op knop</label>
+                        <input type="text" name="extra_button_text" value="{{ data.extra_button_text }}" placeholder="Tekst op knop">
+
+                        <label>Koppeling (URL) waarnaar de knop wijst</label>
+                        <input type="text" name="extra_button_url" value="{{ data.extra_button_url }}" placeholder="URL van de knop">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <footer>
+            <input type="submit" name="submit" class="aubergine fill" value="Opslaan">
+            {% if not new %}
+                <a href="/admin/slideshows/delete/{{ slideshow.id }}" class="button aubergine">Verwijderen</a>
+            {% endif %}
+            <a href="/admin/slideshows" class="aubergine button">Annuleren</a>
+        </footer>
+        {% endif %}
+
+    </div>
+</form>

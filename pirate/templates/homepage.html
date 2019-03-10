@@ -68,16 +68,7 @@
         <div class="horizontal gradient">
             <div class="vertical gradient">
                 <div class="center">
-                    <article>
-                        <h1>{{ slideshows[0].title }}</h1>
-                        <p>{{ slideshows[0].text | nl2br }}</p>
-                        {% if slideshows[0].button is defined %}
-                            <a href="{{ slideshows[0].button.url | e('html_attr') }}" class="button">{{ slideshows[0].button.text }}</a>
-                            {% if slideshows[0].extra_button is defined %}
-                                <a href="{{ slideshows[0].extra_button.url | e('html_attr') }}" class="button noborder">{{ slideshows[0].extra_button.text }}</a>
-                            {% endif %}
-                        {% endif %}
-                    </article>
+                    {{ include('slideshows/slideshow.html', {slide: slideshows[0]}) }}
                 </div>
             </div>
         </div>
@@ -87,16 +78,7 @@
         <div class="navigation">
             {% for slide in slideshows %}
                 <div class="{% if loop.first %}selected {% endif %}item">
-                    <article>
-                        <h1>{{ slide.title }}</h1>
-                        <p>{{ slide.text | nl2br }}</p>
-                        {% if slide.button is defined %}
-                            <a href="{{ slide.button.url | e('html_attr') }}" class="button">{{ slide.button.text }}</a>
-                            {% if slide.extra_button is defined %}
-                                <a href="{{ slide.extra_button.url | e('html_attr') }}" class="button noborder">{{ slide.extra_button.text }}</a>
-                            {% endif %}
-                        {% endif %}
-                    </article>
+                    {{ include('slideshows/slideshow.html', {slide: slide}) }}
                 </div>
             {% endfor %}
         </div>

@@ -1,0 +1,15 @@
+<article>
+    <h1>
+        {{ slide.title }}
+    </h1>
+    <p>{{ slide.text | nl2br }}    {% if general.logged_in_leiding %}
+        <a href="/admin/slideshows" class="button noborder" style="margin: 0; font-size: 8pt;">Wijzig</a>
+        {% endif %}
+    </p>
+    {% if slide.button.text is defined %}
+        <a href="{{ slide.button.url | e('html_attr') }}" class="button">{{ slide.button.text }}</a>
+        {% if slide.extra_button is defined %}
+            <a href="{{ slide.extra_button.url | e('html_attr') }}" class="button noborder">{{ slide.extra_button.text }}</a>
+        {% endif %}
+    {% endif %}
+</article>

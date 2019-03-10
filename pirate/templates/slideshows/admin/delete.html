@@ -1,0 +1,19 @@
+<form method="post">
+    <div class="text">
+        {% if success %}
+             <header>
+                <h1>Verwijderen gelukt!</h1>
+            </header>
+        {% else %}
+             <header>
+                <h1>Ben je zeker dat je deze slideshow wilt verwijderen?</h1>
+                <h2>"{{ slideshow.title }}"</h2>
+            </header>
+
+            <footer>
+                <input type="submit" class="aubergine fill" name="confirm-delete" value="Ja, verwijderen">
+                <a href="/admin/slideshows/edit/{{ slideshow.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+            </footer>
+        {% endif %}
+    </div>
+</form>

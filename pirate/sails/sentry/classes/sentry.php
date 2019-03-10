@@ -1,22 +1,26 @@
 <?php
 namespace Pirate\Classes\Sentry;
 
-class Sentry {
-    static private $instance = null;
+class Sentry
+{
+    private static $instance = null;
     private $client = null;
 
-    static function shared() {
+    public static function shared()
+    {
         if (!isset(static::$instance)) {
             static::$instance = new Sentry();
         }
         return static::$instance;
     }
 
-    private function __construct() {
+    private function __construct()
+    {
         // required to set the environment before using it!
     }
 
-    function setUser($id, $name, $email) {
+    public function setUser($id, $name, $email)
+    {
         if (!isset($this->client)) {
             return;
         }
@@ -27,14 +31,16 @@ class Sentry {
         ));
     }
 
-    function logFatalError(\Error $error) {
+    public function logFatalError($error)
+    {
         if (!isset($this->client)) {
             return;
         }
-        $this->client->captureMessage('Fatal error: '.$error->getMessage().' in '.$error->getFile().' line '.$error->getLine(), [], ["level" => "fatal"]);
+        $this->client->captureMessage('Fatal error: ' . $error->getMessage() . ' in ' . $error->getFile() . ' line ' . $error->getLine(), [], ["level" => "fatal"]);
     }
 
-    function setEnvironment($name) {
+    public function setEnvironment($name)
+    {
         global $config;
         if ($name == "development") {
             return;

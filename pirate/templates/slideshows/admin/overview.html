@@ -1,0 +1,25 @@
+<div class="text">
+
+            
+    <h1>Slideshows</h1>
+
+    <div>
+        <a href="/admin/slideshows/edit" class="aubergine fill button">Nieuwe slideshow toevoegen</a>
+    </div>
+
+    <div class="list-bundle">
+    {% for slideshow in slideshows %}
+        <article class="list">
+            <div class="max merlot column">{{ slideshow.title }}</div>
+            <div class="last column">
+                <a href="/admin/slideshows/edit/{{ slideshow.id }}" class="button noborder">Aanpassen</a>
+            </div>
+        </article>
+    {% else %}
+    </div>
+        <p>Geen slideshows</p>
+        <div>
+    {% endfor %}
+    </div>
+</div>
+
