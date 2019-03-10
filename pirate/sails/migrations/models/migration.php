@@ -1,27 +1,31 @@
 <?php
 namespace Pirate\Model\Migrations;
+
 use Pirate\Model\Model;
 
-class Migration extends Model {
+class Migration extends Model
+{
     public $id;
     public $executed_at;
 
-    function __construct($row) {
+    public function __construct($row)
+    {
         $this->id = $row['migration_id'];
         $this->executed_at = new \DateTime($row['migration_executed_at']);
     }
 
     /**
      * Slaat op dat een bepaalde migration gelukt is
-     * 
+     *
      */
-    static function create($migration_id) {
+    public static function create($migration_id)
+    {
         $id = self::getDb()->escape_string($migration_id);
-        $date = new \DateTime();;
+        $date = new \DateTime();
         $date_raw = $date->format('Y-m-d H:i:s');
         $executed_at = self::getDb()->escape_string($date_raw);
 
-        $query = "INSERT INTO 
+        $query = "INSERT INTO
             migrations (`migration_id`, `migration_executed_at`)
             VALUES ('$id', '$executed_at')";
 
@@ -35,9 +39,10 @@ class Migration extends Model {
         return null;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 migrations WHERE migration_id = '$id' ";
 
         if (self::getDb()->query($query)) {
@@ -46,11 +51,12 @@ class Migration extends Model {
         return false;
     }
 
-    static function isUpToDate() {
+    public static function isUpToDate()
+    {
         $executed = static::getExecutedMigrations();
-        $migrations = include __DIR__.'/../../_bindings/migrations.php';
+        $migrations = include __DIR__ . '/../../_bindings/migrations.php';
         $to_execute = [];
-        
+
         foreach ($migrations as $migration) {
             $id = $migration->id;
 
@@ -62,13 +68,14 @@ class Migration extends Model {
     }
 
     // Doorloop alle migrations die er zijn
-    static function upgrade() {
+    public static function upgrade()
+    {
         error_reporting(E_ALL);
-ini_set('display_errors', 1);
+        ini_set('display_errors', 1);
         $executed = static::getExecutedMigrations();
-        $migrations = include __DIR__.'/../../_bindings/migrations.php';
+        $migrations = include __DIR__ . '/../../_bindings/migrations.php';
         $to_execute = [];
-        
+
         foreach ($migrations as $migration) {
             $id = $migration->id;
 
@@ -82,13 +89,13 @@ ini_set('display_errors', 1);
         $first = null;
 
         foreach ($to_execute as $key => $migration) {
-            
-            require_once($migration->path);
-            $className = '\Pirate\Classes\\'.ucfirst($migration->sail).'\\'.$migration->class;
+
+            require_once $migration->path;
+            $className = '\Pirate\Classes\\' . ucfirst($migration->sail) . '\\' . $migration->class;
             echo "Runing migration $className...\n";
 
             if (!self::getDb()->begin_transaction()) {
-                echo "Failed to create transaction\n\n";
+                echo "Failed to create transaction: " . self::getDb()->error . "\n\n";
                 return false;
             }
 
@@ -109,11 +116,10 @@ ini_set('display_errors', 1);
                         $first = $migration->id;
                     }
 
-
                     continue;
                 }
             } catch (\Exception $ex) {
-                echo $ex->getMessage()."\n";
+                echo $ex->getMessage() . "\n";
             }
             echo "Failed $className\n\n";
 
@@ -134,13 +140,14 @@ ini_set('display_errors', 1);
     }
 
     // Doorloop alle migrations die er zijn
-    static function downgrade($untilDatetime = null, $untilMigration = null) {
+    public static function downgrade($untilDatetime = null, $untilMigration = null)
+    {
         $executed = static::getExecutedMigrations();
-        $migrations = include __DIR__.'/../../_bindings/migrations.php';
+        $migrations = include __DIR__ . '/../../_bindings/migrations.php';
         $to_execute = [];
 
         $found = false;
-        
+
         foreach ($migrations as $migration) {
             $id = $migration->id;
 
@@ -159,8 +166,8 @@ ini_set('display_errors', 1);
         krsort($to_execute);
 
         foreach ($to_execute as $key => $migration) {
-            require_once($migration->path);
-            $className = '\Pirate\Classes\\'.ucfirst($migration->sail).'\\'.$migration->class;
+            require_once $migration->path;
+            $className = '\Pirate\Classes\\' . ucfirst($migration->sail) . '\\' . $migration->class;
             echo "Downgrading migration $className...\n";
             try {
                 if ($className::downgrade()) {
@@ -175,7 +182,7 @@ ini_set('display_errors', 1);
                     continue;
                 }
             } catch (\Exception $ex) {
-                echo $ex->getMessage()."\n";
+                echo $ex->getMessage() . "\n";
             }
             echo "Failed $className\n\n";
             return false;
@@ -184,7 +191,8 @@ ini_set('display_errors', 1);
         return true;
     }
 
-    static function getExecutedMigrations() {
+    public static function getExecutedMigrations()
+    {
         $query = 'SELECT * FROM migrations';
         if ($result = self::getDb()->query($query)) {
             $migrations = [];

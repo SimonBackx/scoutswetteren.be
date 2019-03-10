@@ -1,28 +1,31 @@
 <?php
 namespace Pirate\Classes\Webshop;
+
 use Pirate\Classes\Migrations\Migration;
 
-class CreateTables1548440843 extends Migration {
+class CreateTables1548440843 extends Migration
+{
 
-    static function upgrade(): bool {
+    public static function upgrade(): bool
+    {
         $query = "SET NAMES utf8mb4;
         SET FOREIGN_KEY_CHECKS=0;
-        
+
         # Dump of table _order_item_options
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `_order_item_options` (
           `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `order_item_id` int(11) unsigned NOT NULL,
           `product_option_id` int(11) unsigned NOT NULL,
           PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-        
-        
-        
+
+
+
         # Dump of table _order_sheet_products
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `_order_sheet_products` (
           `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `order_sheet_id` int(11) unsigned NOT NULL,
@@ -33,12 +36,12 @@ class CreateTables1548440843 extends Migration {
           CONSTRAINT `_order_sheet_products_ibfk_1` FOREIGN KEY (`order_sheet_id`) REFERENCES `order_sheets` (`sheet_id`) ON DELETE CASCADE ON UPDATE CASCADE,
           CONSTRAINT `_order_sheet_products_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table bank_accounts
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `bank_accounts` (
           `account_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `account_name` varchar(50) NOT NULL DEFAULT '',
@@ -47,12 +50,12 @@ class CreateTables1548440843 extends Migration {
           `account_stripe_secret` varchar(100) DEFAULT NULL,
           PRIMARY KEY (`account_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table order_items
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `order_items` (
           `item_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `item_order` int(11) unsigned NOT NULL,
@@ -69,12 +72,12 @@ class CreateTables1548440843 extends Migration {
           CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`item_product_price`) REFERENCES `product_prices` (`price_id`) ON UPDATE CASCADE,
           CONSTRAINT `order_items_ibfk_3` FOREIGN KEY (`item_order`) REFERENCES `orders` (`order_id`) ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-        
-        
-        
+
+
+
         # Dump of table order_sheets
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `order_sheets` (
             `sheet_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `sheet_name` varchar(100) NOT NULL DEFAULT '',
@@ -89,12 +92,12 @@ class CreateTables1548440843 extends Migration {
             KEY `sheet_bank_account` (`sheet_bank_account`),
             CONSTRAINT `order_sheets_ibfk_1` FOREIGN KEY (`sheet_bank_account`) REFERENCES `bank_accounts` (`account_id`) ON UPDATE CASCADE
           ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table order_users
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `order_users` (
           `order_user_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `order_user_user` int(11) unsigned DEFAULT NULL,
@@ -106,12 +109,12 @@ class CreateTables1548440843 extends Migration {
           KEY `order_user_user` (`order_user_user`),
           CONSTRAINT `order_users_ibfk_1` FOREIGN KEY (`order_user_user`) REFERENCES `users` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table orders
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `orders` (
           `order_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `order_price` int(11) NOT NULL,
@@ -129,12 +132,12 @@ class CreateTables1548440843 extends Migration {
           CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`order_sheet`) REFERENCES `order_sheets` (`sheet_id`) ON UPDATE CASCADE,
           CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`order_user`) REFERENCES `order_users` (`order_user_id`) ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table payment_stripe
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `payment_stripe` (
             `stripe_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `stripe_source` varchar(60) NOT NULL DEFAULT '',
@@ -149,10 +152,10 @@ class CreateTables1548440843 extends Migration {
             CONSTRAINT `payment_stripe_ibfk_1` FOREIGN KEY (`stripe_order`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
             CONSTRAINT `payment_stripe_ibfk_2` FOREIGN KEY (`stripe_bank_account`) REFERENCES `bank_accounts` (`account_id`) ON UPDATE CASCADE
           ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
-        
+
         # Dump of table product_option_sets
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `product_option_sets` (
           `set_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `set_name` varchar(30) NOT NULL DEFAULT '',
@@ -161,12 +164,12 @@ class CreateTables1548440843 extends Migration {
           KEY `set_product` (`set_product`),
           CONSTRAINT `product_option_sets_ibfk_1` FOREIGN KEY (`set_product`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table product_options
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `product_options` (
           `option_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `option_set` int(11) unsigned NOT NULL,
@@ -176,12 +179,12 @@ class CreateTables1548440843 extends Migration {
           KEY `option_set` (`option_set`),
           CONSTRAINT `product_options_ibfk_1` FOREIGN KEY (`option_set`) REFERENCES `product_option_sets` (`set_id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table product_prices
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `product_prices` (
           `price_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `price_name` varchar(30) CHARACTER SET latin1 NOT NULL DEFAULT '',
@@ -191,12 +194,12 @@ class CreateTables1548440843 extends Migration {
           KEY `price_product` (`price_product`),
           CONSTRAINT `product_prices_ibfk_1` FOREIGN KEY (`price_product`) REFERENCES `products` (`product_id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-        
-        
-        
+
+
+
         # Dump of table products
         # ------------------------------------------------------------
-        
+
         CREATE TABLE `products` (
           `product_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
           `product_name` varchar(50) NOT NULL DEFAULT '',
@@ -216,10 +219,17 @@ class CreateTables1548440843 extends Migration {
         if (!self::getDb()->multi_query($query)) {
             throw new \Exception(self::getDb()->error);
         }
+
+        do {
+            if ($res = self::getDb()->store_result()) {
+                $res->free();
+            }
+        } while (self::getDb()->more_results() && self::getDb()->next_result());
         return true;
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

@@ -3,7 +3,9 @@
         {{ slide.title }}
     </h1>
     <p>{{ slide.text | nl2br }}    {% if general.logged_in_leiding %}
-        <a href="/admin/slideshows" class="button noborder" style="margin: 0; font-size: 8pt;">Wijzig</a>
+        <a href="/admin/slideshows/edit/{{ slide.id }}" class="button noborder" style="margin: 0; font-size: 8pt;">Wijzig</a>
+        <a href="/admin/slideshows" class="button noborder" style="margin: 0; font-size: 8pt;">Overzicht</a>
+
         {% endif %}
     </p>
     {% if slide.button.text is defined %}
