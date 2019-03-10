@@ -1,9 +1,11 @@
 <?php
 namespace Pirate;
 
-class Classes  {
+class Classes
+{
 
-    static function setupAutoload() {
+    public static function setupAutoload()
+    {
         spl_autoload_register(function ($class) {
 
             $parts = explode('\\', $class);
@@ -22,11 +24,18 @@ class Classes  {
      * @param  [type] $name klassenaam van de block = bestandsnaam
      * @return  /
      */
-    static function loadClass($sail, $name) {
-        $file = __DIR__.'/../sails/'.strtolower($sail).'/classes/'.strtolower($name).'.php';
-        
+    public static function loadClass($sail, $name)
+    {
+        $file = __DIR__ . '/../sails/' . strtolower($sail) . '/classes/' . strtolower($name) . '.php';
+
         if (file_exists($file)) {
-            require($file);
+            require $file;
+        } else {
+            // try to load without strtolower (fix)
+            $file = __DIR__ . '/../sails/' . strtolower($sail) . '/classes/' . $name . '.php';
+            if (file_exists($file)) {
+                require $file;
+            }
         }
 
     }
