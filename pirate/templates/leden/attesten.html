@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <nav class="buttons">
+            <a href="/ouders" class="button">Terug</a>
+        </nav>
+
+        <div class="white block withButtons">
+            <div class="text">
+                <header>
+                <h1>Attesten</h1>
+                </header>
+                <p>Op deze pagina vinden jullie een reeks documenten en attesten die jullie kunnen afdrukken en waarmee jullie mogelijks geld kunnen terugkrijgen van je ziekenfonds of kunnen inbrengen in jullie belastingen. Dit op voorwaarde dat de ingeschreven leden deelnamen en betaalden voor de activiteiten die recht geven op deze verminderingen of terugebetalingen.</p>
+            </div>
+        </div>
+
+        {% for group in attesten %}
+            <div class="white block">
+                <div class="text">
+                    <header>
+                        <h1>{{ group.name }}</h1>
+                    </header>
+
+                    <div class="list-bundle">
+                        {% for attest in group.attesten %}
+                            <article class="list">
+                                <div class="max merlot column">{{ attest.name }}</div>
+                                <div class="small column">
+                                    {{ attest.ziekenfonds }}
+                                </div>
+                                <div class="last column right">
+                                    <a href="{{ attest.url }}" class="icon-button" target="_blank" download>
+                                        Downloaden
+                                    </a>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </main>
+{% endblock %}
+

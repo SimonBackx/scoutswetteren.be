@@ -1,26 +1,28 @@
 <?php
 namespace Pirate\Sail\Leden;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Lid;
+
 use Pirate\Model\Leden\Afrekening;
 use Pirate\Model\Leden\Inschrijving;
+use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Users\User;
+use Pirate\Route\Route;
 use Pirate\Sail\Users\Pages\Login;
 
-class LedenRouter extends Route {
+class LedenRouter extends Route
+{
     private $lid = null;
     private $ouder = null;
     private $afrekening = null;
     private $magicLink = false;
 
-    function doMatch($url, $parts) {
+    public function doMatch($url, $parts)
+    {
         if ($url == 'inschrijven' && !Ouder::isLoggedIn()) {
             return true;
         }
 
-        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'nieuw-gezin' && !Ouder::isLoggedIn() && User::isLoggedIn() ) {
+        if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'nieuw-gezin' && !Ouder::isLoggedIn() && User::isLoggedIn()) {
             return true;
         }
 
@@ -63,6 +65,9 @@ class LedenRouter extends Route {
                 if ($parts[1] == 'ouder-toevoegen') {
                     return true;
                 }
+                if ($parts[1] == 'attesten') {
+                    return true;
+                }
             }
 
             if (count($parts) == 3) {
@@ -101,101 +106,106 @@ class LedenRouter extends Route {
             }
         }
 
-
         return false;
     }
 
-    function getPage($url, $parts) {
+    public function getPage($url, $parts)
+    {
         if ($url == 'inschrijven') {
-            require(__DIR__.'/pages/overview.php');
+            require __DIR__ . '/pages/overview.php';
             return new Pages\Overview();
         }
 
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
 
             // Niet ingelogd
-             if (!Ouder::isLoggedIn()) {
-                 // Toon de pagina van de users module
+            if (!Ouder::isLoggedIn()) {
+                // Toon de pagina van de users module
                 return new Login();
             }
 
             if (count($parts) == 2) {
                 // Broer zus toevoegen of verlengen enkel in inschrijvingsperiode:
                 if (!Inschrijving::isInschrijvingsPeriode()) {
-                    require(__DIR__.'/pages/buiten-inschrijvingen-periode.php');
+                    require __DIR__ . '/pages/buiten-inschrijvingen-periode.php';
                     return new Pages\BuitenInschrijvingenPeriode();
                 }
 
                 if ($parts[1] == 'broer-zus-toevoegen') {
-                    require(__DIR__.'/pages/broer-zus-toevoegen.php');
+                    require __DIR__ . '/pages/broer-zus-toevoegen.php';
                     return new Pages\BroerZusToevoegen();
                 }
 
                 if ($parts[1] == 'verleng-inschrijving') {
-                    require(__DIR__.'/pages/verleng-inschrijving.php');
+                    require __DIR__ . '/pages/verleng-inschrijving.php';
                     return new Pages\VerlengInschrijving();
                 }
 
                 if ($parts[1] == 'gezin-nakijken') {
-                    require(__DIR__.'/pages/gezin-nakijken.php');
+                    require __DIR__ . '/pages/gezin-nakijken.php';
                     return new Pages\GezinNakijken();
                 }
 
                 if ($parts[1] == 'ouder-toevoegen') {
-                    require(__DIR__.'/pages/ouder-aanpassen.php');
+                    require __DIR__ . '/pages/ouder-aanpassen.php';
                     return new Pages\OuderAanpassen();
+                }
+
+                if ($parts[1] == 'attesten') {
+                    require __DIR__ . '/pages/ouder-attesten.php';
+                    return new Pages\OuderAttesten();
                 }
             }
 
             // Beveiligde sectie: reeds authenticatie gedaan
             if (count($parts) == 3) {
                 if ($parts[1] == 'ouder-aanpassen' && !empty($this->ouder)) {
-                    require(__DIR__.'/pages/ouder-aanpassen.php');
+                    require __DIR__ . '/pages/ouder-aanpassen.php';
                     return new Pages\OuderAanpassen($this->ouder);
                 }
 
                 if ($parts[1] == 'ouder-verwijderen' && !empty($this->ouder)) {
-                    require(__DIR__.'/pages/ouder-verwijderen.php');
+                    require __DIR__ . '/pages/ouder-verwijderen.php';
                     return new Pages\OuderVerwijderen($this->ouder);
                 }
 
                 if ($parts[1] == 'wachtwoord-instellen' && !empty($this->ouder)) {
-                    require(__DIR__.'/pages/ouder-wachtwoord-instellen.php');
+                    require __DIR__ . '/pages/ouder-wachtwoord-instellen.php';
                     return new Pages\OuderWachtwoordInstellen($this->ouder);
                 }
 
                 if ($parts[1] == 'lid-aanpassen' && !empty($this->lid)) {
-                    require(__DIR__.'/pages/broer-zus-toevoegen.php');
+                    require __DIR__ . '/pages/broer-zus-toevoegen.php';
                     return new Pages\BroerZusToevoegen($this->lid);
                 }
 
                 if ($parts[1] == 'steekkaart' && !empty($this->lid)) {
-                    require(__DIR__.'/pages/steekkaart.php');
+                    require __DIR__ . '/pages/steekkaart.php';
                     return new Pages\EditSteekkaart($this->lid);
                 }
                 if ($parts[1] == 'afrekening' && !empty($this->afrekening)) {
-                    require(__DIR__.'/pages/afrekening.php');
+                    require __DIR__ . '/pages/afrekening.php';
                     return new Pages\ViewAfrekening($this->afrekening);
                 }
             }
 
             if (count($parts) == 1) {
-                require(__DIR__.'/pages/ouder-overview.php');
+                require __DIR__ . '/pages/ouder-overview.php';
                 return new Pages\OuderOverview();
             }
         }
 
         if (!Inschrijving::isInschrijvingsPeriode()) {
-            require(__DIR__.'/pages/buiten-inschrijvingen-periode.php');
+            require __DIR__ . '/pages/buiten-inschrijvingen-periode.php';
             return new Pages\BuitenInschrijvingenPeriode();
         }
 
         if (count($parts) == 2 && $parts[0] == 'inschrijven' && $parts[1] == 'uitzondering-toelaten') {
-            require(__DIR__.'/pages/uitzondering-toelaten.php');
+            require __DIR__ . '/pages/uitzondering-toelaten.php';
             return new Pages\UitzonderingToelaten();
         }
 
-        require(__DIR__.'/pages/nieuw-gezin.php');
+        require __DIR__ . '/pages/nieuw-gezin.php';
         return new Pages\NieuwGezin();
     }
 }

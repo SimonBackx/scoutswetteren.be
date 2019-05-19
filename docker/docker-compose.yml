@@ -19,7 +19,7 @@ services:
         build: ./
         container_name: pirate-php-container
         volumes:
-         - .../files:/var/www/scoutswetteren.dev/files
+         - ../files:/var/www/scoutswetteren.dev/files
          - ../pirate:/var/www/scoutswetteren.dev/pirate
          - ../public:/var/www/scoutswetteren.dev/public
          - ../config/php.ini:/usr/local/etc/php/conf.d/custom.ini
