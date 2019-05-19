@@ -36,7 +36,7 @@ class OuderAttesten extends Page
                     $name = trim($matches[1]);
                     $ziekenfonds = trim($matches[2]);
                 } else {
-                    $name = trim($filename);
+                    $name = trim($withoutExt);
                 }
 
                 $url = "attesten/" . rawurlencode($dirname) . "/" . rawurlencode($filename);
