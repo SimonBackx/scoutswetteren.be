@@ -47,7 +47,7 @@ class LedenRouter extends Route
 
                 if (count($parts) == 2 && $parts[1] == 'attesten' && User::isLoggedIn()) {
                     // allow nog logged in
-                    
+
                 } else {
                     return false;
                 }
@@ -124,7 +124,7 @@ class LedenRouter extends Route
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
 
             // Niet ingelogd
-            if (!Ouder::isLoggedIn()) {
+            if (!Ouder::isLoggedIn() && !(count($parts) == 2 && $parts[1] == 'attesten' && User::isLoggedIn())) {
                 // Toon de pagina van de users module
                 return new Login();
             }
