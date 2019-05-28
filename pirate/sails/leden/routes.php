@@ -45,7 +45,12 @@ class LedenRouter extends Route
                     return true;
                 }
 
-                return false;
+                if (count($parts) == 2 && $parts[1] == 'attesten' && User::isLoggedIn()) {
+                    // allow nog logged in
+                    
+                } else {
+                    return false;
+                }
             }
 
             // Beveiligde sectie
