@@ -1,21 +1,24 @@
 <?php
 namespace Pirate\Sail\Verhuur\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Verhuur\Reservatie;
 
-class Overview extends Page {
+use Pirate\Model\Verhuur\Reservatie;
+use Pirate\Page\Page;
+use Pirate\Template\Template;
+
+class Overview extends Page
+{
     public $future_only = true;
 
     // Data voor de kalender
     private $data = array();
 
-    function __construct($future_only) {
+    public function __construct($future_only)
+    {
         $this->future_only = $future_only;
     }
 
-    function customHeaders() {
+    public function customHeaders()
+    {
         if (isset($_GET["csv"])) {
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename="verhuurkalender.csv"');
@@ -24,18 +27,18 @@ class Overview extends Page {
         return false; // keep statuscode
     }
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
     // Voegt de maand toe als die nog niet in de data zou zitten
-    private function addMonthForDate($datetime) {
-        global $config;
-
+    private function addMonthForDate($datetime)
+    {
         $current = null;
 
         if (count($this->data) > 0) {
-            $current = $this->data[count($this->data)-1]['m'];
+            $current = $this->data[count($this->data) - 1]['m'];
         }
 
         $eventMonth = $datetime->format('n');
@@ -44,24 +47,27 @@ class Overview extends Page {
         }
     }
 
-    private function addReservatie($reservatie) {
+    private function addReservatie($reservatie)
+    {
         $this->addMonthForDate($reservatie->startdatum);
 
         // Nu kunnen we ons event rustig toevoegen in de events array
-        $this->data[count($this->data)-1]['reservaties'][] = array(
+        $this->data[count($this->data) - 1]['reservaties'][] = array(
             'type' => 'reservatie',
             'reservatie' => $reservatie,
             'date' => $this->getDateString($reservatie->startdatum, $reservatie->einddatum),
         );
     }
 
-    function getDateString($start, $end) {
-        return ucfirst(datetimeToShortWeekday($start)).' '.$start->format('d/m')
-        .' tot '
-        .datetimeToShortWeekday($end).' '.$end->format('d/m');
+    public function getDateString($start, $end)
+    {
+        return ucfirst(datetimeToShortWeekday($start)) . ' ' . $start->format('d/m')
+        . ' tot '
+        . datetimeToShortWeekday($end) . ' ' . $end->format('d/m');
     }
 
-    private function addEmpty($mondayAfter) {
+    private function addEmpty($mondayAfter)
+    {
         $sunday = clone $mondayAfter;
         $sunday->modify('-1 day');
 
@@ -71,21 +77,22 @@ class Overview extends Page {
         $this->addMonthForDate($friday);
 
         // Nu kunnen we ons event rustig toevoegen in de events array
-        $this->data[count($this->data)-1]['reservaties'][] = array(
+        $this->data[count($this->data) - 1]['reservaties'][] = array(
             'type' => 'empty',
             'date' => $this->getDateString($friday, $sunday),
         );
     }
 
-    function calculateVerhuurkalender($reservaties) { 
+    public function calculateVerhuurkalender($reservaties)
+    {
         $this->data = array();
 
-        $day = date('N')-1;
+        $day = date('N') - 1;
 
         // Einde v/d huidige week (= maandag!!) als start datum
         // todo: future_only fix
-        $day = new \DateTime(date('Y-m-d', strtotime('+'.(7-$day).' days')).' 00:00');
-        
+        $day = new \DateTime(date('Y-m-d', strtotime('+' . (7 - $day) . ' days')) . ' 00:00');
+
         // Maand berekenen van de maandag van deze week
         $current_week = clone $day;
         $current_week->modify('-7 day');
@@ -130,14 +137,16 @@ class Overview extends Page {
         }
     }
 
-    function hasOwnLayout() {
+    public function hasOwnLayout()
+    {
         if (isset($_GET["csv"])) {
             return true;
         }
         return false;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $data_behandeling = array();
 
         $reservaties = Reservatie::getReservatiesOverview($this->future_only);
@@ -160,12 +169,12 @@ class Overview extends Page {
             $str = "Nummer;Datum;Groepsnaam;Naam verantwoordelijke;E-mail;Telefoon;Huur betaald;Waarborg betaald\n";
 
             foreach ($this->data as $maand) {
-                $str .= ';'.$maand['month'].";;;;;;\n";
+                $str .= ';' . $maand['month'] . ";;;;;;\n";
                 foreach ($maand["reservaties"] as $event) {
                     $date = $event['date'];
                     if ($event["type"] == "reservatie") {
                         $reservatie = $event['reservatie'];
-                        $str .= "$reservatie->contract_nummer;$date;$reservatie->groep;$reservatie->contact_naam;$reservatie->contact_email;".$reservatie->getExcelSafeTelephone().';';
+                        $str .= "$reservatie->contract_nummer;$date;$reservatie->groep;$reservatie->contact_naam;$reservatie->contact_email;" . $reservatie->getExcelSafeTelephone() . ';';
                         if ($reservatie->huur_betaald) {
                             $str .= $reservatie->getHuur(true);
                         }
@@ -186,7 +195,7 @@ class Overview extends Page {
         return Template::render('verhuur/admin/overview', array(
             'months' => $this->data,
             'in_behandeling' => $data_behandeling,
-            'future_only' => $this->future_only
+            'future_only' => $this->future_only,
         ));
     }
 }

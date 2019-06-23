@@ -1,30 +1,33 @@
 <?php
 namespace Pirate\Sail\Verhuur\Blocks;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Verhuur\Reservatie;
 
-class Verhuurkalender extends Block {
-    function getForMonth($year, $month) {
-        global $config;
+use Pirate\Block\Block;
+use Pirate\Classes\Environment\Localization;
+use Pirate\Model\Verhuur\Reservatie;
+use Pirate\Template\Template;
+
+class Verhuurkalender extends Block
+{
+    public function getForMonth($year, $month)
+    {
 
         // Jump naar eerste dag vd maand
         try {
-            $day = new \DateTime($year.'-'.$month.'-01');
+            $day = new \DateTime($year . '-' . $month . '-01');
             $first_datetime_string = $day->format('c');
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return '<p>Er ging iets mis</p>';
         }
 
         // keep running back until we reach a monday
-        $wkday = $day->format('N')-1;
-        $day = $day->modify('-'.$wkday.' days');
+        $wkday = $day->format('N') - 1;
+        $day = $day->modify('-' . $wkday . ' days');
 
-        $day_end = new \DateTime($year.'-'.$month.'-01');
+        $day_end = new \DateTime($year . '-' . $month . '-01');
         $day_end->modify('+1 month');
 
-        $wkday = 7-$day_end->format('N');
-        $day_end = $day_end->modify('+'.$wkday.' days');
+        $wkday = 7 - $day_end->format('N');
+        $day_end = $day_end->modify('+' . $wkday . ' days');
 
         $reservaties = Reservatie::getReservaties($day->format('Y-m-d'), $day_end->format('Y-m-d'), true);
         // Start adding to our array
@@ -37,7 +40,7 @@ class Verhuurkalender extends Block {
         $week = -1;
 
         $today = date('Ymd');
-         
+
         // Blijf herhalen tot we aan een dag komen in een week zonder dagen in deze maand
         while ($week < 4 || $day->format('m') == $month || $weekday != 0) {
             if ($weekday == 0) {
@@ -57,47 +60,49 @@ class Verhuurkalender extends Block {
                 }
             }
 
-            $data[count($data)-1]['days'][] = array(
+            $data[count($data) - 1]['days'][] = array(
                 'day' => $day->format('j'),
                 'is_today' => $is_today,
                 'is_current_month' => ($day->format('m') == $month),
                 'datetime' => $day->format('d-m-Y'),
-                'disabled' => $disabled
+                'disabled' => $disabled,
             );
 
             if ($is_today) {
-                $data[count($data)-1]['is_selected'] = true;
+                $data[count($data) - 1]['is_selected'] = true;
             }
 
             // Volgende klaar zetten
             $day = $day->modify('+1 day');
-            $weekday = ($weekday + 1)%7;
+            $weekday = ($weekday + 1) % 7;
 
         }
 
-        return Template::render('verhuur/verhuurkalender', 
+        return Template::render('verhuur/verhuurkalender',
             array(
                 'calendar' => array(
                     'weeks' => $data,
-                    'month' => ucfirst($config['months'][$month-1]),
-                    'datetime' => $first_datetime_string
-                )
+                    'month' => ucfirst(Localization::getMonth($month)),
+                    'datetime' => $first_datetime_string,
+                ),
             )
         );
     }
     // Geeft volledige block
-    function getContent() {
+    public function getContent()
+    {
         $this->getMonth($year, $month);
         return $this->getForMonth($year, $month);
     }
 
-    function getMonth(&$year, &$month) {
-        $day = date('N')-1;
+    public function getMonth(&$year, &$month)
+    {
+        $day = date('N') - 1;
 
         // Maand bepalen
-        $day = date('N')-1;
-        $month = date('m', strtotime('+'.(7-$day).' days'));
-        $year = date('Y', strtotime('+'.(7-$day).' days'));
+        $day = date('N') - 1;
+        $month = date('m', strtotime('+' . (7 - $day) . ' days'));
+        $year = date('Y', strtotime('+' . (7 - $day) . ' days'));
     }
 
 }

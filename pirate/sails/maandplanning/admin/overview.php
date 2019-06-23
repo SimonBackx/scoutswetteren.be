@@ -1,61 +1,66 @@
 <?php
 namespace Pirate\Sail\Maandplanning\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Maandplanning\Event;
-use Pirate\Model\Leiding\Leiding;
 
-class Overview extends Page {
+use Pirate\Classes\Environment\Localization;
+use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Maandplanning\Event;
+use Pirate\Page\Page;
+use Pirate\Template\Template;
+
+class Overview extends Page
+{
     private $data = array();
 
     // Voegt de maand toe als die nog niet in de data zou zitten
-    private function addMonthForDate($datetime) {
-        global $config;
-
+    private function addMonthForDate($datetime)
+    {
         $current = null;
 
         if (count($this->data) > 0) {
-            $current = $this->data[count($this->data)-1]['m'];
+            $current = $this->data[count($this->data) - 1]['m'];
         }
 
         $eventMonth = $datetime->format('n');
         if (count($this->data) == 0 || $eventMonth !== $current) {
-            $this->data[] = array('month' => ucfirst($config['months'][$eventMonth-1]), 'm' => $eventMonth, 'events' => array());
+            $this->data[] = array('month' => ucfirst(Localization::getMonth($eventMonth)), 'm' => $eventMonth, 'events' => array());
         }
     }
 
-    private function addEvent($event) {
+    private function addEvent($event)
+    {
         $this->addMonthForDate($event->startdate);
 
         // Nu kunnen we ons event rustig toevoegen in de events array
-        $this->data[count($this->data)-1]['events'][] = array(
+        $this->data[count($this->data) - 1]['events'][] = array(
             'type' => 'event',
-            'date' => ucfirst(datetimeToWeekday($event->startdate)).' '.$event->startdate->format('d/m'),
-            'time' => $event->startdate->format('H:i') . ' tot '.$event->enddate->format('H:i'),
+            'date' => ucfirst(datetimeToWeekday($event->startdate)) . ' ' . $event->startdate->format('d/m'),
+            'time' => $event->startdate->format('H:i') . ' tot ' . $event->enddate->format('H:i'),
             'description' => $event->name,
             'id' => $event->id,
             'event' => $event,
         );
     }
 
-    private function addEmpty($sunday) {
+    private function addEmpty($sunday)
+    {
         $this->addMonthForDate($sunday);
 
         // Nu kunnen we ons event rustig toevoegen in de events array
-        $this->data[count($this->data)-1]['events'][] = array(
+        $this->data[count($this->data) - 1]['events'][] = array(
             'type' => 'empty',
-            'date' => ucfirst(datetimeToWeekday($sunday)).' '.$sunday->format('d/m'),
+            'date' => ucfirst(datetimeToWeekday($sunday)) . ' ' . $sunday->format('d/m'),
             'time' => '14:00',
             'full_date' => urlencode($sunday->format('d-m-Y')),
         );
     }
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {        
+    public function getContent()
+    {
         $user = Leiding::getUser();
 
         $tak = 'Leiding';
@@ -74,9 +79,9 @@ class Overview extends Page {
 
         // Sowieso eerste 2 maand tonen voor leiding
         if ($leiding) {
-            $day = date('N')-1;
+            $day = date('N') - 1;
             // Einde v/d huidige week (= maandag!!) als start datum
-            $day = new \DateTime(date('Y-m-d', strtotime('+'.(7-$day).' days')).' 00:00');
+            $day = new \DateTime(date('Y-m-d', strtotime('+' . (7 - $day) . ' days')) . ' 00:00');
             $sunday = clone $day;
             $sunday->modify('-1 day');
 
@@ -117,7 +122,7 @@ class Overview extends Page {
         }
 
         return Template::render('maandplanning/admin/overview', array(
-            'months' => $this->data
+            'months' => $this->data,
         ));
     }
 }

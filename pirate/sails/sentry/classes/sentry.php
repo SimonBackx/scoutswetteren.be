@@ -1,6 +1,8 @@
 <?php
 namespace Pirate\Classes\Sentry;
 
+use Pirate\Classes\Environment\Environment;
+
 class Sentry
 {
     private static $instance = null;
@@ -41,13 +43,12 @@ class Sentry
 
     public function setEnvironment($name)
     {
-        global $config;
         if ($name == "development") {
             return;
         }
 
         if (!isset($this->client)) {
-            $this->client = new \Raven_Client($config['sentry']['url']);
+            $this->client = new \Raven_Client(Environment::getSetting('sentry.url'));
             $error_handler = new \Raven_ErrorHandler($this->client);
             $error_handler->registerExceptionHandler();
             $error_handler->registerErrorHandler();

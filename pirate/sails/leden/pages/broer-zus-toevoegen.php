@@ -1,29 +1,31 @@
 <?php
 namespace Pirate\Sail\Leden\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
+
+use Pirate\Classes\Environment\Localization;
+use Pirate\Database\Database;
+use Pirate\Model\Leden\Gezin;
+use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Database\Database;
-use Pirate\Mail\Mail;
-use Pirate\Model\Leden\Inschrijving;
+use Pirate\Page\Page;
+use Pirate\Template\Template;
 
-class BroerZusToevoegen extends Page {
+class BroerZusToevoegen extends Page
+{
     private $lid = null;
 
-    function __construct($lid = null) {
+    public function __construct($lid = null)
+    {
         $this->lid = $lid;
     }
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
-        global $config;
-
+    public function getContent()
+    {
         $new = true;
         $fail = false;
         $success = false;
@@ -39,8 +41,8 @@ class BroerZusToevoegen extends Page {
 
         // check of vanalles is geset
         if (isset(
-            $_POST['lid-voornaam'], 
-            $_POST['lid-achternaam'], 
+            $_POST['lid-voornaam'],
+            $_POST['lid-achternaam'],
             $_POST['lid-geboortedatum-dag'],
             $_POST['lid-geboortedatum-maand'],
             $_POST['lid-geboortedatum-jaar'],
@@ -55,7 +57,7 @@ class BroerZusToevoegen extends Page {
                 'geboortedatum_maand' => $_POST['lid-geboortedatum-maand'],
                 'geboortedatum_jaar' => $_POST['lid-geboortedatum-jaar'],
                 'gsm' => $_POST['lid-gsm'],
-                'geslacht' => ''
+                'geslacht' => '',
             );
 
             if (isset($_POST['lid-geslacht'])) {
@@ -63,7 +65,7 @@ class BroerZusToevoegen extends Page {
             }
 
             // Controleren en errors setten
-            
+
             if ($new) {
                 $this->lid = new Lid();
             }
@@ -72,22 +74,21 @@ class BroerZusToevoegen extends Page {
             if (count($errors) > 0) {
                 $fail = true;
             }
-            
 
             if ($fail == false) {
                 // Gezin opslaan
                 $this->lid->setGezin(Ouder::getUser()->gezin);
                 $success = $this->lid->save();
                 if ($success == false) {
-                     $errors[] = 'Er ging iets mis: '.Database::getDb()->error.' Contacteer de webmaster.';
+                    $errors[] = 'Er ging iets mis: ' . Database::getDb()->error . ' Contacteer de webmaster.';
                 } else {
                     if ($new) {
-                        header("Location: https://".$_SERVER['SERVER_NAME']."/ouders/verleng-inschrijving");
-                        return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders/verleng-inschrijving";
+                        header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving");
+                        return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving";
                     }
 
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
-                    return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
+                    header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders");
+                    return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders";
                 }
             }
         }
@@ -96,7 +97,7 @@ class BroerZusToevoegen extends Page {
         $keys = array_keys($verdeling);
         sort($keys);
         $jaren = array();
-        for ($i=$keys[0] - 5; $i < $jaar; $i++) { 
+        for ($i = $keys[0] - 5; $i < $jaar; $i++) {
             $jaren[] = $i;
         }
 
@@ -110,7 +111,7 @@ class BroerZusToevoegen extends Page {
         return Template::render('leden/broer-zus-toevoegen', array(
             'new' => $new,
             'lid' => $lid,
-            'maanden' => $config["months"],
+            'maanden' => Localization::getMonths(),
             'jaren' => $jaren,
             'fail' => $fail,
             'success' => $success,
