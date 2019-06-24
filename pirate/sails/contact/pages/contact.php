@@ -1,21 +1,25 @@
 <?php
 namespace Pirate\Sail\Contact\Pages;
+
+use Pirate\Mail\Mail;
+use Pirate\Model\Leden\Inschrijving;
+use Pirate\Model\Leden\Lid;
+use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Settings\Setting;
+use Pirate\Model\Validating\Validator;
 use Pirate\Page\Page;
 use Pirate\Template\Template;
-use Pirate\Model\Validating\Validator;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Mail\Mail;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Settings\Setting;
 
-class Contact extends Page {
-    function getStatusCode() {
+class Contact extends Page
+{
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $data = array(
             'wie' => '',
             'name' => '',
@@ -79,8 +83,8 @@ class Contact extends Page {
             }
             if (count($errors) == 0) {
                 $success = true;
-                $mail = new Mail('Webformulier: '.$data['subject'], 'contact', array('data' => $data, 'naam' => $contactpersoon_naam));
-                
+                $mail = new Mail('Webformulier: ' . $data['subject'], 'contact', array('data' => $data, 'naam' => $contactpersoon_naam));
+
                 $mail->setReplyTo($data['email']);
                 $mail->addTo(
                     $contactpersoon_email,
@@ -89,7 +93,7 @@ class Contact extends Page {
                 );
 
                 if (!$mail->send()) {
-                    $errors[] = 'Er ging iets mis bij het versturen van de e-mail. Contacteer de gekozen contactpersoon via '.$contactpersoon_email.'.';
+                    $errors[] = 'Er ging iets mis bij het versturen van de e-mail. Contacteer de gekozen contactpersoon via ' . $contactpersoon_email . '.';
                 } else {
                     $success = true;
                 }
@@ -97,7 +101,7 @@ class Contact extends Page {
         }
 
         $scoutsjaar = Inschrijving::getScoutsjaar();
-        $takkenverdeling = Lid::getTakkenVerdeling($scoutsjaar);
+        $takkenverdeling = Lid::getTakkenVerdeling($scoutsjaar, 'M');
         $jaar_verdeling = array();
         foreach ($takkenverdeling as $jaar => $tak) {
             if (!isset($jaar_verdeling[$tak])) {
@@ -111,9 +115,9 @@ class Contact extends Page {
             $min = min($jaren);
             $max = max($jaren);
             if ($min == $max) {
-                $verdeling_string[$tak] = 'in '.$min;
+                $verdeling_string[$tak] = 'in ' . $min;
             } else {
-                $verdeling_string[$tak] = 'in het jaar '. $min.' tot '.$max;
+                $verdeling_string[$tak] = 'in het jaar ' . $min . ' tot ' . $max;
             }
         }
 
@@ -153,7 +157,7 @@ class Contact extends Page {
             'groepsleiding_gsm_zichtbaar' => $groepsleiding_gsm_zichtbaar->value,
             'leiding_zichtbaar' => $zichtbaar,
             'contacts' => Leiding::getContacts(),
-            )
+        )
         );
     }
 }

@@ -22,7 +22,7 @@ services:
          - ../../../files:/var/www/scoutswetteren.dev/files
          - ../../../pirate:/var/www/scoutswetteren.dev/pirate
          - ../../../public:/var/www/scoutswetteren.dev/public
-         - config.php:/var/www/scoutswetteren.dev/pirate/config.php
+         - ./config.php:/var/www/scoutswetteren.dev/pirate/config.php
          - ../../../config/php.ini:/usr/local/etc/php/conf.d/custom.ini
         environment:
          - DEBUG=1

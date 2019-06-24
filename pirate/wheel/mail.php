@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Mail;
 
+use Pirate\Classes\Environment\Environment;
 use Pirate\Template\Template;
 use SendGrid\Attachment;
 use SendGrid\Email;

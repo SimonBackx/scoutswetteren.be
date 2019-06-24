@@ -205,26 +205,13 @@ class NieuwGezin extends Page
             }
         }
 
-        /*$jaar = Inschrijving::getScoutsjaar();
-        $verdeling = Lid::getTakkenVerdeling($jaar, Lid::areLimitsIgnored());
-        $keys = array_keys($verdeling);
-        sort($keys);
-        $jaren = array();
-        for ($i=$keys[0] - 5; $i < $jaar; $i++) {
-        $jaren[] = $i;
-        }*/
-
         return Template::render('leden/nieuw-lid', array(
-            //'leden' => $leden,
             'ouders' => $ouders,
             'gezin' => $gezin_data,
             'titels' => Ouder::$titels,
-            //'jaren' => $jaren,
             'fail' => $fail,
             'success' => $success,
             'errors' => $errors,
-            //'takken' => json_encode($verdeling),
-            //'limits_ignored' => Lid::areLimitsIgnored(),
         ));
     }
 }

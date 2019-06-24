@@ -1,20 +1,20 @@
 <?php
 namespace Pirate\Model\Leden;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Lid;
+
 use Pirate\Model\Leden\Afrekening;
 use Pirate\Model\Leden\Inschrijving;
+use Pirate\Model\Leden\Lid;
+use Pirate\Model\Model;
 
-class Inschrijving extends Model {
+class Inschrijving extends Model
+{
     public $id;
     public $lid; // Object
     public $datum;
     public $scoutsjaar;
     public $tak;
     public $datum_uitschrijving; // Wanneer de inschrijving wordt ongedaan gemaakt
-    
+
     //public $betaald_cash;
 
     public $prijs;
@@ -31,9 +31,10 @@ class Inschrijving extends Model {
     public static $inschrijvings_einde_maand = 7;
     public static $inschrijvings_halfjaar_maand = 3; // Vanaf maart halfjaarlijks lidgeld
 
-    static private $scoutsjaar_cache = null; // cache
+    private static $scoutsjaar_cache = null; // cache
 
-    function __construct($row = array(), $lid_object = null) {
+    public function __construct($row = array(), $lid_object = null)
+    {
         if (count($row) == 0) {
             return;
         }
@@ -45,13 +46,13 @@ class Inschrijving extends Model {
         } else {
             $this->lid = $lid_object;
         }
-        
+
         $this->datum = new \DateTime($row['datum']);
         $this->datum_uitschrijving = isset($row['datum_uitschrijving']) ? new \DateTime($row['datum_uitschrijving']) : null;
 
         $this->scoutsjaar = $row['scoutsjaar'];
         $this->tak = $row['tak'];
-        
+
         //$this->betaald_cash = $row['inschrijving_betaald_cash'];
 
         $this->afrekening = $row['afrekening'];
@@ -61,11 +62,13 @@ class Inschrijving extends Model {
         $this->halfjaarlijks = $row['halfjaarlijks'];
     }
 
-    public static function isGeldigeTak($tak) {
+    public static function isGeldigeTak($tak)
+    {
         return in_array($tak, Self::$takken);
     }
 
-    function getVerbondTak() {
+    public function getVerbondTak()
+    {
         $mapping = [
             "kapoenen" => [
                 "naam" => "Kapoenen",
@@ -120,20 +123,24 @@ class Inschrijving extends Model {
         return $mapping[$this->tak];
     }
 
-    function isBetaald() {
+    public function isBetaald()
+    {
         return $this->afrekening_oke;
     }
 
-    function isAfgerekend() {
+    public function isAfgerekend()
+    {
         return !empty($this->afrekening);
     }
 
-    function getPrijs() {
-        return '€ '.money_format('%!.2n', $this->prijs);
+    public function getPrijs()
+    {
+        return '€ ' . money_format('%!.2n', $this->prijs);
     }
 
-    function getTakJaar() {
-        $verdeling = Lid::getTakkenVerdeling($this->scoutsjaar);
+    public function getTakJaar()
+    {
+        $verdeling = Lid::getTakkenVerdeling($this->scoutsjaar, $this->lid->geslacht);
         $jaar = intval($this->lid->geboortedatum->format('Y'));
         $min = 0;
 
@@ -150,7 +157,8 @@ class Inschrijving extends Model {
     }
 
     // Inschrijvingen vanaf juli verbieden
-    static function isInschrijvingsPeriode() {
+    public static function isInschrijvingsPeriode()
+    {
         $maand = intval(date('n'));
         if ($maand < self::$inschrijvings_start_maand && $maand > self::$inschrijvings_einde_maand) {
             return false;
@@ -158,21 +166,22 @@ class Inschrijving extends Model {
         return true;
     }
 
-    static function isHalfjaarlijksLidgeld() {
+    public static function isHalfjaarlijksLidgeld()
+    {
         $maand = intval(date('n'));
         if (self::$inschrijvings_halfjaar_maand >= self::$inschrijvings_start_maand) {
             // Halfjaar ligt nog voor januari
             if ($maand >= self::$inschrijvings_halfjaar_maand) {
                 return true;
             }
-        }
-        elseif ($maand >= self::$inschrijvings_halfjaar_maand && $maand <= self::$inschrijvings_einde_maand) {
+        } elseif ($maand >= self::$inschrijvings_halfjaar_maand && $maand <= self::$inschrijvings_einde_maand) {
             return true;
         }
         return false;
     }
 
-    static function getScoutsjaarFor($year, $month) {
+    public static function getScoutsjaarFor($year, $month)
+    {
         if ($month >= self::$inschrijvings_start_maand) {
             return $year;
         } else {
@@ -180,7 +189,8 @@ class Inschrijving extends Model {
         }
     }
 
-    static function getScoutsjaar($year = null) {
+    public static function getScoutsjaar($year = null)
+    {
         if (is_null(self::$scoutsjaar_cache)) {
             $jaar = intval(date('Y'));
             $maand = intval(date('n'));
@@ -193,10 +203,10 @@ class Inschrijving extends Model {
         return self::$scoutsjaar_cache;
     }
 
-
     // UPDATE inschrijvingen set halfjaarlijks = 0
 
-    static function schrijfIn(Lid $lid) {
+    public static function schrijfIn(Lid $lid)
+    {
         $scoutsjaar = self::getScoutsjaar();
 
         if (isset($lid->inschrijving) && !empty($lid->inschrijving->datum_uitschrijving) && $lid->inschrijving->scoutsjaar == $scoutsjaar) {
@@ -206,11 +216,11 @@ class Inschrijving extends Model {
 
         $jaar = self::getDb()->escape_string($scoutsjaar);
 
-        $tak = Lid::getTak(intval($lid->geboortedatum->format('Y')), Lid::areLimitsIgnored());
+        $tak = $lid->getTakVoorHuidigScoutsjaar();
         if ($tak === false) {
             return false;
         }
-        
+
         $tak = self::getDb()->escape_string($tak);
 
         $halfjaarlijks = self::isHalfjaarlijksLidgeld();
@@ -227,7 +237,7 @@ class Inschrijving extends Model {
 
         $lid_id = self::getDb()->escape_string($lid->id);
 
-        $query = "INSERT INTO 
+        $query = "INSERT INTO
                 inschrijvingen (`lid`,  `scoutsjaar`, `tak`, `prijs`, `halfjaarlijks`)
                 VALUES ('$lid_id', '$jaar', '$tak', '$prijs', '$halfjaarlijks_string')";
 
@@ -247,7 +257,8 @@ class Inschrijving extends Model {
         return false;
     }
 
-    private static function getLidgeld($tak, $halfjaarlijks = false) {
+    private static function getLidgeld($tak, $halfjaarlijks = false)
+    {
         $tak = strtolower($tak);
 
         if (!isset(self::$lidgeld_per_tak[$tak])) {
@@ -262,11 +273,12 @@ class Inschrijving extends Model {
             }
             return self::$lidgeld_per_tak_halfjaar[$tak];
         }
-        
+
         return self::$lidgeld_per_tak[$tak];
     }
 
-    function save() {
+    public function save()
+    {
         if (!isset($this->id)) {
             return false;
         }
@@ -275,11 +287,11 @@ class Inschrijving extends Model {
         $tak = self::getDb()->escape_string($this->tak);
         $datum_uitschrijving = 'NULL';
         if (isset($this->datum_uitschrijving)) {
-            $datum_uitschrijving = "'".$this->datum_uitschrijving->format('Y-m-d  H:i:s')."'";
+            $datum_uitschrijving = "'" . $this->datum_uitschrijving->format('Y-m-d  H:i:s') . "'";
         }
 
-        $query = "UPDATE inschrijvingen 
-                SET 
+        $query = "UPDATE inschrijvingen
+                SET
                  `tak` = '$tak',
                  `datum_uitschrijving` = $datum_uitschrijving
                  where `inschrijving_id` = '$id'
@@ -289,21 +301,23 @@ class Inschrijving extends Model {
             return false;
         }
 
-       return true;
+        return true;
     }
 
-    function uitschrijven() {
+    public function uitschrijven()
+    {
         $this->datum_uitschrijving = new \DateTime();
         return $this->save();
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 inschrijvingen WHERE inschrijving_id = '$id' ";
 
         // todo: afrekening aanpassen (prijs)
-        
+
         // todo: lid verwijderen indien enigste inschrijving van dit lid
 
         if (self::getDb()->query($query)) {
@@ -312,17 +326,17 @@ class Inschrijving extends Model {
             // Als afrekening nog niet betaald is => dan corrigeren we ze, op voorwaarde
             // dat het lid minder dan 2 maand was ingecshreven
             /* lidgeld wordt niet langer herberekend
-            
+
             if (isset($afrekening) && !$afrekening->isBetaald()) {
-                $afrekening->recalculate();
+            $afrekening->recalculate();
             }*/
 
             // lid opnieuw ophalen
             $lid = Lid::getLid($this->lid->id);
 
             /*if (empty($lid->inschrijving)) {
-                // enigste inschrijving is weg -> verwijderen
-                $lid->delete();
+            // enigste inschrijving is weg -> verwijderen
+            $lid->delete();
             }*/
 
             return true;

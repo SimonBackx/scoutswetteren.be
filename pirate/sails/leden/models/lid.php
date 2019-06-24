@@ -1,31 +1,34 @@
 <?php
 namespace Pirate\Model\Leden;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
+
+use Pirate\Classes\Environment\Environment;
 use Pirate\Model\Leden\Gezin;
 use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Steekkaart;
 use Pirate\Model\Leden\Ouder;
+use Pirate\Model\Leden\Steekkaart;
+use Pirate\Model\Model;
+use Pirate\Model\Validating\Validator;
 
-class Lid extends Model {
+class Lid extends Model
+{
     public $id;
     public $lidnummer;
     public $gezin; // Gezin object
     public $voornaam;
     public $achternaam;
-    public $geslacht;
+    public $geslacht; // M / V
     public $geboortedatum;
     public $gsm;
 
     public $inschrijving; // Inschrijving object
     public $steekkaart; // Steekkaart object
 
-
     public $ouders = array(); // wordt enkel door speciale toepassingen gebruikt, niet automatisch opgevuld
-    
+
     private static $IGNORE_LIMITS = null;
 
-    function __construct($row = array(), $inschrijving_object = null) {
+    public function __construct($row = array(), $inschrijving_object = null)
+    {
         if (count($row) == 0) {
             return;
         }
@@ -47,21 +50,21 @@ class Lid extends Model {
 
         if (!is_null($inschrijving_object)) {
             $this->inschrijving = $inschrijving_object;
-        }
-        elseif (!empty($row['inschrijving_id'])) {
+        } elseif (!empty($row['inschrijving_id'])) {
             $this->inschrijving = new Inschrijving($row, $this);
         } else {
             $this->inschrijving = null;
         }
 
-         if (!empty($row['steekkaart_id'])) {
+        if (!empty($row['steekkaart_id'])) {
             $this->steekkaart = new Steekkaart($row, $this);
         } else {
             $this->steekkaart = null;
         }
     }
 
-    static function areLimitsIgnored() {
+    public static function areLimitsIgnored()
+    {
         if (!isset(self::$IGNORE_LIMITS)) {
             if (isset($_COOKIE['ignore_limits_inschrijven'])) {
                 self::$IGNORE_LIMITS = intval($_COOKIE['ignore_limits_inschrijven']) === 1;
@@ -73,39 +76,43 @@ class Lid extends Model {
         return self::$IGNORE_LIMITS;
     }
 
-    static function setLimitsIgnored($bool) {
+    public static function setLimitsIgnored($bool)
+    {
         self::$IGNORE_LIMITS = $bool;
 
         if (!$bool) {
-            setcookie('ignore_limits_inschrijven', "0", time()-604800,'/');
+            setcookie('ignore_limits_inschrijven', "0", time() - 604800, '/');
         } else {
-            setcookie('ignore_limits_inschrijven', "1", time()+51840000,'/', '', true, true); 
+            setcookie('ignore_limits_inschrijven', "1", time() + 51840000, '/', '', true, true);
         }
     }
 
-    function getAdressen() {
+    public function getAdressen()
+    {
         $map = array();
         foreach ($this->ouders as $ouder) {
             $adres = $ouder->getAdres();
-            $map[$adres] = true; 
+            $map[$adres] = true;
         }
 
         return array_keys($map);
     }
 
-    function getTelefoonnummers() {
+    public function getTelefoonnummers()
+    {
         $map = array();
         foreach ($this->ouders as $ouder) {
             if (!empty($ouder->adres->telefoon)) {
                 $telefoon = $ouder->adres->telefoon;
-                $map[$telefoon] = true; 
+                $map[$telefoon] = true;
             }
         }
 
         return array_keys($map);
     }
 
-    function getGeslacht() {
+    public function getGeslacht()
+    {
         if ($this->geslacht == 'M') {
             return 'Jongen';
         }
@@ -115,7 +122,8 @@ class Lid extends Model {
         return 'Onbekend geslacht';
     }
 
-    static function getLid($id) {
+    public static function getLid($id)
+    {
         if (!is_numeric($id)) {
             return null;
         }
@@ -128,10 +136,10 @@ class Lid extends Model {
                 left join gezinnen g on g.gezin_id = l.gezin
                 left join inschrijvingen i on i.lid = l.id
                 left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-            where l.id = "'.$id.'" and i2.inschrijving_id is null';
+            where l.id = "' . $id . '" and i2.inschrijving_id is null';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new Lid($row);
             }
@@ -139,11 +147,13 @@ class Lid extends Model {
         return null;
     }
 
-    static function getLedenForOuder($ouder) {
+    public static function getLedenForOuder($ouder)
+    {
         return static::getLedenForGezin($ouder->gezin->id);
     }
 
-    static function getLedenForGezin($gezin_id) {
+    public static function getLedenForGezin($gezin_id)
+    {
         $gezin_id = self::getDb()->escape_string($gezin_id);
 
         $leden = array();
@@ -153,11 +163,11 @@ class Lid extends Model {
                 left join gezinnen g on g.gezin_id = l.gezin
                 left join inschrijvingen i on i.lid = l.id
                 left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-            where g.gezin_id = "'.$gezin_id.'" and i2.inschrijving_id is null
+            where g.gezin_id = "' . $gezin_id . '" and i2.inschrijving_id is null
             order by year(l.geboortedatum) desc, l.voornaam';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $leden[] = new Lid($row);
                 }
@@ -166,8 +176,8 @@ class Lid extends Model {
         return $leden;
     }
 
-
-    static function search($text) {
+    public static function search($text)
+    {
         // todo: Als text = getal -> omzetten in telefoonnummer
         $phone = '';
         $leden = array();
@@ -184,7 +194,7 @@ class Lid extends Model {
             if (!empty($subtext)) {
                 $subtext .= ' ';
             }
-            $subtext .= '+'.self::getDb()->escape_string(str_replace(['+', '-', '*'], ['\\+', '', ''], $word)).'*';
+            $subtext .= '+' . self::getDb()->escape_string(str_replace(['+', '-', '*'], ['\\+', '', ''], $word)) . '*';
         }
 
         $text = $subtext;
@@ -199,25 +209,25 @@ class Lid extends Model {
             left join gezinnen g on g.gezin_id = l.gezin
             left join inschrijvingen i on i.lid = l.id
             left join inschrijvingen i2 on i2.lid = l.id and i2.scoutsjaar > i.scoutsjaar
-        where 
+        where
             i2.inschrijving_id is null
             AND i.inschrijving_id is not null
             AND
             (
-                MATCH(leden_search.search_text) 
-                AGAINST(\''.$text.'\' IN BOOLEAN MODE)
-            )';//
+                MATCH(leden_search.search_text)
+                AGAINST(\'' . $text . '\' IN BOOLEAN MODE)
+            )'; //
 
         $leden_dict = array();
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $ouder = new Ouder($row);
 
                     // Fix duplicate fields
                     foreach ($duplicate_fields as $key => $value) {
-                        $row[$value] = $row[$value."_lid"];
+                        $row[$value] = $row[$value . "_lid"];
                     }
                     $lid = new Lid($row);
                     if (isset($leden_dict[$lid->id])) {
@@ -232,12 +242,12 @@ class Lid extends Model {
         } else {
             echo self::getDb()->error;
         }
-        
-        
+
         return $leden;
     }
 
-    static function ledenToFieldArray($original) {
+    public static function ledenToFieldArray($original)
+    {
         $arr = array();
         foreach ($original as $key => $value) {
             $arr[] = $value->getPropertiesDetails();
@@ -245,7 +255,8 @@ class Lid extends Model {
         return $arr;
     }
 
-    function getPropertiesDetails() {
+    public function getPropertiesDetails()
+    {
         return array(
             'id' => $this->id,
             'voornaam' => $this->voornaam,
@@ -253,11 +264,12 @@ class Lid extends Model {
             'gsm' => $this->gsm,
             'tak' => $this->inschrijving->tak,
             'geboortedatum' => $this->geboortedatum->format("j-n-Y"),
-            'ouders' => Ouder::oudersToFieldArray($this->ouders)
+            'ouders' => Ouder::oudersToFieldArray($this->ouders),
         );
     }
 
-    static function getLedenForTak($tak, $jaar = null) {
+    public static function getLedenForTak($tak, $jaar = null)
+    {
         $tak = self::getDb()->escape_string($tak);
 
         if (isset($jaar)) {
@@ -271,26 +283,26 @@ class Lid extends Model {
             SELECT l.*, i.*, s.*, g.* from leden l
                 left join steekkaarten s on s.lid = l.id
                 left join gezinnen g on g.gezin_id = l.gezin
-                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
-            where i.tak = "'.$tak.'" and i.datum_uitschrijving is null
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "' . $scoutsjaar . '"
+            where i.tak = "' . $tak . '" and i.datum_uitschrijving is null
             order by year(l.geboortedatum) desc, l.voornaam';
 
-
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $leden[] = new Lid($row);
                 }
             }
         }
-        
+
         return $leden;
     }
 
     // Geef alle ingeschreven leden terug
     // Met ingevulde ouder objecten
     // Enkel gebruiken als je de ouder objecten nodig hebt
-    static function getLedenFull() {
+    public static function getLedenFull()
+    {
         $leden = Ouder::getOuders(null, null, true);
         $ouders = Ouder::getOuders();
 
@@ -318,7 +330,8 @@ class Lid extends Model {
 
     // Geeft ook ouders mee
     /// Redelijk zware query momenteel
-    static function getLedenForTakFull($tak) {
+    public static function getLedenForTakFull($tak)
+    {
         $tak = self::getDb()->escape_string($tak);
 
         $scoutsjaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
@@ -328,12 +341,12 @@ class Lid extends Model {
             SELECT l.*, i.*, s.*, g.* from leden l
                 left join steekkaarten s on s.lid = l.id
                 left join gezinnen g on g.gezin_id = l.gezin
-                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "'.$scoutsjaar.'"
-            where i.tak = "'.$tak.'" and i.datum_uitschrijving is null
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = "' . $scoutsjaar . '"
+            where i.tak = "' . $tak . '" and i.datum_uitschrijving is null
             order by l.voornaam, l.achternaam';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $lid = new Lid($row);
                     $lid->ouders = Ouder::getOudersForGezin($lid->gezin->id);
@@ -341,11 +354,12 @@ class Lid extends Model {
                 }
             }
         }
-        
+
         return $leden;
     }
 
-    function isIngeschreven() {
+    public function isIngeschreven()
+    {
         if (empty($this->inschrijving)) {
             return false;
         }
@@ -353,7 +367,8 @@ class Lid extends Model {
     }
 
     // Bv. Jin van vorig jaar is niet meer inschrijfbaar (of bv na takherverdeling)
-    function isInschrijfbaar() {
+    public function isInschrijfbaar()
+    {
         $tak = $this->getTakVoorHuidigScoutsjaar(self::areLimitsIgnored());
         if ($tak === false) {
             return false;
@@ -361,79 +376,78 @@ class Lid extends Model {
         return true;
     }
 
-    function heeftSteekkaart() {
+    public function heeftSteekkaart()
+    {
         if (empty($this->steekkaart)) {
             return false;
         }
         return $this->steekkaart->isIngevuld();
     }
 
-    static function getTakkenVerdeling($scoutsjaar, $allow_limits = false) {
-        $data = array(
-                 $scoutsjaar - 7 => 'kapoenen', $scoutsjaar - 6 => 'kapoenen',
-                 $scoutsjaar - 8 => 'wouters', $scoutsjaar - 9 => 'wouters', $scoutsjaar - 10 => 'wouters', 
-                 $scoutsjaar - 11 => 'jonggivers', $scoutsjaar - 12 => 'jonggivers', $scoutsjaar - 13 => 'jonggivers',
-                 $scoutsjaar - 14 => 'givers', $scoutsjaar - 15 => 'givers', $scoutsjaar - 16 => 'givers',
-                 $scoutsjaar - 17 => 'jin', $scoutsjaar - 18 => 'jin'
-             );
+    // Mapping from birth year to tak name
+    public static function getTakkenVerdeling($scoutsjaar, $gender, $allow_limits = false)
+    {
+        $takken = Environment::getSetting('scouts.takken');
 
+        $data = [];
 
-        if ($allow_limits) {
-            $custom = self::getTakkenVerdelingLimits($scoutsjaar);
-            foreach ($custom as $year => $tak) {
-                if (!isset($data[$year])) {
-                    $data[$year] = $tak;
+        foreach ($takken as $tak_key => $tak) {
+            if ($tak['auto_assign'] && !isset($tak['gender']) || $tak['gender'] == $gender) {
+                for ($age = $tak['age_start']; $age <= $tak['age_end']; $age++) {
+                    $data[$scoutsjaar - $age] = $tak_key;
                 }
             }
+        }
+
+        if ($allow_limits) {
+            // Extend minimum and maximum with 2 years
+            $minimum = min(array_keys($data));
+            $maximum = max(array_keys($data));
+
+            $data[$minimum - 1] = $data[$minimum];
+            $data[$minimum - 2] = $data[$minimum];
+
+            $data[$maximum - 1] = $data[$maximum];
+            $data[$maximum - 2] = $data[$maximum];
+
         }
 
         return $data;
     }
 
-    // when IGNORE_LIMITS
-    static function getTakkenVerdelingLimits($scoutsjaar) {
-        return array(
-                // 1 - 2 jaar te jong voor kapoenen
-                 $scoutsjaar - 5 => 'kapoenen', $scoutsjaar - 4 => 'kapoenen',
+    /// Return the automatic tak for the current lid. Try to stay with the current tak if possible (if it doesnt have auto assign)
+    public function getTakVoorHuidigScoutsjaar()
+    {
+        // Check if we are in a non auto assign tak
+        if (isset($this->inschrijving)) {
+            $takken = Environment::getSetting('scouts.takken');
+            if (isset($takken[$this->inschrijving->tak]) && !$takken[$this->inschrijving->tak]['auto_assign']) {
+                return $this->inschrijving->tak;
+            }
+        }
 
-                 // 1 jaar te oud voor de givers (als er geen jin is)
-                 $scoutsjaar - 17 => 'givers',
+        $allow_limits = self::areLimitsIgnored();
+        $geboortejaar = intval($this->geboortedatum->format('Y'));
+        $gender = $this->geslacht;
 
-                 // 1 - 2 jaar te oud voor de jin (tenzij er een verlengd jin jaar is)
-                 $scoutsjaar - 18 => 'jin', $scoutsjaar - 19 => 'jin'
-             );
-    }
-
-    static function getTak($geboortejaar, $allow_limits = false) {
-        $verdeling = self::getTakkenVerdeling(Inschrijving::getScoutsjaar());
+        $verdeling = self::getTakkenVerdeling(Inschrijving::getScoutsjaar(), $gender, $allow_limits);
         if (isset($verdeling[$geboortejaar])) {
             return $verdeling[$geboortejaar];
         }
 
-        // Enkel als er geen andere tak mogelijk is, en allow limits expliciet aan staat
-        if ($allow_limits) {
-            $verdeling = self::getTakkenVerdelingLimits(Inschrijving::getScoutsjaar());
-            if (isset($verdeling[$geboortejaar])) {
-                return $verdeling[$geboortejaar];
-            }
-        }
         return false;
     }
 
-    // Deze functie houdt rekening met de cookies van de gebruiker!
-    function getTakVoorHuidigScoutsjaar() {
-        $allow_limits = self::areLimitsIgnored();
-        return self::getTak(intval($this->geboortedatum->format('Y')), $allow_limits);
-    }
-
-    function getTakVoorInschrijving() {
+    public function getTakVoorInschrijving()
+    {
         if ($this->isIngeschreven()) {
             return $this->inschrijving->tak;
         }
         return null;
     }
 
-    function schrijfIn() {
+    public function schrijfIn()
+    {
         if (!$this->isInschrijfbaar()) {
             return false;
         }
@@ -443,7 +457,8 @@ class Lid extends Model {
 
     // empty array on success
     // array of errors on failure
-    function setProperties(&$data) {
+    public function setProperties(&$data)
+    {
         $errors = array();
 
         if (Validator::isValidFirstname($data['voornaam'])) {
@@ -466,7 +481,7 @@ class Lid extends Model {
             $errors[] = 'Geen geslacht geselecteerd';
         }
 
-        $geboortedatum = $data['geboortedatum_jaar'].'-'.$data['geboortedatum_maand'].'-'.$data['geboortedatum_dag'];
+        $geboortedatum = $data['geboortedatum_jaar'] . '-' . $data['geboortedatum_maand'] . '-' . $data['geboortedatum_dag'];
         $geboortedatum = \DateTime::createFromFormat('Y-n-j', $geboortedatum);
         if ($geboortedatum !== false && checkdate($data['geboortedatum_maand'], $data['geboortedatum_dag'], $data['geboortedatum_jaar'])) {
             $this->geboortedatum = clone $geboortedatum;
@@ -477,19 +492,19 @@ class Lid extends Model {
             $errors[] = 'Ongeldige geboortedatum';
         }
 
-        if (is_numeric($data['geboortedatum_jaar'])) {
+        if (isset($this->geboortedatum, $this->geslacht, $this->voornaam)) {
             if ($this->isIngeschreven()) {
                 $tak = $this->inschrijving->tak;
             } else {
-                $tak = self::getTak(intval($data['geboortedatum_jaar']), self::areLimitsIgnored());
+                $tak = $this->getTakVoorHuidigScoutsjaar();
             }
 
             if ($tak === false) {
-                $errors[] = 'Uw zoon is te oud  / jong voor de scouts. Kinderen zijn toegelaten vanaf 6 jaar. Kinderen die nog maar 5 jaar zijn, maar wel al in het eerste leerjaar zitten (noodzakelijk) kunnen een uitzondering aanvragen bij de leiding.';
+                $errors[] = $this->voornaam . ' is te oud  / jong voor de scouts. Kinderen zijn toegelaten vanaf 6 jaar. Kinderen die nog maar 5 jaar zijn, maar wel al in het eerste leerjaar zitten (noodzakelijk) kunnen een uitzondering aanvragen bij de leiding.';
             } else {
                 $data['tak'] = $tak;
 
-                if ($tak == 'givers' || $tak == 'jin') {
+                if (Environment::getSetting("scouts.takken.$tak.require_mobile", false)) {
                     Validator::validatePhone($data['gsm'], $this->gsm, $errors);
                 }
             }
@@ -502,9 +517,10 @@ class Lid extends Model {
         return $errors;
     }
 
-    function moetNagekekenWorden() {
+    public function moetNagekekenWorden()
+    {
         if ($this->isIngeschreven()) {
-            if ($this->inschrijving->tak == 'givers' || $this->inschrijving->tak == 'jin' ) {
+            if ($this->inschrijving->tak == 'givers' || $this->inschrijving->tak == 'jin') {
                 $errors = array();
                 if (!Validator::validatePhone($this->gsm, $this->gsm, $errors)) {
                     return true;
@@ -514,7 +530,8 @@ class Lid extends Model {
         return false;
     }
 
-    function getProperties() {
+    public function getProperties()
+    {
         return array(
             'voornaam' => $this->voornaam,
             'achternaam' => $this->achternaam,
@@ -522,11 +539,12 @@ class Lid extends Model {
             'geboortedatum_maand' => $this->geboortedatum->format('n'),
             'geboortedatum_jaar' => $this->geboortedatum->format('Y'),
             'gsm' => $this->gsm,
-            'geslacht' => $this->geslacht
+            'geslacht' => $this->geslacht,
         );
     }
 
-    function isDuplicate() {
+    public function isDuplicate()
+    {
         $voornaam = self::getDb()->escape_string($this->voornaam);
         $achternaam = self::getDb()->escape_string($this->achternaam);
         $geslacht = self::getDb()->escape_string($this->geslacht);
@@ -534,41 +552,43 @@ class Lid extends Model {
 
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
-             // Zoek andere ouders met dit e-mailadres
+            // Zoek andere ouders met dit e-mailadres
             $query = "SELECT *
             from leden
             where voornaam = '$voornaam' and achternaam = '$achternaam' and geslacht = '$geslacht' and geboortedatum = '$geboortedatum' and id != '$id'";
         } else {
-             // Zoek andere ouders met dit e-mailadres
+            // Zoek andere ouders met dit e-mailadres
             $query = "SELECT *
             from leden
             where voornaam = '$voornaam' and achternaam = '$achternaam' and geslacht = '$geslacht' and geboortedatum = '$geboortedatum'";
         }
 
         if ($result = self::getDb()->query($query)) {
-            if ($result->num_rows > 0){
+            if ($result->num_rows > 0) {
                 return true;
             }
-        } 
-        
+        }
+
         return false;
     }
 
-    function setGezin(Gezin $gezin) {
+    public function setGezin(Gezin $gezin)
+    {
         $this->gezin = $gezin;
     }
 
-    function save() {
+    public function save()
+    {
         if (!isset($this->gsm)) {
             $gsm = "NULL";
         } else {
-            $gsm = "'".self::getDb()->escape_string($this->gsm)."'";
+            $gsm = "'" . self::getDb()->escape_string($this->gsm) . "'";
         }
 
         if (!isset($this->lidnummer)) {
             $lidnummer = "NULL";
         } else {
-            $lidnummer = "'".self::getDb()->escape_string($this->lidnummer)."'";
+            $lidnummer = "'" . self::getDb()->escape_string($this->lidnummer) . "'";
         }
 
         if (!isset($this->gezin)) {
@@ -583,14 +603,13 @@ class Lid extends Model {
 
         if (!isset($this->id)) {
 
-
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 leden (`gezin`, `lidnummer`, `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`)
                 VALUES ('$gezin', $lidnummer, '$voornaam', '$achternaam', '$geslacht', '$geboortedatum', $gsm)";
         } else {
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE leden 
-                SET 
+            $query = "UPDATE leden
+                SET
                  `voornaam` = '$voornaam',
                  `gezin` = '$gezin',
                  `achternaam` = '$achternaam',
@@ -598,7 +617,7 @@ class Lid extends Model {
                  `geboortedatum` = '$geboortedatum',
                  `gsm` = $gsm,
                  `lidnummer` = $lidnummer
-                 where id = '$id' 
+                 where id = '$id'
             ";
         }
 
@@ -613,18 +632,19 @@ class Lid extends Model {
         return false;
     }
 
-    function updateSearchIndex() {
+    public function updateSearchIndex()
+    {
         // Generate text here:
         $text = '';
         $text .= "$this->voornaam $this->achternaam\n";
-        $text .= str_replace([' '], [' '], $this->gsm)."\n"; // remove non breaking spaces
+        $text .= str_replace([' '], [' '], $this->gsm) . "\n"; // remove non breaking spaces
 
         // Withotu spaces
-        $text .= str_replace([' ', ' '], ['', ''], $this->gsm)."\n";
+        $text .= str_replace([' ', ' '], ['', ''], $this->gsm) . "\n";
 
         // With land code replaced by a zero
-        $text .= str_replace(['+32', '+31'], ['0', '0'],str_replace([' ', ' '], ['', ''], $this->gsm))."\n";
-        
+        $text .= str_replace(['+32', '+31'], ['0', '0'], str_replace([' ', ' '], ['', ''], $this->gsm)) . "\n";
+
         // Todo: add ouders
 
         $id = self::getDb()->escape_string($this->id);
@@ -639,21 +659,23 @@ class Lid extends Model {
         return false;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 leden WHERE id = '$id' ";
 
         if (self::getDb()->query($query)) {
             return true;
         }
-        
+
         return false;
     }
 
     /// Voeg alle data van een ouder lid $lid toe aan dit lid (inschrijvingen, steekkaarten)
     /// Afrekeningen worden niet aangepast, dat moet gebeuren bij het mergen van Gezinnen
-    function merge($lid) {
+    public function merge($lid)
+    {
         if ($lid->id == $this->id) {
             // Prevent data loss
             return false;
@@ -662,10 +684,10 @@ class Lid extends Model {
         $id = self::getDb()->escape_string($lid->id);
         $new_id = self::getDb()->escape_string($this->id);
 
-        $query = "UPDATE inschrijvingen 
-            SET 
+        $query = "UPDATE inschrijvingen
+            SET
              `lid` = '$new_id'
-             where lid = '$id' 
+             where lid = '$id'
         ";
 
         if (!self::getDb()->query($query)) {
@@ -677,7 +699,8 @@ class Lid extends Model {
     }
 
     /// Return true when users are probably the same
-    function isProbablyEqual($lid) {
+    public function isProbablyEqual($lid)
+    {
         if (
             trim(clean_special_chars($lid->voornaam)) == trim(clean_special_chars($this->voornaam))
             && (trim(clean_special_chars($lid->achternaam)) == trim(clean_special_chars($this->achternaam)) || $lid->geboortedatum->format('Y-m-d') == $this->geboortedatum->format('Y-m-d'))
@@ -687,5 +710,4 @@ class Lid extends Model {
         return false;
     }
 
-    
 }

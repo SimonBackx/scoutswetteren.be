@@ -93,18 +93,25 @@ class BroerZusToevoegen extends Page
             }
         }
         $jaar = Inschrijving::getScoutsjaar();
-        $verdeling = Lid::getTakkenVerdeling($jaar, Lid::areLimitsIgnored());
-        $keys = array_keys($verdeling);
-        sort($keys);
-        $jaren = array();
-        for ($i = $keys[0] - 5; $i < $jaar; $i++) {
+        $verdeling = [
+            'M' => Lid::getTakkenVerdeling($jaar, 'M', Lid::areLimitsIgnored()),
+            'V' => Lid::getTakkenVerdeling($jaar, 'V', Lid::areLimitsIgnored()),
+        ];
+
+        // Geboortejaar selectie
+        $oldest = min(array_keys($verdeling['M']));
+        $jaren = [];
+        for ($i = $oldest - 5; $i < $jaar; $i++) {
             $jaren[] = $i;
         }
 
         if (!$new && $this->lid->isIngeschreven()) {
             // geen mogelijkheid om tak te wisselen, die ligt al vast
-            foreach ($verdeling as $key => $value) {
-                $verdeling[$key] = $this->lid->inschrijving->tak;
+            foreach ($verdeling['M'] as $key => $value) {
+                $verdeling['M'][$key] = $this->lid->inschrijving->tak;
+            }
+            foreach ($verdeling['V'] as $key => $value) {
+                $verdeling['V'][$key] = $this->lid->inschrijving->tak;
             }
         }
 
