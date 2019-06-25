@@ -55,7 +55,7 @@ class Ship
     public function sail()
     {
         if ($_SERVER['SERVER_PORT'] != 443) {
-            die('Er is een probleem ontstaan waardoor de website geen beveiligde verbinding gebruikt. Neem conact met ons op (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.');
+            die('Er is een probleem ontstaan waardoor de website geen beveiligde verbinding gebruikt. Neem conact met ons op als dit probleem zich blijft voordoen.');
         }
 
         $url = strtok($_SERVER["REQUEST_URI"], '?');
