@@ -2,9 +2,10 @@
 namespace Pirate\Sail\Maandplanning\Blocks;
 
 use Pirate\Block\Block;
+use Pirate\Classes\Environment\Environment;
+use Pirate\Classes\Environment\Localization;
 use Pirate\Model\Maandplanning\Event;
 use Pirate\Template\Template;
-use Pirate\Classes\Environment\Localization;
 
 class Kalender extends Block
 {
@@ -43,15 +44,15 @@ class Kalender extends Block
 
             $location_js = array(
                 '@type' => 'Place',
-                "name" => "Scouts Prins Boudewijn Wetteren",
-                "url" => "https://www.scoutswetteren.be",
+                "name" => Environment::getSetting('name'),
+                "url" => "https://" . (Environment::getSetting('force_www') ? 'www.' : '') . Environment::getSetting('domain'),
                 "address" => array(
                     "@type" => "PostalAddress",
-                    "addressCountry" => "BE",
-                    "addressLocality" => "Wetteren",
-                    "addressRegion" => "Oost-Vlaanderen",
-                    "postalCode" => "9230",
-                    "streetAddress" => "Groene Wegel 2",
+                    "addressCountry" => Environment::getSetting('address.country'),
+                    "addressLocality" => Environment::getSetting('address.city'),
+                    "addressRegion" => Environment::getSetting('address.region'),
+                    "postalCode" => Environment::getSetting('address.postalcode'),
+                    "streetAddress" => Environment::getSetting('address.street') . ' ' . Environment::getSetting('address.number'),
                 ),
             );
 

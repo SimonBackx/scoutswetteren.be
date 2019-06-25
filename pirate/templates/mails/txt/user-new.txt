@@ -1,9 +1,9 @@
 Dag {{ user.firstname }},
 
-Je hebt een account aangemaakt op www.scoutswetteren.be. Stel nu een wachtwoord in zodat je kan inloggen.
+Je hebt een account aangemaakt op {{ environment.domain }}. Stel nu een wachtwoord in zodat je kan inloggen.
 
 Je kan je wachtwoord instellen door de link hieronder aan te klikken of te kopiëren in je adresbalk:
 {{ user.getSetPasswordUrl() }}
 
 Tot binnenkort,
-Scouts Prins Boudewijn Wetteren
+{{ environment.name }}

@@ -1,12 +1,13 @@
 <?php
 namespace Pirate\Model\Webshop;
-use Pirate\Model\Model;
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Classes\Validating\ValidationErrors;
-use Pirate\Classes\Validating\ValidationErrorBundle;
-use Pirate\Classes\Validating\DatabaseError;
 
-class StripePayment extends Payment {
+use Pirate\Classes\Environment\Environment;
+use Pirate\Classes\Validating\DatabaseError;
+use Pirate\Classes\Validating\ValidationError;
+use Pirate\Model\Model;
+
+class StripePayment extends Payment
+{
     public $id;
     public $bank_account; // object
     public $source;
@@ -19,7 +20,8 @@ class StripePayment extends Payment {
 
     static $supported_methods = ['bancontact', 'ideal', 'card'];
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (is_null($row)) {
             return;
         }
@@ -34,7 +36,8 @@ class StripePayment extends Payment {
 
     /// A function to create a stripe payment based on the source that was provided by the frontend
     /// We can read all needed information in the source object and return an action
-    function setProperties($bank_account, $data, $order) {
+    public function setProperties($bank_account, $data, $order)
+    {
         if (empty($bank_account->stripe_secret)) {
             throw new ValidationError("Deze betaalmethode wordt niet ondersteund");
         }
@@ -54,14 +57,14 @@ class StripePayment extends Payment {
             $statement = $this->order->isRegistration() ? "Inschrijving {$this->order->id} Scouts Wetteren" : "Bestelling {$this->order->id} Scouts Wetteren";
 
             // Create the source.
-    
+
             if ($this->method === 'bancontact') {
                 $this->_stripe_source = \Stripe\Source::create([
                     "type" => "bancontact",
                     "currency" => "eur",
                     "amount" => $order->price,
                     "owner" => [
-                        "name" => $order->user->firstname.' '.$order->user->lastname,
+                        "name" => $order->user->firstname . ' ' . $order->user->lastname,
                         "phone" => $order->user->phone,
                         //"email" => $order->user->mail,
                     ],
@@ -71,17 +74,17 @@ class StripePayment extends Payment {
                     "usage" => 'single_use',
                     "statement_descriptor" => $statement,
                 ]);
-    
+
                 // Check status codes: payment_method_not_available, processing_error, invalid_owner_name
                 error_log($this->_stripe_source, JSON_PRETTY_PRINT);
-    
+
             } elseif ($this->method === 'ideal') {
                 $this->_stripe_source = \Stripe\Source::create([
                     "type" => "ideal",
                     "currency" => "eur",
                     "amount" => $order->price,
                     "owner" => [
-                        "name" => $order->user->firstname.' '.$order->user->lastname,
+                        "name" => $order->user->firstname . ' ' . $order->user->lastname,
                         "phone" => $order->user->phone,
                         //"email" => $order->user->mail,
                     ],
@@ -91,21 +94,21 @@ class StripePayment extends Payment {
                     "usage" => 'single_use',
                     "statement_descriptor" => $statement,
                 ]);
-    
+
                 // Check status codes: payment_method_not_available, processing_error, invalid_owner_name
                 error_log($this->_stripe_source, JSON_PRETTY_PRINT);
-    
+
             } elseif ($this->method == 'card') {
                 if (!isset($data['token']) || !is_string($data['token'])) {
                     throw new ValidationError("token missing");
                 }
-    
+
                 $this->_stripe_source = \Stripe\Source::create([
                     "type" => "card",
                     "currency" => "eur",
                     "amount" => $order->price,
                     "owner" => [
-                        "name" => $order->user->firstname.' '.$order->user->lastname,
+                        "name" => $order->user->firstname . ' ' . $order->user->lastname,
                         "phone" => $order->user->phone,
                         //"email" => $order->user->mail,
                     ],
@@ -116,21 +119,21 @@ class StripePayment extends Payment {
                     "usage" => 'single_use',
                     "statement_descriptor" => $statement,
                 ]);
-    
+
                 // Check 3D secure
                 error_log($this->_stripe_source, JSON_PRETTY_PRINT);
-    
-                if (isset($this->_stripe_source->card->three_d_secure) && ($this->_stripe_source->card->three_d_secure == 'required' || $this->_stripe_source->card->three_d_secure == 'recommended'))  {
-                    error_log( "3D secure has been used");
+
+                if (isset($this->_stripe_source->card->three_d_secure) && ($this->_stripe_source->card->three_d_secure == 'required' || $this->_stripe_source->card->three_d_secure == 'recommended')) {
+                    error_log("3D secure has been used");
                     $this->_stripe_source = \Stripe\Source::create([
                         "type" => "three_d_secure",
                         "currency" => "eur",
                         "amount" => $order->price,
                         "three_d_secure" => [
-                            "card" => $this->_stripe_source->id
+                            "card" => $this->_stripe_source->id,
                         ],
                         "owner" => [
-                            "name" => $order->user->firstname.' '.$order->user->lastname,
+                            "name" => $order->user->firstname . ' ' . $order->user->lastname,
                             "phone" => $order->user->phone,
                             //"email" => $order->user->mail,
                         ],
@@ -140,26 +143,27 @@ class StripePayment extends Payment {
                         "usage" => 'single_use',
                     ]);
                     error_log($this->_stripe_source, JSON_PRETTY_PRINT);
-    
+
                 }
-    
+
             }
-    
+
             $this->bank_account = $bank_account;
             $this->source = $this->_stripe_source->id;
 
             $this->status = 'pending';
-            $this->updateStatus();     
+            $this->updateStatus();
         } catch (\Exception $ex) {
-            throw new ValidationError("Er ging iets mis bij het aanmaken van de betaling. Neem contact op met website@scoutswetteren.be of probeer het opnieuw.".$ex->getMessage().' '.$ex->getFile().' '.$ex->getLine());
+            throw new ValidationError("Er ging iets mis bij het aanmaken van de betaling. Neem contact op met " . Environment::getSetting('development_mail.mail') . " of probeer het opnieuw." . $ex->getMessage() . ' ' . $ex->getFile() . ' ' . $ex->getLine());
         } catch (\Error $ex) {
-            throw new ValidationError("Er ging iets mis bij het aanmaken van de betaling. Neem contact op met website@scoutswetteren.be of probeer het opnieuw. ".$ex->getMessage().' '.$ex->getFile().' '.$ex->getLine());
+            throw new ValidationError("Er ging iets mis bij het aanmaken van de betaling. Neem contact op met " . Environment::getSetting('development_mail.mail') . " of probeer het opnieuw. " . $ex->getMessage() . ' ' . $ex->getFile() . ' ' . $ex->getLine());
         }
     }
 
     /// Update the status, and charge if possible. Cancel order if possible
     /// The status of the source, one of canceled, chargeable, consumed, failed, or pending. Only chargeable sources can be used to create a charge.
-    function updateStatus() { 
+    public function updateStatus()
+    {
 
         if ($this->status == 'failed' || $this->status == 'canceled' || $this->status == 'consumed') {
             return;
@@ -201,7 +205,8 @@ class StripePayment extends Payment {
         $this->save();
     }
 
-    function getName() {
+    public function getName()
+    {
         if ($this->method == 'bancontact') {
             return 'Bancontact';
         }
@@ -211,7 +216,8 @@ class StripePayment extends Payment {
         return 'Visa / Mastercard';
     }
 
-    function getNextUrl() {
+    public function getNextUrl()
+    {
         // todo: Fetch source if not known
         if (isset($this->_stripe_source->redirect->url) && isset($this->_stripe_source->redirect->status) && $this->_stripe_source->redirect->status == 'pending') {
             return $this->_stripe_source->redirect->url;
@@ -219,47 +225,50 @@ class StripePayment extends Payment {
         return $this->order->getUrl();
     }
 
-    static function getByOrderId($id) {
+    public static function getByOrderId($id)
+    {
         $id = self::getDb()->escape_string($id);
         $query = "SELECT p.*, b.* from payment_stripe p
             left join bank_accounts b on b.account_id = p.stripe_bank_account
             where stripe_order = '$id'";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     return new StripePayment($row);
                 }
             }
         }
-        
+
         return null;
     }
 
-    static function getBySourceId($id) {
+    public static function getBySourceId($id)
+    {
         $id = self::getDb()->escape_string($id);
         $query = "SELECT p.*, b.* from payment_stripe p
             left join bank_accounts b on b.account_id = p.stripe_bank_account
             where stripe_source = '$id'";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $stripe = new StripePayment($row);
                     $order = Order::getById($row['stripe_order']);
                     if (!isset($order)) {
                         return null;
                     }
-                    $stripe->order = $order; 
+                    $stripe->order = $order;
                     return $stripe;
                 }
             }
         }
-        
+
         return null;
     }
 
-    function save() {
+    public function save()
+    {
         $source = self::getDb()->escape_string($this->source);
         $method = self::getDb()->escape_string($this->method);
         $order = self::getDb()->escape_string($this->order->id);
@@ -270,25 +279,25 @@ class StripePayment extends Payment {
             $charge = 'NULL';
 
         } else {
-            $charge = "'".self::getDb()->escape_string($this->charge)."'";
+            $charge = "'" . self::getDb()->escape_string($this->charge) . "'";
         }
 
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
-            
+
             $query = "UPDATE payment_stripe
-                SET 
+                SET
                 stripe_source = '$source',
                 stripe_method = '$method',
                 stripe_bank_account = '$bank_account',
                 stripe_order = '$order',
                 stripe_status = '$status',
                 stripe_charge = $charge
-                 where `stripe_id` = '$id' 
+                 where `stripe_id` = '$id'
             ";
         } else {
 
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 payment_stripe (`stripe_source`, `stripe_method`, `stripe_order`, `stripe_bank_account`, `stripe_status`, `stripe_charge`)
                 VALUES ('$source', '$method', '$order', '$bank_account', '$status', $charge)";
         }
@@ -305,9 +314,10 @@ class StripePayment extends Payment {
         throw new DatabaseError(self::getDb()->error);
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 payment_stripe WHERE `stripe_id` = '$id' ";
 
         return self::getDb()->query($query);

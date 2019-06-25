@@ -1,12 +1,15 @@
 <?php
 namespace Pirate\Model\Leiding;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
+
+use Pirate\Classes\Environment\Environment;
 use Pirate\Mail\Mail;
+use Pirate\Model\Model;
 use Pirate\Model\Settings\Setting;
 use Pirate\Model\Users\User;
+use Pirate\Model\Validating\Validator;
 
-class Leiding extends Model {
+class Leiding extends Model
+{
     public $id;
     public $user; // object
     public $totem;
@@ -22,7 +25,8 @@ class Leiding extends Model {
     private static $allPermissions;
     private static $adminMenu;
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (!isset($row)) {
             $this->user = new User();
             return;
@@ -35,11 +39,12 @@ class Leiding extends Model {
         $this->permissions = explode('±', $row['permissions']);
 
         if (count($this->permissions) == 1 && $this->permissions[0] == '') {
-           $this->permissions = array(); 
+            $this->permissions = array();
         }
     }
 
-    static function getLeidingsverdeling() {
+    public static function getLeidingsverdeling()
+    {
         $leidingsverdeling = Setting::getSetting('leidingsverdeling');
 
         if (isset($leidingsverdeling) && isset($leidingsverdeling->value)) {
@@ -48,7 +53,8 @@ class Leiding extends Model {
         return null;
     }
 
-    static function disableLeidingsverdeling() {
+    public static function disableLeidingsverdeling()
+    {
         $leidingsverdeling = Setting::getSetting('leidingsverdeling');
         if (!isset($leidingsverdeling->id)) {
             return true;
@@ -56,12 +62,13 @@ class Leiding extends Model {
         return $leidingsverdeling->delete();
     }
 
-    static function setLeidingsverdeling(&$errors, $date, $time) {
+    public static function setLeidingsverdeling(&$errors, $date, $time)
+    {
         $leidingsverdeling = Setting::getSetting('leidingsverdeling');
 
-        $datetime = \DateTime::createFromFormat('d-m-Y H:i', $date.' '.$time);
+        $datetime = \DateTime::createFromFormat('d-m-Y H:i', $date . ' ' . $time);
         if ($datetime !== false) {
-            $leidingsverdeling->value = $datetime->format('Y-m-d H:i').':00';
+            $leidingsverdeling->value = $datetime->format('Y-m-d H:i') . ':00';
             return $leidingsverdeling->save();
         } else {
             $errors[] = 'Ongeldige datum en/of tijdstip.';
@@ -69,7 +76,8 @@ class Leiding extends Model {
         }
     }
 
-    static function isLeidingZichtbaar() {
+    public static function isLeidingZichtbaar()
+    {
         $leidingsverdeling = Self::getLeidingsverdeling();
 
         if (!isset($leidingsverdeling)) {
@@ -84,98 +92,75 @@ class Leiding extends Model {
     }
 
     // Geeft lijst van contact personen (array(key -> name))
-    static function getContacts() {
+    public static function getContacts()
+    {
         // Default van alle publieke contact personen
-        // 
-        return array(
-            'groepsleiding' => array(
-                'name' => 'Groepsleiding',
-                'mail' => 'groepsleiding@scoutswetteren.be'
-            ), 
-            'kapoenen' => array(
-                'name' => 'Kapoenleiding',
-                'mail' => 'kapoenen@scoutswetteren.be'
-            ),
-            'wouters' => array(
-                'name' => 'Wouterleiding',
-                'mail' => 'wouters@scoutswetteren.be'
-            ),
-            'jonggivers' => array(
-                'name' => 'Jonggiverleiding',
-                'mail' => 'jonggivers@scoutswetteren.be'
-            ),
-            'givers' => array(
-                'name' => 'Giverleiding',
-                'mail' => 'givers@scoutswetteren.be'
-            ),
-            'jin' => array(
-                'name' => 'Jinleiding',
-                'mail' => 'jin@scoutswetteren.be'
-            ),
-            'kerstactiviteit' => array(
-                'name' => 'Kerstactiviteit',
-                'mail' => 'kerstactiviteit@scoutswetteren.be'
-            ),
-            'winterfeest' => [
-                "name" => 'Winterfeest',
-                'mail' => "winterfeest@scoutswetteren.be",
-            ],
-            'wafelbak' => array(
-                'name' => 'Wafelbak',
-                'mail' => 'wafels@scoutswetteren.be'
-            ),
-            'webmaster' => array(
-                'name' => 'Webmaster',
-                'mail' => 'website@scoutswetteren.be'
-            ),
-            'materiaal' => array(
-                'name' => 'Materiaalmeesters',
-                'mail' => 'materiaal@scoutswetteren.be'
-            ),
-            'verhuur' => array(
-                'name' => 'Verhuur verantwoordelijke',
-                'permission' => 'verhuur'
-            ),
-            'oudercomite' => array(
-                'name' => 'Oudercomité',
-                'permission' => 'contactpersoon_oudercomite'
-            )
-        );
+        //
+        return Environment::getSetting('contacts');
     }
 
-    // Geeft e-mailadres voor een bepaalde contactpersoon
-    static function getContactEmail($contact_key, &$email, &$naam, &$send_from) {
+    /// Returns a list with objects with: name, mail, send_from (bool)
+    public static function getContactEmails($contact_key)
+    {
         $contacts = self::getContacts();
         if (!isset($contacts[$contact_key])) {
-            return false;
+            throw new \Exception("Contact key not found: $contact_key");
         }
 
         $contact_data = $contacts[$contact_key];
-        $naam = null;
-        $send_from = true;
-        $email = 'website@scoutswetteren.be';
+
+        $list = [];
 
         if (!isset($contact_data['mail'])) {
-            $send_from = false;
             if (isset($contact_data['tak'])) {
                 $leiding = Leiding::getLeiding($contact_data['permission'], $contact_data['tak']);
             } else {
                 $leiding = Leiding::getLeiding($contact_data['permission']);
             }
-            
-            if (count($leiding) > 0) {
-                $email = $leiding[0]->user->mail;
-                $naam = $leiding[0]->user->firstname.' '.$leiding[0]->user->lastname;
+
+            foreach ($leiding as $leider) {
+                $list[] = (object) [
+                    'mail' => $leider->user->mail,
+                    'mail' => $leider->user->firstname . ' ' . $leider->user->lastname,
+                    'send_from' => false,
+                ];
+            }
+
+            if (count($list) == 0) {
+                // default to development mail
+                $list[] = (object) [
+                    'mail' => Environment::getSetting('development_mail.mail'),
+                    'name' => Environment::getSetting('development_mail.name'),
+                    'send_from' => false,
+                ];
             }
         } else {
-            $email = $contact_data['mail'];
-            $naam = $contact_data['name'];
-            $send_from = true;
+            $list[] = (object) [
+                'mail' => $contact_data['mail'],
+                'mail' => $contact_data['name'],
+                'send_from' => true,
+            ];
         }
+        return $list;
+    }
+
+    // Geeft e-mailadres voor een bepaalde contactpersoon
+    public static function getContactEmail($contact_key, &$email, &$naam, &$send_from)
+    {
+        $list = static::getContactEmails($contact_key);
+        if (count($list) == 0) {
+            return false;
+        }
+
+        $email = $list[0]->mail;
+        $naam = $list[0]->name;
+        $send_from = $list[0]->send_from;
+
         return true;
     }
 
-    static function getPossiblePermissions() {
+    public static function getPossiblePermissions()
+    {
         if (isset(self::$allPermissions)) {
             return self::$allPermissions;
         }
@@ -183,8 +168,8 @@ class Leiding extends Model {
         $permissions = array();
         $query = "SELECT * from permissions";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $permissions[$row['permissionCode']] = $row['permissionName'];
                 }
@@ -196,17 +181,18 @@ class Leiding extends Model {
         return $permissions;
     }
 
-    static function getLeiding($permission = null, $tak = null) {
+    public static function getLeiding($permission = null, $tak = null)
+    {
         $permission_code = '';
         if (!is_null($permission)) {
-            $permission_code = "WHERE p2.permissionCode = '".self::getDb()->escape_string($permission)."'";
+            $permission_code = "WHERE p2.permissionCode = '" . self::getDb()->escape_string($permission) . "'";
         } else {
             $permission_code = "WHERE p.permissionId IS NULL OR p2.permissionId = p.permissionId";
             // TODO: Kan versneld worden als persmission = null -> dan dubbele joins weglaten
         }
 
         if (!is_null($tak)) {
-            $permission_code .= " AND l.tak = '".self::getDb()->escape_string($tak)."'";
+            $permission_code .= " AND l.tak = '" . self::getDb()->escape_string($tak) . "'";
         }
 
         $leiding = array();
@@ -219,14 +205,14 @@ class Leiding extends Model {
 
         left join _permissions_leiding _pl2 on _pl2._leidingId = l.id
         left join permissions p2 on p2.permissionId = _pl2._permissionId
-        
+
         $permission_code
         group by l.id
         order by l.tak
         ";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $leiding[] = new Leiding($row);
                 }
@@ -236,7 +222,8 @@ class Leiding extends Model {
         return $leiding;
     }
 
-    static function getLeidingById($id) {
+    public static function getLeidingById($id)
+    {
         if (!is_numeric($id)) {
             return null;
         }
@@ -252,8 +239,8 @@ class Leiding extends Model {
         where l.id = '$id'
         group by l.id";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 0) {
                 return null;
             }
             $row = $result->fetch_assoc();
@@ -263,7 +250,8 @@ class Leiding extends Model {
         return null;
     }
 
-    static function getByUserId($id) {
+    public static function getByUserId($id)
+    {
         if (!is_numeric($id)) {
             return null;
         }
@@ -279,8 +267,8 @@ class Leiding extends Model {
         where l.user_id = '$id'
         group by l.id";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 0) {
                 return null;
             }
             $row = $result->fetch_assoc();
@@ -290,10 +278,11 @@ class Leiding extends Model {
         return null;
     }
 
-    static function temporaryLoginWithPasswordKey($key) {
+    public static function temporaryLoginWithPasswordKey($key)
+    {
         if (User::temporaryLoginWithPasswordKey($key)) {
             return Self::isLoggedIn();
-        } 
+        }
 
         return false;
     }
@@ -301,19 +290,21 @@ class Leiding extends Model {
     // Returns true on success
     // Sets cookies if succeeded
     // isLoggedIn() etc kan gebruikt worden hierna
-    static function login($mail, $password) {
+    public static function login($mail, $password)
+    {
         if (User::login($mail, $password)) {
             return Self::isLoggedIn();
         }
         return false;
     }
 
-    static function getAdminMenu() {
+    public static function getAdminMenu()
+    {
         if (isset(self::$adminMenu)) {
             return self::$adminMenu;
         }
 
-        include(__DIR__.'/../../_bindings/admin.php');
+        include __DIR__ . '/../../_bindings/admin.php';
 
         $allButtons = [];
         $urls = [];
@@ -330,17 +321,17 @@ class Leiding extends Model {
                         if ($priority <= $o->priority) {
                             continue;
                         }
-                        
+
                         // Remove old button
                         array_splice($allButtons[$o->priority], $o->index, 1);
-                        
+
                         // Nu alle oude priority indexen updaten
                         foreach ($urls as $key => $value) {
                             if ($value->priority == $o->priority && $value->index >= $o->index) {
                                 $value->index--;
                             }
                         }
-                    } 
+                    }
 
                     if (!isset($allButtons[$priority])) {
                         $allButtons[$priority] = [];
@@ -348,7 +339,7 @@ class Leiding extends Model {
 
                     $urls[$button['url']] = (object) [
                         'priority' => $priority,
-                        'index' => count($allButtons[$priority])
+                        'index' => count($allButtons[$priority]),
                     ];
 
                     $allButtons[$priority][] = $button;
@@ -370,12 +361,13 @@ class Leiding extends Model {
      * Controleert of de huidige bezoeker ingelogd is
      * @return Leiding Geeft leiding object van bezoeker terug indien de gebruiker ingelogd is. NULL indien niet ingelogd
      */
-    private static function checkLogin() {
+    private static function checkLogin()
+    {
         $user = User::getUser();
         if (isset($user)) {
             // We zijn ingelogd.
             // Zijn we ook een leider?
-            
+
             // Eerst cache checken
             $didCheckLeiding = false;
 
@@ -407,23 +399,27 @@ class Leiding extends Model {
         return null;
     }
 
-    static function isLoggedIn() {
+    public static function isLoggedIn()
+    {
         return !is_null(self::checkLogin());
     }
 
-    static function getPermissions() {
+    public static function getPermissions()
+    {
         if (!self::isLoggedIn()) {
             return array();
         }
         return self::getUser()->permissions;
     }
 
-    static function getUser() {
+    public static function getUser()
+    {
         return self::checkLogin();
     }
 
     // Case sensitive
-    static function hasPermission($permission) {
+    public static function hasPermission($permission)
+    {
         if ($permission != 'webmaster' && self::hasPermission('webmaster')) {
             return true;
         }
@@ -432,7 +428,8 @@ class Leiding extends Model {
 
     // empty array on success
     // array of errors on failure
-    function setProperties(&$data, $admin = false) {
+    public function setProperties(&$data, $admin = false)
+    {
         if (!isset($this->user->id) && isset($data['mail'])) {
             // Kijk of we een bestaande user kunnen koppelen
             $user = User::getForEmail($data['mail']);
@@ -453,11 +450,10 @@ class Leiding extends Model {
 
         if (strlen($data['totem']) == 0) {
             $this->totem = null;
-        }
-        elseif (Validator::isValidTotem($data['totem'])) {
+        } elseif (Validator::isValidTotem($data['totem'])) {
             $this->totem = ucfirst(strtolower($data['totem']));
             $data['totem'] = $this->totem;
-        }  else {
+        } else {
             $errors[] = 'Ongeldige totem';
         }
 
@@ -507,17 +503,19 @@ class Leiding extends Model {
         return $errors;
     }
 
-    function sendPasswordEmail() {
+    public function sendPasswordEmail()
+    {
         $mail = new Mail('Account scoutswebsite', 'user-new-leiding', array('user' => $this->user));
         $mail->addTo(
-            $this->user->mail, 
+            $this->user->mail,
             array(),
-            $this->user->firstname.' '.$this->user->lastname
+            $this->user->firstname . ' ' . $this->user->lastname
         );
         return $mail->send();
     }
 
-    function save() {
+    public function save()
+    {
         if (!$this->user->save()) {
             return false;
         }
@@ -527,13 +525,13 @@ class Leiding extends Model {
         if (!isset($this->tak)) {
             $tak = 'NULL';
         } else {
-            $tak = "'".self::getDb()->escape_string($this->tak)."'";
+            $tak = "'" . self::getDb()->escape_string($this->tak) . "'";
         }
 
         if (!isset($this->totem)) {
             $totem = 'NULL';
         } else {
-            $totem = "'".self::getDb()->escape_string($this->totem)."'";
+            $totem = "'" . self::getDb()->escape_string($this->totem) . "'";
         }
 
         self::getDb()->autocommit(false);
@@ -543,15 +541,15 @@ class Leiding extends Model {
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
 
-            $query = "UPDATE leiding 
-                SET 
+            $query = "UPDATE leiding
+                SET
                  `user_id` = '$user_id',
                  totem = $totem,
                  tak = $tak
-                 where id = '$id' 
+                 where id = '$id'
             ";
         } else {
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 leiding (`user_id`, `totem`, `tak`)
                 VALUES ('$user_id', $totem, $tak)";
         }
@@ -569,8 +567,8 @@ class Leiding extends Model {
             if (self::hasPermission('groepsleiding')) {
                 $fail = false;
 
-                $query = "DELETE 
-                    FROM _permissions_leiding 
+                $query = "DELETE
+                    FROM _permissions_leiding
                     WHERE _leidingId = '$id'";
 
                 if (!self::getDb()->query($query)) {
@@ -584,7 +582,7 @@ class Leiding extends Model {
                         if ($str != '') {
                             $str .= ",";
                         }
-                        $str .= "'".self::getDb()->escape_string($code)."'";
+                        $str .= "'" . self::getDb()->escape_string($code) . "'";
                     }
                     $query = "INSERT INTO _permissions_leiding ( _leidingId, _permissionId )
                         select '$id', permissionId from permissions where permissionCode IN($str)";
@@ -614,11 +612,11 @@ class Leiding extends Model {
         return $result;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 leiding WHERE id = '$id' ";
-
 
         if (self::getDb()->query($query)) {
             // We houden de user
@@ -628,23 +626,24 @@ class Leiding extends Model {
         return false;
     }
 
-    static function sendErrorMail($subject, $message, $log) {
+    public static function sendErrorMail($subject, $message, $log)
+    {
         $webmasters = static::getLeiding('webmaster');
-        
+
         $mail = new Mail(
-            $subject, 
-            'error-log', 
+            $subject,
+            'error-log',
             array(
                 'message' => $message,
-                'log' => $log
+                'log' => $log,
             )
         );
 
-        foreach($webmasters as $webmaster) {
+        foreach ($webmasters as $webmaster) {
             $mail->addTo(
-                $webmaster->user->mail, 
+                $webmaster->user->mail,
                 array(),
-                $webmaster->user->firstname.' '.$webmaster->user->lastname
+                $webmaster->user->firstname . ' ' . $webmaster->user->lastname
             );
         }
 

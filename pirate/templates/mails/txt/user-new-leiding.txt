@@ -1,12 +1,12 @@
 Dag {{ user.firstname }},
 
-{% if not user.hasPassword %}We hebben een account aangemaakt op www.scoutswetteren.be. Stel nu een wachtwoord in zodat je kan inloggen.
+{% if not user.hasPassword %}We hebben een account aangemaakt op {{ environment.domain }}. Stel nu een wachtwoord in zodat je kan inloggen.
 
 Je kan je wachtwoord instellen door de link hieronder aan te klikken of te kopiëren in je adresbalk:
 {{ user.getSetPasswordUrl() }}
-{% else %}We hebben je toegevoegd als beheerder op www.scoutswetteren.be. Vanaf nu krijg je extra bevoegdheden als je inlogt.{% endif %}
+{% else %}We hebben je toegevoegd als beheerder op {{ environment.domain }}. Vanaf nu krijg je extra bevoegdheden als je inlogt.{% endif %}
 
 Je kan altijd inloggen door helemaal onderaan de website, langs de rechterkant op 'inloggen' te klikken.
 
 Tot binnenkort,
-Scouts Prins Boudewijn Wetteren
+{{ environment.name }}

@@ -11,11 +11,11 @@
                     "@context": "http://www.schema.org",
                     "@type": "Event",
                     "name": {{ activity.name_js | raw}},
-                    "url": "https://www.scoutswetteren.be",
+                    "url": "{{ http }}",
                     "organizer": {
                         "@type": "Organization",
-                        "name": "Scouts Prins Boudewijn Wetteren",
-                        "url": "https://www.scoutswetteren.be"
+                        "name": "{{ environment.name }}",
+                        "url": "{{ http }}"
                     },
                     "startDate": "{{ activity.time_start_js }}",
                     "endDate": "{{ activity.time_start_js }}",

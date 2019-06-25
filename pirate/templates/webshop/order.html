@@ -27,7 +27,7 @@
                     {% if not order.isValid() %}
                         <header>
                             <h1>Wachten op betaling...</h1>
-                            <h2>Zodra we van de bank het signaal krijgen dat de betaling is gelukt wordt je bestelling geplaatst. Als dit langer duurt dan 15 minuten is de betaling waarschijnlijk mislukt. Neem contact op met website@scoutswetteren.be in geval van problemen.</h2>
+                            <h2>Zodra we van de bank het signaal krijgen dat de betaling is gelukt wordt je bestelling geplaatst. Als dit langer duurt dan 15 minuten is de betaling waarschijnlijk mislukt. Neem contact op met {{ environment.development_mail.mail }} in geval van problemen.</h2>
                         </header>
 
                     {% else %}

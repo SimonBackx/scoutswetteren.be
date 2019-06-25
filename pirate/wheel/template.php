@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Template;
 
+use Pirate\Classes\Environment\Environment;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Users\User;
@@ -47,6 +48,12 @@ class Template
         } else {
             $data['http'] = "https://{$_SERVER['SERVER_NAME']}";
         }
+
+        $data['environment'] = [
+            'domain' => Environment::getSetting('domain'),
+            'name' => Environment::getSetting('name'),
+            'development_mail' => Environment::getSetting('development_mail'),
+        ];
 
         $data['general'] = array(
             'logged_in' => User::isLoggedIn(),

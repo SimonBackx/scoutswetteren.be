@@ -646,27 +646,21 @@ class Reservatie extends Model
                 if (!isset($this->door_leiding) && !$this->no_mail) {
 
                     // Mail voor verantwoordelijke(n)
-                    $leiding = Leiding::getLeiding('verhuur');
-                    $verhuurder = 'website@scoutswetteren.be';
                     $mail = new Mail('Huur aanvraag van ' . $this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
+                    $verhuurder = null;
 
-                    if (count($leiding) > 0) {
-                        $verhuurder = $leiding[0]->user->mail;
-
-                        foreach ($leiding as $l) {
-                            $mail->addTo(
-                                $l->user->mail,
-                                array(),
-                                $l->user->firstname . ' ' . $l->user->lastname
-                            );
+                    foreach (Leiding::getContactEmails('verhuur') as $contact) {
+                        if (!isset($verhuurder)) {
+                            $verhuurder = $contact->mail;
                         }
 
-                    } else {
-                        // Geen verhuurder aangeduid: default gebruiken
                         $mail->addTo(
-                            $verhuurder
+                            $contact->mail,
+                            array(),
+                            $contact->name
                         );
                     }
+
                     $mail->send();
 
                     // Andere (mail voor huurder zelf)

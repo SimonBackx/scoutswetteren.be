@@ -1,20 +1,23 @@
 <?php
 namespace Pirate\Sail\Leden\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
+
+use Pirate\Classes\Environment\Environment;
+use Pirate\Mail\Mail;
+use Pirate\Model\Leden\Afrekening;
+use Pirate\Model\Leden\Inschrijving;
 use Pirate\Model\Leden\Lid;
 use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Afrekening;
-use Pirate\Mail\Mail;
+use Pirate\Page\Page;
+use Pirate\Template\Template;
 
-class OuderOverview extends Page {
+class OuderOverview extends Page
+{
     public $redirect = null;
     public $leden = array();
     protected $ouders = array();
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         // Controle of alles in orde is, anders doorverwijzen
         $user = Ouder::getUser();
         $leden = Lid::getLedenForOuder($user);
@@ -28,7 +31,7 @@ class OuderOverview extends Page {
         foreach ($leden as $lid) {
             if (empty($lid->inschrijving)) {
 
-                $nooit_ingeschreven_aantal ++;
+                $nooit_ingeschreven_aantal++;
                 continue;
             }
 
@@ -41,20 +44,20 @@ class OuderOverview extends Page {
             if ($nooit_ingeschreven_aantal == count($leden)) {
             } elseif ($ingeschreven_aantal == 0) {
                 // doorverwijzen!
-                // 
+                //
                 // TODO!! Voor inschrijvingen te verlengen!
                 $this->redirect = 'ouders/verleng-inschrijving';
                 return 302;
             }
         }
-        
+
         // Tweede: controleren of alles steekkaarten van deze leden recent zijn nagekeken of bestaan
         foreach ($leden as $lid) {
             if ($lid->isIngeschreven() // Steekkaart nakijken enkel als al ingeschreven
-                  && 
-                 (empty($lid->steekkaart) || $lid->steekkaart->moetNagekekenWorden()) // Steekkaart niet in orde
+                 &&
+                (empty($lid->steekkaart) || $lid->steekkaart->moetNagekekenWorden()) // Steekkaart niet in orde
             ) {
-                $this->redirect = "ouders/steekkaart/".$lid->id;
+                $this->redirect = "ouders/steekkaart/" . $lid->id;
                 return 302;
             }
         }
@@ -63,19 +66,19 @@ class OuderOverview extends Page {
         // Afrekening aanmaken indien inschrijvingen nog niet zijn afgerekend.
         // Mailen én
         //  dan doorverwijzen naar de info pagina van deze afrekening
-        
+
         // Alle nog nooit ingeschreven leden (nieuwe leden), nu pas inschrijven (nadat hun steekkaart dus is ingevuld)
-        
+
         /*foreach ($leden as $lid) {
-            if ($lid->isInschrijfbaar() && empty($lid->inschrijving)) {
-                $lid->schrijfIn();
-            }
+        if ($lid->isInschrijfbaar() && empty($lid->inschrijving)) {
+        $lid->schrijfIn();
+        }
         }*/
 
         // Nakijken
         foreach ($leden as $lid) {
             if ($lid->isInschrijfbaar() && $lid->moetNagekekenWorden()) {
-                $this->redirect = "ouders/lid-aanpassen/".$lid->id;
+                $this->redirect = "ouders/lid-aanpassen/" . $lid->id;
                 return 302;
             }
         }
@@ -85,7 +88,6 @@ class OuderOverview extends Page {
             $this->redirect = "ouders/gezin-nakijken";
             return 302;
         }
-
 
         $inschrijvingen_afrekenen = array();
         $leden_waarvoor_afgerekend = array();
@@ -104,27 +106,28 @@ class OuderOverview extends Page {
 
                 $ouder = Ouder::getUser();
                 $mail->addTo(
-                    $ouder->user->mail, 
-                    array('naam' => $ouder->user->firstname, 'url' => "https://".$_SERVER['SERVER_NAME']."/ouders/afrekening/".$afrekening->id.'/'),
-                    $ouder->user->firstname.' '.$ouder->user->lastname
+                    $ouder->user->mail,
+                    array('naam' => $ouder->user->firstname, 'url' => "https://" . $_SERVER['SERVER_NAME'] . "/ouders/afrekening/" . $afrekening->id . '/'),
+                    $ouder->user->firstname . ' ' . $ouder->user->lastname
                 );
 
                 $mail->send();
 
-                $this->redirect = "ouders/afrekening/".$afrekening->id.'/?klaar';
+                $this->redirect = "ouders/afrekening/" . $afrekening->id . '/?klaar';
                 return 302;
             } else {
-                echo 'Het afrekenen is mislukt. Neem contact op met website@scoutswetteren.be om de afrekening in orde te maken (voor het betalen van het lidgeld).';
+                echo 'Het afrekenen is mislukt. Neem contact op met ' . Environment::getSetting('development_mail.mail') . ' om de afrekening in orde te maken (voor het betalen van het lidgeld).';
             }
         }
 
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         if (!empty($this->redirect)) {
-            header("Location: https://".$_SERVER['SERVER_NAME']."/".$this->redirect);
-            return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/".$this->redirect;
+            header("Location: https://" . $_SERVER['SERVER_NAME'] . "/" . $this->redirect);
+            return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/" . $this->redirect;
         }
 
         $leden_ingeschreven = array();
@@ -140,7 +143,7 @@ class OuderOverview extends Page {
         $this->ouders = Ouder::getOudersForGezin($user->gezin->id);
         $afrekeningen = Afrekening::getAfrekeningenForGezin($user->gezin);
         $scoutsjaar = Inschrijving::getScoutsjaar();
-        
+
         return Template::render('leden/ouder-overview', array(
             'leden' => $leden_ingeschreven,
             'niet_ingeschreven_aantal' => $niet_ingeschreven_aantal,
@@ -148,7 +151,7 @@ class OuderOverview extends Page {
             'afrekeningen' => $afrekeningen,
             'gezin' => $user->gezin,
             'ouders' => $this->ouders,
-            'scoutsjaar' => $scoutsjaar
+            'scoutsjaar' => $scoutsjaar,
         ));
     }
 }

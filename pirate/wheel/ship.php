@@ -1,6 +1,7 @@
 <?php
 namespace Pirate;
 
+use Pirate\Classes\Environment\Environment;
 use Pirate\Classes\Sentry\Sentry;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Migrations\Migration;
@@ -54,7 +55,7 @@ class Ship
     public function sail()
     {
         if ($_SERVER['SERVER_PORT'] != 443) {
-            die('Er is een probleem ontstaan waardoor de website geen beveiligde verbinding gebruikt. Neem conact met ons op (website@scoutswetteren.be) als dit probleem zich blijft voordoen.');
+            die('Er is een probleem ontstaan waardoor de website geen beveiligde verbinding gebruikt. Neem conact met ons op (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.');
         }
 
         $url = strtok($_SERVER["REQUEST_URI"], '?');
@@ -84,7 +85,7 @@ class Ship
         } catch (\Exception $e) {
             http_response_code(500);
 
-            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
+            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
             Sentry::shared()->logFatalError($e);
             //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
 
@@ -92,7 +93,7 @@ class Ship
         } catch (\Error $e) {
             http_response_code(500);
 
-            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (website@scoutswetteren.be) als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
+            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
             Sentry::shared()->logFatalError($e);
             //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
 
