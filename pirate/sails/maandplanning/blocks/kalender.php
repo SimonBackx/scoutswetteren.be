@@ -163,8 +163,8 @@ class Kalender extends Block
 
         // Maand bepalen
         $day = date('N') - 1;
-        $month = date('m', strtotime('+' . (7 - $day) . ' days'));
-        $year = date('Y', strtotime('+' . (7 - $day) . ' days'));
+        $month = date('m', strtotime('+' . (7 - $day - 1) . ' days'));
+        $year = date('Y', strtotime('+' . (7 - $day - 1) . ' days'));
 
         $week_start = date('Y-m-d', strtotime('-' . $day . ' days'));
         $week_end = date('Y-m-d', strtotime('+' . (7 - $day) . ' days'));
