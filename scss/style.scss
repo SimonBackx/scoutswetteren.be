@@ -4,12 +4,15 @@
 @import "base/reset";
 @import "base/mixins";
 
+@import "elements/html";
 @import "elements/text";
 @import "elements/buttons";
 @import "elements/forms";
 
 
 @import "layout/container";
+@import "layout/blocks";
+@import "layout/splitted";
 
 
 @import "components/buttons-bar";
