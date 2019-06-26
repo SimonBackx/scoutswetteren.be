@@ -1,0 +1,48 @@
+table.details {
+    font-size: $size-text-bigger;
+    margin: 30px 0;
+
+    tfoot {
+        tr {
+            td {
+                padding-top: 15px;
+                font-weight: bold;
+            }
+            td:first-child{
+                text-transform: uppercase;
+            }
+        }
+    }
+    &.right {
+        tr {
+            td {
+                text-align: right;
+            }
+            td:first-child {
+
+                @media screen and (max-width: $width-stop-splitted), print {
+                    text-align: left;
+                }
+            }
+        }
+    }
+
+    &.last-right {
+        tr {
+            td:last-child {
+                text-align: right;
+            }
+        }
+    }
+
+    tr {
+        td {
+            padding: 5px 0;
+            color: $merlot;
+        }
+        td:first-child{
+            color: $aubergine;
+            padding-right: 30px;
+        }
+    }
+}

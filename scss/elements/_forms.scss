@@ -1,6 +1,3 @@
-$slider-circle: 12px;
-$slider-box: 30px;
-$slider-top: 20px;
 
 .show-on-file-selected {
     display: none;
@@ -369,21 +366,5 @@ form {
         label {
             color: $error-red;
         }
-    }
-}
-
-ul.error {
-    padding: 0;
-    margin: 20px 0;
-
-
-    li {
-        color: $error-red;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        font-size: $size-text-bigger;
-        background: url(../images/error.svg) no-repeat left center;
-        padding-left: 30px;
     }
 }

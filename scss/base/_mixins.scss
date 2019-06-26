@@ -1,0 +1,23 @@
+
+
+@mixin bg-gradient-t2b($start-colour, $end-colour) {
+    background-image: -webkit-gradient(linear, left top, left bottom, from($start-colour), to($end-colour));
+    background-image: -webkit-linear-gradient(top, $start-colour, $end-colour);
+    background-image:    -moz-linear-gradient(top, $start-colour, $end-colour);
+    background-image:     -ms-linear-gradient(top, $start-colour, $end-colour);
+    background-image:      -o-linear-gradient(top, $start-colour, $end-colour);
+    background-image:         linear-gradient(top, $start-colour, $end-colour);
+    $ie-color: ie-hex-str($start-colour);
+    $ie-color2: ie-hex-str($end-colour);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#{$ie-color}", EndColorStr="#{$ie-color2}");
+    zoom: 1;
+}
+@mixin bg-gradient-l2r($start-colour, $end-colour) {
+    background-image: -webkit-gradient(linear, left top, right top, from($start-colour), to($end-colour));
+    background-image: -webkit-linear-gradient(left, $start-colour, $end-colour);
+    background-image:    -moz-linear-gradient(left, $start-colour, $end-colour);
+    background-image:     -ms-linear-gradient(left, $start-colour, $end-colour);
+    background-image:      -o-linear-gradient(left, $start-colour, $end-colour);
+    background-image:         linear-gradient(left, $start-colour, $end-colour);
+    // Geen IE7-8 support atm
+}

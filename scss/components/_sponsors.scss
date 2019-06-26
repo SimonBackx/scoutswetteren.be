@@ -1,0 +1,46 @@
+#sponsors {
+    text-align: center;
+
+    a, div {
+        display: inline-block;
+        padding: 1.333%;
+        height: 160px;
+        width: 24%;
+        line-height: 160px;
+
+        img {
+            max-height: 160px;
+            max-width: 100%;
+            opacity: 0.6;
+            vertical-align: middle;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+#sponsors-small {
+    text-align: center;
+    margin-bottom: 20px;
+
+    a, div {
+        display: inline-block;
+        padding: 1.333%;
+        height: 80px;
+        max-width: 12%;
+        line-height: 80px;
+
+        img {
+            max-height: 80px;
+            max-width: 100%;
+            opacity: 0.5;
+            vertical-align: middle;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+}

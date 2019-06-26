@@ -1,0 +1,128 @@
+button {
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+a.button, button.button, input[type=submit] {
+    padding: 10px 30px;
+    border: 2px solid white;
+    border-radius: 40px;
+    text-transform: uppercase;
+    font-size: $size-button;
+    cursor: pointer;
+
+    margin: 20px 7px;
+    display: inline-block;
+
+    svg {
+        margin-right: 15px;
+        vertical-align: text-top;
+    }
+
+    &.small {
+        font-size: $size-text;
+    }
+
+    &.merlot {
+        color: $merlot;
+        border-color: $merlot;
+
+        &.fill {
+            color: white;
+            background: $merlot;
+        }
+    }
+
+    
+    &.aubergine {
+        color: $aubergine;
+        border-color: $aubergine;
+
+        &.search {
+            background: url(../images/hourglass-aubergine.png) no-repeat left center;
+        }
+
+        &.fill {
+            color: white;
+            background: $aubergine;
+        }
+    }
+
+    &.white {
+        color: white;
+
+        &.search {
+            background: url(../images/hourglass-white.png) no-repeat left center;
+        }
+    }
+
+    &.noborder {
+        border: 0;
+        padding: 0;
+        margin: 15px;
+
+        &:hover {
+            opacity: 0.6;
+            svg {
+                opacity: 0.6;
+            }
+        }
+
+        &.arrow-right {
+            background: url(../images/icon-button.svg) no-repeat right center;
+            padding-right: 20px;
+        }
+
+        &.arrow-left {
+            background: url(../images/icon-button-back.svg) no-repeat left center;
+            padding-left: 20px;
+        }
+    }
+
+    &.search {
+        padding: 10px 0 10px 40px;
+    }
+
+    &.big {
+        font-size: $size-button-big;
+    }
+
+    &:first-child {
+        margin-left: 0;
+    }
+}
+
+a.icon-button, button.icon-button {
+    &, &:hover, &:visited, &:active, &:link {
+        color: $aubergine;
+    }
+
+    text-transform: uppercase;
+    padding: 5px 5px 5px 20px;
+    margin: 5px 0 20px 0;
+    font-size: $size-button;
+    display: block;
+    text-align: left;
+    background: url(../images/icon-button.png) no-repeat left center;
+    background-image: linear-gradient(transparent, transparent), url(../images/icon-button.svg);
+
+    &.plus {
+       background: url(../images/plus-button.png) no-repeat left center;
+       background-image: linear-gradient(transparent, transparent), url(../images/plus-button.svg);
+    }
+
+    &.delete {
+       background: url(../images/delete-button.png) no-repeat left center; 
+       background-image: linear-gradient(transparent, transparent), url(../images/delete-button.svg);
+    }
+}
+
+
+// Resize font sizes on small screens
+@media screen and (max-width: 480px) {
+    a.button {
+        padding: 8px 25px;
+        margin: 15px 0;
+        font-size: 12pt;
+    }
+}

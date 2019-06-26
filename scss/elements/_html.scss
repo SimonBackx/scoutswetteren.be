@@ -1,0 +1,29 @@
+body, html {
+    color: $cod-gray;
+    font-family: 'Montserrat', sans-serif;
+    padding: 0;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    font-size: $size-text;
+    position: static;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.ie-only {
+    display: none;
+    position: absolute;
+    font-weight: bold;
+    left: 0;
+    right: 0;
+    top: 60px;
+    background: $merlot;
+    padding: 20px;
+    text-align: center;
+    color: white;
+}
+noscript .ie-only {
+    display: block;
+}

@@ -1,0 +1,88 @@
+.splitted {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+
+    @media screen and (max-width: $width-stop-splitted), print {
+      display: block;
+    }
+
+    .part {
+        display: table-cell;
+
+        @media screen and (max-width: $width-stop-splitted), print {
+          display: block;
+        }
+
+        vertical-align: middle;
+
+        &.column {
+            vertical-align: top;
+
+            &.first {
+                padding-right: 20px;
+            }
+            &.last {
+                padding-left: 20px;
+            }
+            @media screen and (max-width: $width-stop-splitted), print {
+                &.first {
+                    padding-right: 0;
+                }
+                &.last {
+                    padding-left: 0;
+                }
+            }
+        }
+        &.map {
+             width: 45%;
+             position: relative;
+                overflow: hidden;
+
+             @media screen and (max-width: $width-stop-splitted), print {
+                display: none;
+            }
+        }
+
+        &.image {
+            width: 45%;
+            
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+
+            @media screen and (max-width: $width-stop-splitted), print {
+              width: 100%;
+              height: 400px;
+              margin: 0;
+              padding: 0;
+            }
+
+            position: relative;
+            overflow: hidden;
+
+            img {
+                display: none;
+            }
+            
+            figcaption {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                max-width: 100%;
+                background: $merlot;
+                color: white;
+                padding: 15px 25px;
+            }
+        }
+        &.subtext {
+            width: 45%;
+        }
+        &.subtext-splitted {
+            width: 60%;
+        }
+        &.calendar, &.activities {
+            vertical-align: top;
+        }
+    }
+}

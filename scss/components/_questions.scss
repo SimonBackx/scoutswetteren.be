@@ -1,0 +1,18 @@
+.questions {
+
+    h2 {
+        font-size: $size-question;
+        color: $aubergine !important;
+        
+        span {
+            font-size: $size-text;
+            display: inline-block;
+            color: $gray;
+            margin-left: 10px;
+        }
+    }
+
+    p {
+        color: $merlot;
+    }
+}
