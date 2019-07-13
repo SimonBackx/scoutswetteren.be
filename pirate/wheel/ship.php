@@ -3,10 +3,11 @@ namespace Pirate;
 
 use Pirate\Classes\Environment\Environment;
 use Pirate\Classes\Sentry\Sentry;
+use Pirate\Database\Database;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Migrations\Migration;
 use Pirate\Model\Model;
-use \Pirate\Database\Database;
+use Pirate\Template\Template;
 
 class Ship
 {
@@ -43,6 +44,9 @@ class Ship
 
         // Loading Sails's services with certain priority level
         Database::init();
+
+        // Load twig (needs environment / autoloading)
+        Template::init();
 
         // Load router
         require __DIR__ . '/router.php';
@@ -85,16 +89,29 @@ class Ship
         } catch (\Exception $e) {
             http_response_code(500);
 
-            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
-            Sentry::shared()->logFatalError($e);
+            if (class_exists('Environment')) {
+                echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
+            } else {
+                echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
+            }
+
+            if (class_exists('Sentry')) {
+                Sentry::shared()->logFatalError($e);
+            }
             //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
 
             exit;
         } catch (\Error $e) {
             http_response_code(500);
 
-            echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
-            Sentry::shared()->logFatalError($e);
+            if (class_exists('Environment')) {
+                echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
+            } else {
+                echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
+            }
+            if (class_exists('Sentry')) {
+                Sentry::shared()->logFatalError($e);
+            }
             //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
 
             exit;

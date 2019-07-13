@@ -5,8 +5,6 @@ use Pirate\Classes\Environment\Environment;
 use Pirate\Model\Leden\Ouder;
 use Pirate\Model\Leiding\Leiding;
 use Pirate\Model\Users\User;
-use Twig_Environment;
-use Twig_Loader_Filesystem;
 
 class Template
 {
@@ -85,9 +83,13 @@ class Template
         return self::$twig->render($template . '.' . $ext, $data);
     }
 
-}
+    public static function init()
+    {
+        $loader = new \Twig\Loader\FilesystemLoader([__DIR__ . '/../themes/' . Environment::getSetting('theme') . '/templates/', __DIR__ . '/../themes/shared/templates/']);
+        Template::$twig = new \Twig\Environment($loader, array(
+            'cache' => __DIR__ . '/../tmp/twig/',
+        ));
 
-$loader = new Twig_Loader_Filesystem(__DIR__ . '/../templates/');
-Template::$twig = new Twig_Environment($loader/*, array(
-'cache' => __DIR__.'/../tmp/twig/',
-)*/);
+    }
+
+}

@@ -9,4 +9,4 @@ letsencrypt:
   - "scoutswetteren.be"
   - "www.scoutswetteren.be"
   - "files.scoutswetteren.be"
-sass: "scss/style.scss:public/css/style.css"
+sass: "pirate/themes/prins-boudewijn/scss/main.scss:public/css/prins-boudewijn.css pirate/themes/sint-jan/scss/main.scss:public/css/sint-jan.css"
