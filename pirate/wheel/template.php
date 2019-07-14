@@ -50,6 +50,7 @@ class Template
         $data['environment'] = [
             'domain' => Environment::getSetting('domain'),
             'name' => Environment::getSetting('name'),
+            'theme' => Environment::getSetting('theme'),
             'development_mail' => Environment::getSetting('development_mail'),
         ];
 

@@ -6,4 +6,4 @@ Gebruik de onderstaande link om meteen in te loggen zodat je snel de nodige aanp
 {{ user.getMagicTokenUrl }}
 
 Alvast bedankt,
-Scouts Prins Boudewijn Wetteren
+{{ environment.name }}

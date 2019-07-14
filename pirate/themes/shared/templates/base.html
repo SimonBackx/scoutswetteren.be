@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% if title %}{{ title }} - {% endif %}Scouts Prins Boudewijn Wetteren</title>
+    <title>{% if title %}{{ title }} - {% endif %}{{ environment.name }}</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
-    <link href='{{ http }}/css/prins-boudewijn.css' rel='stylesheet' type='text/css'>
+    <link href='{{ http }}/css/{{ environment.theme }}.css' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/pickadate.css' rel='stylesheet' type='text/css'>
     <link href='/css/print.css' media="print" rel='stylesheet' type='text/css'>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="{{ description }}">
 
-    <meta property="og:title" content="{% if title %}{{ title }} - {% endif %}Scouts Prins Boudewijn Wetteren"> 
+    <meta property="og:title" content="{% if title %}{{ title }} - {% endif %}{{ environment.name }}"> 
 
     <meta property="og:description" content="{{ description }}">
 

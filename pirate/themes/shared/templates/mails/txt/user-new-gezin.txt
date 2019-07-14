@@ -8,4 +8,4 @@ Je kan je wachtwoord instellen door de link hieronder aan te klikken of te kopi√
 {{ user.getSetPasswordUrl() }}
 
 Bedankt voor het vertrouwen in onze scouts,
-Scouts Prins Boudewijn Wetteren
+{{ environment.name }}
