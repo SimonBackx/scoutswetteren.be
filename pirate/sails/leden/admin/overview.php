@@ -36,7 +36,7 @@ class Overview extends Page {
             $prev = $this->jaar - 1;
         }
 
-        return Template::render('leden/admin/overview', array(
+        return Template::render('admin/leden/overview', array(
             'leden' => $leden,
             'takken' => $takken,
             'jaar' => $this->jaar,

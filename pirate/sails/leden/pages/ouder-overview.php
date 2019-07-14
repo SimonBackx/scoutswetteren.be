@@ -144,7 +144,7 @@ class OuderOverview extends Page
         $afrekeningen = Afrekening::getAfrekeningenForGezin($user->gezin);
         $scoutsjaar = Inschrijving::getScoutsjaar();
 
-        return Template::render('leden/ouder-overview', array(
+        return Template::render('pages/leden/ouder-overview', array(
             'leden' => $leden_ingeschreven,
             'niet_ingeschreven_aantal' => $niet_ingeschreven_aantal,
             'ouder' => $user,

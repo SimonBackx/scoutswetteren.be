@@ -206,7 +206,7 @@ class MailPage extends Page {
         }
 
 
-        return Template::render('leden/admin/mail', array(
+        return Template::render('admin/leden/mail', array(
             'takken' => $takken,
             'senders' => $senders,
             'filters' => $filters,

@@ -30,7 +30,7 @@ class Delete extends Page {
             }
         }
 
-        return Template::render('photos/admin/delete', array(
+        return Template::render('admin/photos/delete', array(
             'album' => $this->album,
             'failed' => $fail,
             'success' => $success

@@ -67,7 +67,7 @@ class VerlengInschrijving extends Page {
             $errors[] = 'U moet zeker één iemand selecteren'; 
         }
         
-        return Template::render('leden/verleng-inschrijving', array(
+        return Template::render('pages/leden/verleng-inschrijving', array(
             'leden' => $leden,
             'al_ingeschreven' => $al_ingeschreven,
             'niet_inschrijfbaar' => $niet_inschrijfbaar,

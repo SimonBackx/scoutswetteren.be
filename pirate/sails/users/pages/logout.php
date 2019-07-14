@@ -15,7 +15,7 @@ class Logout extends Page {
         User::logout();
         header("Location: https://".$_SERVER['SERVER_NAME']."/");
 
-        return Template::render('users/logout', array(
+        return Template::render('pages/users/logout', array(
             'description' => 'Uitloggen'
         ));
     }

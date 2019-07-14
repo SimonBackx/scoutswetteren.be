@@ -143,7 +143,7 @@ class EditSteekkaart extends Page {
         }
 
         
-        return Template::render('leden/steekkaart', array(
+        return Template::render('pages/leden/steekkaart', array(
             'lid' => $this->lid,
             'new' => $new,
             'data' => $data,

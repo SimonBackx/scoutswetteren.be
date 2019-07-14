@@ -21,7 +21,7 @@ class Overview extends Page {
         // TODO: aanpassen zodat evenementen uit de huidige week, VOOR vandaag ook worden meegegeven
         $leden = Lid::getLedenForTak($tak);
 
-        return Template::render('leden/admin/overview', array(
+        return Template::render('admin/leden/overview', array(
             'leden' => $leden,
             'tak' => $tak
         ));*/

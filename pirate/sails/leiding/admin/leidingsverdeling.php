@@ -41,7 +41,7 @@ class Leidingsverdeling extends Page {
 
         }
 
-        return Template::render('leiding/admin/leidingsverdeling', array(
+        return Template::render('admin/leiding/leidingsverdeling', array(
             'leidingsverdeling' => $leidingsverdeling,
             'leiding_zichtbaar' => $leiding_zichtbaar,
             'groepsleiding_gsm_zichtbaar' => $groepsleiding_gsm_zichtbaar->value,

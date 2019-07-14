@@ -13,7 +13,7 @@ class Overview extends Page {
     }
 
     function getContent() {
-        return Template::render('leden/overview', array(
+        return Template::render('pages/leden/overview', array(
             'logged_in' => !Ouder::isLoggedIn() && User::isLoggedIn()
         ));
     }

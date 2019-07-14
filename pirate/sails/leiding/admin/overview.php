@@ -40,7 +40,7 @@ class Overview extends Page {
             
         }
 
-        return Template::render('leiding/admin/overview', array(
+        return Template::render('admin/leiding/overview', array(
             'groups' => $data,
             'leidingsverdeling' => $leidingsverdeling,
             'leiding_zichtbaar' => $leiding_zichtbaar

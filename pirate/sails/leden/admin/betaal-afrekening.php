@@ -32,7 +32,7 @@ class BetaalAfrekening extends Page {
             }
             
             if ($this->afrekening->betaalMetOverschrijving($prijs, $message, $errors, $cash)) {
-                return Template::render('leden/admin/betaal-afrekening', array(
+                return Template::render('admin/leden/betaal-afrekening', array(
                     'afrekening' => $this->afrekening,
                     'message' => $message,
                     'success' => true
@@ -40,7 +40,7 @@ class BetaalAfrekening extends Page {
             }
         }
 
-        return Template::render('leden/admin/betaal-afrekening', array(
+        return Template::render('admin/leden/betaal-afrekening', array(
             'afrekening' => $this->afrekening,
             'errors' => $errors,
             'prijs' => $prijs,

@@ -36,7 +36,7 @@ class WachtwoordWijzigen extends Page {
             }
         }
 
-        return Template::render('users/wachtwoord-wijzigen', array(
+        return Template::render('pages/users/wachtwoord-wijzigen', array(
             'errors' => $errors,
             'success' => $success
         ));

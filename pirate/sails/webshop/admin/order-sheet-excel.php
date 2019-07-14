@@ -226,7 +226,7 @@ class OrderSheetExcel extends Page
 
         exit;
 
-        return Template::render('webshop/admin/order-sheet-orders', array(
+        return Template::render('admin/webshop/order-sheet-orders', array(
             'sheet' => $this->order_sheet,
             'orders' => $orders,
         ));

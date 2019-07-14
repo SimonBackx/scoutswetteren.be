@@ -1,16 +1,19 @@
 <?php
 namespace Pirate\Sail\Homepage\Pages;
+
 use Pirate\Page\Page;
-use Pirate\Block\Block;
 use Pirate\Template\Template;
 
-class Privacy extends Page {
+class Privacy extends Page
+{
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
-        return Template::render('privacy', array());
+    public function getContent()
+    {
+        return Template::render('pages/homepage/privacy', array());
     }
 }

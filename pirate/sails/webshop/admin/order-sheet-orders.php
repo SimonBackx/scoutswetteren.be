@@ -18,7 +18,7 @@ class OrderSheetOrders extends Page {
     function getContent() {
         $orders = Order::getByOrderSheet($this->order_sheet->id);
         
-        return Template::render('webshop/admin/order-sheet-orders', array(
+        return Template::render('admin/webshop/order-sheet-orders', array(
             'sheet' => $this->order_sheet,
             'orders' => $orders,
         ));

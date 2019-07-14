@@ -18,7 +18,7 @@ class Overview extends Page {
         $images = Image::getImagesFromAlbum(null);
         $albums = Album::getAlbums();
 
-        return Template::render('photos/admin/overview', array(
+        return Template::render('admin/photos/overview', array(
             'albums' => $albums,
             'concept_images' => $images
         ));

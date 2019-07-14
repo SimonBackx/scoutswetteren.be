@@ -205,7 +205,7 @@ class NieuwGezin extends Page
             }
         }
 
-        return Template::render('leden/nieuw-lid', array(
+        return Template::render('pages/leden/nieuw-lid', array(
             'ouders' => $ouders,
             'gezin' => $gezin_data,
             'titels' => Ouder::$titels,

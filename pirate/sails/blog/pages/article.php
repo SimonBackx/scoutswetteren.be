@@ -15,7 +15,7 @@ class Article extends Page {
     }
 
     function getContent() {
-        return Template::render('blog/article', array(
+        return Template::render('pages/blog/article', array(
             'title' => $this->article->title,
             
             'article' => array(

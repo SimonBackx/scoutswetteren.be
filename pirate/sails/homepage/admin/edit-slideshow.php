@@ -48,7 +48,7 @@ class EditSlideshow extends Page
             }
         }
 
-        return Template::render('slideshows/admin/edit', array(
+        return Template::render('admin/slideshows/edit', array(
             'new' => $new,
             'data' => $data,
             'slideshow' => $this->slideshow,

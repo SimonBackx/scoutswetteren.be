@@ -11,6 +11,6 @@ class BuitenInschrijvingenPeriode extends Page {
     }
 
     function getContent() {
-        return Template::render('leden/buiten-inschrijvingen-periode', array());
+        return Template::render('pages/leden/buiten-inschrijvingen-periode', array());
     }
 }

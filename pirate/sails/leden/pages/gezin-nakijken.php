@@ -53,7 +53,7 @@ class GezinNakijken extends Page {
             }
         }
         
-        return Template::render('leden/gezin-nakijken', array(
+        return Template::render('pages/leden/gezin-nakijken', array(
             'success' => $success,
             'errors' => $errors,
             'gezin' => $data

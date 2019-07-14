@@ -23,7 +23,7 @@ class Materiaal extends Page
         $file_name = "materiaal-prijslijst";
         $extension = "pdf";
 
-        return Template::render('verhuur/materiaal', array(
+        return Template::render('pages/verhuur/materiaal', array(
             'images' => $images,
             'album' => $album,
             'prijslijst_location' => "https://" . str_replace('www.', 'files.', $_SERVER['SERVER_NAME']) . "/" . $location . $file_name . '.' . $extension,

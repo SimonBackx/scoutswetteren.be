@@ -29,7 +29,7 @@ class Admin extends Page {
         if ($layout) {
             return $content;
         }
-        return Template::render('leiding/admin', array(
+        return Template::render('admin/leiding', array(
             'content' => $content,
             'head' => $this->adminPage->getHead(),
             'admin' => array(

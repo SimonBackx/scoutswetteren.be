@@ -50,7 +50,7 @@ class Edit extends Page {
         }
 
         // Alle albumloze afbeeldingen ophalen
-        return Template::render('photos/admin/album', array(
+        return Template::render('admin/photos/album', array(
             'data' => $data,
             'album' => $this->album,
             'new' => false,

@@ -25,7 +25,7 @@ class Delete extends Page {
             header("Location: https://".$_SERVER['SERVER_NAME']."/admin/sponsors");
         }
 
-        return Template::render('sponsors/admin/delete', array(
+        return Template::render('admin/sponsors/delete', array(
             'sponsor' => $this->sponsor,
             'success' => $success
         ));

@@ -157,7 +157,7 @@ class Edit extends Page {
         }
 
 
-        return Template::render('verhuur/admin/edit', array(
+        return Template::render('admin/verhuur/edit', array(
             'new' => $new,
             'data' => $data,
             'errors' => $errors,

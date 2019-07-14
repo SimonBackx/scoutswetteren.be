@@ -24,7 +24,7 @@ class ViewAfrekening extends Page {
         if (isset($_GET['klaar'])) {
             $finished = true;
         }
-        return Template::render('leden/afrekening', array(
+        return Template::render('pages/leden/afrekening', array(
             'afrekening' => $this->afrekening,
             'finished' => $finished
         ));

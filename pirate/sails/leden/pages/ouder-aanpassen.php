@@ -84,7 +84,7 @@ class OuderAanpassen extends Page
 
         }
 
-        return Template::render('leden/ouder-aanpassen', array(
+        return Template::render('pages/leden/ouder-aanpassen', array(
             'new' => $new,
             'id' => $id,
             'ouder' => $data,

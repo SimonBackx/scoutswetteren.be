@@ -54,7 +54,7 @@ class Delete extends Page {
             $success = true;
         }
 
-        return Template::render('verhuur/admin/delete', array(
+        return Template::render('admin/verhuur/delete', array(
             'naam' => $name,
             'id' => $id,
             'message' => $message,

@@ -30,6 +30,6 @@ class Search extends Page {
             );
         }
 
-        return Template::render('blog/search', $data );
+        return Template::render('pages/blog/search', $data );
     }
 }

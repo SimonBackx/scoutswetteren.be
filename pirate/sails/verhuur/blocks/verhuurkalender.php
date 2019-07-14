@@ -78,7 +78,7 @@ class Verhuurkalender extends Block
 
         }
 
-        return Template::render('verhuur/verhuurkalender',
+        return Template::render('pages/verhuur/verhuurkalender',
             array(
                 'calendar' => array(
                     'weeks' => $data,

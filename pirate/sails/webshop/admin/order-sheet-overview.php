@@ -15,7 +15,7 @@ class OrderSheetOverview extends Page {
     }
 
     function getContent() {
-        return Template::render('webshop/admin/order-sheet-overview', array(
+        return Template::render('admin/webshop/order-sheet-overview', array(
             'sheet' => $this->order_sheet
         ));
     }

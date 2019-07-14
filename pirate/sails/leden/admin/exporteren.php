@@ -87,7 +87,7 @@ class Exporteren extends Page {
                 }  else {
                     $success = true;
                     $this->layout = true;
-                    $file = Template::render('leden/admin/exporteren_ledenlijst', array(
+                    $file = Template::render('admin/leden/exporteren_ledenlijst', array(
                         'leden' => $leden
                     ));
                     $file = "sep=;\n".mb_convert_encoding($file, 'UTF-16LE', 'UTF-8');
@@ -111,7 +111,7 @@ class Exporteren extends Page {
 
 
 
-        return Template::render('leden/admin/exporteren', array(
+        return Template::render('admin/leden/exporteren', array(
             'takken' => $takken,
             'filters' => $filters,
             'errors' => $errors,

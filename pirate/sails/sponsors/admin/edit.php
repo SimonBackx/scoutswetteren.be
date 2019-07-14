@@ -74,7 +74,7 @@ class Edit extends Page
             }
         }
 
-        return Template::render('sponsors/admin/edit', array(
+        return Template::render('admin/sponsors/edit', array(
             'new' => $new,
             'data' => $data,
             'sponsor' => $this->sponsor,

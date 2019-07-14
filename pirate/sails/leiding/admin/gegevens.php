@@ -1,22 +1,26 @@
 <?php
 namespace Pirate\Sail\Leiding\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Leiding\Leiding;
 
-class Gegevens extends Page {
+use Pirate\Model\Leiding\Leiding;
+use Pirate\Page\Page;
+use Pirate\Template\Template;
+
+class Gegevens extends Page
+{
     private $user = null;
 
-    function __construct($user = null) {
+    public function __construct($user = null)
+    {
         $this->user = $user;
     }
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $edit = false;
         $new = false;
 
@@ -41,7 +45,7 @@ class Gegevens extends Page {
             'totem' => $user->totem,
             'mail' => $user->user->mail,
             'phone' => $user->user->phone,
-            'tak' => $user->tak
+            'tak' => $user->tak,
         );
 
         $allPermissions = Leiding::getPossiblePermissions();
@@ -58,9 +62,9 @@ class Gegevens extends Page {
 
             if ($edit) {
                 $data['permissions'] = array();
-                
+
                 foreach ($allPermissions as $code => $name) {
-                    if (isset($_POST['permission_'.$code])) {
+                    if (isset($_POST['permission_' . $code])) {
                         $data['permissions'][] = $code;
                     }
                 }
@@ -72,9 +76,9 @@ class Gegevens extends Page {
             if (count($errors) == 0) {
                 if ($user->save()) {
                     $success = true;
-                
+
                     if ($edit) {
-                        header("Location: https://".$_SERVER['SERVER_NAME']."/admin/leiding");
+                        header("Location: https://" . $_SERVER['SERVER_NAME'] . "/admin/leiding");
                     }
                 } else {
                     $errors[] = 'Probleem bij opslaan';
@@ -97,17 +101,17 @@ class Gegevens extends Page {
                     if (empty($user->tak)) {
                         $functies[] = 'Leiding';
                     } else {
-                        $functies[] = 'Leiding ('.$user->tak.')';
+                        $functies[] = 'Leiding (' . $user->tak . ')';
                     }
                     break;
-               
-                default :
+
+                default:
                     $functies[] = $allPermissions[$permission];
-                break;
+                    break;
             }
         }
 
-        return Template::render('leiding/gegevens', array(
+        return Template::render('pages/leiding/gegevens', array(
             'edit' => $edit,
             'new' => $new,
             'leiding' => $data,
@@ -116,7 +120,7 @@ class Gegevens extends Page {
             'errors' => $errors,
             'takken' => Leiding::$takken,
             'success' => $success,
-            'id' => $user->id
+            'id' => $user->id,
         ));
     }
 }

@@ -115,7 +115,7 @@ class BroerZusToevoegen extends Page
             }
         }
 
-        return Template::render('leden/broer-zus-toevoegen', array(
+        return Template::render('pages/leden/broer-zus-toevoegen', array(
             'new' => $new,
             'lid' => $lid,
             'maanden' => Localization::getMonths(),

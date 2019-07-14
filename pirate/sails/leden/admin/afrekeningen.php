@@ -17,7 +17,7 @@ class Afrekeningen extends Page {
         // TODO: aanpassen zodat evenementen uit de huidige week, VOOR vandaag ook worden meegegeven
         $afrekeningen = Afrekening::getAfrekeningen();
 
-        return Template::render('leden/admin/afrekeningen', array(
+        return Template::render('admin/leden/afrekeningen', array(
             'afrekeningen' => $afrekeningen
         ));
     }

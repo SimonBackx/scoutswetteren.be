@@ -79,7 +79,7 @@
                     <p>Dit album is binnenkort beschikbaar als .zip</p>
                 {% endif %}
 
-                {% include 'files/statistics.html' %}
+                {% include 'admin/files/statistics.html' %}
             {% endif %}
         {% endif %}
 
@@ -87,5 +87,5 @@
 </form>
 
 {% if not new %}
-{% include 'photo-upload.html' %}
+{% include 'admin/photos/photo-upload.html' %}
 {% endif %}

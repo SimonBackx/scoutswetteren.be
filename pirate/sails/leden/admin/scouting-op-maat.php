@@ -63,7 +63,7 @@ class ScoutingOpMaat extends Page {
             
         }
 
-        return Template::render('leden/admin/scouting-op-maat', array(
+        return Template::render('admin/leden/scouting-op-maat', array(
             'gezin' => $this->gezin,
             'afrekeningen' => $afrekeningen,
             'inschakelen' => $this->inschakelen,

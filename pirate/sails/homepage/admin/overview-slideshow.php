@@ -17,7 +17,7 @@ class OverviewSlideshow extends Page
     {
         $slideshows = Slideshow::getSlideshows();
 
-        return Template::render('slideshows/admin/overview', array(
+        return Template::render('admin/slideshows/overview', array(
             'slideshows' => $slideshows,
         ));
     }

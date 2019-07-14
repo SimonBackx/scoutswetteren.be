@@ -68,7 +68,7 @@
         <div class="horizontal gradient">
             <div class="vertical gradient">
                 <div class="center">
-                    {{ include('slideshows/slideshow.html', {slide: slideshows[0]}) }}
+                    {{ include('pages/slideshows/slideshow.html', {slide: slideshows[0]}) }}
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
         <div class="navigation">
             {% for slide in slideshows %}
                 <div class="{% if loop.first %}selected {% endif %}item">
-                    {{ include('slideshows/slideshow.html', {slide: slide}) }}
+                    {{ include('pages/slideshows/slideshow.html', {slide: slide}) }}
                 </div>
             {% endfor %}
         </div>
@@ -116,7 +116,7 @@
 
         {{ blog | raw }}
 
-        {{ include('call_to_action.html') }}
+        {{ include('pages/homepage/call_to_action.html') }}
 
     </main>
 {% endblock %}

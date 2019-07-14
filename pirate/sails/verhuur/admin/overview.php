@@ -192,7 +192,7 @@ class Overview extends Page
             return $str;
         }
 
-        return Template::render('verhuur/admin/overview', array(
+        return Template::render('admin/verhuur/overview', array(
             'months' => $this->data,
             'in_behandeling' => $data_behandeling,
             'future_only' => $this->future_only,

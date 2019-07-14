@@ -39,7 +39,7 @@ class DeleteProduct extends Page {
             
         }
 
-        return Template::render('webshop/admin/delete-product', array(
+        return Template::render('admin/webshop/delete-product', array(
             'product' => $this->product,
             'order_sheet' => $this->order_sheet,
             'success' => $success,

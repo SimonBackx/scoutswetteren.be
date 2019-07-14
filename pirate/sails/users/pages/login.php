@@ -42,7 +42,7 @@ class Login extends Page {
             }
         }
 
-        return Template::render('users/login', array(
+        return Template::render('pages/users/login', array(
             'wrong' => $wrong,
             'success' => $success,
             'email' => $email,

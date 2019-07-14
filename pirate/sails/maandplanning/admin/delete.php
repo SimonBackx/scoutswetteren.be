@@ -47,7 +47,7 @@ class Delete extends Page {
             header("Location: https://".$_SERVER['SERVER_NAME']."/admin/maandplanning");
         }
 
-        return Template::render('maandplanning/admin/delete', array(
+        return Template::render('admin/maandplanning/delete', array(
             'activiteit_naam' => $name,
             'activiteit_id' => $id,
             'success' => $success,

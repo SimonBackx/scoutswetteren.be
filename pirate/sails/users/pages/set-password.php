@@ -60,7 +60,7 @@ class SetPassword extends Page {
             }
         }
 
-        return Template::render('users/set-password', array(
+        return Template::render('pages/users/set-password', array(
             'new' => (!$user->hasPassword()),
             'success' => $success,
             'errors' => $errors,

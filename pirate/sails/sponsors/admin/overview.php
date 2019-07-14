@@ -16,7 +16,7 @@ class Overview extends Page {
     function getContent() {
         $sponsors = Sponsor::getSponsors();
 
-        return Template::render('sponsors/admin/overview', array(
+        return Template::render('admin/sponsors/overview', array(
             'sponsors' => $sponsors
         ));
     }

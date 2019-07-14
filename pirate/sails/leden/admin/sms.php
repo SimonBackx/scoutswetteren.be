@@ -22,7 +22,7 @@ class SmsPage extends Page {
         $Android = stripos(strtolower($_SERVER['HTTP_USER_AGENT']),"android");
 
         if (!$iPhone && !$Android && !$Mac) {
-            return Template::render('leden/admin/no-sms', array());
+            return Template::render('admin/leden/no-sms', array());
         }
 
         $noMessage = false;
@@ -174,7 +174,7 @@ class SmsPage extends Page {
         }
 
 
-        return Template::render('leden/admin/sms', array(
+        return Template::render('admin/leden/sms', array(
             'takken' => $takken,
             'filters' => $filters,
             'errors' => $errors,

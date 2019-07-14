@@ -52,7 +52,7 @@ class Upload extends Page {
                         }
                     }
 
-                    return Template::render('photos/admin/album', array(
+                    return Template::render('admin/photos/album', array(
                         'success' => $success,
                         'new' => true,
                         'data' => $data,
@@ -73,7 +73,7 @@ class Upload extends Page {
                     'group' => $_POST['group']
                 );
 
-                return Template::render('photos/admin/album', array(
+                return Template::render('admin/photos/album', array(
                     'new' => true,
                     'data' => $data,
                     'groups' => Album::$groups
@@ -81,7 +81,7 @@ class Upload extends Page {
             }
         }
         // Alle albumloze afbeeldingen ophalen
-        return Template::render('photos/admin/upload', array(
+        return Template::render('admin/photos/upload', array(
             'errors' => $errors,
             'max_upload_size' => File::$max_size,
             'images' => $images,

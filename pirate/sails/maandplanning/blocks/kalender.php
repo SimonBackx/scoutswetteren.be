@@ -153,7 +153,7 @@ class Kalender extends Block
     // end = exclusive Y-m-d
     public function getEvents($start, $end)
     {
-        return Template::render('maandplanning/events', array('days' => $this->getRawEvents($start, $end)));
+        return Template::render('pages/maandplanning/events', array('days' => $this->getRawEvents($start, $end)));
     }
 
     // Geeft volledige block
@@ -213,7 +213,7 @@ class Kalender extends Block
 
         }
 
-        return Template::render('maandplanning/kalender',
+        return Template::render('pages/maandplanning/kalender',
             array(
                 'days' => $this->getRawEvents($week_start, $week_end),
                 'calendar' => array(

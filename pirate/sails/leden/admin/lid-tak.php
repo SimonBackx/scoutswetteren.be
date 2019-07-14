@@ -36,7 +36,7 @@ class LidTak extends Page {
             }
         }
 
-        return Template::render('leden/admin/lid-tak', array(
+        return Template::render('admin/leden/lid-tak', array(
             'lid' => $this->lid,
             'takken' => Inschrijving::$takken,
             'success' => $success

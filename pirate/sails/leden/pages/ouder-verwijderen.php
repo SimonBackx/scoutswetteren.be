@@ -56,7 +56,7 @@ class OuderVerwijderen extends Page
             }
         }
 
-        return Template::render('leden/ouder-verwijderen', array(
+        return Template::render('pages/leden/ouder-verwijderen', array(
             'ouder' => $data,
             'errors' => $errors,
             'titels' => Ouder::$titels,

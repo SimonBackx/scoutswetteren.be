@@ -33,12 +33,12 @@ class Overview extends Block {
     }
     // Geeft volledige block
     function getArticles($page = 1) {
-        return Template::render('blog/articles', $this->getArticlesRaw($page));
+        return Template::render('pages/blog/articles', $this->getArticlesRaw($page));
     }
 
     // Geeft volledige block
     function getContent() {
-        return Template::render('blog/overview', $this->getArticlesRaw(1));
+        return Template::render('pages/blog/overview', $this->getArticlesRaw(1));
     }
 
 }

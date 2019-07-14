@@ -44,7 +44,7 @@ class Info extends Page
         }
 
         if (is_null($this->page)) {
-            return Template::render('info/info', array(
+            return Template::render('pages/info/info', array(
                 'takkenverdeling' => $verdeling_string,
                 'call_to_action' => array(
                     'title' => 'Volg je kapoen',
@@ -53,7 +53,7 @@ class Info extends Page
                 ),
             ));
         }
-        return Template::render('info/' . $this->page, array(
+        return Template::render('pages/info/' . $this->page, array(
             'takkenverdeling' => $verdeling_string,
             'call_to_action' => array(
                 'title' => 'Volg je kapoen',

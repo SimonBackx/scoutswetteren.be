@@ -34,7 +34,7 @@ class Materiaal extends Page {
         }
 
       
-        return Template::render('verhuur/admin/materiaal', array(
+        return Template::render('admin/verhuur/materiaal', array(
             'uploading' => $uploading,
             'errors' => $errors,
             'succes' => $succes,

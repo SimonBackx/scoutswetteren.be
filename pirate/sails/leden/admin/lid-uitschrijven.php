@@ -32,7 +32,7 @@ class LidUitschrijven extends Page {
             header("Location: https://".$_SERVER['SERVER_NAME']."/admin/inschrijvingen/lid/".$this->lid->id);
         }
 
-        return Template::render('leden/admin/lid-uitschrijven', array(
+        return Template::render('admin/leden/lid-uitschrijven', array(
             'lid' => $this->lid,
             'success' => $success
         ));

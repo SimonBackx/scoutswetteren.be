@@ -53,6 +53,6 @@ class OuderAttesten extends Page
 
         }
 
-        return Template::render('leden/attesten', array('attesten' => $attesten));
+        return Template::render('pages/leden/attesten', array('attesten' => $attesten));
     }
 }

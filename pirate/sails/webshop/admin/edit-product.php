@@ -198,7 +198,7 @@ class EditProduct extends Page {
             // Add default prices placeholders if not set
         }
 
-        return Template::render('webshop/admin/edit-product', array(
+        return Template::render('admin/webshop/edit-product', array(
             'new' => $new,
             'data' => $data_product,
             'product' => $this->product,

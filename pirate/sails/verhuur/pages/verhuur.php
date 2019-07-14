@@ -27,7 +27,7 @@ class Verhuur extends Page
         $album = Album::getHiddenAlbum("verhuur");
         $images = Image::getImagesFromAlbum($album->id);
 
-        return Template::render('verhuur/verhuur', array(
+        return Template::render('pages/verhuur/verhuur', array(
             'calendar' => array(
                 'month' => ucfirst(Localization::getMonth($month)),
                 'data_year' => $year,

@@ -14,7 +14,7 @@ class Blog extends Page {
 
         $archief = Block::getBlock('Blog', 'Overview')->getArticles(0);
 
-        return Template::render('blog/blog', array(
+        return Template::render('pages/blog/blog', array(
             'title' => 'Blog archief',
             
             'content' => $archief,

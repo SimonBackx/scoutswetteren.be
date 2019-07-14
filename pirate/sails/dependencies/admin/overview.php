@@ -1,23 +1,25 @@
 <?php
 namespace Pirate\Sail\Dependencies\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
 
 use Pirate\Dependency\Dependencies;
+use Pirate\Page\Page;
+use Pirate\Template\Template;
 
-class Overview extends Page {
-    function getStatusCode() {
+class Overview extends Page
+{
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $dependencies = new Dependencies();
         $output = array();
         $dependencies->check($output);
 
-        return Template::render('dependencies/admin/overview', array(
-            'output' => $output
+        return Template::render('admin/dependencies/overview', array(
+            'output' => $output,
         ));
     }
 }

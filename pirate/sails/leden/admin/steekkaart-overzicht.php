@@ -127,7 +127,7 @@ class SteekkaartOverzicht extends Page {
 
             $steekkaartSamenvatting = array($geen_steekkaart, $fotoToelating, $onmogelijke_activiteiten, $aandacht_sporten, $aandacht_sociale_omgang, $aandacht_hygiene, $aandacht_andere, $toestemming_medicatie, $medicatie, $ziekten, $klem, $dieet, $aanvullende_opmerkingen_voeding, $aanvullende_opmerkingen);
 
-            return Template::render('leden/steekkaart/overzicht', array(
+            return Template::render('pages/leden/steekkaart/overzicht', array(
                 'leden' => $leden,
                 'samenvatting' => $steekkaartSamenvatting,
                 'tak' => $tak
@@ -135,7 +135,7 @@ class SteekkaartOverzicht extends Page {
             
         }
         
-        return Template::render('leden/steekkaart/overzicht', array(
+        return Template::render('pages/leden/steekkaart/overzicht', array(
             'leden' => $leden,
             'tak' => $tak
         ));

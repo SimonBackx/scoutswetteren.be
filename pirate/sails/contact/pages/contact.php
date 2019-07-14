@@ -146,7 +146,7 @@ class Contact extends Page
         shuffle($leiding_data['groepsleiding']);
         $groepsleiding_gsm_zichtbaar = Setting::getSetting('groepsleiding_gsm_zichtbaar', false);
 
-        return Template::render('contact/contact', array(
+        return Template::render('pages/contact/contact', array(
             'data' => $data,
             'errors' => $errors,
             'success' => $success,

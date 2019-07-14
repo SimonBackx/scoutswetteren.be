@@ -23,7 +23,7 @@ class ViewAfrekening extends Page {
     function getContent() {
         $ouders = Ouder::getOudersForGezin($this->afrekening->gezin);
 
-        return Template::render('leden/admin/afrekening', array(
+        return Template::render('admin/leden/afrekening', array(
             'afrekening' => $this->afrekening,
             'from_inschrijvingen' => !Leiding::hasPermission('financieel'),
             'ouders' => $ouders

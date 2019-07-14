@@ -105,7 +105,7 @@ class Registreren extends Page {
             
         }
 
-        return Template::render('users/registreren', array(
+        return Template::render('pages/users/registreren', array(
             'success' => $success,
             'errors' => $errors,
             'data' => $data,

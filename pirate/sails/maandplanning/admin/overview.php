@@ -121,7 +121,7 @@ class Overview extends Page
             $this->addEvent($event);
         }
 
-        return Template::render('maandplanning/admin/overview', array(
+        return Template::render('admin/maandplanning/overview', array(
             'months' => $this->data,
         ));
     }

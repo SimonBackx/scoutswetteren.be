@@ -45,6 +45,6 @@ class Search extends Page {
             );
         }
 
-        return Template::render('maandplanning/search', $data );
+        return Template::render('pages/maandplanning/search', $data );
     }
 }

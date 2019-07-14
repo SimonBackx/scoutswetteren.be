@@ -19,6 +19,6 @@ class Search extends Page {
 
     function getContent() {
         $data = array('results' => Lid::ledenToFieldArray(Lid::search($this->needle)));
-        return Template::render('leden/admin/search', $data );
+        return Template::render('admin/leden/search', $data );
     }
 }

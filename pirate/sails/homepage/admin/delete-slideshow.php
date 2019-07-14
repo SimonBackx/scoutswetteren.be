@@ -29,7 +29,7 @@ class DeleteSlideshow extends Page
             header("Location: https://" . $_SERVER['SERVER_NAME'] . "/admin/slideshows");
         }
 
-        return Template::render('slideshows/admin/delete', array(
+        return Template::render('admin/slideshows/delete', array(
             'slideshow' => $this->slideshow,
             'success' => $success,
         ));

@@ -55,7 +55,7 @@ class OuderWachtwoordInstellen extends Page
             }
         }
 
-        return Template::render('leden/ouder-wachtwoord-instellen', array(
+        return Template::render('pages/leden/ouder-wachtwoord-instellen', array(
             'ouder' => $data,
             'errors' => $errors,
         ));

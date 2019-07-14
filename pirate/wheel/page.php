@@ -1,9 +1,12 @@
 <?php
 namespace Pirate\Page;
+
 use Pirate\Template\Template;
 
-class Page {
-    static function setupAutoload() {
+class Page
+{
+    public static function setupAutoload()
+    {
         spl_autoload_register(function ($class) {
             //if(!defined('STDOUT')) define('STDOUT', fopen('php://stdout', 'w'));
             //fwrite(STDOUT, 'Autoload ' . $class."\n");
@@ -32,96 +35,121 @@ class Page {
      * @param  [type] $name klassenaam van de block = bestandsnaam
      * @return  /
      */
-    static function loadModel($sail, $name) {
-        $file = __DIR__.'/../sails/'.strtolower($sail).'/pages/'.camelCaseToDashes($name).'.php';
+    public static function loadModel($sail, $name)
+    {
+        $file = __DIR__ . '/../sails/' . strtolower($sail) . '/pages/' . camelCaseToDashes($name) . '.php';
         //fwrite(STDOUT, 'Autoload ' . $file."\n");
-        if (file_exists($file))
-            require($file);
+        if (file_exists($file)) {
+            require $file;
+        }
+
         /*else
-            fwrite(STDOUT, 'Autoload not found!'."\n");*/
+    fwrite(STDOUT, 'Autoload not found!'."\n");*/
 
-    }    
+    }
 
-    static function loadAdminModel($sail, $name) {
-        $file = __DIR__.'/../sails/'.strtolower($sail).'/admin/'.camelCaseToDashes($name).'.php';
+    public static function loadAdminModel($sail, $name)
+    {
+        $file = __DIR__ . '/../sails/' . strtolower($sail) . '/admin/' . camelCaseToDashes($name) . '.php';
         //fwrite(STDOUT, 'Autoload ' . $file."\n");
-        if (file_exists($file))
-            require($file);
+        if (file_exists($file)) {
+            require $file;
+        }
+
         /*else
-            fwrite(STDOUT, 'Autoload not found!'."\n");*/
+    fwrite(STDOUT, 'Autoload not found!'."\n");*/
 
-    }  
+    }
 
-    static function loadApiModel($sail, $name) {
-        $file = __DIR__.'/../sails/'.strtolower($sail).'/api/'.camelCaseToDashes($name).'.php';
+    public static function loadApiModel($sail, $name)
+    {
+        $file = __DIR__ . '/../sails/' . strtolower($sail) . '/api/' . camelCaseToDashes($name) . '.php';
         //fwrite(STDOUT, 'Autoload ' . $file."\n");
-        if (file_exists($file))
-            require($file);
+        if (file_exists($file)) {
+            require $file;
+        }
+
         /*else
-            fwrite(STDOUT, 'Autoload not found!'."\n");*/
+    fwrite(STDOUT, 'Autoload not found!'."\n");*/
 
-    }  
+    }
 
-    function customHeaders() {
+    public function customHeaders()
+    {
         return false;
     }
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getHead() {
+    public function getHead()
+    {
         return '';
     }
 
-    function getContent() {
+    public function getContent()
+    {
         return 'getContent method not implemented';
     }
-    
-    function hasOwnLayout() {
+
+    public function hasOwnLayout()
+    {
         return false;
     }
 
-    final function execute() {
+    final public function execute()
+    {
         if (!$this->customHeaders()) {
             http_response_code($this->getStatusCode());
         }
         echo $this->getContent();
     }
 
-    function goodbye() {
-        
+    public function goodbye()
+    {
+
     }
 
 }
 
-class Page404 extends Page {
-    function getStatusCode() {
+class Page404 extends Page
+{
+    public function getStatusCode()
+    {
         return 404;
     }
 
-    function getContent() {
-        return Template::render('404');
+    public function getContent()
+    {
+        return Template::render('pages/errors/404');
     }
 }
 
-class Page301 extends Page {
-    function getStatusCode() {
+class Page301 extends Page
+{
+    public function getStatusCode()
+    {
         return 301;
     }
 
-    function getContent() {
-        return Template::render('301');
+    public function getContent()
+    {
+        return Template::render('pages/errors/301');
     }
 }
 
 // Temp
-class Page302 extends Page {
-    function getStatusCode() {
+class Page302 extends Page
+{
+    public function getStatusCode()
+    {
         return 302;
     }
 
-    function getContent() {
-        return Template::render('302');
+    public function getContent()
+    {
+        return Template::render('pages/errors/302');
     }
 }

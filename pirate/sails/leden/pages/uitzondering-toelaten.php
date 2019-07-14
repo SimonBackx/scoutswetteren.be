@@ -19,6 +19,6 @@ class UitzonderingToelaten extends Page {
     function getContent() {
         Lid::setLimitsIgnored(true);
 
-        return Template::render('leden/uitzondering-toelaten', array());
+        return Template::render('pages/leden/uitzondering-toelaten', array());
     }
 }

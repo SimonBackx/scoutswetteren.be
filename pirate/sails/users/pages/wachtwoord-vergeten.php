@@ -52,7 +52,7 @@ class WachtwoordVergeten extends Page {
 
         }
 
-        return Template::render('users/wachtwoord-vergeten', array(
+        return Template::render('pages/users/wachtwoord-vergeten', array(
             'errors' => $errors,
             'email' => $email,
             'success' => $success

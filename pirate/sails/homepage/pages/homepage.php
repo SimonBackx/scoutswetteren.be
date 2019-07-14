@@ -21,7 +21,7 @@ class Homepage extends Page
         $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
         $blog = Block::getBlock('Blog', 'Overview')->getContent();
 
-        return Template::render('homepage', array(
+        return Template::render('pages/homepage/homepage', array(
             'menu' => array('transparent' => true),
             'maandplanning' => $maandplanning,
             'blog' => $blog,

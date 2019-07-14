@@ -161,7 +161,7 @@ class Edit extends Page {
             }
         }
 
-        return Template::render('maandplanning/admin/edit', array(
+        return Template::render('admin/maandplanning/edit', array(
             'new' => $new,
             'event' => $data,
             'errors' => $errors,
