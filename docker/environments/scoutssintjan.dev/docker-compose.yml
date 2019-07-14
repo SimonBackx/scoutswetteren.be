@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+    php:
+        external_links:
+         - scouts-mysql:db
+        build: ./../../
+        container_name: scoutssintjan-php-container
+        volumes:
+         - ../../../files:/var/www/scoutssintjan.dev/files
+         - ../../../pirate:/var/www/scoutssintjan.dev/pirate
+         - ../../../public:/var/www/scoutssintjan.dev/public
+         - ./config.php:/var/www/scoutssintjan.dev/pirate/config.php
+         - ../../../config/php.ini:/usr/local/etc/php/conf.d/custom.ini
+        environment:
+         - DEBUG=1
+        security_opt:
+         - seccomp:unconfined
+        privileged: true
+        networks:
+            - mysql_scouts
+
+    nginx:
+          image: nginx:latest
+          ports:
+               - "80:80"
+               - "443:443"
+          volumes:
+               - ../../../files:/var/www/scoutssintjan.dev/files
+               - ../../../pirate:/var/www/scoutssintjan.dev/pirate
+               - ../../../public:/var/www/scoutssintjan.dev/public
+               - ./nginx.conf:/etc/nginx/conf.d/site.conf
+               - ./certs:/etc/nginx/certs/scoutssintjan.dev
+          depends_on:
+               - php
+          restart: always
+          networks:
+               - mysql_scouts
+networks:
+    mysql_scouts:
+          external: true

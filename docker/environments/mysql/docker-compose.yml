@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+    db:
+          image: mysql:8.0
+          container_name: scouts-mysql
+          ports:
+               - "3306:3306"
+          volumes:
+          - database:/var/lib/mysql
+          restart: always
+          environment:
+               MYSQL_ROOT_PASSWORD: root
+               MYSQL_DATABASE: scouts
+               MYSQL_USER: root
+               MYSQL_PASSWORD: root
+          networks:
+               - scouts
+volumes:
+    database:
+networks:
+    scouts:
