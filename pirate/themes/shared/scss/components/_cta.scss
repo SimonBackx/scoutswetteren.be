@@ -7,17 +7,17 @@ section {
         margin: 0 auto;
 
         h1 {
-            color: $aubergine;
+            color: $color-main-dark;
             margin: 20px 0;
         }
 
         h2 {
-            color: $merlot;
+            color: $color-main;
             font-size: $size-text-bigger;
             margin: 20px 0;
         }
 
-        @media screen and (max-width: $width-reduce-padding) {
+        @media screen and (max-width: $page-width-reduce-padding) {
             padding: 40px $smartphone-padding;
         }
 

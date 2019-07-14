@@ -30,14 +30,14 @@
                 display: none;
 
                 .del, .cov, .caption {
-                    background: rgba($aubergine,0.8) url('/images/delete-photo.png') no-repeat center center;
+                    background: rgba($color-main-dark,0.8) url('/images/delete-photo.png') no-repeat center center;
                     width: 15px;
                     height: 15px;
                     display: inline-block;
                     padding: 8px;
 
                     &:hover {
-                        background-color: $merlot;
+                        background-color: $color-main;
                     }
                 }
                 .cov {
@@ -75,7 +75,7 @@
 
 #output {
     ul, li {
-        color: $heath;
+        color: $color-main-dark;
         list-style: none;
     }
 }
@@ -84,7 +84,7 @@
     & > h1 {
         clear: both;
         font-size: 24pt;
-        color: $aubergine;
+        color: $color-main-dark;
         margin: 0.5% 0;
         padding-top: 30px;
         
@@ -92,7 +92,7 @@
         position: -webkit-sticky;
         top: 50px;
         z-index: 1;
-        background: $lightgray-background;
+        background: $color-background-shade;
     }
 
     figure {
@@ -139,7 +139,7 @@
             }
 
             h2 {
-                color: $bright-sun;
+                color: $color-main-alternative;
                 font-weight: bold;
                 text-transform: uppercase;
                 font-size: 8pt;
@@ -216,7 +216,7 @@
         top: 0;
         bottom: 0;
         width: 0%;
-        background: $merlot;
+        background: $color-main;
     }
 
     &.red {
@@ -244,7 +244,7 @@
 #upload-progress-text, .progress-text {
     max-width: 500px;
     text-align: right;
-    color: $aubergine;
+    color: $color-main-dark;
     margin: 10px 0;
     display: none;
 }

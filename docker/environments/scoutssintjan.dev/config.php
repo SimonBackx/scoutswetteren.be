@@ -3,10 +3,10 @@
 // All configuration for scoutswetteren
 $private = include __DIR__ . '/config.private.php';
 $config = [
-    'domain' => 'scoutswetteren.be',
-    'name' => 'Scouts Prins Boudewijn Wetteren',
+    'domain' => 'scoutssintjan.be',
+    'name' => 'Scouts Sint-Jan Wetteren',
     'force_www' => true,
-    'theme' => 'prins-boudewijn',
+    'theme' => 'sint-jan',
     'mysql' => [
         // no need to put in private. only localhost connections allowed
         'database' => 'sint-jan',
@@ -14,8 +14,8 @@ $config = [
         'password' => 'root',
     ],
     'address' => [
-        "street" => 'Groene wegel',
-        "number" => '2',
+        "street" => 'Groenstraat',
+        "number" => '33',
         "postalcode" => '9230',
         "city" => 'Wetteren',
         'region' => 'Oost-Vlaanderen',
@@ -31,11 +31,11 @@ $config = [
 
     'mail' => [
         'name' => null,
-        'mail' => 'website@scoutswetteren.be',
+        'mail' => 'website@scoutssintjan.be',
     ],
     'development_mail' => [
         'name' => null,
-        'mail' => 'website@scoutswetteren.be',
+        'mail' => 'website@scoutssintjan.be',
     ],
 
     'scouts' => [

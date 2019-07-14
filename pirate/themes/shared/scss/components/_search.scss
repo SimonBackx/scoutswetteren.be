@@ -6,7 +6,7 @@
         display: inline-block;
         width: 350px;
 
-        @media screen and (max-width: $width-stop-splitted) {
+        @media screen and (max-width: $page-width-stop-splitted) {
             display: block;
             width: auto;
             max-width: 350px;
@@ -48,15 +48,15 @@
 
             .result {
                 padding: 20px 30px;
-                border-bottom: 1px solid $line-gray;
-                color: $merlot;
+                border-bottom: 1px solid $color-border;
+                color: $color-main;
 
                 h1 {
                     font-size: 20pt;
                     font-weight: normal;
                     padding-bottom: 5px;
                     margin: 0;
-                    color: $aubergine;
+                    color: $color-main-dark;
                 }
 
                 p {
@@ -119,9 +119,9 @@ input.search {
     }
 
     &.aubergine {
-        color: $aubergine;
+        color: $color-main-dark;
         background: url(../images/hourglass-aubergine.png) no-repeat left center;
-        border-color: $aubergine;
+        border-color: $color-main-dark;
     }
 
     &.white {

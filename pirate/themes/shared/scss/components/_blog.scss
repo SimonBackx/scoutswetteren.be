@@ -2,7 +2,7 @@
     display: block;
     margin: 0 -10px;
 
-    @media screen and (max-width: $width-stop-splitted) {
+    @media screen and (max-width: $page-width-stop-splitted) {
         margin: 0;
     }
 }
@@ -10,7 +10,7 @@
 .article-message {
     h1 {
         text-align: center;
-        color: $aubergine;
+        color: $color-main-dark;
         padding: 10px 0;
         margin: 0;
     }
@@ -23,7 +23,7 @@
     position: relative;
 
     article {
-        color: $cod-gray;
+        color: $color-text;
 
         position: absolute;
         left: 10px;
@@ -37,12 +37,12 @@
 
         header {
             h1 {
-                color: $aubergine;
+                color: $color-main-dark;
                 padding: 0 0 5px 0;
                 margin: 0;
             }
             h2 {
-                color: $merlot;
+                color: $color-main;
                 padding: 0;
                 margin: 0;
             }
@@ -68,7 +68,7 @@
             background: white;
         }
     }
-     @media screen and (max-width: $width-stop-splitted) {
+     @media screen and (max-width: $page-width-stop-splitted) {
       float: none;
       display: block;
       width: auto;
@@ -89,7 +89,7 @@
         }
       }
     }
-    @media screen and (max-width: $width-reduce-padding) {
+    @media screen and (max-width: $page-width-reduce-padding) {
         article {
             padding: 40px $smartphone-padding;
         }

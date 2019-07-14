@@ -46,7 +46,7 @@
     }
 
     .center {
-        max-width: $width - 40 * 2;
+        max-width: $page-width - 40 * 2;
         padding: 80px 40px 60px 40px;
         margin: 0 auto;
 
@@ -71,7 +71,7 @@
         text-align: center;
         z-index: 9;
 
-        @media screen and (max-width: $width-reduce-padding) {
+        @media screen and (max-width: $page-width-reduce-padding) {
             display: none;
         }
 

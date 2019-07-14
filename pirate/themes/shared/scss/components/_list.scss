@@ -4,11 +4,11 @@
 article.list {
     padding: 25px 30px 25px 50px;
 
-    @media screen and (max-width: $width-reduce-padding) {
+    @media screen and (max-width: $page-width-reduce-padding) {
         padding: 25px $smartphone-padding;
     }
 
-    background: $gray-background;
+    background: $color-background-shade-darker;
     display: table;
     width: 100%;
     box-sizing: border-box;
@@ -16,12 +16,12 @@ article.list {
 
     .column {
         display: table-cell;
-        color: $merlot;
+        color: $color-main;
         padding-right: 20px;
         vertical-align: middle;
 
         &.merlot {
-            color: $aubergine;
+            color: $color-main-dark;
         }
 
         &.small {
@@ -56,7 +56,7 @@ article.list {
         }
     }
 
-    @media screen and (max-width: $width-reduce-padding + 200px) {
+    @media screen and (max-width: $page-width-reduce-padding + 200px) {
         display: block;
 
         .column {

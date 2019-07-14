@@ -26,11 +26,11 @@
 
             &> h1 {
                 margin: 15px 40px;
-                color: $aubergine;
+                color: $color-main-dark;
     
                 time {
                     font-size: $size-text-bigger;
-                    color: $merlot;
+                    color: $color-main;
                     font-weight: normal;
                     padding-left: 20px;
                 }
@@ -43,7 +43,7 @@
 
         article {
             padding: 25px 40px;
-            background: $gray-background;
+            background: $color-background-shade-darker;
             display: table;
             width: 100%;
             box-sizing: border-box;
@@ -63,7 +63,7 @@
                 &> div {
                     margin-bottom: 6px;
                     font-size: 13px;
-                    color: $merlot;
+                    color: $color-main;
                 }
                 .group {
                     font-weight: bold;
@@ -74,7 +74,7 @@
                 }
 
                 h1 {
-                    color: $aubergine;
+                    color: $color-main-dark;
                     display: block;
                     font-size: $size-question;
                     font-weight: normal;
@@ -94,7 +94,7 @@
                 }
             }
 
-            @media screen and (max-width: $width-reduce-padding + 100px) {
+            @media screen and (max-width: $page-width-reduce-padding + 100px) {
                 display: block;
 
                 &> .buttons {
@@ -104,7 +104,7 @@
                     padding-top: 5px;
 
                     a.button {
-                        color: $merlot;
+                        color: $color-main;
                     }
                 }
             }
@@ -112,7 +112,7 @@
 
 
 
-        @media screen and (max-width: $width-reduce-padding + 100px) {
+        @media screen and (max-width: $page-width-reduce-padding + 100px) {
             padding: 20px 0;
 
             &> div {
@@ -156,7 +156,7 @@
 
         &.enabled {
             time.column:hover {
-                background: $merlot;
+                background: $color-main;
             }
             @media screen and (max-width: 1000px) {
                 display: block;
@@ -178,7 +178,7 @@
         }
 
         .selection-hint {
-            background: $aubergine;
+            background: $color-main-dark;
             text-align: center;
             padding: 40px 20px;
             margin: -40px -50px 10px -50px;
@@ -227,14 +227,14 @@
             font-size: $size-text-bigger;
 
             &.weekdays {
-                color: $bright-sun;
+                color: $color-main-alternative;
                 padding-top: 5px;
                 font-size: $size-text;
             }
 
 
             &.selected {
-                background: $heath url(../images/calendar-arrow.png) no-repeat left center;
+                background: $color-main-dark url(../images/calendar-arrow.png) no-repeat left center;
                 margin: -5px -50px;
                 padding: 5px 66px;
             }
@@ -250,16 +250,16 @@
                 text-align: center;
 
                 &.today {
-                    color: $bright-sun;
+                    color: $color-main-alternative;
                 }
 
                 &.disabled {
-                    background: $cardinal;
+                    background: $color-main;
                 }
 
                 &.aankomst-selected, &.vertrek-selected, &.in-between {
-                    background: $bright-sun;
-                    color: $aubergine;
+                    background: $color-main-alternative;
+                    color: $color-main-dark;
                 }
 
 
@@ -277,7 +277,7 @@
                 cursor: pointer;
 
                 &:hover {
-                    background: $heath;
+                    background: $color-main-dark;
                     margin: -5px -50px;
                     padding: 5px 66px;
                 }

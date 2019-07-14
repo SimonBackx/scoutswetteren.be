@@ -5,8 +5,8 @@
 
 form {
     blockquote {
-        border-left: 2px solid $cardinal;
-        color: $cardinal;
+        border-left: 2px solid $color-main;
+        color: $color-main;
         padding: 0 20px;
         width: 800px;
         max-height: 400px;
@@ -37,7 +37,7 @@ form {
                 top: 0;
                 bottom: 0;
                 position: absolute;
-                background: $merlot;
+                background: $color-main;
             }
         }
         .slide {
@@ -48,7 +48,7 @@ form {
                 right: ($slider-box - $slider-circle)/2;
                 height: $slider-circle;
                 border-radius: $slider-circle/2;
-                background: $merlot;
+                background: $color-main;
             }
             left: 0%;
             margin-left: - $slider-box/2;
@@ -66,7 +66,7 @@ form {
     }
 
     label {
-        color: $aubergine;
+        color: $color-main-dark;
         font-size: $size-text-bigger;
         display: block;
     }
@@ -87,7 +87,7 @@ form {
     input[type=file] + label {
         cursor: pointer;
         padding: 10px 30px;
-        border: 2px solid $aubergine;
+        border: 2px solid $color-main-dark;
         border-radius: 40px;
         text-transform: uppercase;
         font-size: $size-text-bigger;
@@ -95,7 +95,7 @@ form {
         display: inline-block;
         margin-left: 0;
         color: white;
-        background: $aubergine;
+        background: $color-main-dark;
 
         svg {
             margin-right: 5px;
@@ -113,7 +113,7 @@ form {
         border-bottom: 2px solid $gray;
         padding: 10px 0;
         margin: 0 0 20px 0;
-        color: $merlot;
+        color: $color-main;
 
         &::-webkit-input-placeholder {
             color: $gray;
@@ -132,13 +132,13 @@ form {
         }
 
         &:focus, &.selected {
-            border-color: $merlot;
-            color: $merlot;
+            border-color: $color-main;
+            color: $color-main;
         }
 
         &.error {
-            border-color: $error-red;
-            color: $error-red; 
+            border-color: $color-error;
+            color: $color-error; 
         }
     }
 
@@ -192,7 +192,7 @@ form {
     {
         border: 0;
         padding: 2px;
-        background: $merlot url(../images/checkbox-checked.png) no-repeat center center;
+        background: $color-main url(../images/checkbox-checked.png) no-repeat center center;
         background-image: url(../images/checkbox-checked.svg),
         linear-gradient(transparent, transparent);
     }
@@ -247,11 +247,11 @@ form {
         .option {
             cursor: pointer;
             padding: 20px 30px;
-            border-bottom: 1px solid $line-gray;
-            color: $merlot;
+            border-bottom: 1px solid $color-border;
+            color: $color-main;
 
             &:hover {
-                background: $gray-background;
+                background: $color-background-shade-darker;
             }
         }
     }
@@ -262,7 +262,7 @@ form {
 
     .select-box {
         overflow: hidden;
-        border-color: $merlot;
+        border-color: $color-main;
         padding: 0;
 
         select::-ms-expand {
@@ -273,7 +273,7 @@ form {
             padding: 10px 0;
             font-size: inherit;
             outline: none;
-            color: $merlot;
+            color: $color-main;
 
             width: 130%;
             border: none;
@@ -285,7 +285,7 @@ form {
             -webkit-appearance: none;
 
             option {
-                color: $merlot;
+                color: $color-main;
             }
 
             &.empty {
@@ -361,10 +361,10 @@ form {
 
     &.error {
         input[type=text], input[type=password], input[type=email], input[type=tel] {
-            border-color: $error-red;
+            border-color: $color-error;
         }
         label {
-            color: $error-red;
+            color: $color-error;
         }
     }
 }

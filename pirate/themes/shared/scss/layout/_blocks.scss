@@ -1,5 +1,5 @@
 main {
-    background-color: $lightgray-background;
+    background-color: $color-background-shade;
     padding: 10px 20px;
     padding-top: 70px;
     display: block; // IE Fix
@@ -11,7 +11,7 @@ main {
         padding-top: 10px;
     }
 
-    @media screen and (max-width: $width-reduce-padding) {
+    @media screen and (max-width: $page-width-reduce-padding) {
         padding: 10px 0;
         padding-top: 70px;
 
@@ -22,10 +22,10 @@ main {
     }
 
     .block {
-        max-width: $width;
+        max-width: $page-width;
         margin: 40px auto;
 
-        @media screen and (max-width: $width-reduce-padding) {
+        @media screen and (max-width: $page-width-reduce-padding) {
             margin: 20px auto;
         }
 
@@ -51,17 +51,17 @@ main {
                 padding: 0;
                 margin: 0;
                 text-align: center;
-                color: $aubergine;
+                color: $color-main-dark;
             }
             h2 {
                 padding: 0;
                 margin: 0;
-                color: $merlot;
+                color: $color-main;
                 text-align: center;
             }
             margin-bottom: 30px;
 
-            @media screen and (max-width: $width-reduce-padding) {
+            @media screen and (max-width: $page-width-reduce-padding) {
                 margin-bottom: 10px;
             }
         }
@@ -76,13 +76,13 @@ main {
         height: 60vh;
         position: relative;
 
-        @media screen and (max-width: $width-reduce-padding) {
+        @media screen and (max-width: $page-width-reduce-padding) {
             display: none;
         }
     }
     .text {
         padding: 70px 30px 70px 50px;
-        color: $cod-gray;
+        color: $color-text;
 
         
 
@@ -90,7 +90,7 @@ main {
             margin: 0 -30px 20px -50px;
         }
 
-        @media screen and (max-width: $width-stop-splitted) {
+        @media screen and (max-width: $page-width-stop-splitted) {
           padding: 60px 20px;
 
           .list-bundle { 
@@ -99,10 +99,10 @@ main {
         }
 
         h1, h2 {
-            color: $aubergine;
+            color: $color-main-dark;
         }
         h2 {
-            color: $merlot;
+            color: $color-main;
         }
 
         &> header {
@@ -113,7 +113,7 @@ main {
             h2 {
                 padding: 0;
                 margin: 0;
-                color: $merlot;
+                color: $color-main;
             }
             margin-bottom: 40px
         }
@@ -136,9 +136,9 @@ main {
         }
 
         padding: 60px 60px;
-        color: $cod-gray;
+        color: $color-text;
 
-        @media screen and (max-width: $width-stop-splitted) {
+        @media screen and (max-width: $page-width-stop-splitted) {
           padding: 80px $smartphone-padding;
 
           &.part {
@@ -147,7 +147,7 @@ main {
         }
 
         h1, h2 {
-            color: $aubergine;
+            color: $color-main-dark;
         }
 
         h2 {
@@ -162,12 +162,12 @@ main {
         }
 
         p {
-            color: $merlot;
+            color: $color-main;
         }
     }
 
     // Small height screens: make boxes less long
-    @media screen and (max-width: $width-reduce-padding) {
+    @media screen and (max-width: $page-width-reduce-padding) {
         .text {
             padding: 40px $smartphone-padding;
 

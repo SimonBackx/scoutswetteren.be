@@ -6,7 +6,7 @@
 
     .center {
         padding: 60px 20px;
-        max-width: $width;
+        max-width: $page-width;
         margin: 0 auto;
         text-align: left;
 
@@ -14,7 +14,7 @@
             padding: 60px 40px;
         }
 
-        @media screen and (max-width: $width-reduce-padding) {
+        @media screen and (max-width: $page-width-reduce-padding) {
             padding: 60px $smartphone-padding;
         }
         padding-bottom: 0;
@@ -107,7 +107,7 @@
     }
 
     #credits {
-        max-width: $width;
+        max-width: $page-width;
         margin: 0 auto;
         color: rgba(255, 255, 255, 0.45);
         padding: 0 20px;

@@ -32,7 +32,7 @@
     right: 0;
     
     &.fixed {
-        background: $aubergine;
+        background: $color-main-dark;
         position: fixed;
     }
 
@@ -208,7 +208,7 @@
                 border-radius: 4px;
 
                 .box {
-                    border-bottom: 1px solid $line-gray;
+                    border-bottom: 1px solid $color-border;
                     padding: 10px 0;
 
                     &.last {

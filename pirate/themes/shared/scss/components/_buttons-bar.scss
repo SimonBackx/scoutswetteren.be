@@ -1,11 +1,11 @@
 nav.buttons {
-    max-width: $width;
+    max-width: $page-width;
     margin: 15px auto 0 auto;
     text-align: right;
 
     a.button {
         font-size: 11pt;
-        color: $aubergine;
+        color: $color-main-dark;
 
         border: 0;
         padding: 12px 2px;
@@ -17,7 +17,7 @@ nav.buttons {
 
         &.selected {
             color: white;
-            background: $aubergine;
+            background: $color-main-dark;
             padding: 10px 30px;
             margin: 20px 0;
             font-weight: bold;

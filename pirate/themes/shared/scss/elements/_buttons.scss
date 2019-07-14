@@ -24,19 +24,19 @@ a.button, button.button, input[type=submit] {
     }
 
     &.merlot {
-        color: $merlot;
-        border-color: $merlot;
+        color: $color-main;
+        border-color: $color-main;
 
         &.fill {
             color: white;
-            background: $merlot;
+            background: $color-main;
         }
     }
 
     
     &.aubergine {
-        color: $aubergine;
-        border-color: $aubergine;
+        color: $color-main-dark;
+        border-color: $color-main-dark;
 
         &.search {
             background: url(../images/hourglass-aubergine.png) no-repeat left center;
@@ -44,7 +44,7 @@ a.button, button.button, input[type=submit] {
 
         &.fill {
             color: white;
-            background: $aubergine;
+            background: $color-main-dark;
         }
     }
 
@@ -94,7 +94,7 @@ a.button, button.button, input[type=submit] {
 
 a.icon-button, button.icon-button {
     &, &:hover, &:visited, &:active, &:link {
-        color: $aubergine;
+        color: $color-main-dark;
     }
 
     text-transform: uppercase;

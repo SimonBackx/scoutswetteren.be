@@ -1,18 +1,16 @@
 // Color variables
-$aubergine: #470A14;
-$merlot: #9E182E;
-$cardinal: #BD1C37;
+$color-main-dark: #470A14;
+$color-main: #9E182E;
 
-$cod-gray: #141414;
-$bright-sun: #FFDA37;
-$heath: #520F1A;
+$color-text: #141414;
+$color-main-alternative: #FFDA37;
 $gray: #D5D5D5;
-$error-red: #E02545;
+$color-error: #E02545;
 
-$lightgray-background: #F5F5F5;
-$gray-background: #F8F8F8;
-$line-gray: #EAEAEA;
-$width: 1200px;
+$color-background-shade: #F5F5F5;
+$color-background-shade-darker: #F8F8F8;
+$color-border: #EAEAEA;
+$page-width: 1200px;
 
 $size-title: 30pt;
 $size-smartphone-title: 22pt;
@@ -31,9 +29,9 @@ $size-smartphone-subtitle: 14pt;
 $size-button: 12pt;
 $size-button-big: 15pt;
 
-$width-stop-splitted: 1000px;
+$page-width-stop-splitted: 1000px;
 
-$width-reduce-padding: 500px;
+$page-width-reduce-padding: 500px;
 $smartphone-padding: 15px;
 
 $slider-circle: 12px;

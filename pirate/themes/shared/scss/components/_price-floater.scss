@@ -8,7 +8,7 @@
         font-size: 24px;
         font-weight: bold;
         padding-right: 15px;
-        color: $aubergine;
+        color: $color-main-dark;
 
         &:last-child {
             padding-right: 0;
@@ -22,7 +22,7 @@
         }
     }
 
-    @media screen and (max-width: $width-reduce-padding) {
+    @media screen and (max-width: $page-width-reduce-padding) {
         float: none;
         display: flex;
         flex-direction: row;

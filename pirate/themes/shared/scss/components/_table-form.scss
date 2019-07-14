@@ -18,7 +18,7 @@ form .table-form {
         @media screen and (max-width: 700px) {
             display: table;
 
-            border-bottom: 2px solid $line-gray;
+            border-bottom: 2px solid $color-border;
 
             &:last-child {
                 border-bottom: 0;

@@ -2,7 +2,7 @@
 
     h2 {
         font-size: $size-question;
-        color: $aubergine !important;
+        color: $color-main-dark !important;
         
         span {
             font-size: $size-text;
@@ -13,6 +13,6 @@
     }
 
     p {
-        color: $merlot;
+        color: $color-main;
     }
 }

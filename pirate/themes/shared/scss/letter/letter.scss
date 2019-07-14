@@ -4,9 +4,9 @@
  */
 
 // Color variables
-$aubergine: #470A14;
-$merlot: #9E182E;
-$cardinal: #BD1C37;
+$color-main-dark: #470A14;
+$color-main: #9E182E;
+$color-main: #BD1C37;
 
 
 body {
@@ -24,7 +24,7 @@ h1 {
     font-family: Montserrat;
     font-size: 15pt;
     font-weight: bold;
-    color: $aubergine;
+    color: $color-main-dark;
     line-height: 110%;
     margin: 0 0 12pt 0;
 }
@@ -33,7 +33,7 @@ h2 {
     font-family: Montserrat;
     font-size: 13pt;
     font-weight: normal;
-    color: $aubergine;
+    color: $color-main-dark;
     line-height: 110%;
     margin: 0 0 8pt 0;
 }
@@ -64,7 +64,7 @@ header {
         }
 
         h2 {
-            color: $merlot;
+            color: $color-main;
             font-size: 12pt;
             line-height: 120%;
             margin: 0;
@@ -188,17 +188,17 @@ a {
 
 a.button{
     padding: 10px 30px;
-    border: 2px solid $merlot;
+    border: 2px solid $color-main;
     border-radius: 40px;
     text-transform: uppercase;
     font-size: 12pt;
     cursor: pointer;
 
-    color: $merlot;
+    color: $color-main;
 
     &.fill {
         color: white;
-        background: $merlot;    
+        background: $color-main;    
     }
 
     margin: 0 10px 0 0;

@@ -20,7 +20,7 @@ table.details {
             }
             td:first-child {
 
-                @media screen and (max-width: $width-stop-splitted), print {
+                @media screen and (max-width: $page-width-stop-splitted), print {
                     text-align: left;
                 }
             }
@@ -38,10 +38,10 @@ table.details {
     tr {
         td {
             padding: 5px 0;
-            color: $merlot;
+            color: $color-main;
         }
         td:first-child{
-            color: $aubergine;
+            color: $color-main-dark;
             padding-right: 30px;
         }
     }
