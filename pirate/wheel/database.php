@@ -1,31 +1,35 @@
 <?php
 namespace Pirate\Database;
-use mysqli;
 
-class Database {
+use mysqli;
+use Pirate\Classes\Environment\Environment;
+
+class Database
+{
     private static $mysqli;
 
-    static public function init() {
+    public static function init()
+    {
         try {
             if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
-                self::$mysqli = new mysqli('db', 'root', 'root', 'scouts');
+                self::$mysqli = new mysqli('db', Environment::getSetting('mysql.username'), Environment::getSetting('mysql.password'), Environment::getSetting('mysql.database'));
             } else {
-                self::$mysqli = new mysqli('127.0.0.1', 'root', 'root', 'scouts');
+                self::$mysqli = new mysqli('127.0.0.1', Environment::getSetting('mysql.username'), Environment::getSetting('mysql.password'), Environment::getSetting('mysql.database'));
             }
 
-            if (self::$mysqli->connect_errno){
+            if (self::$mysqli->connect_errno) {
                 header('Location: /oops/database.html');
                 die();
             }
             self::$mysqli->set_charset("utf8mb4");
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             header('Location: /oops/database.html');
             die();
         }
     }
 
-    static public function getDb() {
+    public static function getDb()
+    {
         return Self::$mysqli;
     }
 }
