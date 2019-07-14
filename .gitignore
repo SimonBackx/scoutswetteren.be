@@ -1,7 +1,7 @@
 /pirate/composer.phar
 /pirate/vendor/
 /pirate/tmp/
-/docker/environments/*/config.php
+/docker/environments/*/config.private.php
 /public/css/style.css
 .sass-cache
 /files/
