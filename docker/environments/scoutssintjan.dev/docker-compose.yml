@@ -11,6 +11,7 @@ services:
          - ../../../pirate:/var/www/scoutssintjan.dev/pirate
          - ../../../public:/var/www/scoutssintjan.dev/public
          - ./config.php:/var/www/scoutssintjan.dev/pirate/config.php
+         - ./config.private.php:/var/www/scoutssintjan.dev/pirate/config.private.php
          - ../../../config/php.ini:/usr/local/etc/php/conf.d/custom.ini
         environment:
          - DEBUG=1
