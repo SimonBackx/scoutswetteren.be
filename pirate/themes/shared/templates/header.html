@@ -1,0 +1,97 @@
+<div id="smartphone-menu">
+    <div class="close">
+        <svg width="24px" height="24px" viewBox="1276 -6 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="close-hamburger" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1276.000000, -6.000000)">
+                <rect id="Rectangle-139" fill="#FFFFFF" transform="translate(12.000000, 12.000000) rotate(-45.000000) translate(-12.000000, -12.000000) " x="-3" y="11" width="30" height="2" rx="1"></rect>
+                <rect id="Rectangle-139" fill="#FFFFFF" transform="translate(12.000000, 12.000000) rotate(45.000000) translate(-12.000000, -12.000000) " x="-3" y="11" width="30" height="2" rx="1"></rect>
+            </g>
+        </svg>
+    </div>
+    <div id="smartphone-menu-items">
+        
+    </div>
+</div>
+<nav id="menu"{% if menu.transparent == false %} class="fixed"{% endif %}>
+    {% if general.logged_in %}
+        <div class="admin">
+            <svg width="25px" height="15px" viewBox="0 -1 13 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <g id="Lock" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <rect id="Rectangle-2" fill="#FFFFFF" x="0" y="6" width="13" height="8" rx="1"></rect>
+                    <path d="M3,11.5 L10,11.5 L10,3.5 C10,1.56700338 8.43299662,0 6.5,0 C4.56700338,0 3,1.56700338 3,3.5 L3,11.5 Z" id="Oval" stroke="#FFFFFF" stroke-width="2"></path>
+                </g>
+            </svg>
+            <svg width="10px" height="7px" viewBox="24 6 10 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <polyline id="Path-2" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" points="33 7 29 11 25 7"></polyline>
+            </svg>
+            <div class="admin-menu">
+                <div class="content">
+                    <div class="box">
+                        <a href="/gebruikers/logout" class="logout merlot button noborder">Uitloggen</a>
+                        <p>{{ logged_in_user.name }}</p>
+                    </div>
+                    <!--<div class="box">
+                        <a href="/logout" class="aubergine button noborder">Meldingen bekijken</a>
+                    </div>-->
+                    {% if general.logged_in_ouders %}
+                        <div class="{% if not general.logged_in_leiding %}last {% endif %}box">
+                            <a href="/ouders" class="aubergine button noborder">Mijn inschrijvingen</a>
+                            <a href="/ouders/attesten" class="aubergine button noborder">Attesten</a>
+                            {% if not general.logged_in_leiding %}
+                                <a href="/gebruikers/wachtwoord-wijzigen" class="aubergine button noborder">Wachtwoord wijzigen</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+
+                    {% if general.logged_in_leiding %}
+                        <div class="last box">
+                            {% for button in admin.buttons %}
+                                <a href="/admin/{{ button.url }}" class="aubergine button noborder">{{ button.name }}</a>
+                            {% endfor %}
+                            <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank" class="aubergine button noborder">Drive</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="overflow-bar">
+        <a class="logo" href="/" title="Startpagina">
+            <!--<a href="/"><img src="{{ http }}/images/menu-logo.png" alt="Prins Boudewijn"></a>-->
+        </a>
+        <div class="items">
+            <div class="space">
+                <a href="/info">Info</a>
+                <a href="/fotos">Foto's</a>
+                <a href="/verhuur">Verhuur</a>
+                <a href="/sponsors">Sponsors</a>
+                <a href="/contact">Contact</a>
+                {% if not general.logged_in %}
+                    <a href="/inschrijven" class="call-to-action">Inschrijven</a>
+                {% endif %}
+            </div>
+            <div class="visible">
+                <a href="/info">Info</a>
+                <a href="/fotos">Foto's</a>
+                <a href="/verhuur">Verhuur</a>
+                <a href="/sponsors">Sponsors</a>
+                <a href="/contact">Contact</a>
+                {% if not general.logged_in %}
+                    <a href="/inschrijven" class="call-to-action">Inschrijven</a>
+                {% endif %}
+            </div>
+            <div class="floater">
+                <div class="smartphone-menu">
+                    <div id="smartphone-menu-button">
+                        <svg width="30px" height="20px" viewBox="1179 -2 30 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <g id="hamburger" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1179.000000, -2.000000)">
+                                <rect id="Rectangle-139" fill="#FFFFFF" x="0" y="0" width="30" height="2" rx="1"></rect>
+                                <rect id="Rectangle-139" fill="#FFFFFF" x="0" y="9" width="30" height="2" rx="1"></rect>
+                                <rect id="Rectangle-139" fill="#FFFFFF" x="0" y="18" width="30" height="2" rx="1"></rect>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

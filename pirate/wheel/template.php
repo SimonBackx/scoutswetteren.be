@@ -86,10 +86,13 @@ class Template
     public static function init()
     {
         $loader = new \Twig\Loader\FilesystemLoader([__DIR__ . '/../themes/' . Environment::getSetting('theme') . '/templates/', __DIR__ . '/../themes/shared/templates/']);
-        Template::$twig = new \Twig\Environment($loader, array(
-            'cache' => __DIR__ . '/../tmp/twig/',
-        ));
+        $config = [];
 
+        if (!isset($_ENV["DEBUG"]) || $_ENV["DEBUG"] != 1) {
+            $config['cache'] = __DIR__ . '/../tmp/twig/';
+        }
+
+        Template::$twig = new \Twig\Environment($loader, $config);
     }
 
 }
