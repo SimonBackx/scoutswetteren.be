@@ -25,8 +25,8 @@
     <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
     <link rel="manifest" href="/manifest.json">
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#9e182e">
-    <meta name="apple-mobile-web-app-title" content="Scouts Prins Boudewijn">
-    <meta name="application-name" content="Scouts Prins Boudewijn">
+    <meta name="apple-mobile-web-app-title" content="{{ environment.name }}">
+    <meta name="application-name" content="{{ environment.name }}">
     <meta name="theme-color" content="#470a14">
 
     <script type="text/javascript" src="{{ http }}/js/jquery-3.1.0.min.js"></script>
@@ -44,72 +44,7 @@
 
         {% block main %}{% endblock %}
 
-        <footer id="footer">
-            <div class="center">
-                <div class="contact">
-                    <a href="https://goo.gl/maps/bSxMTnRibso" target="_blank">
-                        <figure><img src="{{ http }}/images/footer-pin.png" alt=""></figure>
-                        <div>Groene Wegel 2<br>
-                        9230 Wetteren</div>
-                    </a>
-                    <a href="https://www.facebook.com/scoutsprinsboudewijn" target="_blank">
-                        <figure><img src="{{ http }}/images/footer-fb.png" alt=""></figure>
-                        <div>Like ons op Facebook</div>
-                    </a>
-                </div>
-                <nav class="sitemap">
-                    <div class="bundle">
-                        <div class="column">
-                            <h1>Informatie</h1>
-                            <a href="/info#locatie">Locatie</a>
-                            <a href="/info#lid-worden">Lid worden</a>
-                            <a href="/inschrijven">Inschrijven</a>
-                            <a href="/info#takverdeling">Takken</a>
-                            <a href="/info#kamp">Kamp en weekend</a>
-                            <a href="/info#oudercomite">Oudercomité</a>
-                        </div>
-                        <div class="column">
-                            <h1>Verhuur</h1>
-                            <a href="/verhuur#praktisch">Praktisch</a>
-                            <a href="/verhuur#fotos">Foto's</a>
-                            <a href="/verhuur#reserveren">Beschikbaarheid</a>
-                        </div>
-                    </div>
-                    <div class="bundle">
-                        <div class="column">
-                            <h1>Foto's</h1>
-                            <a href="/fotos/kapoenen">Kapoenen</a>
-                            <a href="/fotos/wouters">Wouters</a>
-                            <a href="/fotos/jonggivers">Jonggivers</a>
-                            <a href="/fotos/givers">Givers</a>
-                            <a href="/fotos/jin">Jin</a>
-                            <a href="/fotos/algemeen">Algemeen</a>
-                        </div>
-                        <div class="column">
-                            <h1>Contact</h1>
-                            <a href="/contact">Groepsleiding</a>
-                            <a href="/contact">Leiding</a>
-                            <a href="/contact">Oudercomité</a>
-                            <a href="/contact">Verhuur</a>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-            <div id="credits">
-                © 2016 - {{ "now"|date("Y") }} - Software en design door <a href="https://www.simonbackx.com">Simon Backx</a> - <a href="/privacy">Privacyverklaring</a>
-                {% if general.logged_in == false %}
-                <a class="login" href="/gebruikers/login" rel="nofollow">
-                    <svg width="13px" height="15px" viewBox="0 -1 13 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                        <g id="Lock" opacity="0.45" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                            <rect id="Rectangle-2" fill="#FFFFFF" x="0" y="6" width="13" height="8" rx="1"></rect>
-                            <path d="M3,11.5 L10,11.5 L10,3.5 C10,1.56700338 8.43299662,0 6.5,0 C4.56700338,0 3,1.56700338 3,3.5 L3,11.5 Z" id="Oval" stroke="#FFFFFF" stroke-width="2"></path>
-                        </g>
-                    </svg>
-                    Inloggen
-                </a>
-                {% endif %}
-            </div>
-        </footer>
+        {% include 'footer.html' %}
     </div>
     <p class="ie-only">U gebruikt een heel oude en onveilige browser. De kans is groot dat bepaalde onderdelen op deze site niet werken. U kunt beter een andere browser gebruiken. <a href="https://whatbrowser.org/">Meer informatie</a></p>
     <noscript>
