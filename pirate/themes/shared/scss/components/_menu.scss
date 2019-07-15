@@ -40,13 +40,12 @@
     height: 60px;
 
     .overflow-bar {
-        overflow: hidden;
-        height: 60px;
-        width: auto;
+        display: flex;
+        flex-wrap: nowrap;
     }
 
     .logo {
-        float: left;
+        flex-shrink: 0;
         height: 60px;
         width: 205px;
         background: url(../images/logo/menu-logo.png) no-repeat left center;
@@ -81,13 +80,16 @@
 
     .items {
         // trigger BFC: take all remaining width
-        overflow: hidden;
+        flex-grow: 1;
         width: auto;
         text-align: right;
         padding: 0 10px 0 20px;
         position: relative;
         font-size: 16px;
         line-height: 60px;
+
+        // Prevent subelements from becoming bigger than the container
+        word-break: break-word;
 
         // This forces to display a smartphone menu
         // when the menu items start to wrap
@@ -173,6 +175,12 @@
             left: 0;
             right: 0;
             height: 60px;
+
+            // Alternative for overflow hidden in items + fixed height of 60px in overflow bar
+            // We don't want overflow hidden: can't have popup menu's relative to items
+            top: -1000%;
+            transform: translate(0, 1000%);
+            // top is relative to parent, transform relative to own height. As soon as the heigt of the parent is higher than the elements height, the height will wrap to the top, causing it to hide
         }
     }
 
