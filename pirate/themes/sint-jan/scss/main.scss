@@ -1,1 +1,45 @@
-@import "../../shared/scss/style.scss";
+@import "../../shared/scss/base/variables";
+@import "../../shared/scss/base/reset";
+@import "../../shared/scss/base/mixins";
+
+// own variables
+@import "base/variables";
+
+@import "../../shared/scss/elements/html";
+@import "../../shared/scss/elements/text";
+@import "../../shared/scss/elements/buttons";
+@import "../../shared/scss/elements/forms";
+
+@import "../../shared/scss/components/menu";
+/*
+@import "../../shared/scss/layout/container";
+@import "../../shared/scss/layout/blocks";
+@import "../../shared/scss/layout/splitted";
+
+
+@import "../../shared/scss/components/buttons-bar";
+@import "../../shared/scss/components/search";
+
+
+@import "../../shared/scss/components/slideshow";
+
+@import "../../shared/scss/components/map";
+@import "../../shared/scss/components/list";
+@import "../../shared/scss/components/details-table";
+@import "../../shared/scss/components/sponsors";
+@import "../../shared/scss/components/questions";
+
+@import "../../shared/scss/components/footer";
+
+@import "../../shared/scss/components/blog";
+@import "../../shared/scss/components/calendar";
+@import "../../shared/scss/components/cta";
+@import "../../shared/scss/pages/login";
+@import "../../shared/scss/components/photos";
+
+@import "../../shared/scss/components/table-form";
+@import "../../shared/scss/components/price-floater";
+*/
+
+// Own stylesheets
+@import "components/banner";

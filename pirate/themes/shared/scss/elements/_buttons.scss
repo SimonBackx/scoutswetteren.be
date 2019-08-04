@@ -39,7 +39,7 @@ a.button, button.button, input[type=submit] {
         border-color: $color-main-dark;
 
         &.search {
-            background: url(../images/hourglass-aubergine.png) no-repeat left center;
+            background: url(../prins-boudewijn/images/hourglass-aubergine.png) no-repeat left center;
         }
 
         &.fill {
@@ -52,7 +52,7 @@ a.button, button.button, input[type=submit] {
         color: white;
 
         &.search {
-            background: url(../images/hourglass-white.png) no-repeat left center;
+            background: url(../prins-boudewijn/images/hourglass-white.png) no-repeat left center;
         }
     }
 
@@ -69,12 +69,12 @@ a.button, button.button, input[type=submit] {
         }
 
         &.arrow-right {
-            background: url(../images/icon-button.svg) no-repeat right center;
+            background: url(../prins-boudewijn/images/icon-button.svg) no-repeat right center;
             padding-right: 20px;
         }
 
         &.arrow-left {
-            background: url(../images/icon-button-back.svg) no-repeat left center;
+            background: url(../prins-boudewijn/images/icon-button-back.svg) no-repeat left center;
             padding-left: 20px;
         }
     }
@@ -103,17 +103,17 @@ a.icon-button, button.icon-button {
     font-size: $size-button;
     display: block;
     text-align: left;
-    background: url(../images/icon-button.png) no-repeat left center;
-    background-image: linear-gradient(transparent, transparent), url(../images/icon-button.svg);
+    background: url(../prins-boudewijn/images/icon-button.png) no-repeat left center;
+    background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/icon-button.svg);
 
     &.plus {
-       background: url(../images/plus-button.png) no-repeat left center;
-       background-image: linear-gradient(transparent, transparent), url(../images/plus-button.svg);
+       background: url(../prins-boudewijn/images/plus-button.png) no-repeat left center;
+       background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/plus-button.svg);
     }
 
     &.delete {
-       background: url(../images/delete-button.png) no-repeat left center; 
-       background-image: linear-gradient(transparent, transparent), url(../images/delete-button.svg);
+       background: url(../prins-boudewijn/images/delete-button.png) no-repeat left center; 
+       background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/delete-button.svg);
     }
 }
 

@@ -198,7 +198,7 @@
 
             .previous {
                 width: 20px;
-                background: url(../images/back-white.png) no-repeat center center;
+                background: url(../prins-boudewijn/images/back-white.png) no-repeat center center;
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -207,7 +207,7 @@
 
             .next {
                 width: 20px;
-                background: url(../images/next-white.png) no-repeat center center;
+                background: url(../prins-boudewijn/images/next-white.png) no-repeat center center;
                 position: absolute;
                 right: 0;
                 top: 0;
@@ -234,7 +234,7 @@
 
 
             &.selected {
-                background: $color-main-dark url(../images/calendar-arrow.png) no-repeat left center;
+                background: $color-main-dark url(../prins-boudewijn/images/calendar-arrow.png) no-repeat left center;
                 margin: -5px -50px;
                 padding: 5px 66px;
             }

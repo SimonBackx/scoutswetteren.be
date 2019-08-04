@@ -30,7 +30,7 @@
                 display: none;
 
                 .del, .cov, .caption {
-                    background: rgba($color-main-dark,0.8) url('/images/delete-photo.png') no-repeat center center;
+                    background: rgba($color-main-dark,0.8) url('/prins-boudewijn/images/delete-photo.png') no-repeat center center;
                     width: 15px;
                     height: 15px;
                     display: inline-block;
@@ -41,13 +41,13 @@
                     }
                 }
                 .cov {
-                    background-image: url('/images/cover-button.png');
+                    background-image: url('/prins-boudewijn/images/cover-button.png');
                     width: 15px;
                     height: 15px;
                 }
 
                 .caption {
-                    background-image: url('/images/caption-button.png');
+                    background-image: url('/prins-boudewijn/images/caption-button.png');
                     width: 15px;
                     height: 15px;
                 }

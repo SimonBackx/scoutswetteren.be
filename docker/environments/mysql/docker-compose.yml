@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
     db:
@@ -19,4 +19,5 @@ services:
 volumes:
     database:
 networks:
-    scouts:
+     scouts:
+          name: scouts

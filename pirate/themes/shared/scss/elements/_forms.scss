@@ -192,8 +192,8 @@ form {
     {
         border: 0;
         padding: 2px;
-        background: $color-main url(../images/checkbox-checked.png) no-repeat center center;
-        background-image: url(../images/checkbox-checked.svg),
+        background: $color-main url(../prins-boudewijn/images/checkbox-checked.png) no-repeat center center;
+        background-image: url(../prins-boudewijn/images/checkbox-checked.svg),
         linear-gradient(transparent, transparent);
     }
 
@@ -345,11 +345,11 @@ form {
     }
 
     input[type=text].datepicker {
-        background: url(../images/input-arrow.png) no-repeat right center;
+        background: url(../prins-boudewijn/images/input-arrow.png) no-repeat right center;
     }
 
     .select-box, input[type=text].dropdown {
-        background: url(../images/input-arrow.png) no-repeat right center;
+        background: url(../prins-boudewijn/images/input-arrow.png) no-repeat right center;
     }
 
 
