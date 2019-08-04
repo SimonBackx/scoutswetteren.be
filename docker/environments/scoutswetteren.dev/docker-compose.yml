@@ -33,3 +33,7 @@ services:
         depends_on:
              - php
         restart: always
+networks:
+    default:
+          external: 
+               name: scouts
