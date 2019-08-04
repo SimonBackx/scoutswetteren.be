@@ -1,7 +1,7 @@
 main {
     background-color: $color-background-shade;
     padding: 10px 20px;
-    padding-top: 70px;
+    padding-top: $menu-height + 10px;
     display: block; // IE Fix
     -ms-flex: 1 0 0;
     -webkit-flex: 1;
