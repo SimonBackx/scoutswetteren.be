@@ -1,10 +1,25 @@
 
 
 header#banner {
-    height: 60vh;
-    background: url('/sint-jan/images/background.jpg') no-repeat center center;
+    max-height: 50vh;
+    height: 100%;
+
+    // Extra element to allow multiple max-height combinations
+    &::before {
+        content: '';
+        display: block;
+        height: 75vw;
+        max-height: 550px;
+        
+    }
+
+    background: url('/sint-jan/images/background.1080p.jpg') no-repeat center center;
     background-size: cover;
     position: relative;
+
+    @media (max-height: 720px) {
+        background-image: url('/sint-jan/images/background.720p.jpg');
+    }
 
     &::after {
         content: '';

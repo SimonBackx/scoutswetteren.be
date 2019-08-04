@@ -1,5 +1,70 @@
 @import "../../../shared/scss/components/menu";
 
+#menu .logo {
+    height: $menu-height;
+    width: 150px;
+    position: relative;
+
+    // Split white background and logo image for hover effect
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -10px;
+        height: 160px;
+        background: white;
+        border-bottom-left-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
+        box-shadow: 0px 4px 30px rgba(black, 0.15);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    // Background image
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0px;
+        height: 150px;
+        background: url(../sint-jan/images/logo.png) no-repeat center center;
+        background-size: 108px 108px;
+        opacity: 1;
+        transition: opacity 0.2s, transform 0.2s;
+
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+            background-image: url(../sint-jan/images/logo@2x.png);
+        }
+    }
+
+    &:hover::after {
+        opacity: 0.6;
+    }
+
+    &:hover::before {
+        box-shadow: 0px 2px 7px rgba(black, 0.25);
+    }
+
+    &:hover {
+        &::after, &::before {
+            transform: translate(0, 7px);
+        }
+    }
+
+    @media (max-height: 750px), (max-width: 400px) {
+        width: 85px;
+
+        &::before {
+            height: 95px;
+        }
+        &::after {
+            height: 85px;
+            background-size: 64px 64px;
+        }
+    }
+}
+
 // The menu items style
 // They are used twice: once in the invisible space div
 // and once in a visible form, forcing to stick to the bottom of that invisible one

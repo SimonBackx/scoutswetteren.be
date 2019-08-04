@@ -36,7 +36,7 @@
         position: fixed;
     }
 
-    padding: 5px 0 5px 30px;
+    padding: 0 0 0 30px;
     height: $menu-height;
 
     .overflow-bar {
@@ -46,36 +46,8 @@
 
     .logo {
         flex-shrink: 0;
-        height: $menu-height;
-        width: 205px;
-        background: url(../prins-boudewijn/images/logo/menu-logo.png) no-repeat left center;
-        background-size: 205px 37px;
 
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-            background-image: url(../prins-boudewijn/images/logo/menu-logo@2x.png);
-        }
-
-        @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) { 
-            background-image: url(../prins-boudewijn/images/logo/menu-logo@3x.png);
-        }
-
-        @media screen and (max-width: 375px) {
-            background-image: url(../prins-boudewijn/images/logo/menu-logo-small.png);
-            width: $menu-height;
-            background-size: 53px 31px;
-
-            @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-                background-image: url(../prins-boudewijn/images/logo/menu-logo-small@2x.png);
-            }
-            @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) { 
-                background-image: url(../prins-boudewijn/images/logo/menu-logo-small@3x.png);
-            }
-
-        }
-
-        &:hover {
-            opacity: 0.6;
-        }
+        // Please override here
     }
 
     .items {
@@ -106,6 +78,7 @@
                 right: 0;
                 left: 0;
                 z-index: 2;
+                text-align: right;
 
                 div {
                     // No a - tag for SEO
