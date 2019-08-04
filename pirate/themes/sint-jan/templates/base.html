@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if title %}{{ title }} - {% endif %}{{ environment.name }}</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700&display=swap" rel="stylesheet">
+    <link href='{{ http }}/css/{{ environment.theme }}.css' rel='stylesheet' type='text/css'>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="{{ description }}">
+
+    <meta property="og:title" content="{% if title %}{{ title }} - {% endif %}{{ environment.name }}"> 
+
+    <meta property="og:description" content="{{ description }}">
+
+    <meta property="og:image" content="{% if social_image %}{{ social_image }}{% else %}{{ http }}/images/background.jpg{% endif %}">      
+    <meta property="og:type" content="website">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#9e182e">
+    <meta name="apple-mobile-web-app-title" content="{{ environment.name }}">
+    <meta name="application-name" content="{{ environment.name }}">
+    <meta name="theme-color" content="#470a14">
+
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div id="container">
+        {% include 'header.html' %}
+
+        {% block main %}{% endblock %}
+
+        {% include 'footer.html' %}
+    </div>
+    <p class="ie-only">U gebruikt een heel oude en onveilige browser. De kans is groot dat bepaalde onderdelen op deze site niet werken. U kunt beter een andere browser gebruiken. <a href="https://whatbrowser.org/">Meer informatie</a></p>
+    <noscript>
+        <p class="ie-only">Javascript is uitgeschakeld op uw browser, hierdoor zijn veel functies niet beschikbaar.</p>
+    </noscript>
+
+    {% block javascript %}{% endblock %}
+</body>
+</html>

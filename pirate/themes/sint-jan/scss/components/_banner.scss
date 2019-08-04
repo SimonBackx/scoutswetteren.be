@@ -4,4 +4,15 @@ header#banner {
     height: 60vh;
     background: url('/sint-jan/images/background.jpg') no-repeat center center;
     background-size: cover;
+    position: relative;
+
+    &::after {
+        content: '';
+        @include bg-gradient-t2b(rgba(black, 0.6), rgba(black, 0));
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 50%;
+    }
 }
