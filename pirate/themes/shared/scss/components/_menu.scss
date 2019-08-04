@@ -32,8 +32,9 @@
     right: 0;
     
     &.fixed {
-        background: $color-main-dark;
+        background: $color-menu-background;
         position: fixed;
+        top: 0;
     }
 
     padding: 0 0 0 30px;

@@ -1,0 +1,24 @@
+@mixin main-gradient() {
+    background: $color-main;
+    background: linear-gradient(90deg, $color-main, $color-main-gradient-destination);
+    position: relative;
+    z-index: 0;
+
+    &::before {
+        content: '';
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        position: absolute;
+        z-index: -1;
+        background: $color-main-alternative-gradient-destination;
+        opacity: 0;
+        transition: opacity 0.2s;
+        border-radius: $border-radius;
+    }
+}
+
+@mixin main-alternative-gradient() {
+    @include bg-gradient-l2r($color-main-alternative, $color-main-alternative-gradient-destination);
+}

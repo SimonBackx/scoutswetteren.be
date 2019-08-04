@@ -88,8 +88,16 @@
         margin: 18px 15px;
         height: $menu-height - 36px;
         padding: 10px 25px;
-        border-radius: $border-radius;
-        background: $color-main;
         line-height: $menu-height - 56px;
+        border-radius: $border-radius;
+        @include main-gradient;
+
+        &:hover {
+            opacity: 1;
+
+            &::before {
+                opacity: 1;
+            }
+        }
     }
 }

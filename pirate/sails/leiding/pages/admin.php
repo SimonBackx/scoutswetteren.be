@@ -1,40 +1,45 @@
 <?php
 namespace Pirate\Sail\Leiding\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Leiding\Leiding;
 
-class Admin extends Page {
+use Pirate\Model\Leiding\Leiding;
+use Pirate\Page\Page;
+use Pirate\Template\Template;
+
+class Admin extends Page
+{
     private $adminPage = null;
     private $selected = '';
 
-    function __construct($adminPage, $selected) {
+    public function __construct($adminPage, $selected)
+    {
         $this->adminPage = $adminPage;
         $this->selected = $selected;
     }
 
-    function customHeaders() {
+    public function customHeaders()
+    {
         return $this->adminPage->customHeaders();
     }
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return $this->adminPage->getStatusCode();
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $content = $this->adminPage->getContent();
         $layout = $this->adminPage->hasOwnLayout();
 
         if ($layout) {
             return $content;
         }
-        return Template::render('admin/leiding', array(
+        return Template::render('pages/leiding/admin', array(
             'content' => $content,
             'head' => $this->adminPage->getHead(),
             'admin' => array(
-                'selected' => $this->selected
-            )
+                'selected' => $this->selected,
+            ),
         ));
     }
 }
