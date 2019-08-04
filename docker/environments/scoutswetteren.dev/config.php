@@ -22,6 +22,12 @@ $config = [
         "country" => 'BE',
     ],
 
+    'router' => [
+        'redirects' => [
+            'winterfeest' => '/inschrijvingen/1/inschrijven-voor-winterfeest',
+        ],
+    ],
+
     'sendgrid' => [
         // key defined in private
     ],

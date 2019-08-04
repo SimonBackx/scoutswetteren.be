@@ -22,6 +22,10 @@ $config = [
         "country" => 'BE',
     ],
 
+    'router' => [
+        'redirects' => [],
+    ],
+
     'sendgrid' => [
         // key defined in private
     ],

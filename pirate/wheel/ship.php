@@ -59,11 +59,13 @@ class Ship
     public function sail()
     {
         if ($_SERVER['SERVER_PORT'] != 443) {
-            die('Er is een probleem ontstaan waardoor de website geen beveiligde verbinding gebruikt. Neem conact met ons op als dit probleem zich blijft voordoen.');
+            die('Er is een probleem ontstaan waardoor de website geen beveiligde verbinding gebruikt. Neem contact met ons op als dit probleem zich blijft voordoen.');
         }
 
         $url = strtok($_SERVER["REQUEST_URI"], '?');
         $url = substr($url, 1);
+
+        // Url may never end with a trailing slash to avoid duplicate URI's for the same page
         if (substr($url, -1) == '/') {
             // redirecten NU
             $url = substr($url, 0, strlen($url) - 1);
