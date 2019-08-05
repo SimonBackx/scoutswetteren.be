@@ -1,5 +1,9 @@
 @import "../../../shared/scss/components/menu";
 
+main {
+    background-color: $color-background-shade;
+}
+
 #menu .logo {
     height: $menu-height;
     width: 205px;

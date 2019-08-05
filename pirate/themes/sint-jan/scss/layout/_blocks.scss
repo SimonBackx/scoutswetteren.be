@@ -1,0 +1,49 @@
+// A block contains main content. If it is placed directly as a child of main, it will have specify width etc.
+// Other blocks only maintain color characteristics
+.block {
+
+    &.white {
+        &::before {
+            position: absolute;
+            left: 0px;
+            right: 0px;
+            top: 0;
+            height: 100%;
+            max-height: 350px;
+            background: linear-gradient(rgba(black, 0.03), rgba(black, 0));
+            border-top-left-radius: $border-radius;
+            border-top-right-radius: $border-radius;
+
+            content: '';
+            z-index: 0;
+        }
+    }
+
+    &.blue {
+
+    }
+}
+
+main > .block {
+    max-width: $page-width;
+    margin: 0 auto;
+    padding: 70px 40px;
+    position: relative;
+
+    @media (min-width: $page-width + 160px) {
+        &.white {
+            &::before {
+            left: calc(-50vw + #{$page-width/2 + 60px} );
+            right: calc(-50vw + #{$page-width/2 + 60px} );
+            }
+        }
+    }
+
+    @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+        padding: 40px 20px;
+    }
+
+    @media (max-width: $page-width-reduce-padding) {
+        padding: 40px 15px;
+    }
+}
