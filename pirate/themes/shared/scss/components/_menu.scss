@@ -25,29 +25,6 @@
     }
 }
 
-main {
-    padding: 10px 20px;
-    padding-top: $menu-height + $menu-margin;
-    display: block; // IE Fix
-    -ms-flex: 1 0 0;
-    -webkit-flex: 1;
-    flex: 1 0 0;
-
-    &.transparent {
-        padding-top: $menu-margin;
-    }
-
-    @media screen and (max-width: $page-width-reduce-padding) {
-        padding: 10px 0;
-        padding-top: $menu-height + $menu-margin;
-
-        &.keep-padding {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-    }
-}
-
 #menu {
     position: absolute;
     z-index: 2;

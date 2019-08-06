@@ -1,43 +1,58 @@
 // A block contains main content. If it is placed directly as a child of main, it will have specify width etc.
 // Other blocks only maintain color characteristics
-.block {
 
-    &.white {
+@mixin block-underlay {
+    z-index: 0;
+
+    &::before {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        content: '';
+        z-index: -1;
+    }
+
+    @media (min-width: $page-width + 160px) {
         &::before {
-            position: absolute;
-            left: 0px;
-            right: 0px;
-            top: 0;
-            height: 100%;
-            max-height: 350px;
-            background: linear-gradient(rgba(black, 0.03), rgba(black, 0));
-            border-top-left-radius: $border-radius;
-            border-top-right-radius: $border-radius;
-
-            content: '';
-            z-index: 0;
+            left: calc(-50vw + #{$page-width/2 + 80px} );
+            right: calc(-50vw + #{$page-width/2 + 80px} );
         }
     }
-
-    &.blue {
-
-    }
 }
+
 
 main > .block {
     max-width: $page-width;
     margin: 0 auto;
     padding: 70px 40px;
     position: relative;
+    margin-bottom: 40px;
 
-    @media (min-width: $page-width + 160px) {
-        &.white {
-            &::before {
-            left: calc(-50vw + #{$page-width/2 + 60px} );
-            right: calc(-50vw + #{$page-width/2 + 60px} );
-            }
+    &.white {
+        @include block-underlay();
+
+        &::before {
+            top: 0;
+            height: 100%;
+            max-height: 350px;
+            background: linear-gradient(rgba(black, 0.03), rgba(black, 0));
+            border-top-left-radius: $border-radius;
+            border-top-right-radius: $border-radius;
         }
     }
+
+    &.blue {
+        @include block-underlay();
+        @include text-styles($color-main-alternative-dark, $color-main-alternative, $color-main-alternative-gradient-destination);
+
+        &::before {
+            top: 0;
+            bottom: 0;
+            background: $color-main-alternative-shade;
+            border-radius: $border-radius;
+        }
+    }
+
 
     @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
         padding: 40px 20px;
