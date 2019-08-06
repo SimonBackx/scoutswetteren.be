@@ -24,11 +24,14 @@
 main > .block {
     max-width: $page-width;
     margin: 0 auto;
-    padding: 70px 40px;
+    padding: 40px 40px;
     position: relative;
     margin-bottom: 40px;
 
+
     &.white {
+        margin-bottom: 0px;
+
         @include block-underlay();
 
         &::before {
@@ -55,10 +58,10 @@ main > .block {
 
 
     @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
-        padding: 40px 20px;
+        padding: 30px 20px;
     }
 
     @media (max-width: $page-width-reduce-padding) {
-        padding: 40px 15px;
+        padding: 30px 15px;
     }
 }

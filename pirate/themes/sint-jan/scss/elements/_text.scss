@@ -1,6 +1,6 @@
 @mixin text-styles($dark, $main, $gradient-dest) {
     color: $dark;
-    h1 {
+    h1:first-of-type {
         &::before {
             background: $main;
         }
@@ -11,9 +11,10 @@ h1 {
     font-weight: bold;
     font-size: $size-title;
     margin: 30px 0 20px 0;
+    line-height: 1.2;
 }
 
-.block h1 {
+h1:first-of-type {
     &::before {
         display: block;
         content: '';
@@ -43,7 +44,7 @@ h1 {
     color: $color-main;
     text-transform: uppercase;
     font-weight: bold;
-    font-size: $size-text;
+    font-size: $size-prefix;
 
     &+ h1 {
         margin-top: 0;

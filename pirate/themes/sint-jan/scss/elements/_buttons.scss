@@ -1,0 +1,9 @@
+@import "../../../shared/scss/elements/buttons";
+
+
+a.go {
+    font-size: $size-prefix;
+    text-transform: uppercase;
+    color: $color-main-gray;
+    display: inline-block;
+}
