@@ -41,7 +41,7 @@ main {
         border-bottom-left-radius: $border-radius;
         border-bottom-right-radius: $border-radius;
         box-shadow: 0px 4px 30px rgba(black, 0.15);
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: transform 0.2s;
     }
 
     // Background image
@@ -64,10 +64,6 @@ main {
 
     &:hover::after {
         opacity: 0.6;
-    }
-
-    &:hover::before {
-        box-shadow: 0px 2px 7px rgba(black, 0.25);
     }
 
     &:hover {
