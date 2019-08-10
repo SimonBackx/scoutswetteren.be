@@ -550,6 +550,8 @@ photos.Grid = function(options) {
 
     this.scrollBox = null;
     this.needsVisibleUpdateOnAdd = false;
+
+    this.hidden_photos = [];
 }
 
 photos.Grid.prototype = {
@@ -568,6 +570,7 @@ photos.Grid.prototype = {
         if (this.rows.length == 0 || !this.rows[this.rows.length - 1].add(photo)) {
             if (this.max_lines != 0 && this.rows.length >= this.max_lines) {
                 // Reached maximum
+                this.hidden_photos.push(photo);
                 return;
             }
             var row = new photos.Row(this);
@@ -757,7 +760,23 @@ photos.Grid.prototype = {
             }
         }
 
-        console.log(items);
+        for (var j = 0; j < this.hidden_photos.length; j++) {
+            var photo = this.hidden_photos[j];
+
+            var source = photo.getLargestSmallerThan((window.innerWidth || document.documentElement.clientWidth), (window.innerHeight || document.documentElement.clientHeight));
+
+            if (source) {
+                var item = {
+                    src: source.url,
+                    w: source.w,
+                    h: source.h,
+                    msrc: photo.getSource().url,
+                    el: null,
+                    title: photo.title
+                };
+                items.push(item);
+            }
+        }
 
         return items;
     },
@@ -766,13 +785,16 @@ photos.Grid.prototype = {
         var pswpElement = document.querySelectorAll('.pswp')[0];
         var items = this.getPhotoSwipeItems();
 
-        console.log('test');
-
         // define options (if needed)
         var options = {
             getThumbBoundsFn: function(index) {
-                // See Options -> getThumbBoundsFn section of documentation for more info
                 var pageYScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (!items[index].el) {
+                    // No element: zoom to center
+                    return {x:(window.innerWidth || document.documentElement.clientWidth)/2, y:(window.innerHeight || document.documentElement.clientHeight)/2 + pageYScroll, w: 1};
+                }
+                // See Options -> getThumbBoundsFn section of documentation for more info
                 var rect = items[index].el.getBoundingClientRect(); 
 
                 return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};

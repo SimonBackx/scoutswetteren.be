@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 
 {% block head %}
+<link rel="stylesheet" href="/css/photoswipe.css"> 
 {% endblock %}
 
 {% block javascript %}
@@ -156,6 +157,7 @@
         </section>
 
         <script src="/js/photos.js"></script>
+        <script src="/js/photoswipe.min.js"></script> 
 
         {% for data in album_images %}
             <section class="block{% if not loop.first %} white{% endif %}">
@@ -172,7 +174,7 @@
                 var grid = new photos.Grid({});
                 grid.trackWidth(document.getElementById('album_{{ data.album.id }}'));
                 grid.margin = 5;
-                grid.max_height = 200;
+                grid.max_height = 220;
                 grid.max_lines = 2;
         
                 var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
@@ -193,5 +195,5 @@
         {% endfor %}
     </main>
 
-    
+    {% include 'libs/photoswipe.html' %}
 {% endblock %}
