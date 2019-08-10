@@ -7,3 +7,17 @@ a.go {
     color: $color-main-gray;
     display: inline-block;
 }
+
+button.more {
+    @include main-gradient;
+    border-radius: $border-radius;
+    color: white;
+    text-transform: uppercase;
+    font-size: $size-button-mini;
+    padding: 4px 10px;
+    float: right;
+
+    &:hover {
+        opacity: 0.5;
+    }
+}

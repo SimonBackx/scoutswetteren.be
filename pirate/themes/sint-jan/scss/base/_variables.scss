@@ -15,7 +15,7 @@ $color-main-gradient-destination: #FF3370;
 $color-main-alternative: #0062F4;
 $color-main-alternative-shade: #ECF4FF;
 $color-main-alternative-dark: #001640;
-$color-main-alternative-gray: rgba($color-main-dark, 0.5);
+$color-main-alternative-gray: rgba($color-main-alternative-dark, 0.5);
 $color-main-alternative-gradient-destination: #1400F4;
 
 $color-background-shade: rgba(black, 0.03);
@@ -52,6 +52,7 @@ $size-smartphone-subtitle: 14pt;
 
 $size-button: 15px;
 $size-button-big: 15px;
+$size-button-mini: 11px;
 
 $page-width-stop-splitted: 1000px;
 
