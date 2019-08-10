@@ -8,6 +8,21 @@ main {
     }
 }
 
+#menu >div {
+    max-width: $page-width;
+    margin: 0 auto;
+
+    padding: 0px 40px;
+    position: relative;
+
+    @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+        padding: 0 20px;
+    }
+
+    @media (max-width: $page-width-reduce-padding) {
+        padding: 0 15px;
+    }
+}
 
 #menu .logo {
     height: $menu-height;
@@ -100,6 +115,7 @@ main {
         line-height: $menu-height - 56px;
         border-radius: $border-radius;
         @include main-gradient;
+        margin-right: 0;
 
         &:hover {
             opacity: 1;

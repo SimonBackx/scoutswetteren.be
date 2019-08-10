@@ -37,7 +37,6 @@
         top: 0;
     }
 
-    padding: 0 0 0 30px;
     height: $menu-height;
 
     .overflow-bar {
@@ -90,6 +89,8 @@
                     padding: 0 20px;
                     line-height: $menu-height;
                     cursor: pointer;
+                    position: relative;
+                    right: -20px;
 
                     svg {
                         vertical-align: middle;
@@ -151,6 +152,11 @@
         padding: 0 20px;
         line-height: $menu-height;
         cursor: pointer;
+        margin-right: -20px;
+
+        svg {
+            vertical-align: middle;
+        }
 
         &:hover {
             svg {
