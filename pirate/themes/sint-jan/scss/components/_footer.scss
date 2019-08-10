@@ -1,5 +1,65 @@
 #footer {
     background: $color-main-alternative-dark;
-    text-align: center;
-    -webkit-flex: 0;
+    text-align: left;
+    color: rgba(white, 0.5);
+    font-weight: bold;
+    padding-bottom: 40px;
+    line-height: 1.5;
+
+    a {
+        color: white;
+        opacity: 1;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 0.5;
+        }
+    }
+
+
+    &> div {
+        max-width: $page-width;
+        margin: 0 auto;
+        padding: 30px 40px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+            padding: 30px 20px;
+        }
+    
+        @media (max-width: $page-width-reduce-padding) {
+            padding: 20px 15px;
+        }
+
+        &> div {
+            &:last-child {
+                padding-left: 20px;
+            }
+        }
+
+       
+    }
+
+    .facebook {
+        text-transform: uppercase;
+        padding: 15px 0 15px 35px;
+        background: url(../sint-jan/images/facebook.svg) no-repeat left center;
+        margin: -15px 0;
+        display: inline-block;
+
+        @media (max-width: 400px) {
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            width: 30px;
+            background-position: right center;
+            color: transparent;
+            overflow: hidden;
+
+        }
+    }
+
+    
 }
