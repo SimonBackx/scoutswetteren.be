@@ -219,3 +219,11 @@ ul.error {
         }
     }
 }
+
+// Resize font sizes on tiny screens
+@media screen and (max-width: 320px) {
+    h1 {
+        font-size: $size-smaller-smartphone-title;
+        margin: 15px 0;
+    }
+}

@@ -17,6 +17,7 @@
 
         transform: translate(100%, 0);
         transition: transform 0.3s;
+        overflow-y: auto;
     }
 
     button.close {
@@ -26,7 +27,14 @@
 
         height: 30px;
         width: 100%;
-        background: url(../sint-jan/icons/close.svg) no-repeat right center;
+        background: url('../' + $theme + '/icons/close.svg') no-repeat right center;
+
+        opacity: 1;
+        transition: opacity 0.2s;
+    
+        &:hover {
+            opacity: 0.5;
+        }
     }
 
     a {
@@ -40,10 +48,10 @@
 
     &> .background {
         position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        top: 0;
+        left: -10px;
+        right: -10px;
+        bottom: -200px;
+        top: -200px;
         background: rgba(black, 0.8);
         opacity: 0;
         transition: opacity 0.3s;
@@ -76,6 +84,10 @@
         background: $color-menu-background;
         position: fixed;
         top: 0;
+
+        @media (max-height: 300px) {
+            position: absolute;
+        }
     }
 
     height: $menu-height;
@@ -124,23 +136,20 @@
                 div {
                     // No a - tag for SEO
                     // Google can't do antyhing with this button
-                    
+                    width: 30px;
                     display: inline-block;
                     height: $menu-height;
                     padding: 0 20px;
-                    line-height: $menu-height;
                     cursor: pointer;
                     position: relative;
                     right: -20px;
+                    background: url('../' + $theme + '/icons/white/hamburger.svg') no-repeat center center;
 
-                    svg {
-                        vertical-align: middle;
-                    }
-
+                    opacity: 1;
+                    transition: opacity 0.2s;
+                
                     &:hover {
-                        svg {
-                            opacity: 0.6;
-                        }
+                        opacity: 0.5;
                     }
                 }
             }
@@ -190,10 +199,10 @@
     .admin {
         float: right;
         height: $menu-height;
-        padding: 0 20px;
+        padding: 0 10px;
         line-height: $menu-height;
         cursor: pointer;
-        margin-right: -20px;
+        margin-right: -10px;
 
         svg {
             vertical-align: middle;

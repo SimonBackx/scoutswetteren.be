@@ -106,8 +106,8 @@
     column-gap: 20px;
 
     @media (max-width: 600px), (max-height: 450px)  {
-        columns: 220px 3;
-        column-gap: 15px;
+        columns: 180px 3;
+        column-gap: 10px;
     }
 
     *:first-child {
