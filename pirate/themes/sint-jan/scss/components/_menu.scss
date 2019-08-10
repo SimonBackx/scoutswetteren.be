@@ -3,9 +3,19 @@
 main {
     padding-top: $menu-height;
 
+    &> .block.white:first-child {
+        padding-top: $menu-height;
+    }
+
     &.transparent {
         padding-top: 0px;
+
+        &> .block.white:first-child {
+            padding-top: 40px;
+        }
     }
+
+    
 }
 
 #menu >div {

@@ -1,23 +1,37 @@
 var did_click_popup = false;
 
-$( document ).ready(function() {
-    $(document).mouseup(function() {
-        if (!did_click_popup) {
-             $('#menu .admin').removeClass('open');
-        }
-        did_click_popup = false;
-    });
-
-    $('#menu .admin').on('mousedown touch', function(event) {
-        if (!did_click_popup) {
-            did_click_popup = true;
-            $(this).toggleClass('open');
-        }
-    });
-
-    $('#menu .admin .admin-menu').mousedown(function() {
+function toggleMenu(e) {
+    if (!did_click_popup) {
+        console.log("click "+e.currentTarget.className);
         did_click_popup = true;
-    });
+        if (e.currentTarget.className == 'admin') {
+            console.log("open");
+            e.currentTarget.className = 'admin open';
+        } else {
+            console.log("close");
+            e.currentTarget.className = 'admin';
+        }
+    }
+}
+
+document.getElementById('menu').getElementsByClassName('admin')[0].addEventListener('mousedown', toggleMenu);
+document.getElementById('menu').getElementsByClassName('admin')[0].addEventListener('touch', toggleMenu);
+
+document.getElementById('menu').getElementsByClassName('admin-menu')[0].addEventListener('mousedown', function(e) {
+    did_click_popup = true;
+});
+document.getElementById('menu').getElementsByClassName('admin-menu')[0].addEventListener('touch', function(e) {
+    did_click_popup = true;
+});
+
+document.addEventListener('mouseup', function(e) {
+    if (!did_click_popup) {
+        document.getElementById('menu').getElementsByClassName('admin')[0].className = 'admin';
+   }
+   did_click_popup = false;
+});
+
+$( document ).ready(function() {
 
     $('#smartphone-menu-button').on('click touch', function(event) {
         event.preventDefault();
