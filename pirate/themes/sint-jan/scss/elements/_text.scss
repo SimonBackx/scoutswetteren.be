@@ -10,7 +10,7 @@
         color: $main;
     }
 
-    button.more {
+    button.more, a.main, button.main {
         @include main-alternative-gradient($main, $gradient-dest);
     }
 }

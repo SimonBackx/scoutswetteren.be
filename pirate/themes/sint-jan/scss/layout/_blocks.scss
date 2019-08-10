@@ -23,14 +23,22 @@
 
 main > .block {
     max-width: $page-width;
-    margin: 0 auto;
-    padding: 40px 40px;
+    margin: 40px auto;
+    padding: 0px 40px;
     position: relative;
-    margin-bottom: 40px;
 
+    @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+        padding: 0 20px;
+        margin: 30px auto;
+    }
+
+    @media (max-width: $page-width-reduce-padding) {
+        padding: 0 15px;
+        margin: 30px auto;
+    }
 
     &.white {
-        margin-bottom: 0px;
+        margin-top: 0px;
 
         @include block-underlay();
 
@@ -56,12 +64,16 @@ main > .block {
         }
     }
 
+    &.white, &.blue {
+        padding: 40px;
 
-    @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
-        padding: 30px 20px;
-    }
+        @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+            padding: 30px 20px;
+        }
+    
+        @media (max-width: $page-width-reduce-padding) {
+            padding: 30px 15px;
+        }
 
-    @media (max-width: $page-width-reduce-padding) {
-        padding: 30px 15px;
     }
 }

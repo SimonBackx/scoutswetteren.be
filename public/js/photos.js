@@ -540,6 +540,8 @@ photos.Grid = function(options) {
     this.margin = 8;
     this.photoSwipeEnabled = false;
 
+    this.max_lines = 0;
+
     this.trackWidthElement = null;
 
     this.element = null;
@@ -564,6 +566,10 @@ photos.Grid.prototype = {
         }
 
         if (this.rows.length == 0 || !this.rows[this.rows.length - 1].add(photo)) {
+            if (this.max_lines != 0 && this.rows.length >= this.max_lines) {
+                // Reached maximum
+                return;
+            }
             var row = new photos.Row(this);
             row.add(photo);
             this.rows.push(row);
@@ -711,9 +717,9 @@ photos.Grid.prototype = {
         this.width = this.trackWidthElement.offsetWidth;
 
         var grid = this;
-        window.onresize = function(event) {
+        window.addEventListener('resize', function(e) {
             grid.resize();
-        };
+        });
 
         var grid = this;
         window.addEventListener('scroll', function(e) {
@@ -735,7 +741,7 @@ photos.Grid.prototype = {
             for (var j = 0; j < row.photos.length; j++) {
                 var photo = row.photos[j];
 
-                var source = photo.getLargestSmallerThan($(window).width(), $(window).height());
+                var source = photo.getLargestSmallerThan((window.innerWidth || document.documentElement.clientWidth), (window.innerHeight || document.documentElement.clientHeight));
 
                 if (source) {
                     var item = {

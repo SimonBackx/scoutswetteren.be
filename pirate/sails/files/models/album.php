@@ -1,13 +1,15 @@
 <?php
 namespace Pirate\Model\Files;
-use Pirate\Model\Model;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Files\File;
-use Pirate\Model\Files\ImageFile;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Maandplanning\Event;
 
-class Album extends Model {
+use Pirate\Model\Files\File;
+use Pirate\Model\Files\Image;
+use Pirate\Model\Files\ImageFile;
+use Pirate\Model\Leiding\Leiding;
+use Pirate\Model\Maandplanning\Event;
+use Pirate\Model\Model;
+
+class Album extends Model
+{
     public $id;
     public $name;
     public $date;
@@ -18,16 +20,16 @@ class Album extends Model {
 
     public $group;
     public $slug;
-    
-    public $zip_file;   // id van file of null
-                        // upload_date van zip_file bevat de datum van de laaste aanpassing
+
+    public $zip_file; // id van file of null
+    // upload_date van zip_file bevat de datum van de laaste aanpassing
     public $sources_available; // true / false
 
     public $cover = null;
     private $cover_id = null;
 
     public $image_count = 0;
-    
+
     public $latest_upload_date = null;
     public $zip_last_updated = null;
 
@@ -35,7 +37,8 @@ class Album extends Model {
 
     public static $groups = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'algemeen');
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (!isset($row)) {
             return;
         }
@@ -74,19 +77,22 @@ class Album extends Model {
         }
     }
 
-    static function getQueueAlbum() {
+    public static function getQueueAlbum()
+    {
         $album = new Album();
         $album->id = Self::$QUEUE_ID;
         $album->name = 'queue';
         return $album;
     }
 
-    function isQueue() {
+    public function isQueue()
+    {
         return $this->id == Self::$QUEUE_ID;
     }
 
     // Return true on successful update
-    function updateSourcesAvailable() {
+    public function updateSourcesAvailable()
+    {
         // Alle Files ophalen -> file_exists checken -> sources_available updaten
         $images = Image::getImagesFromAlbum($this->id);
         if (!isset($images)) {
@@ -102,7 +108,7 @@ class Album extends Model {
                     $imagefile->file->updateSavedOnServer();
                     if (!$imagefile->file->saved_on_server) {
                         $all_sources = false;
-                        break(2);
+                        break (2);
                     }
                 }
             }
@@ -116,7 +122,8 @@ class Album extends Model {
         return true;
     }
 
-    function getFileStatistics() {
+    public function getFileStatistics()
+    {
         $files = File::getFilesForAlbum($this->id);
         if (isset($this->zip_file)) {
             $file = File::getFile($this->zip_file);
@@ -130,7 +137,8 @@ class Album extends Model {
     // Pas aan of de sources van dit album op de server moeten staan
     // bij elke nieuwe upload -> oproepen met true
     // zal automatisch terug op false gezet worden nadat de zip file is aangemaakt
-    function setSourcesShouldBeSavedOnServer($bool) {
+    public function setSourcesShouldBeSavedOnServer($bool)
+    {
         $b = 0;
         if ($bool) {
             $b = 1;
@@ -140,17 +148,18 @@ class Album extends Model {
         $query = "UPDATE files f
                     inner join image_files i_f on i_f.imagefile_file = f.file_id
                     inner join images i on i.image_id = i_f.imagefile_image
-                SET 
+                SET
                  f.file_should_be_saved_on_server = '$b'
                  where i.image_album = '$id' AND i_f.imagefile_is_source = 1";
 
-        if (self::getDb()->query($query)){
+        if (self::getDb()->query($query)) {
             return true;
         }
         return false;
     }
 
-    function delayDeletionOfImages() {
+    public function delayDeletionOfImages()
+    {
         $id = self::getDb()->escape_string($this->id);
 
         $d = (new \DateTime())->format('Y-m-d H:i:s');
@@ -158,60 +167,64 @@ class Album extends Model {
         $query = "UPDATE files f
                     inner join image_files i_f on i_f.imagefile_file = f.file_id
                     inner join images i on i.image_id = i_f.imagefile_image
-                SET 
+                SET
                  f.file_object_storage_date = '$d'
                  where i.image_album = '$id' AND i_f.imagefile_is_source = 1 AND f.file_object_storage_host is not null and f.file_saved_on_server = 1";
 
-        if (self::getDb()->query($query)){
+        if (self::getDb()->query($query)) {
             return true;
         }
         return false;
     }
 
-
-    function canDownload() {
+    public function canDownload()
+    {
         return isset($this->zip_file);
     }
 
-    function generateSlug() {
+    public function generateSlug()
+    {
         $string = $this->name;
 
-        $string = iconv( "utf-8", "us-ascii//translit//ignore", $string ); // transliterate
-        $string = str_replace( "'", "", $string );
-        $string = preg_replace( "~[^\pL\d]+~u", "-", $string ); // replace non letter or non digits by "-"
-        $string = preg_replace( "~[^-\w]+~", "", $string ); // remove unwanted characters
-        $string = preg_replace( "~-+~", "-", $string ); // remove duplicate "-"
-        $string = trim( $string, "-" ); // trim "-"
-        $string = trim( $string ); // trim
-        $string = mb_strtolower( $string, "utf-8" ); // lowercase
-        $string = urlencode( $string ); // safe
+        $string = iconv("utf-8", "us-ascii//translit//ignore", $string); // transliterate
+        $string = str_replace("'", "", $string);
+        $string = preg_replace("~[^\pL\d]+~u", "-", $string); // replace non letter or non digits by "-"
+        $string = preg_replace("~[^-\w]+~", "", $string); // remove unwanted characters
+        $string = preg_replace("~-+~", "-", $string); // remove duplicate "-"
+        $string = trim($string, "-"); // trim "-"
+        $string = trim($string); // trim
+        $string = mb_strtolower($string, "utf-8"); // lowercase
+        $string = urlencode($string); // safe
         return $string;
     }
 
-    function getSlug() {
+    public function getSlug()
+    {
         if (!isset($this->slug)) {
             return $this->generateSlug();
         }
         return $this->slug;
     }
 
-    function getUrl() {
-        return $this->date->format('Y/m/d').'/'.$this->getSlug();
+    public function getUrl()
+    {
+        return $this->date->format('Y/m/d') . '/' . $this->getSlug();
     }
 
-    static function getAlbum($id) {
+    public static function getAlbum($id)
+    {
         $id = self::getDb()->escape_string($id);
 
         $albums = array();
-        $query = "SELECT a.*, c.*, count(i.image_id) as album_image_count 
-        from albums a 
-        left join images i on i.image_album = a.album_id 
-        left join images c on c.image_id = a.album_cover 
-        WHERE a.album_id = '$id' 
+        $query = "SELECT a.*, c.*, count(i.image_id) as album_image_count
+        from albums a
+        left join images i on i.image_album = a.album_id
+        left join images c on c.image_id = a.album_cover
+        WHERE a.album_id = '$id'
         group by a.album_id, c.image_id";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new Album($row);
             }
@@ -220,19 +233,20 @@ class Album extends Model {
         return null;
     }
 
-    static function getAlbumForFile($file_id) {
+    public static function getAlbumForFile($file_id)
+    {
         $file_id = self::getDb()->escape_string($file_id);
 
         $albums = array();
-        $query = "SELECT a.* 
-        from albums a 
-         join images i on i.image_album = a.album_id 
+        $query = "SELECT a.*
+        from albums a
+         join images i on i.image_album = a.album_id
          join image_files i_f on i_f.imagefile_image = i.image_id
          join files f on f.file_id = i_f.imagefile_file
         WHERE f.file_id = '$file_id'";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new Album($row);
             }
@@ -241,19 +255,20 @@ class Album extends Model {
         return null;
     }
 
-    static function getHiddenAlbum($name) {
+    public static function getHiddenAlbum($name)
+    {
         $name = self::getDb()->escape_string($name);
 
         $albums = array();
-        $query = "SELECT a.*, c.*, count(i.image_id) as album_image_count 
-        from albums a 
-        left join images i on i.image_album = a.album_id 
-        left join images c on c.image_id = a.album_cover 
-        WHERE a.album_slug = '$name' AND a.album_hidden = 1 
+        $query = "SELECT a.*, c.*, count(i.image_id) as album_image_count
+        from albums a
+        left join images i on i.image_album = a.album_id
+        left join images c on c.image_id = a.album_cover
+        WHERE a.album_slug = '$name' AND a.album_hidden = 1
         group by a.album_id, c.image_id";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new Album($row);
             }
@@ -262,24 +277,25 @@ class Album extends Model {
         return null;
     }
 
-    static function getAlbumBySlug($year, $month, $day, $slug) {
+    public static function getAlbumBySlug($year, $month, $day, $slug)
+    {
         $slug = self::getDb()->escape_string($slug);
         $day = self::getDb()->escape_string($day);
         $month = self::getDb()->escape_string($month);
         $year = self::getDb()->escape_string($year);
 
         $query = 'SELECT a.*, c.*, i_f.*, f.*
-        from albums a 
-        left join images c on c.image_id = a.album_cover 
+        from albums a
+        left join images c on c.image_id = a.album_cover
         join image_files i_f on i_f.imagefile_image = c.image_id
         join files f on f.file_id = i_f.imagefile_file
-        WHERE a.album_slug = "'.$slug.'" 
-        AND MONTH(a.album_date) = "'.$month.'"
-         AND YEAR(a.album_date) = "'.$year.'"
-          AND DAY(a.album_date) = "'.$day.'"';
+        WHERE a.album_slug = "' . $slug . '"
+        AND MONTH(a.album_date) = "' . $month . '"
+         AND YEAR(a.album_date) = "' . $year . '"
+          AND DAY(a.album_date) = "' . $day . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows > 0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 $album = null;
                 while ($row = $result->fetch_assoc()) {
                     if (!isset($album)) {
@@ -297,33 +313,40 @@ class Album extends Model {
         return null;
     }
 
-    static function getAlbums($group = null, $page = 1, $with_cover = false) {
+    public static function getAlbums($group = null, $page = 1, $with_cover = false, $limit = null)
+    {
         $page = intval($page);
 
         /*$limit = 'LIMIT '.(($page-1)*4).', 50';
         if ($page < 1) {
-            $limit = '';
-        }*/
         $limit = '';
+        }*/
+
+        if (isset($limit)) {
+            $limit = 'LIMIT ' . intval($limit);
+        } else {
+            $limit = '';
+
+        }
 
         $where = 'WHERE a.album_hidden = 0 ';
         if (isset($group)) {
-            $where .= 'AND a.album_group = "'.self::getDb()->escape_string($group).'"';
+            $where .= 'AND a.album_group = "' . self::getDb()->escape_string($group) . '"';
         }
 
         $albums = array();
 
         if (!$with_cover) {
-            $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count 
-                    from albums a 
-                    left join images i on i.image_album = a.album_id 
+            $query = 'SELECT a.*, c.*, count(i.image_id) as album_image_count
+                    from albums a
+                    left join images i on i.image_album = a.album_id
                     left join images c on c.image_id = a.album_cover
-                    '.$where.' 
-                    group by a.album_id, c.image_id 
-                    order by a.album_date desc '.$limit;
+                    ' . $where . '
+                    group by a.album_id, c.image_id
+                    order by a.album_date desc ' . $limit;
 
-            if ($result = self::getDb()->query($query)){
-                if ($result->num_rows>0){
+            if ($result = self::getDb()->query($query)) {
+                if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
                         $albums[] = new Album($row);
                     }
@@ -334,15 +357,15 @@ class Album extends Model {
 
         // Ook cover sources uit database halen
         $query = 'SELECT a.*, c.*, i_f.*, f.*
-                from albums a 
+                from albums a
                 left join images c on c.image_id = a.album_cover
                 join image_files i_f on i_f.imagefile_image = c.image_id
                 join files f on f.file_id = i_f.imagefile_file
-                 '.$where.' 
-                order by YEAR(a.album_date_taken) desc, a.album_date_taken desc, a.album_id desc '.$limit;
-        
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+                 ' . $where . '
+                order by YEAR(a.album_date_taken) desc, a.album_date_taken desc, a.album_id desc ' . $limit;
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 $last_album = null;
                 while ($row = $result->fetch_assoc()) {
 
@@ -359,41 +382,43 @@ class Album extends Model {
                 }
             }
         }
-        
+
         return $albums;
     }
 
-    static function getZippableAlbums($limit = 5) {
+    public static function getZippableAlbums($limit = 5)
+    {
         // Get albums with zip files that can and should be updated
         // + is not the queue -> never zip!
-        $limit = intval($limit);        
+        $limit = intval($limit);
         $albums = array();
         $query = 'SELECT a.*, zip_file.file_upload_date as album_zip_last_updated, max(f.file_upload_date) as album_latest_upload_date
-                from albums a 
-                 join images i on i.image_album = a.album_id 
+                from albums a
+                 join images i on i.image_album = a.album_id
                  join image_files i_f on i_f.imagefile_image = i.image_id
                  join files f on f.file_id = i_f.imagefile_file
-                 
+
                 left join files zip_file on zip_file.file_id = a.album_zip_file
 
-                where a.album_sources_available = 1 and album_id != '.Self::$QUEUE_ID.'
+                where a.album_sources_available = 1 and album_id != ' . Self::$QUEUE_ID . '
                 group by a.album_id
                 having zip_file.file_upload_date is null or album_zip_last_updated < album_latest_upload_date
-                limit '.$limit;
+                limit ' . $limit;
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $albums[] = new Album($row);
                 }
             }
         }
         return $albums;
-        
+
     }
 
     // Get name suggestion for images
-    static function getNameSuggestion($group, $images) {
+    public static function getNameSuggestion($group, $images)
+    {
         $mindate = null;
         $maxdate = null;
         foreach ($images as $image) {
@@ -415,14 +440,14 @@ class Album extends Model {
             $overlap_max = 0;
 
             foreach ($events as $event) {
-                if (strtolower($event->group) != $group && !($group == 'algemeen' && !in_array($event->group, self::$groups)) ) {
+                if (strtolower($event->group) != $group && !($group == 'algemeen' && !in_array($event->group, self::$groups))) {
                     continue;
                 }
 
                 // Overlap berekenen
                 $overlap = $event->enddate->getTimestamp() - $event->startdate->getTimestamp();
 
-                if ($overlap >= $overlap_max || (isset($event_max) && ($event_max->enddate  < $maxdate || $event_max->startdate > $mindate))) {
+                if ($overlap >= $overlap_max || (isset($event_max) && ($event_max->enddate < $maxdate || $event_max->startdate > $mindate))) {
                     $overlap_max = $overlap;
                     $event_max = $event;
                 }
@@ -439,13 +464,14 @@ class Album extends Model {
                 return $date;
             }
 
-            return $date.' tot '.$date2;
+            return $date . ' tot ' . $date2;
         }
 
         return '';
     }
 
-    function save() {
+    public function save()
+    {
         $name = self::getDb()->escape_string($this->name);
         $date = self::getDb()->escape_string($this->date->format('Y-m-d H:i:s'));
         $date_taken = self::getDb()->escape_string($this->date_taken->format('Y-m-d'));
@@ -454,22 +480,22 @@ class Album extends Model {
 
         $author = "NULL";
         if (isset($this->author)) {
-            $author = "'".self::getDb()->escape_string($this->author)."'";
+            $author = "'" . self::getDb()->escape_string($this->author) . "'";
         }
 
         $cover = "NULL";
         if (isset($this->cover)) {
-            $cover = "'".self::getDb()->escape_string($this->cover->id)."'";
+            $cover = "'" . self::getDb()->escape_string($this->cover->id) . "'";
         } else {
             if (isset($this->cover_id)) {
                 // Voor als de cover niet kan worden meegegeven als object -> prevent deletion
-                $cover = "'".self::getDb()->escape_string($this->cover_id)."'";
+                $cover = "'" . self::getDb()->escape_string($this->cover_id) . "'";
             }
         }
 
         $zip_file = "NULL";
         if (isset($this->zip_file)) {
-            $zip_file = "'".self::getDb()->escape_string($this->zip_file)."'";
+            $zip_file = "'" . self::getDb()->escape_string($this->zip_file) . "'";
         }
 
         $sources_available = 0;
@@ -486,13 +512,13 @@ class Album extends Model {
             $this->slug = $this->generateSlug();
             $slug = self::getDb()->escape_string($this->slug);
 
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 albums (`album_name`, `album_slug`, `album_author`, `album_date`, `album_date_taken`, `album_group`, `album_cover`, `album_hidden`, `album_zip_file`, `album_sources_available`)
                 VALUES ('$name', '$slug', $author, '$date', '$date_taken', '$group', $cover, '$hidden', $zip_file, $sources_available)";
         } else {
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE albums 
-                SET 
+            $query = "UPDATE albums
+                SET
                  `album_name` = '$name',
                  `album_author` = $author,
                  `album_date` = '$date',
@@ -502,7 +528,7 @@ class Album extends Model {
                  `album_hidden` = '$hidden',
                  `album_zip_file` = $zip_file,
                  `album_sources_available` = $sources_available
-                 where album_id = '$id' 
+                 where album_id = '$id'
             ";
         }
 
@@ -515,7 +541,8 @@ class Album extends Model {
         return false;
     }
 
-    static function isValidGroup($group) {
+    public static function isValidGroup($group)
+    {
         foreach (self::$groups as $value) {
             if ($value == $group) {
                 return true;
@@ -524,7 +551,8 @@ class Album extends Model {
         return false;
     }
 
-    function setProperties(&$data, &$errors) {
+    public function setProperties(&$data, &$errors)
+    {
         if (!self::isValidGroup($data['group'])) {
             $errors[] = 'Ongeldige groep geselecteerd';
             return false;
@@ -560,17 +588,18 @@ class Album extends Model {
         return true;
     }
 
-    static function getPathForAlbum($album = null, $deletePath = false) {
+    public static function getPathForAlbum($album = null, $deletePath = false)
+    {
         // Todo: remove this function
         $path = Image::getLonelyImagePath();
 
         if (isset($album) && isset($album->id)) {
             if ($album->id == Self::$QUEUE_ID) {
                 $leiding_id = Leiding::getUser()->id;
-                $path = 'albums/queue/'.$leiding_id.'/';
+                $path = 'albums/queue/' . $leiding_id . '/';
             } else {
                 if ($deletePath) {
-                    $path = 'albums/'.$album->id.'/';
+                    $path = 'albums/' . $album->id . '/';
                 } else {
                     return $album->getPath();
                 }
@@ -580,21 +609,21 @@ class Album extends Model {
         return $path;
     }
 
-
-
-    function getPath($delete = false) {
+    public function getPath($delete = false)
+    {
         if ($this->id == Self::$QUEUE_ID) {
             $leiding_id = Leiding::getUser()->id;
-            return 'albums/queue/'.$leiding_id.'/';
+            return 'albums/queue/' . $leiding_id . '/';
         }
         if ($delete) {
             // Hele directory verwijderen met id
-            return 'albums/'.$this->id.'/';
+            return 'albums/' . $this->id . '/';
         }
-        return 'albums/'.$this->id.'/'.$this->getSlug().'/';
+        return 'albums/' . $this->id . '/' . $this->getSlug() . '/';
     }
 
-    function createFromImageQueue() {
+    public function createFromImageQueue()
+    {
         // Cover foto instellen
         if (!isset($this->cover)) {
             $images = Image::getImagesFromAlbum(null);
@@ -622,7 +651,8 @@ class Album extends Model {
     /**
      * Afbeeldingen uit de image queue aan dit album toevoegen
      */
-    function addImageQueue() {
+    public function addImageQueue()
+    {
         global $FILES_DIRECTORY;
 
         if (!isset($this->author)) {
@@ -638,17 +668,16 @@ class Album extends Model {
         $query = "UPDATE images i
             join image_files i_f on i_f.imagefile_image = i.image_id
             join files f on f.file_id = i_f.imagefile_file
-            SET 
+            SET
              i.image_album = '$id',
-             f.file_location = REPLACE(f.file_location, '".$queue_dir."', '".$new_dir."'),
+             f.file_location = REPLACE(f.file_location, '" . $queue_dir . "', '" . $new_dir . "'),
              f.file_should_be_saved_in_object_storage = 1
-            where i.image_album = '".Self::$QUEUE_ID."' and f.file_author = '$author'";
-
+            where i.image_album = '" . Self::$QUEUE_ID . "' and f.file_author = '$author'";
 
         if (self::getDb()->query($query)) {
             $error_reporting = error_reporting();
             //error_reporting(0);
-            $dir = $FILES_DIRECTORY.'/'.$this->getPath();
+            $dir = $FILES_DIRECTORY . '/' . $this->getPath();
 
             $old = umask(0);
             if (!is_dir($dir) && !mkdir($dir, 0777, true)) {
@@ -658,7 +687,7 @@ class Album extends Model {
             }
             umask($old);
 
-            rename($FILES_DIRECTORY.'/'.Self::getQueueAlbum()->getPath(), $dir);
+            rename($FILES_DIRECTORY . '/' . Self::getQueueAlbum()->getPath(), $dir);
             error_reporting($error_reporting);
 
             $this->updateSourcesAvailable();
@@ -668,7 +697,8 @@ class Album extends Model {
         return false;
     }
 
-    function onImageAdded($image) {
+    public function onImageAdded($image)
+    {
         // Triggered on upload of a picture
         if (!$this->isQueue()) {
             $this->deleteZip();
@@ -691,14 +721,16 @@ class Album extends Model {
         $this->setSourcesShouldBeSavedOnServer(true);
     }
 
-    function onImageDeleted($image) {
+    public function onImageDeleted($image)
+    {
         if (!$this->isQueue()) {
             $this->deleteZip();
         }
         $this->setSourcesShouldBeSavedOnServer(true);
     }
 
-    function onFileRemovedFromServer($file) {
+    public function onFileRemovedFromServer($file)
+    {
         // Weet nooit zeker of het om een source gaat
 
         if ($this->sources_available) {
@@ -709,7 +741,8 @@ class Album extends Model {
 
     }
 
-    function delete() {
+    public function delete()
+    {
         global $FILES_DIRECTORY;
 
         if (!isset($this->id)) {
@@ -775,13 +808,14 @@ class Album extends Model {
             }
         }
 
-        $path = $FILES_DIRECTORY.'/'.$this->getPath(true);
+        $path = $FILES_DIRECTORY . '/' . $this->getPath(true);
         exec("rm -rf \"$path\"", $output, $response);
 
         return ($response === 0);
     }
 
-    function deleteZip() {
+    public function deleteZip()
+    {
         if (!isset($this->zip_file)) {
             return true;
         }
@@ -794,7 +828,8 @@ class Album extends Model {
         return false;
     }
 
-    function isZipUpToDate() {
+    public function isZipUpToDate()
+    {
         // Opgelet: zware functie indien album niet werd opgehaald met zip_last_updated en latest_upload_date attributes
         if (!isset($this->zip_file)) {
             return false;
@@ -802,7 +837,7 @@ class Album extends Model {
 
         if (!isset($this->zip_last_updated)) {
             // todo vergelijking
-            
+
             $file = File::getFile($this->zip_file);
             if (!isset($file)) {
                 $this->zip_file = null;
@@ -824,7 +859,8 @@ class Album extends Model {
         return $this->latest_upload_date < $this->zip_last_updated;
     }
 
-    function zip(&$errors) {
+    public function zip(&$errors)
+    {
         if ($this->isQueue()) {
             // Queue mag nooit gezipped worden
             $errors[] = 'Queue is not zippable';
@@ -836,7 +872,7 @@ class Album extends Model {
             $errors[] = 'UpdateSourcesAvailable failed';
             return false;
         }
-        
+
         if (!$this->sources_available) {
             // Kan performance probleem teweeg brengen als er sources verdwenen zijn
             // Omdat dit in de cron job dan onnodige queries teweeg brengt
@@ -872,7 +908,7 @@ class Album extends Model {
 
             $errors[] = 'Zip update failed';
             return false;
-             
+
         }
 
         // We hebben nog geen zip file
@@ -887,21 +923,22 @@ class Album extends Model {
         return false;
     }
 
-    private function updateZip() {
+    private function updateZip()
+    {
         global $FILES_DIRECTORY;
 
         // Todo: fix object storage here
-        // 
+        //
         // Zip updaten
         if (!isset($this->zip_file)) {
             // Updaten natuurlijk niet mogelijk
             return false;
         }
 
-        $name = $this->getSlug().'.zip';
+        $name = $this->getSlug() . '.zip';
         $album_path = $this->getPath();
-        $file_path = $FILES_DIRECTORY.'/'.$album_path.$name;
-        $path = $FILES_DIRECTORY.'/'.$album_path.'sources';
+        $file_path = $FILES_DIRECTORY . '/' . $album_path . $name;
+        $path = $FILES_DIRECTORY . '/' . $album_path . 'sources';
 
         // File sync here (= -FS)
         exec("zip -FSjr \"$file_path\" \"$path\"", $output, $response);
@@ -910,22 +947,23 @@ class Album extends Model {
         return ($response === 0);
     }
 
-    private function createZip() {
+    private function createZip()
+    {
         // Todo: fix object storage here
-        // 
+        //
         global $FILES_DIRECTORY;
         if (isset($this->zip_file)) {
             return true;
         }
 
         $album_path = $this->getPath();
-        $name = $this->getSlug().'.zip';
-        $file_path = $FILES_DIRECTORY.'/'.$album_path.$name;
-        $path = $FILES_DIRECTORY.'/'.$album_path.'sources';
+        $name = $this->getSlug() . '.zip';
+        $file_path = $FILES_DIRECTORY . '/' . $album_path . $name;
+        $path = $FILES_DIRECTORY . '/' . $album_path . 'sources';
         exec("zip -FSjr \"$file_path\" \"$path\"", $output, $response);
 
-        if ($response === 0) {     
-            $errors = array();       
+        if ($response === 0) {
+            $errors = array();
             $file = File::createFromFile($album_path, $name, $errors);
             if (!isset($file)) {
                 echo "createFromFile error\n";
@@ -939,7 +977,7 @@ class Album extends Model {
             return $this->save();
         }
         echo "zip error:\n";
-         echo implode("\n", $output);
+        echo implode("\n", $output);
         return false;
     }
 

@@ -2,6 +2,8 @@
 namespace Pirate\Sail\Homepage\Pages;
 
 use Pirate\Block\Block;
+use Pirate\Model\Files\Album;
+use Pirate\Model\Files\Image;
 use Pirate\Model\Homepage\Slideshow;
 use Pirate\Page\Page;
 use Pirate\Template\Template;
@@ -21,10 +23,23 @@ class Homepage extends Page
         $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
         $blog = Block::getBlock('Blog', 'Overview')->getContent();
 
+        // Get two latest albums
+
+        $albums = Album::getAlbums(null, 1, false, 2);
+        $album_images = [];
+
+        foreach ($albums as $album) {
+            $album_images[] = [
+                'album' => $album,
+                'images' => Image::getImagesFromAlbum($album->id),
+            ];
+        }
+
         return Template::render('pages/homepage/homepage', array(
             'menu' => array('transparent' => true),
             'maandplanning' => $maandplanning,
             'blog' => $blog,
+            'album_images' => $album_images,
             'slideshows' => Slideshow::getSlideshows(), /*array(
             array(
             'title' => 'Wij zoeken wafelbakkers!',

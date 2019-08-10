@@ -21,3 +21,34 @@ button.more {
         opacity: 0.5;
     }
 }
+
+.buttons {
+    margin: 20px 0;
+}
+
+a, button {
+    &.main {
+        margin: 18px 15px;
+        height: $menu-height - 36px;
+        padding: 10px 25px;
+        line-height: $menu-height - 56px;
+        border-radius: $border-radius;
+        @include main-gradient;
+        color: white;
+        text-transform: uppercase;
+        font-size: $size-button;
+        font-weight: bold;
+
+        &:first-child {
+            margin-left: 0;
+        }
+    
+        &:hover {
+            opacity: 1;
+    
+            &::before {
+                opacity: 1;
+            }
+        }
+    }
+}
