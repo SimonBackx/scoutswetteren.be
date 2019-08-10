@@ -18,7 +18,7 @@ main {
     
 }
 
-#menu >div {
+#menu > div {
     max-width: $page-width;
     margin: 0 auto;
 
@@ -31,6 +31,40 @@ main {
 
     @media (max-width: $page-width-reduce-padding) {
         padding: 0 15px;
+    }
+}
+
+#menu .admin-menu .content {
+    background: #FFFFFF;
+    box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.50);
+    border-radius: 4px;
+
+    .box {
+        border-bottom: 1px solid $color-border;
+        padding: 10px 0;
+
+        &.last {
+            border: 0;
+        }
+        .logout {
+            float: right;
+        }
+
+        a.button {
+            display: block;
+            margin: 0;
+            padding: 10px 20px;
+
+            &:hover {
+                font-weight: bold;
+            }
+        }
+    }
+
+    p {
+        font-size: $size-button;
+        margin: 10px 20px;
+        padding: 0;
     }
 }
 
@@ -130,6 +164,11 @@ main {
                 opacity: 1;
             }
         }
+    }
+
+    &.dropdown {
+        padding-right: 20px;
+        background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
     }
 }
 

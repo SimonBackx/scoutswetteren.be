@@ -1,0 +1,8 @@
+<a href="/info" class="dropdown">Info</a>
+<a href="/takken/kapoenen" class="dropdown">Takken</a>
+<a href="/fotos">Foto's</a>
+<a href="/verhuur">Verhuur</a>
+<a href="/contact">Contact</a>
+{% if not general.logged_in %}
+    <a href="/inschrijven" class="call-to-action">Inschrijven</a>
+{% endif %}
