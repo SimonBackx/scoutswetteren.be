@@ -35,7 +35,29 @@
         }
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1100px) {
+        .article-snippets {
+            width: 40%;
+
+            &> article {
+                padding: 20px 20px;
+    
+                .h1-prefix {
+                    font-size: 10px;
+                    line-height: 100%;
+                    margin-bottom: 2px;
+                    margin-top: 3px;
+                }
+    
+                h1 {
+                    font-size: $size-text;
+                    a {display: none;}
+                }
+            }
+        }
+    }
+
+    @media (max-width: 750px) {
         display: block;
 
         .article-snippets {
@@ -43,6 +65,18 @@
             max-width: none;
             padding-top: 30px;
             padding-left: 0;
+
+            &> article {
+                padding: 20px 15px;
+                margin-bottom: 10px;
+            }
+        }
+    }
+
+    @media (max-width: 500px) {
+        .article-snippets > article {
+            margin-bottom: 5px;
+            padding: 15px 15px;
         }
     }
 }
