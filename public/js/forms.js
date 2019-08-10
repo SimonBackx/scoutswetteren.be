@@ -31,17 +31,31 @@ document.addEventListener('mouseup', function(e) {
    did_click_popup = false;
 });
 
+// Smartphone menu:
+function openSmartphoneMenu(e) {
+    e.preventDefault();
+    document.getElementById('smartphone-menu-items').innerHTML = document.getElementById('menu').getElementsByClassName('visible')[0].innerHTML;
+    document.getElementById('smartphone-menu').className = 'open';
+}
+
+function closeSmartphoneMenu(e) {
+    e.preventDefault();
+    document.getElementById('smartphone-menu').className = 'close';
+    //$('#smartphone-menu').fadeOut(250);
+}
+
+document.getElementById('smartphone-menu-button').addEventListener('click', openSmartphoneMenu);
+document.getElementById('smartphone-menu-button').addEventListener('touch', openSmartphoneMenu);
+
+var elements = document.getElementById('smartphone-menu').getElementsByClassName('close');
+for(var i = 0; i<elements.length; i++){
+    var element = elements[i];
+    element.addEventListener('click', closeSmartphoneMenu);
+    element.addEventListener('touch', closeSmartphoneMenu);
+}
+
 $( document ).ready(function() {
 
-    $('#smartphone-menu-button').on('click touch', function(event) {
-        event.preventDefault();
-        $('#smartphone-menu-items').html($('#menu .items .visible').html());
-         $('#smartphone-menu').fadeIn(250);
-    });
-    $('#smartphone-menu .close').on('click touch', function(event) {
-        event.preventDefault();
-         $('#smartphone-menu').fadeOut(250);
-    });
 
     // Dropdown aanpassen als getypt wordt
     $('form .dropdown').bind("propertychange change click keyup input paste focus", function(event){
