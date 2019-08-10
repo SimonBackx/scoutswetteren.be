@@ -132,3 +132,17 @@ main {
         }
     }
 }
+
+#smartphone-menu a {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: $size-button;
+    color: $color-main-alternative-dark;
+    border-radius: $border-radius;
+    background: transparent;
+    transition: background-color 0.2s;
+    
+    &:hover {
+        background: $color-main-alternative-shade;
+    }
+}

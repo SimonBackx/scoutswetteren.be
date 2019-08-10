@@ -19,10 +19,14 @@
         transition: transform 0.3s;
     }
 
-    .close {
+    button.close {
         display: block;
         text-align: right;
         cursor: pointer;
+
+        height: 30px;
+        width: 100%;
+        background: url(../sint-jan/icons/close.svg) no-repeat right center;
     }
 
     a {
