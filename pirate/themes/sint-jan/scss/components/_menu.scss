@@ -76,7 +76,7 @@ main {
         }
     }
 
-    @media (max-height: 750px), (max-width: 400px) {
+    @media (max-height: 600px), (max-width: 500px) {
         width: 85px;
 
         &::before {

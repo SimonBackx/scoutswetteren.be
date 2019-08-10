@@ -1,14 +1,14 @@
 
 
 header#banner {
-    max-height: 50vh;
+    max-height: 45vh;
     height: 100%;
 
     // Extra element to allow multiple max-height combinations
     &::before {
         content: '';
         display: block;
-        height: 75vw;
+        height: 65vw;
         max-height: 550px;
         
     }

@@ -7,7 +7,7 @@
     &> section {
         padding: 20px 0;
 
-        @media (max-width: 600px) {
+        @media (max-width: 600px), (max-height: 450px)  {
             padding: 0;
         }
 
@@ -24,7 +24,7 @@
                 padding-bottom: 10px;
             }
 
-            @media (max-width: 600px) {
+            @media (max-width: 600px), (max-height: 450px)  {
                 padding-bottom: 10px;
             }
         }
@@ -52,7 +52,7 @@
             font-size: $size-text;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 600px), (max-height: 450px) {
             font-size: $size-smartphone-text;
         }
     }
@@ -63,7 +63,7 @@
         font-weight: bold;
         display: block;
 
-        @media (max-width: 600px) {
+        @media (max-width: 600px), (max-height: 450px)  {
             font-size: $size-smartphone-prefix;
             margin: 2px 0;
         }
@@ -82,7 +82,7 @@
             padding-bottom: 20px;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 600px), (max-height: 450px)  {
             padding-bottom: 15px;
         }
     }
@@ -104,6 +104,11 @@
 .columns {
     columns: 250px 3;
     column-gap: 20px;
+
+    @media (max-width: 600px), (max-height: 450px)  {
+        columns: 220px 3;
+        column-gap: 15px;
+    }
 
     *:first-child {
         margin-top: 0;
