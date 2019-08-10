@@ -208,7 +208,7 @@ class Album extends Model
 
     public function getUrl()
     {
-        return $this->date->format('Y/m/d') . '/' . $this->getSlug();
+        return '/fotos/album/' . $this->date->format('Y/m/d') . '/' . $this->getSlug();
     }
 
     public static function getAlbum($id)

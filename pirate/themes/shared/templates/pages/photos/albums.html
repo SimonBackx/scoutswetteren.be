@@ -47,7 +47,7 @@
                 {% for y, data in albums %}
                     <h1>{{ y }} - {{ y+1 }}</h1>
                     {% for album in data %}
-                        <a href="/fotos/album/{{ album.getUrl }}"><figure class="album">
+                        <a href="{{ album.getUrl }}"><figure class="album">
                             <div class="image" id="album_{{album.id}}"></div>
                             <figcaption>
                                 <h2>{{ album.formatted_date }}{% if tak != album.group %}<span>•</span> {{ album.group | capitalize}}{% endif %}</h2>

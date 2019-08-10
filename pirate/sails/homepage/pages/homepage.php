@@ -32,6 +32,7 @@ class Homepage extends Page
             $album_images[] = [
                 'album' => $album,
                 'images' => Image::getImagesFromAlbum($album->id),
+                'formatted_date' => datetimeToDayMonth($album->date_taken),
             ];
         }
 

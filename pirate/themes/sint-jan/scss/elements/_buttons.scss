@@ -17,6 +17,9 @@ button.more {
     padding: 4px 10px;
     float: right;
 
+    opacity: 1;
+    transition: opacity 0.2s;
+
     &:hover {
         opacity: 0.5;
     }
@@ -42,13 +45,12 @@ a, button {
         &:first-child {
             margin-left: 0;
         }
+
+        opacity: 1;
+        transition: opacity 0.2s;
     
         &:hover {
-            opacity: 1;
-    
-            &::before {
-                opacity: 1;
-            }
+            opacity: 0.5;
         }
     }
 }

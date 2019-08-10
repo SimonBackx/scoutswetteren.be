@@ -159,7 +159,7 @@
 
         {% for data in album_images %}
             <section class="block{% if not loop.first %} white{% endif %}">
-                <div class="h1-prefix">{{ data.album.group }} • {{ album.formatted_date }}</div>
+                <div class="h1-prefix">{{ data.album.group }} • {{ data.formatted_date }}</div>
                 <h1>{{ data.album.name }}</h1>
                 <div id="album_{{ data.album.id }}"></div>
     

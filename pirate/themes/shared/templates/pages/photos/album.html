@@ -55,7 +55,7 @@
                         <a href="/fotos/download/{{ album.getUrl }}" class="button aubergine noborder" rel="nofollow">Download</a>
                     {% endif %}
                     
-                    <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}/fotos/album/{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button aubergine noborder">Deel op facebook</a>
+                    <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button aubergine noborder">Deel op facebook</a>
                     {% if general.logged_in_leiding %}
                     <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
                     {% endif %}
