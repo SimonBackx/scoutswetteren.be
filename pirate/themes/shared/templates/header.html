@@ -1,12 +1,14 @@
-<div id="smartphone-menu">
-    <div class="background close"></div>
-    <div class="content">
-        <button class="close"></button>
-        <div id="smartphone-menu-items"></div>
-    </div>
-</div>
+
+
 
 <nav id="menu"{% if menu.transparent == false %} class="fixed"{% endif %}>
+    <div id="smartphone-menu">
+        <div class="background close"></div>
+        <div class="content">
+            <button class="close"></button>
+            <div id="smartphone-menu-items">{% include 'menu.html' %}</div>
+        </div>
+    </div>
     <div>
         {% if general.logged_in %}
             <div class="admin">

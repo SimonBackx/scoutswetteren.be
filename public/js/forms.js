@@ -79,7 +79,7 @@ for(var i = 0; i < dropdown_menus.length; i++){
     });
 }
 
-var dropdowns = document.getElementById('menu').getElementsByClassName('visible')[0].getElementsByClassName('dropdown');
+var dropdowns = document.getElementById('menu').getElementsByClassName('dropdown');
 for(var i = 0; i<dropdowns.length; i++){
     var element = dropdowns[i];
     element.addEventListener('mousedown', toggleDropdownMenu);
@@ -89,7 +89,6 @@ for(var i = 0; i<dropdowns.length; i++){
 // Smartphone menu:
 function openSmartphoneMenu(e) {
     e.preventDefault();
-    document.getElementById('smartphone-menu-items').innerHTML = document.getElementById('menu').getElementsByClassName('visible')[0].innerHTML;
     document.getElementById('smartphone-menu').className = 'open';
 }
 

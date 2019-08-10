@@ -139,6 +139,7 @@ main {
         text-transform: uppercase;
         font-weight: bold;
         font-size: $size-button;
+        display: inline-block;
 
         &, &:hover, &:visited, &:active, &:link {
             color: white;
@@ -162,48 +163,6 @@ main {
                 }
             }
         }
-
-        &.dropdown {
-            padding-right: 20px;
-            background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
-            position: relative;
-
-            & > .dropdown-menu {
-                left: 0;
-                top: $menu-height - 10px;
-                position: absolute;
-                width: 250px;
-
-                background: white;
-                box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.25);
-                border-radius: $border-radius;
-                padding: 20px;
-                text-align: left;
-
-                a {
-                    display: block;
-                    padding: 12px 15px;
-                    color: $color-main-alternative-dark;
-                    border-radius: $border-radius;
-
-                    &:hover {
-                        background: $color-main-alternative-shade;
-                    }
-                }
-
-                transform: translate(0, -40px);
-                opacity: 0;
-                visibility: hidden;
-                transition: transform 0.2s, opacity 0.2s, visibility 0.2s step-end;
-
-                &.open {
-                    visibility: visible;
-                    transition: transform 0.2s, opacity 0.2s, visibility 0.3s step-start;
-                    transform: translate(0, 0);
-                    opacity: 1;
-                }
-            }
-        }
     }
 
     &> a {
@@ -216,16 +175,110 @@ main {
     }
 }
 
-#smartphone-menu a {
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: $size-button;
-    color: $color-main-alternative-dark;
-    border-radius: $border-radius;
-    background: transparent;
-    transition: background-color 0.2s;
-    
-    &:hover {
-        background: $color-main-alternative-shade;
+.menu button.dropdown {
+    padding-right: 20px;
+    background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
+    position: relative;
+    text-align: left;
+
+    & > .dropdown-menu {
+        left: 0;
+        top: $menu-height - 10px;
+        position: absolute;
+        width: 250px;
+
+        background: white;
+        box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.25);
+        border-radius: $border-radius;
+        padding: 20px;
+        text-align: left;
+
+        a {
+            display: block;
+            padding: 12px 15px;
+            color: $color-main-alternative-dark;
+            border-radius: $border-radius;
+
+            &:hover {
+                background: $color-main-alternative-shade;
+            }
+        }
+        
+        transform: translate(0, -40px);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.2s, opacity 0.2s, visibility 0.2s step-end;
+
+        &.open {
+            visibility: visible;
+            transition: transform 0.2s, opacity 0.2s, visibility 0.3s step-start;
+            transform: translate(0, 0);
+            opacity: 1;
+        }
+    }
+}
+
+#smartphone-menu-items {
+    a, button {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: $size-button;
+        color: $color-main-alternative-dark;
+        border-radius: $border-radius;
+        display: block;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+        display: block;
+        padding: 15px;
+        margin: 5px 0;
+        font-size: $size-button;
+    }
+
+    button.dropdown {
+        padding-right: 20px;
+        background: url('../'+$theme+'/icons/dark/arrow-down.svg') no-repeat right 15px;
+        position: relative;
+    }
+
+    a {
+        background: transparent;
+        transition: background-color 0.2s;
+
+        &:hover {
+            background: $color-main-alternative-shade;
+        }
+    }
+
+    .dropdown-menu {
+        a {
+            color: $color-main-alternative-gray;
+            font-size: $size-text;
+            margin: 5px 0;
+            padding-left: 25px;
+
+            &:first-child {
+                margin-top: 10px;
+            }
+        }
+
+        position: absolute;
+        left: 0;
+        right: 0;
+        background: white;
+        z-index: 1;
+      
+        transform: translate(0, -40px);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.2s, opacity 0.2s, visibility 0.2s step-end;
+        border-bottom: 3px solid $color-border;
+
+        &.open {
+            visibility: visible;
+            transition: transform 0.2s, opacity 0.2s, visibility 0.3s step-start;
+            transform: translate(0, 0);
+            opacity: 1;
+        }
     }
 }
