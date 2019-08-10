@@ -133,42 +133,86 @@ main {
 // They are used twice: once in the invisible space div
 // and once in a visible form, forcing to stick to the bottom of that invisible one
 // to hide it when it starts to wrap
-#menu .items a {
-    margin: 0 15px;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: $size-button;
+#menu .items > div {
+    &> a, &> button {
+        margin: 0 15px;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: $size-button;
 
-    &, &:hover, &:visited, &:active, &:link {
-        color: white;
-        text-decoration: none;
-    }
+        &, &:hover, &:visited, &:active, &:link {
+            color: white;
+            text-decoration: none;
+        }
 
-    &:hover {
-        opacity: 0.6;
-    }
+        &.call-to-action {
+            margin: 18px 15px;
+            height: $menu-height - 36px;
+            padding: 10px 25px;
+            line-height: $menu-height - 56px;
+            border-radius: $border-radius;
+            @include main-gradient;
+            margin-right: 0;
 
-    &.call-to-action {
-        margin: 18px 15px;
-        height: $menu-height - 36px;
-        padding: 10px 25px;
-        line-height: $menu-height - 56px;
-        border-radius: $border-radius;
-        @include main-gradient;
-        margin-right: 0;
-
-        &:hover {
-            opacity: 1;
-
-            &::before {
+            &:hover {
                 opacity: 1;
+
+                &::before {
+                    opacity: 1;
+                }
+            }
+        }
+
+        &.dropdown {
+            padding-right: 20px;
+            background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
+            position: relative;
+
+            & > .dropdown-menu {
+                left: 0;
+                top: $menu-height - 10px;
+                position: absolute;
+                width: 250px;
+
+                background: white;
+                box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.25);
+                border-radius: $border-radius;
+                padding: 20px;
+                text-align: left;
+
+                a {
+                    display: block;
+                    padding: 12px 15px;
+                    color: $color-main-alternative-dark;
+                    border-radius: $border-radius;
+
+                    &:hover {
+                        background: $color-main-alternative-shade;
+                    }
+                }
+
+                transform: translate(0, -40px);
+                opacity: 0;
+                visibility: hidden;
+                transition: transform 0.2s, opacity 0.2s, visibility 0.2s step-end;
+
+                &.open {
+                    visibility: visible;
+                    transition: transform 0.2s, opacity 0.2s, visibility 0.3s step-start;
+                    transform: translate(0, 0);
+                    opacity: 1;
+                }
             }
         }
     }
 
-    &.dropdown {
-        padding-right: 20px;
-        background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
+    &> a {
+        opacity: 1;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 0.6;
+        }
     }
 }
 

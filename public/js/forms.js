@@ -14,22 +14,77 @@ function toggleMenu(e) {
     }
 }
 
-document.getElementById('menu').getElementsByClassName('admin')[0].addEventListener('mousedown', toggleMenu);
-document.getElementById('menu').getElementsByClassName('admin')[0].addEventListener('touch', toggleMenu);
+var admin = document.getElementById('menu').getElementsByClassName('admin')[0];
 
-document.getElementById('menu').getElementsByClassName('admin-menu')[0].addEventListener('mousedown', function(e) {
-    did_click_popup = true;
-});
-document.getElementById('menu').getElementsByClassName('admin-menu')[0].addEventListener('touch', function(e) {
-    did_click_popup = true;
-});
+if (admin) {
+    admin.addEventListener('mousedown', toggleMenu);
+    admin.addEventListener('touch', toggleMenu);
+    
+    document.getElementById('menu').getElementsByClassName('admin-menu')[0].addEventListener('mousedown', function(e) {
+        did_click_popup = true;
+    });
+    document.getElementById('menu').getElementsByClassName('admin-menu')[0].addEventListener('touch', function(e) {
+        did_click_popup = true;
+    });
+}
+
+function closeAll() {
+    // Close all dropdowns
+    if (admin) {
+        admin.className = 'admin';
+    }
+
+    var dropdown_menus = document.getElementById('menu').getElementsByClassName('dropdown-menu');
+    for(var i = 0; i < dropdown_menus.length; i++){
+        var element = dropdown_menus[i];
+        element.className = 'dropdown-menu';
+    }
+}
 
 document.addEventListener('mouseup', function(e) {
     if (!did_click_popup) {
-        document.getElementById('menu').getElementsByClassName('admin')[0].className = 'admin';
+        closeAll();
    }
    did_click_popup = false;
 });
+
+// Dropdowns
+function toggleDropdownMenu(e) {
+    e.preventDefault();
+    if (did_click_popup) {
+        return;
+    }
+    var menu = e.currentTarget.getElementsByClassName('dropdown-menu')[0];
+    did_click_popup = true;
+
+    if (menu.className == 'dropdown-menu') {
+        closeAll();
+        console.log("open");
+        menu.className = 'dropdown-menu open';
+    } else {
+        console.log("close");
+        menu.className = 'dropdown-menu';
+    }
+
+}
+
+var dropdown_menus = document.getElementById('menu').getElementsByClassName('dropdown-menu');
+for(var i = 0; i < dropdown_menus.length; i++){
+    var element = dropdown_menus[i];
+    element.addEventListener('mousedown', function(e) {
+        did_click_popup = true;
+    });
+    element.addEventListener('touch', function(e) {
+        did_click_popup = true;
+    });
+}
+
+var dropdowns = document.getElementById('menu').getElementsByClassName('visible')[0].getElementsByClassName('dropdown');
+for(var i = 0; i<dropdowns.length; i++){
+    var element = dropdowns[i];
+    element.addEventListener('mousedown', toggleDropdownMenu);
+    element.addEventListener('touch', toggleDropdownMenu);
+}
 
 // Smartphone menu:
 function openSmartphoneMenu(e) {

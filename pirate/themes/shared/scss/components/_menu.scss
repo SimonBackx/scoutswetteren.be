@@ -163,7 +163,7 @@
             align-items: center;
             line-height: $menu-height;
 
-            a {
+            & > a, & > button {
                 height: $menu-height;
                 // Height of an item should always be equal to $menu-height; Add padding or margin if you want a smaller background
                 box-sizing: border-box;
