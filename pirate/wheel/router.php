@@ -26,7 +26,7 @@ class Router
             $url = implode('/', $parts);
 
             if (in_array($module, $api_routes)) {
-                $ucfirst_module = ucfirst($module);
+                $ucfirst_module = dashesToCamelCase($module, true);
                 // Todo: Fix autoloading: filename is different from classname
                 require_once __DIR__ . "/../sails/$module/api.php";
                 $classname = "\\Pirate\\Sails\\$ucfirst_module\\{$ucfirst_module}ApiRouter";
@@ -52,8 +52,8 @@ class Router
             }
 
             foreach ($routes as $module) {
-                $ucfirst_module = ucfirst($module);
-                 // Todo: Fix autoloading: filename is different from classname
+                $ucfirst_module = dashesToCamelCase($module, true);
+                // Todo: Fix autoloading: filename is different from classname
                 require_once __DIR__ . "/../sails/$module/routes.php";
                 $classname = "\\Pirate\\Sails\\$ucfirst_module\\{$ucfirst_module}Router";
 

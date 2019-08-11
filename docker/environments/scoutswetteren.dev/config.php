@@ -7,6 +7,8 @@ $config = [
     'name' => 'Scouts Prins Boudewijn Wetteren',
     'force_www' => true,
     'theme' => 'prins-boudewijn',
+    'disable_sails' => ['sint-jan'],
+
     'mysql' => [
         // no need to put in private. only localhost connections allowed
         'database' => 'scouts',
