@@ -197,6 +197,12 @@ ul.error {
     }
 }
 
+.block.with-menu > div {
+    &> h1:first-of-type {
+        font-size: $size-title-bigger;
+    }
+}
+
 // Resize font sizes on small screens
 @media screen and (max-width: 480px) {
 
@@ -207,6 +213,12 @@ ul.error {
     h1 {
         font-size: $size-smartphone-title;
         margin: 15px 0;
+    }
+
+    .block.with-menu > div {
+        &> h1:first-of-type {
+            font-size: $size-title;
+        }
     }
 
     h2 {

@@ -146,10 +146,6 @@ main > .block {
         &> div {
             flex-grow: 1;
 
-            &> h1:first-of-type {
-                font-size: $size-title-bigger;
-            }
-
             img {
                 margin: 20px -30px;
                 width: 100%;
