@@ -16,7 +16,7 @@
         text-align: left;
 
         transform: translate(100%, 0);
-        transition: transform 0.3s;
+        transition: transform 0.25s;
         overflow-y: auto;
     }
 
@@ -52,16 +52,16 @@
         top: -200px;
         background: rgba(black, 0.8);
         opacity: 0;
-        transition: opacity 0.3s;
+        transition: opacity 0.25s;
         z-index: 9999;
         cursor: pointer;
     }
 
-    transition: visibility 0.3s step-end;
+    transition: visibility 0.25s step-end;
 
     &.open {
         visibility: visible;
-        transition: visibility 0.3s step-start;
+        transition: visibility 0.25s step-start;
 
         &> .content {
             transform: translate(0, 0);
