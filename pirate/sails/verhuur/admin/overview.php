@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Verhuur\Admin;
+namespace Pirate\Sails\Verhuur\Admin;
 
-use Pirate\Model\Verhuur\Reservatie;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Verhuur\Models\Reservatie;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Overview extends Page
 {

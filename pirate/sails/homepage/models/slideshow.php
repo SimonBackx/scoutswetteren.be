@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Model\Homepage;
+namespace Pirate\Sails\Homepage\Models;
 
-use Pirate\Classes\Validating\DatabaseError;
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Classes\Validating\ValidationErrors;
-use Pirate\Model\Model;
+use Pirate\Sails\Validating\Classes\DatabaseError;
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Sails\Validating\Classes\ValidationErrors;
+use Pirate\Wheel\Model;
 
 class Slideshow extends Model
 {

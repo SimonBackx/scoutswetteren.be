@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Maandplanning;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
+namespace Pirate\Sails\Maandplanning;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\AdminRoute;
 
 class MaandplanningAdminRouter extends AdminRoute {
     private $id = null;

@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Model\Files;
-use Pirate\Model\Model;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Files\File;
-use Pirate\Model\Files\ImageFile;
-use Pirate\Model\Files\GDImage;
+namespace Pirate\Sails\Files\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Files\Models\File;
+use Pirate\Sails\Files\Models\ImageFile;
+use Pirate\Sails\Files\Models\GDImage;
 
 class Image extends Model {
     public $id;

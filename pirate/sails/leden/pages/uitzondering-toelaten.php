@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Database\Database;
-use Pirate\Mail\Mail;
+namespace Pirate\Sails\Leden\Pages;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Wheel\Database;
+use Pirate\Wheel\Mail;
 
 // Deze pagina mag enkel getoond worden als de ouder (tijdelijk) ingelogd is
 class UitzonderingToelaten extends Page {

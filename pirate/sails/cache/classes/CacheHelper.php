@@ -1,5 +1,5 @@
 <?php
-namespace Pirate\Classes\Cache;
+namespace Pirate\Sails\Cache\Classes;
 
 class CacheHelper {
     

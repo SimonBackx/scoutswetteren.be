@@ -1,6 +1,6 @@
 <?php
-namespace Pirate\Model\Webshop;
-use Pirate\Model\Model;
+namespace Pirate\Sails\Webshop\Models;
+use Pirate\Wheel\Model;
 
 class BankAccount extends Model {
     public $id;

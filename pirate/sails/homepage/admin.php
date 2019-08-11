@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Homepage;
+namespace Pirate\Sails\Homepage;
 
-use Pirate\Model\Homepage\Slideshow;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Route\AdminRoute;
+use Pirate\Sails\Homepage\Models\Slideshow;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\AdminRoute;
 
 class HomepageAdminRouter extends AdminRoute
 {

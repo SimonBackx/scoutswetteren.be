@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sails\Leden\Pages;
 
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class OuderAttesten extends Page
 {

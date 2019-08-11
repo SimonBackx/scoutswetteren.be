@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Sail\Verhuur\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Verhuur\Reservatie;
-use Pirate\Model\Leiding\Leiding;
+namespace Pirate\Sails\Verhuur\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Verhuur\Models\Reservatie;
+use Pirate\Sails\Leiding\Models\Leiding;
 
 class Edit extends Page {
     private $id = null;

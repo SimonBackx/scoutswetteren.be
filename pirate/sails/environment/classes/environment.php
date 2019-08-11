@@ -1,5 +1,5 @@
 <?php
-namespace Pirate\Classes\Environment;
+namespace Pirate\Sails\Environment\Classes;
 
 class Environment
 {

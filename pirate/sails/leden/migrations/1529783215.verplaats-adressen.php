@@ -1,11 +1,14 @@
 <?php
-namespace Pirate\Classes\Leden;
-use Pirate\Classes\Migrations\Migration;
-use Pirate\Model\Leden\Adres;
+namespace Pirate\Sails\Leden\Migrations;
 
-class VerplaatsAdressen1529783215 extends Migration {
+use Pirate\Sails\Leden\Models\Adres;
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class VerplaatsAdressen1529783215 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $query = "SELECT * from `ouders`";
 
         $linking = [];
@@ -21,11 +24,11 @@ class VerplaatsAdressen1529783215 extends Migration {
                 $errors = [];
                 $model = Adres::find($adres, $gemeente, $postcode, $telefoon, $errors);
                 if (!isset($model)) {
-                    echo implode("\n", $errors)."\n";
+                    echo implode("\n", $errors) . "\n";
                     echo "Please correct Adres of Ouder(id: $id) and try again\n";
                     return false;
                 } else {
-                    echo "Ouder(id: $id) successfully created Adres '".$model->toString() ."'. Linking ahead.\n";
+                    echo "Ouder(id: $id) successfully created Adres '" . $model->toString() . "'. Linking ahead.\n";
                     $linking[$id] = $model->id;
                 }
 
@@ -33,8 +36,6 @@ class VerplaatsAdressen1529783215 extends Migration {
         }
 
         echo "\nKlaar. Voor alle Ouder-instanties werd een Adres aangemaakt.\n";
-
-
 
         $drop_query = "ALTER TABLE ouders
             DROP COLUMN `adres`,
@@ -52,7 +53,7 @@ class VerplaatsAdressen1529783215 extends Migration {
         $create_query = "ALTER TABLE ouders
             ADD COLUMN `adres` int(11) unsigned AFTER `achternaam`,
             ADD CONSTRAINT `fk_ouder_adres` FOREIGN KEY (`adres`) REFERENCES adressen(`adres_id`) ON DELETE RESTRICT ON UPDATE CASCADE;";
-        
+
         if (!self::getDb()->query($create_query)) {
             throw new \Exception(self::getDb()->error);
         }
@@ -70,7 +71,8 @@ class VerplaatsAdressen1529783215 extends Migration {
         return true;
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

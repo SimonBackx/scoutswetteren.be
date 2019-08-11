@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Contact;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
+namespace Pirate\Sails\Contact;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
 
 class ContactRouter extends Route {
     private $adminPage = null;

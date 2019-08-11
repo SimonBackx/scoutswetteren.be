@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Blog;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
-use  Pirate\Model\Model;
-use  Pirate\Model\Blog\Article;
+namespace Pirate\Sails\Blog;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
+use  Pirate\Wheel\Model;
+use  Pirate\Sails\Blog\Models\Article;
 
 class BlogRouter extends Route {
     private $article;

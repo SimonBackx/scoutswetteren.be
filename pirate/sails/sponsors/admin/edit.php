@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Sponsors\Admin;
+namespace Pirate\Sails\Sponsors\Admin;
 
-use Pirate\Model\Files\File;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Sponsors\Sponsor;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Files\Models\File;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Sails\Sponsors\Models\Sponsor;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Edit extends Page
 {

@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Mail;
+namespace Pirate\Wheel;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Template\Template;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Wheel\Template;
 use SendGrid\Attachment;
 use SendGrid\Email;
 use SendGrid\Personalization;

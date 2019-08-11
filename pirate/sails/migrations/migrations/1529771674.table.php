@@ -1,10 +1,13 @@
 <?php
-namespace Pirate\Classes\Migrations;
-use Pirate\Classes\Migrations\Migration;
+namespace Pirate\Sails\Migrations\Migrations;
 
-class Table1529771674 extends Migration {
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class Table1529771674 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $query = "CREATE TABLE `migrations` (
             `migration_id` varchar(60) NOT NULL DEFAULT '',
             `migration_executed_at` datetime NOT NULL,
@@ -19,7 +22,8 @@ class Table1529771674 extends Migration {
 
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

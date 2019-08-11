@@ -1,8 +1,8 @@
 <?php
 
-namespace Pirate\Sail\Leden;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
+namespace Pirate\Sails\Leden;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
 
 class LedenApiRouter extends Route {
     function doMatch($url, $parts) {

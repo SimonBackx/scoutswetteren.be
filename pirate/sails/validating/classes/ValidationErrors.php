@@ -1,5 +1,5 @@
 <?php
-namespace Pirate\Classes\Validating;
+namespace Pirate\Sails\Validating\Classes;
 
 class ValidationErrors extends ValidationErrorBundle {
     public $errors = [];

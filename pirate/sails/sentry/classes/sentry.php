@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Classes\Sentry;
+namespace Pirate\Sails\Sentry\Classes;
 
-use Pirate\Classes\Environment\Environment;
+use Pirate\Sails\Environment\Classes\Environment;
 
 class Sentry
 {

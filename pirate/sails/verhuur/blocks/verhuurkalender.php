@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Sail\Verhuur\Blocks;
+namespace Pirate\Sails\Verhuur\Blocks;
 
-use Pirate\Block\Block;
-use Pirate\Classes\Environment\Localization;
-use Pirate\Model\Verhuur\Reservatie;
-use Pirate\Template\Template;
+use Pirate\Wheel\Block;
+use Pirate\Sails\Environment\Classes\Localization;
+use Pirate\Sails\Verhuur\Models\Reservatie;
+use Pirate\Wheel\Template;
 
 class Verhuurkalender extends Block
 {

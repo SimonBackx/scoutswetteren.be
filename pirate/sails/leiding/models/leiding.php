@@ -1,12 +1,12 @@
 <?php
-namespace Pirate\Model\Leiding;
+namespace Pirate\Sails\Leiding\Models;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Mail\Mail;
-use Pirate\Model\Model;
-use Pirate\Model\Settings\Setting;
-use Pirate\Model\Users\User;
-use Pirate\Model\Validating\Validator;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Wheel\Mail;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Settings\Models\Setting;
+use Pirate\Sails\Users\Models\User;
+use Pirate\Sails\Validating\Models\Validator;
 
 class Leiding extends Model
 {

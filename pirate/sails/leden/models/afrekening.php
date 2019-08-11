@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Model\Leden;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Inschrijving;
+namespace Pirate\Sails\Leden\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Inschrijving;
 
 class Afrekening extends Model {
     public $id;

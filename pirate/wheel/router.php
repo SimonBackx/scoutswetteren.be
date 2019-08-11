@@ -1,22 +1,14 @@
 <?php
-namespace Pirate\Route;
+namespace Pirate\Wheel;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Page\Page301;
-use Pirate\Page\Page404;
-use Pirate\Page\Page;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Wheel\Page301;
+use Pirate\Wheel\Page404;
 
 class Router
 {
     public function route($url)
     {
-        // Load the page and route object
-        // These will get extended by other objects we depend on
-        require __DIR__ . '/page.php';
-        require __DIR__ . '/block.php';
-        require __DIR__ . '/route.php';
-        Page::setupAutoload();
-
         // This part needs to get rewritten and loaded dynamically
         // based on the sails that are present.
 
@@ -35,8 +27,9 @@ class Router
 
             if (in_array($module, $api_routes)) {
                 $ucfirst_module = ucfirst($module);
+                // Todo: Fix autoloading: filename is different from classname
                 require_once __DIR__ . "/../sails/$module/api.php";
-                $classname = "\\Pirate\\Sail\\$ucfirst_module\\{$ucfirst_module}ApiRouter";
+                $classname = "\\Pirate\\Sails\\$ucfirst_module\\{$ucfirst_module}ApiRouter";
 
                 $router = new $classname();
 
@@ -60,8 +53,9 @@ class Router
 
             foreach ($routes as $module) {
                 $ucfirst_module = ucfirst($module);
+                 // Todo: Fix autoloading: filename is different from classname
                 require_once __DIR__ . "/../sails/$module/routes.php";
-                $classname = "\\Pirate\\Sail\\$ucfirst_module\\{$ucfirst_module}Router";
+                $classname = "\\Pirate\\Sails\\$ucfirst_module\\{$ucfirst_module}Router";
 
                 $router = new $classname();
                 if ($router->doMatch($url, $parts)) {

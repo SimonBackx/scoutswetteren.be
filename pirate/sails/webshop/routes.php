@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Webshop;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
-use Pirate\Model\Webshop\OrderSheet;
-use Pirate\Model\Webshop\Order;
+namespace Pirate\Sails\Webshop;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
+use Pirate\Sails\Webshop\Models\OrderSheet;
+use Pirate\Sails\Webshop\Models\Order;
 
 class WebshopRouter extends Route {
     function doMatch($url, $parts) {

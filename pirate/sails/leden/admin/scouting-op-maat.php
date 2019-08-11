@@ -1,15 +1,15 @@
 <?php
-namespace Pirate\Sail\Leden\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Afrekening;
-use Pirate\Database\Database;
+namespace Pirate\Sails\Leden\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Afrekening;
+use Pirate\Wheel\Database;
 
 class ScoutingOpMaat extends Page {
     private $gezin;

@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Model\Webshop;
+namespace Pirate\Sails\Webshop\Models;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Classes\Validating\DatabaseError;
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Model\Model;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Validating\Classes\DatabaseError;
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Wheel\Model;
 
 class StripePayment extends Payment
 {

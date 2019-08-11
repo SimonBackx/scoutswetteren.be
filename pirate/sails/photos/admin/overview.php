@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Sail\Photos\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Files\File;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Files\Album;
+namespace Pirate\Sails\Photos\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Files\Models\File;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Sails\Files\Models\Album;
 
 class Overview extends Page {
     function getStatusCode() {

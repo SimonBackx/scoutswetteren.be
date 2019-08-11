@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Verhuur;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
-use Pirate\Model\Leiding\Leiding;
+namespace Pirate\Sails\Verhuur;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\AdminRoute;
+use Pirate\Sails\Leiding\Models\Leiding;
 
 class VerhuurAdminRouter extends AdminRoute {
     private $id = null;

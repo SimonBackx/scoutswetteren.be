@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Model\Files;
-use Pirate\Model\Model;
-use Pirate\Model\Leiding\Leiding;
-//use Pirate\Model\Files\Space;
-//use Pirate\Model\Files\SpaceRequest; // todo: if not found -> error file not exists
-//use Pirate\Model\Files\SpaceResponse; // todo: if not found -> error file not exists
+namespace Pirate\Sails\Files\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Leiding\Models\Leiding;
+//use Pirate\Sails\Files\Models\Space;
+//use Pirate\Sails\Files\Models\SpaceRequest; // todo: if not found -> error file not exists
+//use Pirate\Sails\Files\Models\SpaceResponse; // todo: if not found -> error file not exists
 
 class File extends Model {
     public $id;

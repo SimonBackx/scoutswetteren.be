@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Homepage\Pages;
+namespace Pirate\Sails\Homepage\Pages;
 
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Privacy extends Page
 {

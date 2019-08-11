@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Model\Migrations;
+namespace Pirate\Sails\Migrations\Models;
 
-use Pirate\Model\Model;
+use Pirate\Wheel\Model;
 
 class Migration extends Model
 {
@@ -91,7 +91,7 @@ class Migration extends Model
         foreach ($to_execute as $key => $migration) {
 
             require_once $migration->path;
-            $className = '\Pirate\Classes\\' . ucfirst($migration->sail) . '\\' . $migration->class;
+            $className = '\Pirate\Sails\\Classes\' . ucfirst($migration->sail) . '\\' . $migration->class;
             echo "Runing migration $className...\n";
 
             if (!self::getDb()->begin_transaction()) {
@@ -167,7 +167,7 @@ class Migration extends Model
 
         foreach ($to_execute as $key => $migration) {
             require_once $migration->path;
-            $className = '\Pirate\Classes\\' . ucfirst($migration->sail) . '\\' . $migration->class;
+            $className = '\Pirate\Sails\\Classes\' . ucfirst($migration->sail) . '\\' . $migration->class;
             echo "Downgrading migration $className...\n";
             try {
                 if ($className::downgrade()) {

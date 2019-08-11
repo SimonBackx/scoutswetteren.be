@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Leiding\Admin;
+namespace Pirate\Sails\Leiding\Admin;
 
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Gegevens extends Page
 {

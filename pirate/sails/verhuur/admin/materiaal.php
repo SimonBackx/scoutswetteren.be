@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Verhuur\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Files\File;
+namespace Pirate\Sails\Verhuur\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Files\Models\File;
 
 
 class Materiaal extends Page {

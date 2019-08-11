@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Blog\Api;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
-use Pirate\Model\Blog\Article;
+namespace Pirate\Sails\Blog\Api;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Blog\Models\Article;
 
 class Search extends Page {
     private $needle;

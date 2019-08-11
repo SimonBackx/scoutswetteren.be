@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Verhuur;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
+namespace Pirate\Sails\Verhuur;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
 
 class VerhuurRouter extends Route {
     private $adminPage = null;

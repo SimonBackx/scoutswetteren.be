@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Model\Maandplanning;
-use Pirate\Model\Model;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Webshop\OrderSheet;
+namespace Pirate\Sails\Maandplanning\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Webshop\Models\OrderSheet;
 
 class Event extends Model {
     public $name;

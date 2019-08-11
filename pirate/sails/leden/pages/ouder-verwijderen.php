@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sails\Leden\Pages;
 
-use Pirate\Database\Database;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Database;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class OuderVerwijderen extends Page
 {

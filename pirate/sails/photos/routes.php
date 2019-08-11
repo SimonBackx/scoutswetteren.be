@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Photos;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
-use Pirate\Model\Files\Album;
+namespace Pirate\Sails\Photos;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
+use Pirate\Sails\Files\Models\Album;
 
 class PhotosRouter extends Route {
     private $tak = null;

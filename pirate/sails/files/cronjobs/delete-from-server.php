@@ -1,18 +1,18 @@
 <?php
-namespace Pirate\Cronjob\Files;
-use Pirate\Cronjob\Cronjob;
+namespace Pirate\Sails\Files\Cronjobs;
 
-use Pirate\Model\Files\File;
-use Pirate\Model\Files\ImageFile;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Files\Album;
+use Pirate\Sails\Files\Models\File;
+use Pirate\Wheel\Cronjob;
 
-class DeleteFromServer extends Cronjob {
-    function needsRunning() {
+class DeleteFromServer extends Cronjob
+{
+    public function needsRunning()
+    {
         return true;
     }
 
-    function run() {
+    public function run()
+    {
         $files = File::getRemoveableFiles();
 
         foreach ($files as $file) {
@@ -21,11 +21,8 @@ class DeleteFromServer extends Cronjob {
             if ($file->deleteFromServer($errors)) {
                 echo "Succeeded.\n";
             } else {
-                echo "FAIL: ".implode("\n", $errors)."\n";
+                echo "FAIL: " . implode("\n", $errors) . "\n";
             }
         }
     }
 }
-
-
-?>

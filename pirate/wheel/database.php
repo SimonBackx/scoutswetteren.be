@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Database;
+namespace Pirate\Wheel;
 
 use mysqli;
-use Pirate\Classes\Environment\Environment;
+use Pirate\Sails\Environment\Classes\Environment;
 
 class Database
 {

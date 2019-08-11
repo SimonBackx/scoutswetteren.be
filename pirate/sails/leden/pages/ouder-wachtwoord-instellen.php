@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sails\Leden\Pages;
 
-use Pirate\Mail\Mail;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Users\User;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Mail;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Users\Models\User;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class OuderWachtwoordInstellen extends Page
 {

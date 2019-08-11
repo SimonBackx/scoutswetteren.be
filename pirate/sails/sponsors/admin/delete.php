@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Sponsors\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Sponsors\Sponsor;
+namespace Pirate\Sails\Sponsors\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Sponsors\Models\Sponsor;
 
 class Delete extends Page {
     private $sponsor = null;

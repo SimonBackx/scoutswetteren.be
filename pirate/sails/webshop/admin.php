@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Webshop;
+namespace Pirate\Sails\Webshop;
 
-use Pirate\Model\Webshop\OrderSheet;
-use Pirate\Model\Webshop\Product;
-use Pirate\Route\AdminRoute;
+use Pirate\Sails\Webshop\Models\OrderSheet;
+use Pirate\Sails\Webshop\Models\Product;
+use Pirate\Wheel\AdminRoute;
 
 class WebshopAdminRouter extends AdminRoute
 {

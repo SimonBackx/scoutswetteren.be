@@ -1,6 +1,6 @@
 <?php
-namespace Pirate\Model\Validating;
-use Pirate\Model\Model;
+namespace Pirate\Sails\Validating\Models;
+use Pirate\Wheel\Model;
 
 class Validator extends Model {
     static function isValidFirstname($firstname) {

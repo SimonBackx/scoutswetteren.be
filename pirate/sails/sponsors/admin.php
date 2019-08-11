@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Sponsors;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
-use Pirate\Model\Sponsors\Sponsor;
-use Pirate\Model\Leiding\Leiding;
+namespace Pirate\Sails\Sponsors;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\AdminRoute;
+use Pirate\Sails\Sponsors\Models\Sponsor;
+use Pirate\Sails\Leiding\Models\Leiding;
 
 class SponsorsAdminRouter extends AdminRoute {
     private $sponsor = null;

@@ -1,5 +1,5 @@
 <?php
-namespace Pirate\Classes\Validating;
+namespace Pirate\Sails\Validating\Classes;
 
 class DatabaseError extends ValidationErrorBundle implements \JsonSerializable {
     public $message;

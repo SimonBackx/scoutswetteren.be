@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Sail\Webshop\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Webshop\Product;
+namespace Pirate\Sails\Webshop\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Webshop\Models\Product;
 
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Classes\Validating\ValidationErrors;
-use Pirate\Classes\Validating\ValidationErrorBundle;
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Sails\Validating\Classes\ValidationErrors;
+use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 
 class EditProduct extends Page {
     private $product = null;

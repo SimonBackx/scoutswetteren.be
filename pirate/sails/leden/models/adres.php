@@ -1,16 +1,16 @@
 <?php
-namespace Pirate\Model\Leden;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Inschrijving;
+namespace Pirate\Sails\Leden\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Inschrijving;
 
-use Pirate\Classes\Cache\CacheHelper;
+use Pirate\Sails\Cache\Classes\CacheHelper;
 
-use Pirate\Curl\Curl;
-use Pirate\Curl\Method;
-use Pirate\Curl\DataType;
+use Pirate\Wheel\Curl\Curl;
+use Pirate\Wheel\Curl\Method;
+use Pirate\Wheel\Curl\DataType;
 
 class Adres extends Model {
     public $id;

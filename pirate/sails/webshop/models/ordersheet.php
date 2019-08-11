@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Model\Webshop;
-use Pirate\Model\Model;
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Classes\Validating\ValidationErrors;
-use Pirate\Classes\Validating\ValidationErrorBundle;
-use Pirate\Model\Validating\Validator;
+namespace Pirate\Sails\Webshop\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Sails\Validating\Classes\ValidationErrors;
+use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
+use Pirate\Sails\Validating\Models\Validator;
 
 class OrderSheet extends Model implements \JsonSerializable {
     public $id;

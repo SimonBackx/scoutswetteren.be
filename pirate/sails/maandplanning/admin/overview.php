@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Maandplanning\Admin;
+namespace Pirate\Sails\Maandplanning\Admin;
 
-use Pirate\Classes\Environment\Localization;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Maandplanning\Event;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Environment\Classes\Localization;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Maandplanning\Models\Event;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Overview extends Page
 {

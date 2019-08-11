@@ -1,5 +1,5 @@
 <?php
-namespace Pirate;
+namespace Pirate\Wheel;
 
 class Classes
 {
@@ -9,8 +9,8 @@ class Classes
         spl_autoload_register(function ($class) {
 
             $parts = explode('\\', $class);
-            if (count($parts) == 4 && $parts[0] == 'Pirate' && $parts[1] == 'Classes') {
-                Classes::loadClass($parts[2], $parts[3]);
+            if (count($parts) >= 2 && $parts[0] == 'Pirate' && ($parts[1] === 'Wheel' || $parts[1] === 'Sails')) {
+                Classes::loadClass($parts);
             }
         });
     }
@@ -24,18 +24,28 @@ class Classes
      * @param  [type] $name klassenaam van de block = bestandsnaam
      * @return  /
      */
-    public static function loadClass($sail, $name)
+    public static function loadClass($parts)
     {
-        $file = __DIR__ . '/../sails/' . strtolower($sail) . '/classes/' . strtolower($name) . '.php';
+        // Remove pirate part
+        $pirate = array_shift($parts);
+        if ($pirate !== 'Pirate') {
+            return;
+        }
+        $file = __DIR__ . '/..';
+        foreach ($parts as $part) {
+            $file .= '/' . camelCaseToDashes($part);
+        }
+        $file .= '.php';
 
         if (file_exists($file)) {
             require $file;
         } else {
+            echo $file;
             // try to load without strtolower (fix)
-            $file = __DIR__ . '/../sails/' . strtolower($sail) . '/classes/' . $name . '.php';
-            if (file_exists($file)) {
-                require $file;
-            }
+            /*$file = __DIR__ . '/../sails/' . strtolower($sail) . '/classes/' . $name . '.php';
+        if (file_exists($file)) {
+        require $file;
+        }*/
         }
 
     }

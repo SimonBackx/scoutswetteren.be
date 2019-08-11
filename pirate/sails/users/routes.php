@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Users;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
-use Pirate\Model\Users\User;
+namespace Pirate\Sails\Users;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
+use Pirate\Sails\Users\Models\User;
 
 class UsersRouter extends Route {
     function doMatch($url, $parts) {

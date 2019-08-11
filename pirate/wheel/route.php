@@ -1,6 +1,6 @@
 <?php
-namespace Pirate\Route;
-use Pirate\Page\Page404;
+namespace Pirate\Wheel;
+use Pirate\Wheel\Page404;
 
 class Route {
     private $matchedPage;

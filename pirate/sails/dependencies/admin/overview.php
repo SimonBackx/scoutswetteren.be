@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Dependencies\Admin;
+namespace Pirate\Sails\Dependencies\Admin;
 
-use Pirate\Dependency\Dependencies;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Dependencies;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Overview extends Page
 {

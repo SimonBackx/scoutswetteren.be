@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Model\Webshop;
-use Pirate\Model\Model;
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Classes\Validating\ValidationErrors;
-use Pirate\Classes\Validating\ValidationErrorBundle;
+namespace Pirate\Sails\Webshop\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Sails\Validating\Classes\ValidationErrors;
+use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 
 class ProductPrice extends Model implements \JsonSerializable {
     public $id;

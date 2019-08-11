@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Model\Sponsors;
-use Pirate\Model\Model;
-use Pirate\Model\Files\File;
-use Pirate\Model\Files\ImageFile;
-use Pirate\Model\Files\Image;
+namespace Pirate\Sails\Sponsors\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Files\Models\File;
+use Pirate\Sails\Files\Models\ImageFile;
+use Pirate\Sails\Files\Models\Image;
 
 class Sponsor extends Model {
     public $id;

@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Photos\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Files\Album;
+namespace Pirate\Sails\Photos\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Files\Models\Album;
 
 class Delete extends Page {
     private $album = null;

@@ -1,5 +1,5 @@
 <?php
-use Pirate\Classes\Environment\Localization;
+use Pirate\Sails\Environment\Classes\Localization;
 
 // Todo: these functions should get moved to a formatter class
 
@@ -136,9 +136,10 @@ function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
     return $str;
 }
 
+/// GDImage => gd-image  HelloWorld => hello-world TESTDing => test-ding
 function camelCaseToDashes($className)
 {
-    return strtolower(preg_replace('/([a-zA-Z])(?=[A-Z])/', '$1-', $className));
+    return strtolower(preg_replace('/([a-zA-Z])([A-Z])(?=[a-z])/', '$1-$2', $className));
 }
 
 function obfuscateEmail($email)

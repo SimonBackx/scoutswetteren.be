@@ -1,39 +1,27 @@
 <?php
-namespace Pirate\Curl;
+namespace Pirate\Wheel\Curl;
 
-abstract class Method
+class Curl
 {
-    const GET = 0;
-    const POST = 1;
-    const PATCH = 2;
-}
-
-abstract class DataType
-{
-    const urlencoded = 0;
-    const json = 1;
-}
-
-class Curl {
     // Doe een request en return de Json encoded object als response of null bij een failure
-    static function request($method, $url, $headers = [], $data_type = DataType::urlencoded, $data = null) {
-        $body = null; 
-        
+    public static function request($method, $url, $headers = [], $data_type = DataType::urlencoded, $data = null)
+    {
+        $body = null;
+
         if ($method != Method::GET && isset($data)) {
             if ($data_type == DataType::urlencoded) {
                 $headers[] = 'Content-Type: application/x-www-form-urlencoded';
                 $body = http_build_query($data);
             }
-    
+
             if ($data_type == DataType::json) {
                 $headers[] = 'Content-Type: application/json;charset=UTF-8';
                 $body = json_encode($data);
             }
         }
-        
 
         try {
-            
+
             $curl = curl_init();
 
             $settings = [
@@ -64,7 +52,7 @@ class Curl {
             curl_setopt_array($curl, $settings);
 
             $result = curl_exec($curl);
-            
+
             if (!isset($result)) {
                 return null;
             }
@@ -79,8 +67,7 @@ class Curl {
                 // Er ging iets mis
             }
             return null;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
     }

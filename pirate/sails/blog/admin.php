@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Blog;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
+namespace Pirate\Sails\Blog;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\AdminRoute;
 
 class BlogAdminRouter extends AdminRoute {
     private $id;

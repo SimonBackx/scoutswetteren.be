@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Photos\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Files\Album;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Files\File;
+namespace Pirate\Sails\Photos\Pages;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Files\Models\Album;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Sails\Files\Models\File;
 
 class DownloadAlbum extends Page {
     private $album = null;

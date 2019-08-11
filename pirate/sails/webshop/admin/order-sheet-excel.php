@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Webshop\Admin;
+namespace Pirate\Sails\Webshop\Admin;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Pirate\Model\Webshop\Order;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Webshop\Models\Order;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class OrderSheetExcel extends Page
 {

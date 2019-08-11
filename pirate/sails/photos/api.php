@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Sail\Photos;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Files\Album;
-use Pirate\Model\Files\Image;
+namespace Pirate\Sails\Photos;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Files\Models\Album;
+use Pirate\Sails\Files\Models\Image;
 
 class PhotosApiRouter extends Route {
     private $album = null;

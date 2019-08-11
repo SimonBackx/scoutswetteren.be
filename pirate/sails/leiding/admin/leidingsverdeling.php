@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Sail\Leiding\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Settings\Setting;
+namespace Pirate\Sails\Leiding\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Settings\Models\Setting;
 
 class Leidingsverdeling extends Page {
 

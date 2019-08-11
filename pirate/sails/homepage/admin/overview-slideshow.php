@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Homepage\Admin;
+namespace Pirate\Sails\Homepage\Admin;
 
-use Pirate\Model\Homepage\Slideshow;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Homepage\Models\Slideshow;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class OverviewSlideshow extends Page
 {

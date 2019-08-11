@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Users\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Users\User;
+namespace Pirate\Sails\Users\Pages;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Users\Models\User;
 
 // Deze pagina mag enkel getoond worden als de ouder (tijdelijk) ingelogd is
 class SetPassword extends Page {

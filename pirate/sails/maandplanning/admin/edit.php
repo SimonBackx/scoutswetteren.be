@@ -1,12 +1,12 @@
 <?php
-namespace Pirate\Sail\Maandplanning\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Maandplanning\Event;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Webshop\BankAccount;
-use Pirate\Model\Webshop\OrderSheet;
+namespace Pirate\Sails\Maandplanning\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Maandplanning\Models\Event;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Webshop\Models\BankAccount;
+use Pirate\Sails\Webshop\Models\OrderSheet;
 
 class Edit extends Page {
     private $id = null;

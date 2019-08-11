@@ -1,6 +1,6 @@
 <?php
-namespace Pirate\Model\Blog;
-use Pirate\Model\Model;
+namespace Pirate\Sails\Blog\Models;
+use Pirate\Wheel\Model;
 
 class Article extends Model {
     public $id;

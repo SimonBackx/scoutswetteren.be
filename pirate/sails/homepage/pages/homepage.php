@@ -1,12 +1,12 @@
 <?php
-namespace Pirate\Sail\Homepage\Pages;
+namespace Pirate\Sails\Homepage\Pages;
 
-use Pirate\Block\Block;
-use Pirate\Model\Files\Album;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Homepage\Slideshow;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Block;
+use Pirate\Sails\Files\Models\Album;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Sails\Homepage\Models\Slideshow;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Homepage extends Page
 {

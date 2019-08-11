@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Webshop\Pages;
+namespace Pirate\Sails\Webshop\Pages;
 
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Order extends Page
 {

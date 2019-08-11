@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Blog\Pages;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
-use Pirate\Block\Block;
+namespace Pirate\Sails\Blog\Pages;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+use Pirate\Wheel\Block;
 
 class Blog extends Page {
 

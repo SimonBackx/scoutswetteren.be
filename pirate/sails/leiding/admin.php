@@ -1,9 +1,9 @@
 <?php
 
-namespace Pirate\Sail\Leiding;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
-use Pirate\Model\Leiding\Leiding;
+namespace Pirate\Sails\Leiding;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\AdminRoute;
+use Pirate\Sails\Leiding\Models\Leiding;
 
 class LeidingAdminRouter extends AdminRoute {
     private $leiding = null;

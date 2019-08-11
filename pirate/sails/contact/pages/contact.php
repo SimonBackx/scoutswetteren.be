@@ -1,15 +1,15 @@
 <?php
-namespace Pirate\Sail\Contact\Pages;
+namespace Pirate\Sails\Contact\Pages;
 
-use Pirate\Mail\Mail;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Settings\Setting;
-use Pirate\Model\Validating\Validator;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Mail;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Settings\Models\Setting;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Contact extends Page
 {

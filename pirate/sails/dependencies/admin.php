@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Dependencies;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
-use Pirate\Model\Leiding\Leiding;
+namespace Pirate\Sails\Dependencies;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\AdminRoute;
+use Pirate\Sails\Leiding\Models\Leiding;
 
 class DependenciesAdminRouter extends AdminRoute {
     private $leiding = null;

@@ -1,6 +1,6 @@
 <?php
-namespace Pirate\Model\Files;
-use Pirate\Model\Model;
+namespace Pirate\Sails\Files\Models;
+use Pirate\Wheel\Model;
 use Imagick;
 
 class GDImage extends Model {

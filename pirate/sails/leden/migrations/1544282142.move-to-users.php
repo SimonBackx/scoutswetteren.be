@@ -1,10 +1,13 @@
 <?php
-namespace Pirate\Classes\Leden;
-use Pirate\Classes\Migrations\Migration;
+namespace Pirate\Sails\Leden\Migrations;
 
-class MoveToUsers1544282142 extends Migration {
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class MoveToUsers1544282142 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $query = "SELECT * from `ouders`";
 
         $linking = [];
@@ -20,34 +23,33 @@ class MoveToUsers1544282142 extends Migration {
                 if (!isset($row['gsm'])) {
                     $phone = 'NULL';
                 } else {
-                    $phone = "'".self::getDb()->escape_string($row['gsm'])."'";
+                    $phone = "'" . self::getDb()->escape_string($row['gsm']) . "'";
                 }
 
                 if (!isset($row['password'])) {
                     $password = 'NULL';
                 } else {
-                    $password = "'".self::getDb()->escape_string($row['password'])."'";
+                    $password = "'" . self::getDb()->escape_string($row['password']) . "'";
                 }
 
                 if (!isset($row['set_password_key'])) {
                     $set_password_key = 'NULL';
                 } else {
-                    $set_password_key = "'".self::getDb()->escape_string($row['set_password_key'])."'";
+                    $set_password_key = "'" . self::getDb()->escape_string($row['set_password_key']) . "'";
                 }
 
                 // todo: check duplicates of e-mail and prefill with a temporary email
 
-                $query = "INSERT INTO 
+                $query = "INSERT INTO
                 users (`user_firstname`, `user_lastname`, `user_mail`, `user_phone`, `user_password`, `user_set_password_key`)
                 VALUES ('$firstname', '$lastname', '$mail', $phone, $password, $set_password_key)";
-
 
                 if (!self::getDb()->query($query)) {
                     throw new \Exception(self::getDb()->error);
                 }
 
                 $user_id = self::getDb()->insert_id;
-                echo "Ouder(id: $id) successfully created User '".$user_id ."'. Linking ahead.\n";
+                echo "Ouder(id: $id) successfully created User '" . $user_id . "'. Linking ahead.\n";
                 $linking[$id] = $user_id;
             }
         }
@@ -72,7 +74,7 @@ class MoveToUsers1544282142 extends Migration {
         $create_query = "ALTER TABLE ouders
             ADD COLUMN `user_id` int(11) unsigned AFTER `id`,
             ADD CONSTRAINT `fk_ouders_users` FOREIGN KEY (`user_id`) REFERENCES users(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;";
-        
+
         if (!self::getDb()->query($create_query)) {
             throw new \Exception(self::getDb()->error);
         }
@@ -80,14 +82,14 @@ class MoveToUsers1544282142 extends Migration {
 
         $drop_query = "ALTER TABLE ouder_magic_tokens
             DROP foreign key `ouder_magic_tokens_ibfk_1`;";
-        
+
         if (!self::getDb()->query($drop_query)) {
             throw new \Exception(self::getDb()->error);
         }
         echo "Dropped foreign key of ouder_magic_tokens\n";
-        
+
         $query = "RENAME TABLE ouder_magic_tokens TO user_magic_tokens;";
-        
+
         if (!self::getDb()->query($query)) {
             throw new \Exception(self::getDb()->error);
         }
@@ -128,7 +130,8 @@ class MoveToUsers1544282142 extends Migration {
         return true;
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 }

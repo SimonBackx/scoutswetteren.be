@@ -1,16 +1,16 @@
 <?php
-namespace Pirate\Cronjob\Groepsadmin;
-use Pirate\Cronjob\Cronjob;
-use Pirate\Classes\Cache\CacheHelper;
+namespace Pirate\Sails\Groepsadmin\Cronjobs;
+use Pirate\Wheel\Cronjob;
+use Pirate\Sails\Cache\Classes\CacheHelper;
 
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Groepsadmin\Groepsadmin;
-use Pirate\Model\Groepsadmin\GroepsadminLid;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leiding\Leiding;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Groepsadmin\Models\Groepsadmin;
+use Pirate\Sails\Groepsadmin\Models\GroepsadminLid;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
 
 class Sync extends Cronjob {
     function needsRunning() {

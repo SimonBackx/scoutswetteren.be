@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Sail\Verhuur\Pages;
+namespace Pirate\Sails\Verhuur\Pages;
 
-use Pirate\Model\Files\Album;
-use Pirate\Model\Files\Image;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Files\Models\Album;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Materiaal extends Page
 {

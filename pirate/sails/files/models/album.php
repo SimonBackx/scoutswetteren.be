@@ -1,12 +1,12 @@
 <?php
-namespace Pirate\Model\Files;
+namespace Pirate\Sails\Files\Models;
 
-use Pirate\Model\Files\File;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Files\ImageFile;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Maandplanning\Event;
-use Pirate\Model\Model;
+use Pirate\Sails\Files\Models\File;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Sails\Files\Models\ImageFile;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Maandplanning\Models\Event;
+use Pirate\Wheel\Model;
 
 class Album extends Model
 {

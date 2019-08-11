@@ -1,12 +1,12 @@
 <?php
-namespace Pirate\Model\Leden;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Users\User;
-use Pirate\Mail\Mail;
+namespace Pirate\Sails\Leden\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Users\Models\User;
+use Pirate\Wheel\Mail;
 
 class Ouder extends Model {
     public $id;

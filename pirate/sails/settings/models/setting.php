@@ -1,6 +1,6 @@
 <?php
-namespace Pirate\Model\Settings;
-use Pirate\Model\Model;
+namespace Pirate\Sails\Settings\Models;
+use Pirate\Wheel\Model;
 
 class Setting extends Model {
     public $id;

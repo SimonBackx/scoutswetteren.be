@@ -1,6 +1,6 @@
 <?php
-namespace Pirate\Classes\Migrations;
-use Pirate\Database\Database;
+namespace Pirate\Sails\Migrations\Classes;
+use Pirate\Wheel\Database;
 
 class Migration {
 

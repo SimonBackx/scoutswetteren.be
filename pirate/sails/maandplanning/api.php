@@ -1,8 +1,8 @@
 <?php
 
-namespace Pirate\Sail\Maandplanning;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
+namespace Pirate\Sails\Maandplanning;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
 
 class MaandplanningApiRouter extends Route {
     function doMatch($url, $parts) {

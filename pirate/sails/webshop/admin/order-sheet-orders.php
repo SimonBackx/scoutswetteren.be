@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Webshop\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Webshop\Order;
+namespace Pirate\Sails\Webshop\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Webshop\Models\Order;
 
 class OrderSheetOrders extends Page {
     function __construct($order_sheet) {

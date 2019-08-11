@@ -27,6 +27,8 @@
     <meta name="application-name" content="{{ environment.name }}">
     <meta name="theme-color" content="#470a14">
 
+    <script type="text/javascript" src="{{ http }}/js/jquery-3.1.0.min.js"></script>
+
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -42,6 +44,8 @@
         <p class="ie-only">Javascript is uitgeschakeld op uw browser, hierdoor zijn veel functies niet beschikbaar.</p>
     </noscript>
 
+    <script type="text/javascript" src="/js/pickadate.js"></script>
+    <script type="text/javascript" src="/js/pickadate.date.js"></script>
     <script type="text/javascript" src="/js/forms.js"></script>
     {% block javascript %}{% endblock %}
 </body>

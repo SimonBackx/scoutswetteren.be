@@ -3699,122 +3699,122 @@ PHP message: PHP Warning:  unlink(/var/www/scoutswetteren.be/files/files-depende
 2016/11/09 11:39:01 [error] 29838#0: *60 directory index of "/var/www/scoutswetteren.be/files/" is forbidden, client: 178.119.234.247, server: files.scoutswetteren.be, request: "GET / HTTP/1.1", host: "files.scoutswetteren.be"
 2016/11/09 11:47:59 [error] 30378#0: *63 directory index of "/var/www/scoutswetteren.be/files/" is forbidden, client: 178.119.234.247, server: files.scoutswetteren.be, request: "GET / HTTP/1.1", host: "files.scoutswetteren.be"
 2016/11/09 11:48:01 [error] 30378#0: *63 directory index of "/var/www/scoutswetteren.be/files/" is forbidden, client: 178.119.234.247, server: files.scoutswetteren.be, request: "GET / HTTP/1.1", host: "files.scoutswetteren.be"
-2016/11/09 12:11:27 [error] 30375#0: *1626 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:27 [error] 30375#0: *1626 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:32 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:32 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:34 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:34 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:38 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:38 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:41 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:41 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:44 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:44 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:48 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:48 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:50 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:50 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:11:52 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:11:52 [error] 30375#0: *1627 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
 2016/11/09 12:12:11 [error] 30377#0: *1650 open() "/var/www/scoutswetteren.be/public/apple-touch-icon-precomposed.png" failed (2: No such file or directory), client: 178.119.234.247, server: www.scoutswetteren.be, request: "GET /apple-touch-icon-precomposed.png HTTP/1.1", host: "www.scoutswetteren.be"
 2016/11/09 12:12:15 [error] 30377#0: *1650 open() "/var/www/scoutswetteren.be/public/apple-touch-icon-precomposed.png" failed (2: No such file or directory), client: 178.119.234.247, server: www.scoutswetteren.be, request: "GET /apple-touch-icon-precomposed.png HTTP/1.1", host: "www.scoutswetteren.be"
 2016/11/09 12:14:12 [error] 30377#0: *2232 open() "/var/www/scoutswetteren.be/public/apple-touch-icon-precomposed.png" failed (2: No such file or directory), client: 178.119.234.247, server: www.scoutswetteren.be, request: "GET /apple-touch-icon-precomposed.png HTTP/1.1", host: "www.scoutswetteren.be"
-2016/11/09 12:14:23 [error] 30376#0: *2228 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
+2016/11/09 12:14:23 [error] 30376#0: *2228 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:160
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 160" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:17:15 [error] 30378#0: *3037 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\GDImage' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:171
+2016/11/09 12:17:15 [error] 30378#0: *3037 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\GDImage' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:171
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 171" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
-2016/11/09 12:19:21 [error] 30376#0: *3374 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\GDImage' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:171
+2016/11/09 12:19:21 [error] 30376#0: *3374 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\GDImage' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:171
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Model\Files\Image->upload('file', Array, Array, Object(Pirate\Model\Files\Album))
-#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sail\Photos\Api\UploadPhoto->getStatusCode()
-#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/api/upload-photo.php(38): Pirate\Sails\Files\Models\Image->upload('file', Array, Array, Object(Pirate\Sails\Files\Models\Album))
+#1 /var/www/scoutswetteren.be/pirate/wheel/page.php(23): Pirate\Sails\Photos\Api\UploadPhoto->getStatusCode()
+#2 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #3 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #4 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 171" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "POST /api/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be", referrer: "https://www.scoutswetteren.be/admin/photos/upload"
 2016/11/09 12:20:18 [error] 30377#0: *3616 open() "/var/www/scoutswetteren.be/public/images/part/huurprijs.jpg" failed (13: Permission denied), client: 207.46.13.116, server: www.scoutswetteren.be, request: "GET /images/part/huurprijs.jpg HTTP/1.1", host: "www.scoutswetteren.be"
-2016/11/09 12:20:22 [error] 30377#0: *3619 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:243
+2016/11/09 12:20:22 [error] 30377#0: *3619 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:243
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/admin/upload.php(35): Pirate\Model\Files\Image::getImagesFromAlbum(NULL)
-#1 /var/www/scoutswetteren.be/pirate/sails/leiding/pages/admin.php(22): Pirate\Sail\Photos\Admin\Upload->getContent()
-#2 /var/www/scoutswetteren.be/pirate/wheel/page.php(24): Pirate\Sail\Leiding\Pages\Admin->getContent()
-#3 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/admin/upload.php(35): Pirate\Sails\Files\Models\Image::getImagesFromAlbum(NULL)
+#1 /var/www/scoutswetteren.be/pirate/sails/leiding/pages/admin.php(22): Pirate\Sails\Photos\Admin\Upload->getContent()
+#2 /var/www/scoutswetteren.be/pirate/wheel/page.php(24): Pirate\Sails\Leiding\Pages\Admin->getContent()
+#3 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #4 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #5 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 243" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "GET /admin/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be"
 2016/11/09 12:20:22 [error] 30377#0: *3621 open() "/var/www/scoutswetteren.be/public/apple-touch-icon-precomposed.png" failed (2: No such file or directory), client: 178.119.234.247, server: www.scoutswetteren.be, request: "GET /apple-touch-icon-precomposed.png HTTP/1.1", host: "www.scoutswetteren.be"
-2016/11/09 12:20:28 [error] 30377#0: *3619 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Model\Files\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:243
+2016/11/09 12:20:28 [error] 30377#0: *3619 FastCGI sent in stderr: "PHP message: PHP Fatal error:  Uncaught Error: Class 'Pirate\Sails\Files\Models\ImageFile' not found in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php:243
 Stack trace:
-#0 /var/www/scoutswetteren.be/pirate/sails/photos/admin/upload.php(35): Pirate\Model\Files\Image::getImagesFromAlbum(NULL)
-#1 /var/www/scoutswetteren.be/pirate/sails/leiding/pages/admin.php(22): Pirate\Sail\Photos\Admin\Upload->getContent()
-#2 /var/www/scoutswetteren.be/pirate/wheel/page.php(24): Pirate\Sail\Leiding\Pages\Admin->getContent()
-#3 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Page\Page->execute()
+#0 /var/www/scoutswetteren.be/pirate/sails/photos/admin/upload.php(35): Pirate\Sails\Files\Models\Image::getImagesFromAlbum(NULL)
+#1 /var/www/scoutswetteren.be/pirate/sails/leiding/pages/admin.php(22): Pirate\Sails\Photos\Admin\Upload->getContent()
+#2 /var/www/scoutswetteren.be/pirate/wheel/page.php(24): Pirate\Sails\Leiding\Pages\Admin->getContent()
+#3 /var/www/scoutswetteren.be/pirate/wheel/ship.php(67): Pirate\Wheel\Page->execute()
 #4 /var/www/scoutswetteren.be/public/index.php(7): Pirate\Ship->sail()
 #5 {main}
   thrown in /var/www/scoutswetteren.be/pirate/sails/files/models/image.php on line 243" while reading response header from upstream, client: 178.119.234.247, server: www.scoutswetteren.be, request: "GET /admin/photos/upload HTTP/1.1", upstream: "fastcgi://unix:/var/run/php/php7.0-fpm.sock:", host: "www.scoutswetteren.be"

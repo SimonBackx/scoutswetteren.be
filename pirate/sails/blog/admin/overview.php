@@ -1,9 +1,9 @@
 <?php
-namespace Pirate\Sail\Blog\Admin;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Blog\Article;
+namespace Pirate\Sails\Blog\Admin;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Blog\Models\Article;
 
 class Overview extends Page {
     function getStatusCode() {

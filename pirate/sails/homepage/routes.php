@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Homepage;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
+namespace Pirate\Sails\Homepage;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
 
 class HomepageRouter extends Route {
     function doMatch($url, $parts) {

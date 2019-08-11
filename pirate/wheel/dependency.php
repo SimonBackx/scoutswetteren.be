@@ -1,13 +1,16 @@
 <?php
-namespace Pirate\Dependency;
+namespace Pirate\Wheel;
 
-class Dependency {
-    function check(&$output) {
+class Dependency
+{
+    public function check(&$output)
+    {
         $output[] = array('success' => false, 'code' => 0, 'msg' => 'Using default dependency. Failed.');
         return false;
     }
 
-    function fix(&$errors) {
+    public function fix(&$errors)
+    {
         // try to fix the dependencies
         // true on success
         return false;

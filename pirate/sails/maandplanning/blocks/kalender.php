@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Maandplanning\Blocks;
+namespace Pirate\Sails\Maandplanning\Blocks;
 
-use Pirate\Block\Block;
-use Pirate\Classes\Environment\Environment;
-use Pirate\Classes\Environment\Localization;
-use Pirate\Model\Maandplanning\Event;
-use Pirate\Template\Template;
+use Pirate\Wheel\Block;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Environment\Classes\Localization;
+use Pirate\Sails\Maandplanning\Models\Event;
+use Pirate\Wheel\Template;
 
 class Kalender extends Block
 {

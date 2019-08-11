@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Files;
-use Pirate\Dependency\Dependency;
-use Pirate\Model\Files\File;
+namespace Pirate\Sails\Files;
+use Pirate\Wheel\Dependency;
+use Pirate\Sails\Files\Models\File;
 
 class FilesDependencies extends Dependency {
     function check(&$output) {

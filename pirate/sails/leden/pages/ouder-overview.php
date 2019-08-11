@@ -1,14 +1,14 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
+namespace Pirate\Sails\Leden\Pages;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Mail\Mail;
-use Pirate\Model\Leden\Afrekening;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Wheel\Mail;
+use Pirate\Sails\Leden\Models\Afrekening;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class OuderOverview extends Page
 {

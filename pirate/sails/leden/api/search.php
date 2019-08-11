@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Leden\Api;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
-use Pirate\Model\Leden\Lid;
+namespace Pirate\Sails\Leden\Api;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Leden\Models\Lid;
 
 // start = inclusive Y-m-d
 // end = exclusive Y-m-d

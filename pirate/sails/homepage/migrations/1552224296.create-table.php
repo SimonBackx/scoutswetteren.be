@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Classes\Homepage;
+namespace Pirate\Sails\Homepage\Migrations;
 
-use Pirate\Classes\Migrations\Migration;
+use Pirate\Sails\Migrations\Classes\Migration;
 
 class CreateTable1552224296 extends Migration
 {

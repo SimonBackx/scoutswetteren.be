@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Blog\Pages;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+namespace Pirate\Sails\Blog\Pages;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Article extends Page {
     private $article;

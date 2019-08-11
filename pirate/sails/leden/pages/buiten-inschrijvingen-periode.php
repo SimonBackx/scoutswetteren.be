@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
+namespace Pirate\Sails\Leden\Pages;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
 
 class BuitenInschrijvingenPeriode extends Page {
 

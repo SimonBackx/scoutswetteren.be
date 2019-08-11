@@ -1,12 +1,12 @@
 <?php
-namespace Pirate\Sail\Leden;
-use Pirate\Page\Page;
-use Pirate\Route\AdminRoute;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Afrekening;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Leden\Inschrijving;
+namespace Pirate\Sails\Leden;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\AdminRoute;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Afrekening;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Leden\Models\Inschrijving;
 
 class LedenAdminRouter extends AdminRoute {
     private $lid = null;

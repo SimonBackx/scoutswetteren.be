@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Webshop;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
-use Pirate\Model\Webshop\OrderSheet;
+namespace Pirate\Sails\Webshop;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
+use Pirate\Sails\Webshop\Models\OrderSheet;
 
 class WebshopApiRouter extends Route {
     function doMatch($url, $parts) {

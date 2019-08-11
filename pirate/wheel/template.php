@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Template;
+namespace Pirate\Wheel;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Users\User;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Users\Models\User;
 
 class Template
 {

@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Model\Leden;
+namespace Pirate\Sails\Leden\Models;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Model\Leden\Gezin;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Steekkaart;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leden\Models\Steekkaart;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
 
 class Lid extends Model
 {

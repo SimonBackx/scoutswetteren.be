@@ -1,7 +1,7 @@
 <?php
-namespace Pirate\Sail\Info;
-use Pirate\Page\Page;
-use Pirate\Route\Route;
+namespace Pirate\Sails\Info;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Route;
 
 class InfoRouter extends Route {
     private $adminPage = null;

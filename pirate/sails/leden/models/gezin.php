@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Model\Leden;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
-use Pirate\Model\Leden\Inschrijving;
+namespace Pirate\Sails\Leden\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Sails\Leden\Models\Inschrijving;
 
 class Gezin extends Model {
     public $id;

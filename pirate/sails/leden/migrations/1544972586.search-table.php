@@ -1,11 +1,14 @@
 <?php
-namespace Pirate\Classes\Leden;
-use Pirate\Classes\Migrations\Migration;
-use Pirate\Model\Leden\Lid;
+namespace Pirate\Sails\Leden\Migrations;
 
-class SearchTable1544972586 extends Migration {
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class SearchTable1544972586 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $query = "CREATE TABLE `leden_search` (
             `search_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `search_lid` int(11) unsigned NOT NULL,
@@ -24,11 +27,12 @@ class SearchTable1544972586 extends Migration {
             }
             return true;
         }
-        
+
         throw new \Exception(self::getDb()->error);
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

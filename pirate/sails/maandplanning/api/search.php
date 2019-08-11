@@ -1,8 +1,8 @@
 <?php
-namespace Pirate\Sail\Maandplanning\Api;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
-use Pirate\Model\Maandplanning\Event;
+namespace Pirate\Sails\Maandplanning\Api;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Maandplanning\Models\Event;
 
 // start = inclusive Y-m-d
 // end = exclusive Y-m-d

@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Model\Leden;
+namespace Pirate\Sails\Leden\Models;
 
-use Pirate\Model\Leden\Afrekening;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Model;
+use Pirate\Sails\Leden\Models\Afrekening;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Wheel\Model;
 
 class Inschrijving extends Model
 {

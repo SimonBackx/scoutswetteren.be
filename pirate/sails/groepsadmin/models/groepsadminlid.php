@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Model\Groepsadmin;
-use Pirate\Model\Model;
-use Pirate\Curl\Curl;
-use Pirate\Curl\Method;
-use Pirate\Curl\DataType;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Groepsadmin\Groepsadmin;
+namespace Pirate\Sails\Groepsadmin\Models;
+use Pirate\Wheel\Model;
+use Pirate\Wheel\Curl\Curl;
+use Pirate\Wheel\Curl\Method;
+use Pirate\Wheel\Curl\DataType;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Groepsadmin\Models\Groepsadmin;
 
 class GroepsadminLid {
     public $id;

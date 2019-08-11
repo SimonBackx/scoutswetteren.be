@@ -1,15 +1,15 @@
 <?php
-namespace Pirate\Sail\Webshop\Api;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
+namespace Pirate\Sails\Webshop\Api;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
 
-use Pirate\Model\Webshop\Order;
-use Pirate\Model\Webshop\StripePayment;
+use Pirate\Sails\Webshop\Models\Order;
+use Pirate\Sails\Webshop\Models\StripePayment;
 
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Classes\Validating\ValidationErrors;
-use Pirate\Classes\Validating\ValidationErrorBundle;
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Sails\Validating\Classes\ValidationErrors;
+use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 
 class StripeWebhook extends Page {
     function __construct() {

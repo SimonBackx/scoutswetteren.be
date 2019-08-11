@@ -1,10 +1,13 @@
 <?php
-namespace Pirate\Classes\Leiding;
-use Pirate\Classes\Migrations\Migration;
+namespace Pirate\Sails\Leiding\Migrations;
 
-class MoveToUsers1543768025 extends Migration {
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class MoveToUsers1543768025 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $query = "SELECT * from `leiding`";
 
         $linking = [];
@@ -20,33 +23,31 @@ class MoveToUsers1543768025 extends Migration {
                 if (!isset($row['phone'])) {
                     $phone = 'NULL';
                 } else {
-                    $phone = "'".self::getDb()->escape_string($row['phone'])."'";
+                    $phone = "'" . self::getDb()->escape_string($row['phone']) . "'";
                 }
 
                 if (!isset($row['password'])) {
                     $password = 'NULL';
                 } else {
-                    $password = "'".self::getDb()->escape_string($row['password'])."'";
+                    $password = "'" . self::getDb()->escape_string($row['password']) . "'";
                 }
 
                 if (!isset($row['set_password_key'])) {
                     $set_password_key = 'NULL';
                 } else {
-                    $set_password_key = "'".self::getDb()->escape_string($row['set_password_key'])."'";
+                    $set_password_key = "'" . self::getDb()->escape_string($row['set_password_key']) . "'";
                 }
 
-
-                $query = "INSERT INTO 
+                $query = "INSERT INTO
                 users (`user_firstname`, `user_lastname`, `user_mail`, `user_phone`, `user_password`, `user_set_password_key`)
                 VALUES ('$firstname', '$lastname', '$mail', $phone, $password, $set_password_key)";
-
 
                 if (!self::getDb()->query($query)) {
                     throw new \Exception(self::getDb()->error);
                 }
 
                 $user_id = self::getDb()->insert_id;
-                echo "Leiding(id: $id) successfully created User '".$user_id ."'. Linking ahead.\n";
+                echo "Leiding(id: $id) successfully created User '" . $user_id . "'. Linking ahead.\n";
                 $linking[$id] = $user_id;
             }
         }
@@ -71,7 +72,7 @@ class MoveToUsers1543768025 extends Migration {
         $create_query = "ALTER TABLE leiding
             ADD COLUMN `user_id` int(11) unsigned AFTER `id`,
             ADD CONSTRAINT `fk_leiding_users` FOREIGN KEY (`user_id`) REFERENCES users(`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;";
-        
+
         if (!self::getDb()->query($create_query)) {
             throw new \Exception(self::getDb()->error);
         }
@@ -115,7 +116,8 @@ class MoveToUsers1543768025 extends Migration {
         return true;
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

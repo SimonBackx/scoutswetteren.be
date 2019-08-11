@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Sail\Leden;
+namespace Pirate\Sails\Leden;
 
-use Pirate\Model\Leden\Afrekening;
-use Pirate\Model\Leden\Inschrijving;
-use Pirate\Model\Leden\Lid;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Users\User;
-use Pirate\Route\Route;
-use Pirate\Sail\Users\Pages\Login;
+use Pirate\Sails\Leden\Models\Afrekening;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Users\Models\User;
+use Pirate\Wheel\Route;
+use Pirate\Sails\Users\Pages\Login;
 
 class LedenRouter extends Route
 {

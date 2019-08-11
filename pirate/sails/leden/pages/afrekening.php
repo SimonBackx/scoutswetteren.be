@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Sail\Leden\Pages;
-use Pirate\Page\Page;
-use Pirate\Block\Block;
-use Pirate\Template\Template;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Steekkaart;
-use Pirate\Database\Database;
+namespace Pirate\Sails\Leden\Pages;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Block;
+use Pirate\Wheel\Template;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leden\Models\Steekkaart;
+use Pirate\Wheel\Database;
 
 class ViewAfrekening extends Page {
     private $afrekening;

@@ -1,10 +1,13 @@
 <?php
-namespace Pirate\Classes\Leden;
-use Pirate\Classes\Migrations\Migration;
+namespace Pirate\Sails\Leden\Migrations;
 
-class Adres1529781209 extends Migration {
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class Adres1529781209 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $query = "CREATE TABLE `adressen` (
             `adres_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `adres_straatnaam` varchar(120) NOT NULL DEFAULT '',
@@ -28,16 +31,17 @@ class Adres1529781209 extends Migration {
         if ($result = self::getDb()->query($query)) {
             return true;
         }
-        
+
         throw new \Exception(self::getDb()->error);
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         $query = "DROP TABLE `adressen`";
         if ($result = self::getDb()->query($query)) {
             return true;
         }
-        
+
         throw new \Exception(self::getDb()->error);
     }
 

@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Sail\Homepage\Admin;
+namespace Pirate\Sails\Homepage\Admin;
 
-use Pirate\Classes\Validating\ValidationErrorBundle;
-use Pirate\Model\Homepage\Slideshow;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
+use Pirate\Sails\Homepage\Models\Slideshow;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class EditSlideshow extends Page
 {

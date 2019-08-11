@@ -1,13 +1,16 @@
 <?php
-namespace Pirate\Classes\Leden;
-use Pirate\Classes\Migrations\Migration;
+namespace Pirate\Sails\Leden\Migrations;
 
-class Lidnummer1530213254 extends Migration {
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class Lidnummer1530213254 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $create_query = "ALTER TABLE leden
             ADD COLUMN `lidnummer` int(14) unsigned AFTER `id`;";
-        
+
         // Todo: foreign key toevoegen
 
         if (!self::getDb()->query($create_query)) {
@@ -17,7 +20,8 @@ class Lidnummer1530213254 extends Migration {
         return true;
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

@@ -1,16 +1,16 @@
 <?php
-namespace Pirate\Classes\Users;
-use Pirate\Classes\Migrations\Migration;
-use Pirate\Model\Users\User;
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leden\Inschrijving;
+namespace Pirate\Sails\Users\Migrations;
 
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Mail\Mail;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Migrations\Classes\Migration;
+use Pirate\Sails\Users\Models\User;
+use Pirate\Wheel\Mail;
 
-class RemoveDuplicates1544289883 extends Migration {
+class RemoveDuplicates1544289883 extends Migration
+{
 
-    static function upgrade(): bool {
+    public static function upgrade(): bool
+    {
         $query = "UPDATE users set user_mail = 'verhuur@scoutswetteren.be' where user_mail = 'divitaeconsulting@icloud.com'";
 
         if (!self::getDb()->query($query)) {
@@ -20,12 +20,10 @@ class RemoveDuplicates1544289883 extends Migration {
 
         $query = "UPDATE users set user_mail = 'ellenjooris1@outlook.com' where user_phone = '+32 497 64 53 94'";
 
-
         if (!self::getDb()->query($query)) {
             echo "Failed fixing duplicate phone 2 early on by setting same email\n";
             throw new \Exception(self::getDb()->error);
         }
-
 
         $query = "ALTER TABLE `users` MODIFY `user_mail` varchar(100) null;";
 
@@ -37,8 +35,8 @@ class RemoveDuplicates1544289883 extends Migration {
         echo "Made mail nullable on users table\n";
 
         /// Sorteer op dubbele phone (zodat we eerst mergen indien mogelijk)
-        $query = 
-        "SELECT a.* from `users` a
+        $query =
+            "SELECT a.* from `users` a
         left join `users` b on a.user_phone = b.user_phone and a.user_mail = b.user_mail
         group by a.user_id
         order by count(b.user_id) desc";
@@ -54,10 +52,10 @@ class RemoveDuplicates1544289883 extends Migration {
                     $user->save();
                     continue;
                 }
-                
+
                 if (isset($linking[strtolower($user->mail)])) {
                     $other = $linking[strtolower($user->mail)];
-                    $clear_phone = (preg_replace('/\s+/', '',$other->phone) == preg_replace('/\s+/', '',$user->phone));
+                    $clear_phone = (preg_replace('/\s+/', '', $other->phone) == preg_replace('/\s+/', '', $user->phone));
                     $ouder1 = Ouder::getByUserId($other->id);
                     $ouder2 = Ouder::getByUserId($user->id);
 
@@ -116,13 +114,12 @@ class RemoveDuplicates1544289883 extends Migration {
                     $kept = null;
                     $cleared = null;
 
-
                     if (!$user->isProbablyEqual($other)) {
                         // Twee verschillende ouders met zelfde e-mailadres => probeer degene te houden van degene wie het e-mailadres is
                         $parts_user = explode(' ', trim($user->lastname));
-                        $parts_user = [mb_strtolower($user->firstname), mb_strtolower($parts_user[count($parts_user)-1])];
+                        $parts_user = [mb_strtolower($user->firstname), mb_strtolower($parts_user[count($parts_user) - 1])];
                         $parts_other = explode(' ', trim($other->lastname));
-                        $parts_other = [mb_strtolower($other->firstname), mb_strtolower($parts_other[count($parts_other)-1])];
+                        $parts_other = [mb_strtolower($other->firstname), mb_strtolower($parts_other[count($parts_other) - 1])];
 
                         foreach ($parts_user as $part) {
                             if (strpos(mb_strtolower(clean_special_chars($user->mail)), $part) !== false) {
@@ -155,7 +152,7 @@ class RemoveDuplicates1544289883 extends Migration {
                             $kept = $user;
                             $cleared = $other;
 
-                        } else { 
+                        } else {
                             $kept = $other;
                             $cleared = $user;
                         }
@@ -169,13 +166,12 @@ class RemoveDuplicates1544289883 extends Migration {
                     $cleared->save();
                     $linking[strtolower($kept->mail)] = $kept;
 
-                    // If kept has no password, but cleared has: move password 
+                    // If kept has no password, but cleared has: move password
                     if (!$kept->hasPassword() && $cleared->hasPassword()) {
                         $kept->setPasswordToUser($cleared);
                     }
 
                     echo "Deleted duplicate email address for User($cleared->id), keeping $kept->id\n";
-
 
                     // CHECK OF DE OUDERS WEL NOG STEEDS ACTIEF ZIJN => ANDERS GEEN MAIL STUREN
                     if (isset($ouder1) && !$ouder1->isStillActive() && isset($ouder2) && !$ouder2->isStillActive()) {
@@ -186,12 +182,11 @@ class RemoveDuplicates1544289883 extends Migration {
                     User::createMagicTokensFor([$kept]);
                     $mail = new Mail('BELANGRIJK: Dubbel e-mailadres niet langer toegestaan', 'user-duplicate-email', array('user' => $kept, 'cleared' => $cleared));
                     $mail->addTo(
-                        $kept->mail, 
+                        $kept->mail,
                         array(),
-                        $kept->firstname.' '.$kept->lastname
+                        $kept->firstname . ' ' . $kept->lastname
                     );
                     $mail->send();
-                    
 
                 } else {
                     $linking[strtolower($user->mail)] = $user;
@@ -220,7 +215,8 @@ class RemoveDuplicates1544289883 extends Migration {
         return true;
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

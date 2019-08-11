@@ -1,10 +1,13 @@
 <?php
-namespace Pirate\Classes\Leden;
-use Pirate\Classes\Migrations\Migration;
+namespace Pirate\Sails\Leden\Migrations;
 
-class RemoveLedenAlreadyLeiding1533988903 extends Migration {
+use Pirate\Sails\Migrations\Classes\Migration;
 
-    static function upgrade(): bool {
+class RemoveLedenAlreadyLeiding1533988903 extends Migration
+{
+
+    public static function upgrade(): bool
+    {
         $query = "DELETE FROM inschrijvingen WHERE tak = ''";
         if (!self::getDb()->query($query)) {
             throw new \Exception(self::getDb()->error);
@@ -13,7 +16,8 @@ class RemoveLedenAlreadyLeiding1533988903 extends Migration {
         return true;
     }
 
-    static function downgrade(): bool {
+    public static function downgrade(): bool
+    {
         throw new \Exception("Migration downgrade is not implemented");
     }
 

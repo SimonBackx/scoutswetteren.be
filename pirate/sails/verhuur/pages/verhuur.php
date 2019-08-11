@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Sail\Verhuur\Pages;
+namespace Pirate\Sails\Verhuur\Pages;
 
-use Pirate\Block\Block;
-use Pirate\Classes\Environment\Localization;
-use Pirate\Model\Files\Album;
-use Pirate\Model\Files\Image;
-use Pirate\Model\Verhuur\Reservatie;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Block;
+use Pirate\Sails\Environment\Classes\Localization;
+use Pirate\Sails\Files\Models\Album;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Sails\Verhuur\Models\Reservatie;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Verhuur extends Page
 {

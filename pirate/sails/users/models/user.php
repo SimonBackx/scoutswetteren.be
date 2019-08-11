@@ -1,14 +1,14 @@
 <?php
-namespace Pirate\Model\Users;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
-use Pirate\Mail\Mail;
-use Pirate\Model\Settings\Setting;
-use Pirate\Classes\Sentry\Sentry;
+namespace Pirate\Sails\Users\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Mail;
+use Pirate\Sails\Settings\Models\Setting;
+use Pirate\Sails\Sentry\Classes\Sentry;
 
 // Should remove these dependencies:
-use Pirate\Model\Leden\Ouder;
-use Pirate\Model\Leiding\Leiding;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
 
 class User extends Model {
     public $id;

@@ -1,10 +1,10 @@
 <?php
-namespace Pirate\Sail\Homepage\Pages;
+namespace Pirate\Sails\Homepage\Pages;
 
-use Pirate\Block\Block;
-use Pirate\Model\Sponsors\Sponsor;
-use Pirate\Page\Page;
-use Pirate\Template\Template;
+use Pirate\Wheel\Block;
+use Pirate\Sails\Sponsors\Models\Sponsor;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 class Sponsors extends Page
 {

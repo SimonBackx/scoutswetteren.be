@@ -1,11 +1,11 @@
 <?php
-namespace Pirate\Model\Verhuur;
+namespace Pirate\Sails\Verhuur\Models;
 
-use Pirate\Mail\Mail;
-use Pirate\Model\Leden\Adres;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
+use Pirate\Wheel\Mail;
+use Pirate\Sails\Leden\Models\Adres;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
 
 class Reservatie extends Model
 {

@@ -1,13 +1,13 @@
 <?php
-namespace Pirate\Model\Webshop;
-use Pirate\Model\Model;
-use Pirate\Model\Validating\Validator;
-use Pirate\Model\Users\User;
+namespace Pirate\Sails\Webshop\Models;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Sails\Users\Models\User;
 
 
-use Pirate\Classes\Validating\ValidationError;
-use Pirate\Classes\Validating\ValidationErrors;
-use Pirate\Classes\Validating\ValidationErrorBundle;
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Sails\Validating\Classes\ValidationErrors;
+use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 
 class OrderUser extends Model implements \JsonSerializable {
     public $id;

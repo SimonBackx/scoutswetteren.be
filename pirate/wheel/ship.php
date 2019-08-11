@@ -1,13 +1,12 @@
 <?php
-namespace Pirate;
+namespace Pirate\Wheel;
 
-use Pirate\Classes\Environment\Environment;
-use Pirate\Classes\Sentry\Sentry;
-use Pirate\Database\Database;
-use Pirate\Model\Leiding\Leiding;
-use Pirate\Model\Migrations\Migration;
-use Pirate\Model\Model;
-use Pirate\Template\Template;
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Migrations\Models\Migration;
+use Pirate\Sails\Sentry\Classes\Sentry;
+use Pirate\Wheel\Database;
+use Pirate\Wheel\Template;
 
 class Ship
 {
@@ -24,23 +23,16 @@ class Ship
         date_default_timezone_set('Europe/Brussels');
         setlocale(LC_MONETARY, 'nl_BE.UTF-8', 'nl_BE');
 
+        // Load procedural files (todo: replace them with classes)
         require __DIR__ . '/config.php';
+        require __DIR__ . '/functions.php';
 
         // Loading all builtin stuff
-        require __DIR__ . '/template.php';
-        require __DIR__ . '/database.php';
         require __DIR__ . '/classes.php';
         Classes::setupAutoload();
 
         // Start Sentry error reporting
         Sentry::shared()->setEnvironment((isset($_ENV["DEBUG"]) && $_ENV["DEBUG"]) ? 'development' : 'production');
-
-        require __DIR__ . '/functions.php';
-        require __DIR__ . '/model.php';
-        require __DIR__ . '/mail.php';
-        require __DIR__ . '/dependencies.php';
-        require __DIR__ . '/cronjob.php';
-        require __DIR__ . '/curl.php';
 
         // Loading Sails's services with certain priority level
         Database::init();
@@ -49,11 +41,7 @@ class Ship
         Template::init();
 
         // Load router
-        require __DIR__ . '/router.php';
-        $this->router = new Route\Router();
-
-        // autoloader voor models laden:
-        Model::setupAutoload();
+        $this->router = new Router();
     }
 
     public function sail()
