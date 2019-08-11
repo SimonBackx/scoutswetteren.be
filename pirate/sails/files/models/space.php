@@ -1,15 +1,16 @@
 <?php
 namespace Pirate\Sails\Files\Models;
-use Pirate\Wheel\Model;
 
-class Space {
+class Space
+{
     public $name;
     public $key;
     public $secret;
     public $region;
     public $server;
 
-    function __construct($name, $region, $server, $key, $secret) {
+    public function __construct($name, $region, $server, $key, $secret)
+    {
         $this->name = $name;
         $this->region = $region;
         $this->server = $server;
@@ -18,35 +19,41 @@ class Space {
         $this->secret = $secret;
     }
 
-    static function getDefault() {
+    public static function getDefault()
+    {
         return new Space('scouts', 'ams3', 'digitaloceanspaces.com', 'TAG2ST7BTCVHZT7MT7QM', 'V3tNuv6wAOwAacXd553aD+XjAIMt66gEDmBl228T2is');
     }
 
-    function getURL() {
-        return 'https://'.$this->getHost();
+    public function getURL()
+    {
+        return 'https://' . $this->getHost();
     }
 
-    function getHost() {
-        return $this->name.'.'.$this->region.'.'.$this->server;
+    public function getHost()
+    {
+        return $this->name . '.' . $this->region . '.' . $this->server;
     }
 }
 
-class SpaceResponse {
+class SpaceResponse
+{
     public $success;
     public $http_statuscode;
     public $body;
 
-    function __construct($success = false, $http_statuscode = 0, $body = '') {
+    public function __construct($success = false, $http_statuscode = 0, $body = '')
+    {
         $this->success = $success;
         $this->http_statuscode = $http_statuscode;
         $this->body = $body;
     }
 }
 
-class SpaceRequest {
+class SpaceRequest
+{
     private $method;
     private $headers; // excl host
-    
+
     private $host;
     private $space;
 
@@ -60,7 +67,9 @@ class SpaceRequest {
 
     private $datetime;
 
-    function __construct($method, $space, $path = '/') {
+    // Upload a file to the given path
+    public function __construct($method, $space, $path = '/')
+    {
         $this->space = $space;
         $this->host = $space->getHost();
 
@@ -72,20 +81,22 @@ class SpaceRequest {
         $this->path = $path;
         $this->querystring = '';
         // Todo: remove query string from path
-        // 
-        
+        //
+
         $this->datetime = new \DateTime();
         $this->datetime->setTimezone(new \DateTimeZone("UTC"));
     }
 
     // Stel de headers in, met uitzondering van de Host, Content-Length en Authorization headers
-    function setHeaders($headers) {
+    public function setHeaders($headers)
+    {
         $this->headers = $headers;
 
     }
 
     // Enkel voor put requests!
-    function setFile($path) {
+    public function setFile($path)
+    {
         $this->method = 'PUT';
 
         // Todo: saferty check path to be in uploads
@@ -93,20 +104,22 @@ class SpaceRequest {
         // Misschien hashing van files vervangen door een system command?
         $this->body_file = $path;
         $this->body = null;
-        
+
         // Hash the file
         $this->hashed_body = hash_file('sha256', $this->body_file);
     }
 
-    function setText($text) {
+    public function setText($text)
+    {
         $this->body = $text;
         $this->body_file = null;
-        
-        // hash 
+
+        // hash
         $this->hashed_body = hash('sha256', $this->body);
     }
 
-    static function getMIMETypes() {
+    public static function getMIMETypes()
+    {
         return array(
             'txt' => 'text/plain',
             'htm' => 'text/html',
@@ -163,9 +176,10 @@ class SpaceRequest {
     }
 
     // Return alle headers die verzonden moeten worden met uitzondering van de Authorization header
-    function getHeaders() {
+    public function getHeaders()
+    {
         // Todo: cachen!
-        
+
         $arr = array(
             'Host' => $this->host,
             'x-amz-content-sha256' => $this->getHashedPayload(),
@@ -178,7 +192,7 @@ class SpaceRequest {
 
         if (isset($this->body_file)) {
             $arr['Content-Length'] = filesize($this->body_file);
-            $ext = strtolower(substr(strrchr($this->body_file,'.'),1));
+            $ext = strtolower(substr(strrchr($this->body_file, '.'), 1));
             $types = Self::getMIMETypes();
 
             foreach ($types as $_ext => $mime) {
@@ -204,10 +218,11 @@ class SpaceRequest {
      *  Parts of the canonical request
      */
 
-    function getCanonicalHeaders() {
+    public function getCanonicalHeaders()
+    {
         // The list of request headers and their values, newline separated, lower-cased, and trimmed of whitespace.
         $headers = $this->getHeaders();
-        
+
         $canonicalHeaders = '';
 
         $first = true;
@@ -218,14 +233,14 @@ class SpaceRequest {
                 $first = false;
             }
 
-           $canonicalHeaders .= strtolower($key).':'.trim(str_replace('  ', ' ', $value));
+            $canonicalHeaders .= strtolower($key) . ':' . trim(str_replace('  ', ' ', $value));
         }
 
-
-        return $canonicalHeaders."\n";
+        return $canonicalHeaders . "\n";
     }
 
-    function getSignedHeaders() {
+    public function getSignedHeaders()
+    {
         // The list of header names without their values, sorted alphabetically, lower-cased, and semicolon-separated.
         $headers = $this->getHeaders();
         $signedHeaders = '';
@@ -244,11 +259,13 @@ class SpaceRequest {
         return $signedHeaders;
     }
 
-    function getDate() {
+    public function getDate()
+    {
         return $this->datetime->format('Ymd');
     }
 
-    function getISO8601Date() {
+    public function getISO8601Date()
+    {
         $current = date_default_timezone_get();
         date_default_timezone_set('UTC');
         $v = $this->datetime->format('Ymd\THis\Z');
@@ -256,17 +273,20 @@ class SpaceRequest {
         return $v;
     }
 
-    function getHashedPayload() {
+    public function getHashedPayload()
+    {
         // The SHA256 hash of the request body.
         return $this->hashed_body;
     }
 
-    function getCanonicalURI() {
+    public function getCanonicalURI()
+    {
         // The path component of the request URI.
         return $this->path;
     }
 
-    function getCanonicalQueryString() {
+    public function getCanonicalQueryString()
+    {
         /* Sort the parameter names by character code point in ascending order. For example, a parameter name that begins with the uppercase letter F precedes a parameter name that begins with a lowercase letter b.
 
         URI-encode each parameter name and value according to the following rules:
@@ -281,38 +301,42 @@ class SpaceRequest {
         return $this->querystring;
     }
 
-    function getCanonicalRequest() {
-        $data = $this->method."\n".$this->getCanonicalURI()."\n".$this->getCanonicalQueryString()."\n".$this->getCanonicalHeaders()."\n".$this->getSignedHeaders()."\n".$this->getHashedPayload();
+    public function getCanonicalRequest()
+    {
+        $data = $this->method . "\n" . $this->getCanonicalURI() . "\n" . $this->getCanonicalQueryString() . "\n" . $this->getCanonicalHeaders() . "\n" . $this->getSignedHeaders() . "\n" . $this->getHashedPayload();
         return $data;
     }
 
     /**
      * Authorization
      */
-    function getSignature() {
+    public function getSignature()
+    {
         $stringToSign = "AWS4-HMAC-SHA256" . "\n" . $this->getISO8601Date() . "\n" . $this->getDate() . "/" . $this->space->region . "/s3/aws4_request" . "\n" .
-            hash('sha256', $this->getCanonicalRequest());
+        hash('sha256', $this->getCanonicalRequest());
 
-        $dateKey =              hash_hmac('sha256', $this->getDate(),       "AWS4" . $this->space->secret,  true);
-        $dateRegionKey =        hash_hmac('sha256', $this->space->region,   $dateKey,                       true);
-        $dateRegionServiceKey = hash_hmac('sha256', "s3",                   $dateRegionKey,                 true);
-        $signingKey =           hash_hmac('sha256', "aws4_request",         $dateRegionServiceKey,          true);
+        $dateKey = hash_hmac('sha256', $this->getDate(), "AWS4" . $this->space->secret, true);
+        $dateRegionKey = hash_hmac('sha256', $this->space->region, $dateKey, true);
+        $dateRegionServiceKey = hash_hmac('sha256', "s3", $dateRegionKey, true);
+        $signingKey = hash_hmac('sha256', "aws4_request", $dateRegionServiceKey, true);
 
         return hash_hmac('sha256', $stringToSign, $signingKey, false);
     }
 
-    function getAuthorizationHeader() {
-        return 'AWS4-HMAC-SHA256 Credential='.$this->space->key.'/'.$this->getDate().'/'.$this->space->region.'/s3/aws4_request, SignedHeaders='.$this->getSignedHeaders().', Signature='.$this->getSignature();
+    public function getAuthorizationHeader()
+    {
+        return 'AWS4-HMAC-SHA256 Credential=' . $this->space->key . '/' . $this->getDate() . '/' . $this->space->region . '/s3/aws4_request, SignedHeaders=' . $this->getSignedHeaders() . ', Signature=' . $this->getSignature();
     }
 
-    function send() {
+    public function send()
+    {
 
         $headers = $this->getHeaders();
         $headers['Authorization'] = $this->getAuthorizationHeader();
 
         $curl_headers = array();
         foreach ($headers as $key => $value) {
-            $curl_headers[] = $key.': '.$value;
+            $curl_headers[] = $key . ': ' . $value;
         }
 
         // Remove accept header:
@@ -339,13 +363,12 @@ class SpaceRequest {
             $options[CURLOPT_POSTFIELDS] = $this->body;
         }
 
-
         try {
-            $curl = curl_init($this->space->getURL().$this->path);
+            $curl = curl_init($this->space->getURL() . $this->path);
             curl_setopt_array($curl, $options);
 
             $result = curl_exec($curl);
-            
+
             if ($result === false) {
                 return new SpaceResponse(false, 0, curl_error($curl));
             }
@@ -360,12 +383,10 @@ class SpaceRequest {
 
             curl_close($curl);
             return new SpaceResponse(true, $status, $result);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return new SpaceResponse(false, $status, $e->getMessage());
         }
         return new SpaceResponse(false, $status, '???');
     }
 
 }
-?>

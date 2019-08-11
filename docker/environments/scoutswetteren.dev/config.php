@@ -22,6 +22,13 @@ $config = [
         "country" => 'BE',
     ],
 
+    'space' => [
+        'name' => 'scouts',
+        'region' => 'ams3',
+        'server' => 'digitaloceanspaces.com',
+        // key + secret in private config
+    ],
+
     'router' => [
         'redirects' => [
             'winterfeest' => '/inschrijvingen/1/inschrijven-voor-winterfeest',

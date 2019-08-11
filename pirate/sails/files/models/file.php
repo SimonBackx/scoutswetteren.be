@@ -1,12 +1,16 @@
 <?php
 namespace Pirate\Sails\Files\Models;
-use Pirate\Wheel\Model;
+
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\Model;
+
 //use Pirate\Sails\Files\Models\Space;
 //use Pirate\Sails\Files\Models\SpaceRequest; // todo: if not found -> error file not exists
 //use Pirate\Sails\Files\Models\SpaceResponse; // todo: if not found -> error file not exists
 
-class File extends Model {
+class File extends Model
+{
     public $id;
     public $name;
     public $extension;
@@ -20,19 +24,21 @@ class File extends Model {
 
     // Datum waarop file werd geupload op object storage (= dient voor cronjobs om het origineel te verwijderen te vertragen om foutieve file requests te voorkomen)
     public $object_storage_date = null;
+    public $object_storage_path = null;
     public $should_be_saved_on_server = false;
     public $should_be_saved_in_object_storage = true;
 
     private $new = false;
 
-    static private $restrictedExtensions = array('exe', 'pif', 'application', 'gadget', 'msi', 'jar', 'msc', 'bat', 'cmd', 'vb', 'vbs', 'vbe', 'ps1', 'ps1xml', 'ps2', 'ps2xml', 'psc1', 'psc2', 'msh', 'msh1', 'msh2', 'mshxml', 'msh1xml', 'msh2xml', 'scf', 'lnk', 'inf', 'reg', 'php', 'cgi', 'torrent', 'js', 'app', 'pif', 'vbscript', 'wsf', 'asp', 'cer', 'csr', 'jsp', 'drv', 'sys', 'ade', 'adp', 'htaccess', 'sh');
+    private static $restrictedExtensions = array('exe', 'pif', 'application', 'gadget', 'msi', 'jar', 'msc', 'bat', 'cmd', 'vb', 'vbs', 'vbe', 'ps1', 'ps1xml', 'ps2', 'ps2xml', 'psc1', 'psc2', 'msh', 'msh1', 'msh2', 'mshxml', 'msh1xml', 'msh2xml', 'scf', 'lnk', 'inf', 'reg', 'php', 'cgi', 'torrent', 'js', 'app', 'pif', 'vbscript', 'wsf', 'asp', 'cer', 'csr', 'jsp', 'drv', 'sys', 'ade', 'adp', 'htaccess', 'sh');
 
-    static public $max_size = 20000000; // in bytes
+    public static $max_size = 20000000; // in bytes
 
     // Delay before a file is deleted from the server after object_storage_date when should_be_saved_on_server turns false
-    static public $DELETE_DELAY = 1*60; // Seconds
+    public static $DELETE_DELAY = 1 * 60; // Seconds
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (!isset($row)) {
             $this->new = true;
             return;
@@ -55,21 +61,27 @@ class File extends Model {
             $this->object_storage_date = null;
         }
 
-
         if (isset($row['file_object_storage_host'])) {
             $this->object_storage_host = $row['file_object_storage_host'];
         } else {
             $this->object_storage_host = null;
         }
 
+        if (isset($row['file_object_storage_path'])) {
+            $this->object_storage_path = $row['file_object_storage_path'];
+        } else {
+            $this->object_storage_path = null;
+        }
+
     }
 
-    static function getFile($id) {
+    public static function getFile($id)
+    {
         $id = self::getDb()->escape_string($id);
-        $query = 'SELECT * FROM files WHERE file_id = "'.$id.'"';
+        $query = 'SELECT * FROM files WHERE file_id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 return new File($row);
             }
@@ -78,7 +90,8 @@ class File extends Model {
         return null;
     }
 
-    static function getFilesForAlbum($id) {
+    public static function getFilesForAlbum($id)
+    {
         $id = self::getDb()->escape_string($id);
         $query = "
             SELECT f.* FROM files f
@@ -87,9 +100,9 @@ class File extends Model {
         WHERE image_album = '$id'";
 
         $files = [];
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
-                while($row = $result->fetch_assoc()) {
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
                     $files[] = new File($row);
                 }
             }
@@ -98,19 +111,19 @@ class File extends Model {
         return $files;
     }
 
-
-    static function getLatestSourceFileForAlbum($id) {
+    public static function getLatestSourceFileForAlbum($id)
+    {
         $id = self::getDb()->escape_string($id);
         $query = "
             SELECT f.* FROM files f
                 inner join image_files i_f on i_f.imagefile_file = f.file_id
                 inner join images i on i.image_id = i_f.imagefile_image
-        WHERE image_album = '$id' 
+        WHERE image_album = '$id'
         order by f.file_upload_date desc
         limit 1";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 return new File($row);
             }
@@ -119,7 +132,8 @@ class File extends Model {
         return null;
     }
 
-    static function generateStatistics($files) {
+    public static function generateStatistics($files)
+    {
         $stats = (object) array(
             'count_server' => 0,
 
@@ -164,7 +178,7 @@ class File extends Model {
             if (isset($file->object_storage_host)) {
                 $stats->count_object_storage++;
                 $stats->size_object_storage += $file->size;
-                
+
                 if ($file->should_be_saved_on_server && !$file->saved_on_server) {
                     $stats->count_downloading_from_object_storage++;
                     $stats->size_downloading_from_object_storage += $file->size;
@@ -185,42 +199,44 @@ class File extends Model {
         return $stats;
     }
 
-    static function convertSizeToString($size) {
+    public static function convertSizeToString($size)
+    {
         if ($size < 100) {
-            return $size.' byte';
+            return $size . ' byte';
         }
         $size /= 1000;
         if ($size < 500) {
-            return round($size, 2).' kB';
+            return round($size, 2) . ' kB';
         }
 
         $size /= 1000;
         if ($size < 500) {
-            return round($size, 2).' MB';
+            return round($size, 2) . ' MB';
         }
 
         $size /= 1000;
         if ($size < 500) {
-            return round($size, 2).' GB';
+            return round($size, 2) . ' GB';
         }
 
         $size /= 1000;
         if ($size < 500) {
-            return round($size, 2).' TB';
+            return round($size, 2) . ' TB';
         }
 
         $size /= 1000;
-        return round($size, 2).' PB';
+        return round($size, 2) . ' PB';
     }
 
     // Uploadable
-    static function getFilesNotObjectStorage($limit = 100) {
+    public static function getFilesNotObjectStorage($limit = 100)
+    {
         $limit = intval($limit);
-        $query = 'SELECT * FROM files WHERE file_object_storage_host IS NULL AND file_saved_on_server = 1 AND file_should_be_saved_in_object_storage = 1 order by file_size desc LIMIT '.$limit;
+        $query = 'SELECT * FROM files WHERE file_object_storage_host IS NULL AND file_saved_on_server = 1 AND file_should_be_saved_in_object_storage = 1 order by file_size desc LIMIT ' . $limit;
 
         $files = array();
 
-        if ($result = self::getDb()->query($query)){
+        if ($result = self::getDb()->query($query)) {
             while ($row = $result->fetch_assoc()) {
                 $files[] = new File($row);
             }
@@ -230,12 +246,13 @@ class File extends Model {
     }
 
     // Downloadable
-    static function getFilesNotSavedOnServer($limit = 60) {
+    public static function getFilesNotSavedOnServer($limit = 60)
+    {
         $limit = intval($limit);
-        $query = 'SELECT * FROM files WHERE file_object_storage_host IS NOT NULL AND file_saved_on_server = 0 AND file_should_be_saved_on_server = 1 LIMIT '.$limit;
+        $query = 'SELECT * FROM files WHERE file_object_storage_host IS NOT NULL AND file_saved_on_server = 0 AND file_should_be_saved_on_server = 1 LIMIT ' . $limit;
         $files = array();
 
-        if ($result = self::getDb()->query($query)){
+        if ($result = self::getDb()->query($query)) {
             while ($row = $result->fetch_assoc()) {
                 $files[] = new File($row);
             }
@@ -244,25 +261,26 @@ class File extends Model {
         return $files;
     }
 
-    static function getRemoveableFiles($limit = 200) {
+    public static function getRemoveableFiles($limit = 200)
+    {
         $limit = intval($limit);
         $delay = intval(Self::$DELETE_DELAY);
         $date = (new \DateTime())->format('Y-m-d H:i:s'); // mysql NOW() kan niet gesynchroniseerd zijn met PHP tijd
         $query = "
-            SELECT * 
-            FROM files 
-            WHERE 
-            file_object_storage_host IS NOT NULL 
-            AND file_saved_on_server = 1 
-            AND file_should_be_saved_on_server = 0 
+            SELECT *
+            FROM files
+            WHERE
+            file_object_storage_host IS NOT NULL
+            AND file_saved_on_server = 1
+            AND file_should_be_saved_on_server = 0
             AND file_should_be_saved_in_object_storage = 1
-            AND file_object_storage_date < ('$date' - INTERVAL $delay SECOND) 
+            AND file_object_storage_date < ('$date' - INTERVAL $delay SECOND)
             order by file_size desc
             LIMIT $limit";
 
         $files = array();
 
-        if ($result = self::getDb()->query($query)){
+        if ($result = self::getDb()->query($query)) {
             while ($row = $result->fetch_assoc()) {
                 $files[] = new File($row);
             }
@@ -271,7 +289,8 @@ class File extends Model {
         return $files;
     }
 
-    function updateSavedOnServer() {
+    public function updateSavedOnServer()
+    {
         // Check and return success
         clearstatcache();
         $new = file_exists($this->getPath());
@@ -282,25 +301,40 @@ class File extends Model {
         return true;
     }
 
-    function getPath() {
+    public function getPath()
+    {
         global $FILES_DIRECTORY;
 
-        return $FILES_DIRECTORY.'/'.$this->getKey();
+        return $FILES_DIRECTORY . '/' . $this->getKey();
     }
 
-    function getPublicPath() {
+    public function getPublicPath()
+    {
         if (isset($this->object_storage_host)) {
-            return "https://".$this->object_storage_host."/".$this->getKey();
+            if (!isset($this->object_storage_path)) {
+                // Temporay fallback for migration
+                return "https://" . $this->object_storage_host . "/" . $this->getKey();
+            }
+            return "https://" . $this->object_storage_host . "/" . $this->object_storage_path;
         }
 
-        return "https://".str_replace('www.','files.',$_SERVER['SERVER_NAME'])."/".$this->getKey();
+        return "https://" . str_replace('www.', 'files.', $_SERVER['SERVER_NAME']) . "/" . $this->getKey();
     }
 
-    function getKey() {
-        return $this->location.$this->name;
+    public function getKey()
+    {
+        return $this->location . $this->name;
     }
 
-    function deleteFromServer(&$errors) {
+    /// Provide a path where to store the file in object storage (note: this is the generated one)
+    public function generateObjectStoragePath()
+    {
+        return Environment::getSetting('theme') . '/' . $this->location . $this->name;
+
+    }
+
+    public function deleteFromServer(&$errors)
+    {
         if (unlink(realpath($this->getPath())) === false) {
             $errors[] = 'Deleting file failed.';
             return false;
@@ -317,13 +351,15 @@ class File extends Model {
         return $this->save();
     }
 
-    function deleteFromSpace(&$errors) {
+    public function deleteFromSpace(&$errors)
+    {
         // todo
         $errors[] = 'Not yet implemented.';
         return false;
     }
 
-    function downloadFromSpace(&$errors) {
+    public function downloadFromSpace(&$errors)
+    {
         if (!isset($this->object_storage_host)) {
             $errors[] = 'File has no object_storage_host';
             return false;
@@ -332,33 +368,34 @@ class File extends Model {
         $f = fopen($this->getPublicPath(), 'r');
 
         if ($f === false) {
-            $errors[] = 'Failed to open stream to '.$this->getPublicPath();
+            $errors[] = 'Failed to open stream to ' . $this->getPublicPath();
             return false;
         }
 
         if (file_put_contents($this->getPath(), $f) === false) {
             fclose($f);
-            $errors[] = 'Failed to save file from space '.$this->getPublicPath();
+            $errors[] = 'Failed to save file from space ' . $this->getPublicPath();
             return false;
         }
 
         fclose($f);
-        
+
         $this->saved_on_server = true;
         if ($this->save()) {
-             $album = Album::getAlbumForFile($this->id);
+            $album = Album::getAlbumForFile($this->id);
             if ($album) {
                 $album->updateSourcesAvailable();
             }
             return true;
         }
-        
+
         return false;
     }
 
-    function uploadToSpace(&$errors) {
+    public function uploadToSpace(&$errors)
+    {
         if (!file_exists($this->getPath())) {
-            $errors[] = 'Bestand '.$this->id.' staat niet meer op de server opgeslagen!';
+            $errors[] = 'Bestand ' . $this->id . ' staat niet meer op de server opgeslagen!';
             $this->saved_on_server = false;
             $this->save();
             // todo: album -> update_Sources_available aanroepen (mag eigenlijk niet hierin)
@@ -366,7 +403,8 @@ class File extends Model {
         }
 
         $space = Space::getDefault();
-        $request = new SpaceRequest('PUT', $space, '/'.$this->getKey());
+        $space_location = $this->generateObjectStoragePath();
+        $request = new SpaceRequest('PUT', $space, '/' . $space_location);
         $request->setHeaders(
             array(
                 'x-amz-acl' => 'public-read',
@@ -386,6 +424,7 @@ class File extends Model {
         if ($response->http_statuscode == 200) {
             // Todo: maak aanpassingen aan mysql object!
             $this->object_storage_host = $space->getHost();
+            $this->object_storage_path = $space_location;
             $this->object_storage_date = new \DateTime();
             return $this->save();
         }
@@ -395,7 +434,8 @@ class File extends Model {
         return false;
     }
 
-    static function isFileSelected($form_name) {
+    public static function isFileSelected($form_name)
+    {
         if (!isset($_FILES[$form_name])) {
             return false;
         }
@@ -407,7 +447,8 @@ class File extends Model {
         return true;
     }
 
-    static function getUploaded($form_name, &$ext, &$name, &$size, &$errors, $max_size, $file_types = null, $use_name = null) {
+    public static function getUploaded($form_name, &$ext, &$name, &$size, &$errors, $max_size, $file_types = null, $use_name = null)
+    {
         if (!isset($_FILES[$form_name])) {
             $errors[] = 'Er werd geen bestand gevraagd in het formulier.';
             return false;
@@ -415,11 +456,11 @@ class File extends Model {
 
         $name = $_FILES[$form_name]['name'];
         $name = trim($name);
-        $ext = strtolower(substr(strrchr($name,'.'),1));
+        $ext = strtolower(substr(strrchr($name, '.'), 1));
         $name = strtolower($name);
 
         if (isset($use_name)) {
-            $name = $use_name.'.'.$ext;
+            $name = $use_name . '.' . $ext;
         }
 
         $size = $_FILES[$form_name]['size'];
@@ -431,7 +472,7 @@ class File extends Model {
                 case UPLOAD_ERR_INI_SIZE:
                     $errors[] = 'Het bestand dat je wilt uploaden is te groot en werd geweigerd door de server.';
                     break;
-                
+
                 case UPLOAD_ERR_FORM_SIZE:
                     $errors[] = 'Het bestand dat je wilt uploaden is te groot en werd onderbroken.';
                     break;
@@ -458,7 +499,7 @@ class File extends Model {
 
                 default:
                     $errors[] = 'Onbekende fout.';
-                break;
+                    break;
             }
             return false;
         }
@@ -473,14 +514,14 @@ class File extends Model {
             }
 
             if (!$found) {
-                $errors[] = 'Bestandstype "'.$ext.'" niet toegelaten.';
+                $errors[] = 'Bestandstype "' . $ext . '" niet toegelaten.';
                 return false;
             }
         }
 
         if ($ext == '') {
             $errors[] = 'Je kan geen bestand uploaden zonder extensie.';
-                return false;
+            return false;
         }
 
         if (preg_match('/^[A-z]+$/', $ext) !== 1) {
@@ -494,12 +535,12 @@ class File extends Model {
 
         foreach (self::$restrictedExtensions as $value) {
             if ($value == $ext) {
-                $errors[] = 'Bestandstype "'.$ext.'" niet toegelaten.';
+                $errors[] = 'Bestandstype "' . $ext . '" niet toegelaten.';
                 return false;
             }
         }
 
-        if($size == 0) {
+        if ($size == 0) {
             $errors[] = 'Geen bestand geselecteerd.';
             return false;
         }
@@ -521,7 +562,8 @@ class File extends Model {
 
     // Kan zowel nieuw uploaden als bestaand bestand overschrijven
     // use_name = sla op met deze naam (excl extensie)
-    function upload($form_name, &$errors, $file_types = null, $use_name = null) {
+    public function upload($form_name, &$errors, $file_types = null, $use_name = null)
+    {
         if (!$this->new) {
             $errors[] = 'Kan bestand niet overschrijven.';
             return false;
@@ -548,7 +590,7 @@ class File extends Model {
         if (Leiding::isLoggedIn()) {
             $this->author = Leiding::getUser()->id;
         }
-        
+
         $this->upload_date = $date;
         $this->size = $size;
 
@@ -560,7 +602,7 @@ class File extends Model {
         $num = 1;
         while (file_exists($this->getPath())) {
             $num++;
-            $this->location = $prelocation.'v'.$num.'/';
+            $this->location = $prelocation . 'v' . $num . '/';
         }
 
         // Vanaf nu willen we niet meer stoppen, en gaan we gewoon verder. Tenzij het echt te lang duurt.
@@ -582,9 +624,9 @@ class File extends Model {
 
         $try = 0;
         $failed = true;
-        while($try < 2) {
+        while ($try < 2) {
             $try++;
-            
+
             if (is_dir($dir) || mkdir($dir, 0777, true)) {
                 $failed = false;
                 break;
@@ -593,17 +635,16 @@ class File extends Model {
         umask($old);
 
         if ($failed) {
-            $errors[] = 'Kon mapstructuur niet aanmaken: '.$dir;
+            $errors[] = 'Kon mapstructuur niet aanmaken: ' . $dir;
             error_reporting($error_reporting);
             return false;
         }
-
 
         // Verplaatsen
         if (!move_uploaded_file($_FILES[$form_name]['tmp_name'], $this->getPath())) {
             self::getDb()->rollback();
             self::getDb()->autocommit(true);
-            $errors[] = 'Opslaan mislukt naar '.$this->getPath();
+            $errors[] = 'Opslaan mislukt naar ' . $this->getPath();
             error_reporting($error_reporting);
             return false;
         }
@@ -615,16 +656,17 @@ class File extends Model {
     }
 
     // Maakt een file object aan, maar slaat deze nog niet op in de database
-    static function createFromFile($location, $name, &$errors) {
+    public static function createFromFile($location, $name, &$errors)
+    {
         $file = new File();
 
-        $ext = strtolower(substr(strrchr($name,'.'),1));
+        $ext = strtolower(substr(strrchr($name, '.'), 1));
 
         if ($location != '' && substr($location, -1) != '/') {
             $errors[] = 'Ongeldige bestandslocatie (contacteer webmaster).';
             return false;
         }
-        
+
         $file->name = $name;
         $file->location = $location;
         $file->extension = $ext;
@@ -644,7 +686,8 @@ class File extends Model {
         return $file;
     }
 
-    function save() {
+    public function save()
+    {
         $name = self::getDb()->escape_string($this->name);
         $extension = self::getDb()->escape_string($this->extension);
         $location = self::getDb()->escape_string($this->location);
@@ -661,7 +704,6 @@ class File extends Model {
             $should_be_saved_on_server = 1;
         }
 
-        
         $should_be_saved_in_object_storage = 0;
         if ($this->should_be_saved_in_object_storage) {
             $should_be_saved_in_object_storage = 1;
@@ -670,19 +712,25 @@ class File extends Model {
         if (!isset($this->object_storage_host)) {
             $object_storage_host = 'NULL';
         } else {
-            $object_storage_host = "'".self::getDb()->escape_string($this->object_storage_host)."'";
+            $object_storage_host = "'" . self::getDb()->escape_string($this->object_storage_host) . "'";
+        }
+
+        if (!isset($this->object_storage_path)) {
+            $object_storage_path = 'NULL';
+        } else {
+            $object_storage_path = "'" . self::getDb()->escape_string($this->object_storage_path) . "'";
         }
 
         if (!isset($this->object_storage_date)) {
             $object_storage_date = 'NULL';
         } else {
-            $object_storage_date = "'".self::getDb()->escape_string($this->object_storage_date->format('Y-m-d H:i:s'))."'";
+            $object_storage_date = "'" . self::getDb()->escape_string($this->object_storage_date->format('Y-m-d H:i:s')) . "'";
         }
 
         if (!isset($this->author)) {
             $author = 'NULL';
         } else {
-            $author = "'".self::getDb()->escape_string($this->author)."'";
+            $author = "'" . self::getDb()->escape_string($this->author) . "'";
         }
 
         // Permissions
@@ -690,8 +738,8 @@ class File extends Model {
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
 
-            $query = "UPDATE files 
-                SET 
+            $query = "UPDATE files
+                SET
                  file_name = '$name',
                  file_extension = '$extension',
                  file_location = '$location',
@@ -699,40 +747,43 @@ class File extends Model {
                  file_upload_date = '$upload_date',
                  file_author = $author,
                  file_object_storage_host = $object_storage_host,
+                 file_object_storage_path = $object_storage_path,
                  file_saved_on_server = '$saved_on_server',
                  file_object_storage_date = $object_storage_date,
                  file_should_be_saved_on_server = '$should_be_saved_on_server',
                  file_should_be_saved_in_object_storage = '$should_be_saved_in_object_storage'
-                 where file_id = '$id' 
+                 where file_id = '$id'
             ";
         } else {
-            $query = "INSERT INTO 
-                files 
+            $query = "INSERT INTO
+                files
                 (
-                    `file_name`, 
-                    `file_extension`, 
-                    `file_location`, 
-                    `file_size`, 
-                    `file_upload_date`, 
-                    `file_author`, 
-                    `file_object_storage_host`, 
-                    `file_saved_on_server`, 
-                    `file_object_storage_date`, 
+                    `file_name`,
+                    `file_extension`,
+                    `file_location`,
+                    `file_size`,
+                    `file_upload_date`,
+                    `file_author`,
+                    `file_object_storage_host`,
+                    `file_object_storage_path`,
+                    `file_saved_on_server`,
+                    `file_object_storage_date`,
                     `file_should_be_saved_on_server`,
                     `file_should_be_saved_in_object_storage`
                 )
-                VALUES 
+                VALUES
                 (
-                    '$name', 
-                    '$extension', 
-                    '$location', 
-                    '$size', 
-                    '$upload_date', 
-                    $author, 
-                    $object_storage_host, 
-                    '$saved_on_server', 
-                    $object_storage_date, 
-                    '$should_be_saved_on_server', 
+                    '$name',
+                    '$extension',
+                    '$location',
+                    '$size',
+                    '$upload_date',
+                    $author,
+                    $object_storage_host,
+                    $object_storage_path,
+                    '$saved_on_server',
+                    $object_storage_date,
+                    '$should_be_saved_on_server',
                     '$should_be_saved_in_object_storage'
                 )";
         }
@@ -742,15 +793,16 @@ class File extends Model {
                 $this->id = self::getDb()->insert_id;
             }
             return true;
-        }else {
+        } else {
             echo $query;
-            echo self::getDb()->error."\n";
+            echo self::getDb()->error . "\n";
         }
 
         return false;
     }
 
-    function delete() {
+    public function delete()
+    {
         if (!isset($this->id)) {
             return false;
         }
@@ -761,7 +813,7 @@ class File extends Model {
 
         // Todo errors doorgeven
         $errors = array();
-        
+
         if (!self::getDb()->query($query)) {
             $errors[] = 'Er ging iets mis bij het aanpassen van de database.';
             return false;
@@ -773,11 +825,11 @@ class File extends Model {
             if (unlink(realpath($this->getPath())) === false) {
                 $errors[] = 'De foto is verwijderd uit de database, maar niet volledig uit het bestandssysteem (door een interne fout).';
                 return false;
-           }
+            }
         }
 
         // Todo: verwijderen van object storage
 
-       return true;
+        return true;
     }
 }

@@ -136,10 +136,10 @@ function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
     return $str;
 }
 
-/// GDImage => gd-image  HelloWorld => hello-world TESTDing => test-ding
+/// GDImage => gd-image  HelloWorld => hello-world TESTDing => test-ding GD1 => gd-1 Hallo123World => hallo-123-world
 function camelCaseToDashes($className)
 {
-    return strtolower(preg_replace('/([a-zA-Z])([A-Z])(?=[a-z])/', '$1-$2', $className));
+    return strtolower(preg_replace('/([0-9])([a-zA-Z])/', '$1-$2', preg_replace('/([a-zA-Z])([0-9])/', '$1-$2', preg_replace('/([a-zA-Z])([A-Z])(?=[a-z])/', '$1-$2', $className))));
 }
 
 function obfuscateEmail($email)

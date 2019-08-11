@@ -1,17 +1,19 @@
 <?php
 namespace Pirate\Sails\Verhuur\Admin;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
+
 use Pirate\Sails\Files\Models\File;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
-
-class Materiaal extends Page {
-    function getStatusCode() {
+class Materiaal extends Page
+{
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         // check for upload here
 
         $errors = array();
@@ -22,7 +24,7 @@ class Materiaal extends Page {
         $extension = "pdf";
 
         $form_name = "file";
-        if (File::isFileSelected($form_name )) {
+        if (File::isFileSelected($form_name)) {
             $uploading = true;
 
             $file = new File();
@@ -33,12 +35,11 @@ class Materiaal extends Page {
             }
         }
 
-      
         return Template::render('admin/verhuur/materiaal', array(
             'uploading' => $uploading,
             'errors' => $errors,
             'succes' => $succes,
-            'location' => "https://".str_replace('www.','files.',$_SERVER['SERVER_NAME'])."/".$location.$file_name.'.'.$extension
+            'location' => "https://" . str_replace('www.', 'files.', $_SERVER['SERVER_NAME']) . "/" . $location . $file_name . '.' . $extension,
         ));
     }
 }

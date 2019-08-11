@@ -151,7 +151,7 @@ class Ship
             return false;
         }
 
-        if (!Cronjob\Cronjobs::install()) {
+        if (!Cronjobs::install()) {
             echo "ERR. Cronjob installation failed!\n";
             return false;
         }
