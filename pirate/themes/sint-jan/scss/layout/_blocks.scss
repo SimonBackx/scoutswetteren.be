@@ -15,6 +15,7 @@
 
 main > .block, main > .block.with-menu .block {
     position: relative;
+    overflow-wrap: break-word;
 
     &.white {
         @include block-underlay();
@@ -93,13 +94,18 @@ main > .block {
         align-items: flex-start;
 
         &> nav {
-            min-width: 220px;
-            flex-shrink: 0;
-            padding-right: 10px;
+            flex-basis: 220px;
+            padding-right: 20px;
             padding-top: 35px;
             position: -webkit-sticky;
             position: sticky;
             top: $menu-height*2;
+            flex-grow: 0;
+            flex-shrink: 0;
+
+            @media (max-width: 800px) {
+                display: none;
+            }
 
             &> a {
                 text-transform: uppercase;
@@ -128,12 +134,30 @@ main > .block {
         &> div {
             flex-grow: 1;
 
+            &> h1:first-of-type {
+                font-size: $size-title-bigger;
+            }
+
+            @media (max-width: 800px) {
+                width: 100%;
+            }
+
             img {
                 margin: 20px -30px;
                 width: 100%;
                 width: calc(100% + 60px);
                 display: block;
                 border-radius: $border-radius;
+
+                @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+                    margin: 20px -20px;
+                    width: calc(100% + 40px);
+                }
+            
+                @media (max-width: $page-width-reduce-padding) {
+                    margin: 20px -15px;
+                    width: calc(100% + 30px);
+                }
             }
         }
     }
@@ -146,5 +170,15 @@ main > .block.with-menu .block {
     &.blue {
         padding: 30px;
         margin: 40px -30px;
+
+        @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+            padding: 20px;
+            margin: 30px -20px;
+        }
+    
+        @media (max-width: $page-width-reduce-padding) {
+            padding: 20px 15px;
+            margin: 30px -15px;
+        }
     }
 }
