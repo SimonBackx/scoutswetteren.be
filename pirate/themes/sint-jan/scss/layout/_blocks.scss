@@ -11,35 +11,12 @@
         content: '';
         z-index: -1;
     }
-
-    @media (min-width: $page-width + 160px) {
-        &::before {
-            left: calc(-50vw + #{$page-width/2 + 80px} );
-            right: calc(-50vw + #{$page-width/2 + 80px} );
-        }
-    }
 }
 
-
-main > .block {
-    max-width: $page-width;
-    margin: 40px auto;
-    padding: 0px 40px;
+main > .block, main > .block.with-menu .block {
     position: relative;
 
-    @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
-        padding: 0 20px;
-        margin: 30px auto;
-    }
-
-    @media (max-width: $page-width-reduce-padding) {
-        padding: 0 15px;
-        margin: 30px auto;
-    }
-
     &.white {
-        margin-top: 0px;
-
         @include block-underlay();
 
         &::before {
@@ -63,8 +40,41 @@ main > .block {
             border-radius: $border-radius;
         }
     }
+}
+
+main > .block {
+    max-width: $page-width;
+    margin: 40px auto;
+    padding: 0px 40px;
+    position: relative;
+
+    @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
+        padding: 0 20px;
+        margin: 30px auto;
+    }
+
+    @media (max-width: $page-width-reduce-padding) {
+        padding: 0 15px;
+        margin: 30px auto;
+    }
+
+    &.white {
+        margin-top: 0px;
+        padding-bottom: 0;
+    }
+
+    &.blue {
+       
+    }
 
     &.white, &.blue {
+        @media (min-width: $page-width + 160px) {
+            &::before {
+                left: calc(-50vw + #{$page-width/2 + 80px} );
+                right: calc(-50vw + #{$page-width/2 + 80px} );
+            }
+        }
+
         padding: 40px;
 
         @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
@@ -77,20 +87,19 @@ main > .block {
 
     }
 
-    &.white {
-        padding-bottom: 0;
-    }
-
     &.with-menu {
         display: flex;
         flex-direction: row;
-        align-items: stretch;
+        align-items: flex-start;
 
         &> nav {
-            min-width: 200px;
+            min-width: 220px;
             flex-shrink: 0;
             padding-right: 10px;
-            padding-top: 20px;
+            padding-top: 35px;
+            position: -webkit-sticky;
+            position: sticky;
+            top: $menu-height*2;
 
             &> a {
                 text-transform: uppercase;
@@ -118,6 +127,24 @@ main > .block {
         }
         &> div {
             flex-grow: 1;
+
+            img {
+                margin: 20px -30px;
+                width: 100%;
+                width: calc(100% + 60px);
+                display: block;
+                border-radius: $border-radius;
+            }
         }
+    }
+}
+
+main > .block.with-menu .block {
+    margin: 40px 0;
+    padding: 0px;
+
+    &.blue {
+        padding: 30px;
+        margin: 40px -30px;
     }
 }
