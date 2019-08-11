@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <meta name="robots" content="noindex">
+    {{ head | raw }}
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="block white with-menu">
+            <nav>
+                {% for button in admin.buttons %}
+                    <a href="/admin/{{ button.url }}" class="{% if button.url == admin.selected %}selected{% endif %}">{{ button.name }}</a>
+                {% endfor %}
+                <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank">Drive</a>
+            </nav>
+            <div>
+                {{ content | raw }}            
+            </div>
+        </section>
+    </main>
+{% endblock %}
