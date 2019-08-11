@@ -80,4 +80,44 @@ main > .block {
     &.white {
         padding-bottom: 0;
     }
+
+    &.with-menu {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+
+        &> nav {
+            min-width: 200px;
+            flex-shrink: 0;
+            padding-right: 10px;
+            padding-top: 20px;
+
+            &> a {
+                text-transform: uppercase;
+                font-weight: bold;
+                font-size: $size-button;
+                color: $color-main-dark;
+                border-radius: $border-radius;
+
+                display: block;
+                padding: 12px 15px;
+                border-radius: $border-radius;
+                transition: background-color 0.2s;
+                background-color: transparent;
+                position: relative;
+                left: -15px;
+                
+                &:hover {
+                    background-color: $color-main-shade;
+                }
+
+                &.selected {
+                    color: $color-main;
+                }
+            }
+        }
+        &> div {
+            flex-grow: 1;
+        }
+    }
 }

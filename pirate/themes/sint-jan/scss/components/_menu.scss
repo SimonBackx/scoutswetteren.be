@@ -198,9 +198,11 @@ main {
             padding: 12px 15px;
             color: $color-main-alternative-dark;
             border-radius: $border-radius;
-
+            transition: background-color 0.2s;
+            background-color: transparent;
+            
             &:hover {
-                background: $color-main-alternative-shade;
+                background-color: $color-main-alternative-shade;
             }
         }
         
