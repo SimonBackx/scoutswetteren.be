@@ -1,0 +1,137 @@
+{% set title = 'Kapoenen' %}
+{% set description = '' %}
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="block white with-menu">
+            <nav>
+                {% include 'pages/takken/_menu.html' %}
+            </nav>
+            <div>
+                <a class="h1-prefix" href="mailto:kapoenen@scoutssintjan.be">kapoenen@scoutssintjan.be</a>
+                <h1>Kapoenen</h1>
+                <img src="/sint-jan/images/leiding.jpg">
+                <p>Hier een kort tekstje over wat de kapoenen zijn, wat ze doen etc. We komen elke zondag van 14u tot 17u -of 17u30 voor de oudere groepen- samen en spelen allerlei leuke spelletjes waarbij plezier, vriendschap en veiligheid centraal staan! Soms spelen we eens een avondspel op vrijdag of zaterdag en we gaan ook elk jaar twee keer op weekend en in de zomervakantie (juli) op kamp!</p>
+    
+
+                <article class="block blue">
+                    <h1>De leiding</h1>
+                    <p>Deze enthausiaste leidingsploeg staat elke week in voor de kapoenen</p>
+                    
+                    <div class="splitted blocked">
+                        <div class="part column first">
+                            <a href="/takken/akabe">
+                                <article>
+                                    <h1 class="prefix">Akabe <span>(°{{ takkenverdeling.akabe }})</span></h1>
+                                    <p>Jongens en meisjes van 6-20 jaar die wat meer aandacht en zorg nodig hebben</p>
+                                </article>
+                            </a>
+                            <a href="/takken/kapoenen">
+                                <article>
+                                    <h1 class="prefix">Kapoenen <span>(°{{ takkenverdeling.kapoenen }})</span></h1>
+                                    <p>Jongens en meisjes van 6 tot 8 jaar.</p>
+                                </article>
+                            </a>
+                            <a href="/takken/kabouters">
+                                <article>
+                                    <h1 class="prefix">Kabouters <span>(°{{ takkenverdeling.kabouters }})</span></h1>
+                                    <p>Meisjes van 8 tot 10 jaar.</p>
+                                </article>
+                            </a>
+                            <a href="/takken/welpen">
+                                <article>
+                                    <h1 class="prefix">Welpen <span>(°{{ takkenverdeling.welpen }})</span></h1>
+                                    <p>Jongens van 8 tot 10 jaar.</p>
+                                </article>
+                            </a>
+                            <a href="/takken/jin">
+                                <article>
+                                    <h1 class="prefix">Jin <span>(°{{ takkenverdeling.jin }})</span></h1>
+                                    <p>Jongens en meisjes van 17 of 18 jaar. Ze leven zich uit in hun laatste jaar als lid.</p>
+                                </article>
+                            </a>
+                            
+                        </div>
+
+                        <div class="part column last">
+                            <a href="/takken/jonggidsen">
+                                <article>
+                                    <h1 class="prefix">Jonggidsen <span>(°{{ takkenverdeling.jonggidsen }})</span></h1>
+                                    <p>Meisjes van 11 tot 13 jaar.</p>
+                                </article>
+                            </a>
+                            <a href="/takken/jongverkenners">
+                                <article>
+                                    <h1 class="prefix">Jongverkenners <span>(°{{ takkenverdeling.jongverkenners }})</span></h1>
+                                    <p>Jongens van 11 tot 13 jaar.</p>
+                                </article>
+                            </a>
+                            <a href="/takken/gidsen">
+                                <article>
+                                    <h1 class="prefix">Gidsen <span>(°{{ takkenverdeling.gidsen }})</span></h1>
+                                    <p>Meisjes van 14 tot 16 jaar.</p>
+                                </article>
+                            </a>
+                            <a href="/takken/verkenners">
+                                <article>
+                                    <h1 class="prefix">Verkenners <span>(°{{ takkenverdeling.verkenners }})</span></h1>
+                                    <p>Jongens van 14 tot 16 jaar.</p>
+                                </article>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="block">
+                    <div class="splitted blocked">
+                        <div class="part column first">
+                            <h1>September</h1>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                        </div>
+                        <div class="part column last">
+                            <h1>Oktober</h1>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                            <article>
+                                <h1 class="prefix">Vrijdag <span>12 september van 14:00 tot 17:30</span></h1>
+                                <p>Startdag</p>
+                            </article>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+{% endblock %}
