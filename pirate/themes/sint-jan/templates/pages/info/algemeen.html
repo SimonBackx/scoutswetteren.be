@@ -6,6 +6,29 @@
 {% endblock %}
 
 {% block javascript %}
+    <script type="text/javascript">
+        
+        var map;
+        var initMap = function() {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: 51.018150, lng: 3.856562},
+              mapTypeControl: false,
+              scrollwheel: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              zoom: 13
+            });
+            var marker_scouts = new google.maps.Marker({
+                position: {lat: 51.018150, lng: 3.856562},
+                map: map,
+                icon: '{{ http }}/sint-jan/icons/blue/pin.svg',
+                title: 'Groenstraat 33, Wetteren'
+            });
+        }
+        
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
 {% endblock %}
 
 {% block main %}
@@ -98,9 +121,9 @@
 
                 <article class="block blue">
                     <h1>Locatie</h1>
-                    <p>Todo: kaart</p>
+                    <div id="map" class="map"></div>
                     <p>Onze terreinen bevinden zich middenin de driehoek Wetteren Ten Ede-Overschelde-Laarne in de Groenstraat, een straat die zijn naam niet gestolen heeft:  onze scouts wordt namelijk volledig omgeven door speelbossen en velden. Het is er heel rustig en op zondag geldt er bovendien eenrichtingsverkeer, om de situatie er nog veiliger te maken.</p>
-                    <p>Onze lokalen worden ook wel ‘De Leeuwerik’ genoemd en behoren volgens Scouts & Gidsen Vlaanderen tot één van de 10 scoutslokalen waarin je zeker eens moet slapen: https://www.scoutsengidsenvlaanderen.be/lokalen/10-scoutslokalen-waarin-je-zeker-eens-moet-slapen.</p>
+                    <p>Onze lokalen worden ook wel ‘De Leeuwerik’ genoemd en <a href="https://www.scoutsengidsenvlaanderen.be/lokalen/10-scoutslokalen-waarin-je-zeker-eens-moet-slapen" class="link" target="_blank">behoren volgens Scouts & Gidsen Vlaanderen tot één van de 10 scoutslokalen waarin je zeker eens moet slapen</a>.</p>
                     <p>In 2012 werd fase 1 van de bouw van de nieuwe lokalen afgerond: ons achthoekig lokaal werd volledig heropgebouwd met alle nodige voorzieningen, zoals een kraaknette keuken in inox en een onderhoudsvriendelijk sanitair! Twee jaar geleden werd ten slotte fase 2 afgerond: onze containerlokalen werden vervangen door een volledig nieuw en afgewerkt geheel, met alles erop en eraan!</p>
                     <p>Dit alles was natuurlijk niet mogelijk zonder de steun van de VZW en ons beruchte bouwteam, een team dat er jarenlang alles aan gedaan heeft om ervoor te zorgen dat wij vandaag kunnen genieten van propere en vooral veilige lokalen! Veiligheid is namelijk iets waar webij Sint-Jan zeker op willen hameren: onze lokalen zijn volledig uitgerust met brandblussers, branddekens, rookmelders en nooddeuren, maar ook met een brand- en inbraakalarm!</p>
                 </article>
