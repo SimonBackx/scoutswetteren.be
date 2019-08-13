@@ -8,6 +8,15 @@ a.go {
     display: inline-block;
 }
 
+a > article {
+    opacity: 1;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.5;
+    }
+}
+
 button.more {
     @include main-gradient;
     border-radius: $border-radius;

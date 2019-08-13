@@ -47,6 +47,12 @@ h1:first-of-type {
             width: 22px;
         }
     }
+
+    &.prefix {
+        &::before {
+            display: none;
+        }
+    }
 }
 
 .h1-prefix {
@@ -103,6 +109,25 @@ h1:first-of-type {
     @media (max-width: 600px), (max-height: 450px)  {
         font-size: $size-smartphone-prefix;
         margin: 2px 0;
+    }
+
+    & + p {
+        margin-top: 0;
+    }
+
+    &> span {
+        font-weight: normal;
+    }
+}
+
+a .prefix {
+    &::after {
+        content: '';
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background: url('../'+$theme+'/icons/main/arrow-right.svg') no-repeat center center;
+        margin-left: 5px;
     }
 }
 

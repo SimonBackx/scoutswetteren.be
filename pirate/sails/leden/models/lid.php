@@ -6,8 +6,8 @@ use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Leden\Models\Steekkaart;
-use Pirate\Wheel\Model;
 use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Model;
 
 class Lid extends Model
 {
@@ -384,8 +384,10 @@ class Lid extends Model
         return $this->steekkaart->isIngevuld();
     }
 
+    
+
     // Mapping from birth year to tak name
-    public static function getTakkenVerdeling($scoutsjaar, $gender, $allow_limits = false)
+    public static function getTakkenVerdeling($scoutsjaar, $gender = null, $allow_limits = false)
     {
         $takken = Environment::getSetting('scouts.takken');
 

@@ -1,8 +1,8 @@
 <?php
 namespace Pirate\Sails\SintJan\Pages\Info;
 
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Inschrijving;
-use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 
@@ -20,23 +20,16 @@ class Algemeen extends Page
     public function getContent()
     {
         $scoutsjaar = Inschrijving::getScoutsjaar();
-        $takkenverdeling = Lid::getTakkenVerdeling($scoutsjaar, 'M');
-        $jaar_verdeling = array();
-        foreach ($takkenverdeling as $jaar => $tak) {
-            if (!isset($jaar_verdeling[$tak])) {
-                $jaar_verdeling[$tak] = array();
-            }
-            $jaar_verdeling[$tak][] = $jaar;
-        }
+        $takken = Environment::getSetting('scouts.takken');
 
         $verdeling_string = array();
-        foreach ($jaar_verdeling as $tak => $jaren) {
-            $min = min($jaren);
-            $max = max($jaren);
+        foreach ($takken as $taknaam => $tak) {
+            $min = $scoutsjaar - $tak['age_end'];
+            $max = $scoutsjaar - $tak['age_start'];
             if ($min == $max) {
-                $verdeling_string[$tak] = $min;
+                $verdeling_string[$taknaam] = $min;
             } else {
-                $verdeling_string[$tak] = $min . ' - ' . $max;
+                $verdeling_string[$taknaam] = $min . ' - ' . $max;
             }
         }
 

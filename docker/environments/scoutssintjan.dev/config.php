@@ -50,6 +50,17 @@ $config = [
         'inschrijvings_halfjaar_maand' => 3,
 
         'takken' => [
+            "akabe" => [
+                /// Age is expressed as in the age everyone is at the end of december.
+                'age_start' => 6,
+                'age_end' => 20,
+                'gender' => null, // M / V
+                'lidgeld' => 40,
+                'lidgeld_halfjaar' => 20,
+                'auto_assign' => false,
+                'require_mobile' => false,
+            ],
+
             "kapoenen" => [
                 /// Age is expressed as in the age everyone is at the end of december.
                 'age_start' => 6,
@@ -60,40 +71,77 @@ $config = [
                 'auto_assign' => true,
                 'require_mobile' => false,
             ],
-            "wouters" => [
+
+            "kabouters" => [
                 /// Age is expressed as in the age everyone is at the end of december.
                 'age_start' => 8,
                 'age_end' => 10,
-                'gender' => null, // M / V
+                'gender' => "V", // M / V
                 'lidgeld' => 40,
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => false,
             ],
-            "jonggivers" => [
+
+            "welpen" => [
+                /// Age is expressed as in the age everyone is at the end of december.
+                'age_start' => 8,
+                'age_end' => 10,
+                'gender' => "M", // M / V
+                'lidgeld' => 40,
+                'lidgeld_halfjaar' => 20,
+                'auto_assign' => true,
+                'require_mobile' => false,
+            ],
+
+            "jonggidsen" => [
                 /// Age is expressed as in the age everyone is at the end of december.
                 'age_start' => 11,
                 'age_end' => 13,
-                'gender' => null, // M / V
+                'gender' => 'V', // M / V
                 'lidgeld' => 40,
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => false,
             ],
-            "givers" => [
+
+            "jongverkenners" => [
+                /// Age is expressed as in the age everyone is at the end of december.
+                'age_start' => 11,
+                'age_end' => 13,
+                'gender' => 'M', // M / V
+                'lidgeld' => 40,
+                'lidgeld_halfjaar' => 20,
+                'auto_assign' => true,
+                'require_mobile' => false,
+            ],
+
+            "gidsen" => [
                 /// Age is expressed as in the age everyone is at the end of december.
                 'age_start' => 14,
                 'age_end' => 16,
-                'gender' => null,
+                'gender' => 'V',
                 'lidgeld' => 40,
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => true,
             ],
+
+            "verkenners" => [
+                /// Age is expressed as in the age everyone is at the end of december.
+                'age_start' => 14,
+                'age_end' => 16,
+                'gender' => 'M',
+                'lidgeld' => 40,
+                'lidgeld_halfjaar' => 20,
+                'auto_assign' => true,
+                'require_mobile' => true,
+            ],
+
             "jin" => [
                 /// Age is expressed as in the age everyone is at the end of december.
                 'age_start' => 17,
-                'age_end' => 18, // Special case, should be 17
+                'age_end' => 17, // Special case, should be 17
                 'gender' => null,
                 'lidgeld' => 40,
                 'lidgeld_halfjaar' => 20,
