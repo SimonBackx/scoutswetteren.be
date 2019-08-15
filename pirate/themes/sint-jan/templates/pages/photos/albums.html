@@ -11,18 +11,21 @@
 {% use "pages/photos/partials/albums.html" %}
 
 {% block main %}
-    <main class="keep-padding">
-        <nav class="buttons">
-            <a href="/fotos/" class="{% if tak is null %}selected {% endif %}button">Alles</a>
+    <main>
+        <section class="block white with-menu">
+            <nav>
+                <a href="/fotos/" class="{% if tak is null %}selected{% endif %}">Alles</a>
+                
+                {% for group in groups %}
+                    <a href="/fotos/{{group}}" class="{% if tak == group %}selected {% endif %}">{{group|capitalize}}</a>
+                {% endfor %}
+            </nav>
+            <div>
+                    <h1>{{ (tak ?? "Alles") |capitalize }}</h1>
 
-            {% for group in groups %}
-                <a href="/fotos/{{group}}" class="{% if tak == group %}selected {% endif %}button">{{group|capitalize}}</a>
-            {% endfor %}
-
-        </nav>
-        <section class="block withButtons">
-            <div class="albums">
-                {{ block('albums') }}
+                <div class="albums">
+                    {{ block('albums') }}
+                </div>
             </div>
         </section>
     </main>

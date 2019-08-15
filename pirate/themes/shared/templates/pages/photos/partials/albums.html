@@ -1,0 +1,41 @@
+{% block head %}
+    <style type="text/css">
+        {% for data in albums %}
+            {% for album in data %}
+                #album_{{album.id}} {
+                    background-image: url("{{ album.cover.getBestfit(384, 384).file.getPublicPath() }}");
+                }
+            {% endfor %}
+        {% endfor %}
+
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+             {% for data in albums %}
+                {% for album in data %}
+                    #album_{{album.id}} {
+                        background-image: url("{{ album.cover.getBestfit(768, 768).file.getPublicPath() }}");
+                    }
+                {% endfor %}
+            {% endfor %}
+        }
+    </style>
+{% endblock %}
+
+{% block albums %}
+    {% for y, data in albums %}
+        <h1>{{ y }} - {{ y+1 }}</h1>
+        <div>
+            {% for album in data %}
+                <a href="{{ album.getUrl }}"><figure class="album">
+                    <div class="image" id="album_{{album.id}}"></div>
+                    <figcaption>
+                        <h2>{{ album.formatted_date }}{% if tak != album.group %}<span>•</span> {{ album.group | capitalize}}{% endif %}</h2>
+                        <h1>{{ album.name }}</h1>
+                    </figcaption>
+                </figure></a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Jammer! We hebben nog geen albums toegevoegd in deze categorie.</p>
+    {% endfor %}
+    <div class="clear"></div>
+{% endblock %}

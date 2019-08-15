@@ -1,10 +1,13 @@
 <?php
 namespace Pirate\Sails\Maandplanning\Models;
-use Pirate\Wheel\Model;
+
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Sails\Webshop\Models\OrderSheet;
+use Pirate\Wheel\Model;
 
-class Event extends Model {
+class Event extends Model
+{
     public $name;
     public $id;
     public $startdate;
@@ -15,7 +18,7 @@ class Event extends Model {
     public $group_order;
     public $in_past = false;
 
-    public $order_sheet_id; 
+    public $order_sheet_id;
 
     /// Only filled if requesting by id$
     public $order_sheet; /// object
@@ -23,17 +26,40 @@ class Event extends Model {
     static $groups = array('Kapoenen', 'Wouters', 'Jonggivers', 'Givers', 'Jin', 'Leiding', 'Oudercomité', 'Alle takken', 'Familie en vrienden', '(Jong)givers');
     static $defaultLocation = 'Scoutsterrein';
 
-    static private $defaultEndHour = array(
+    private static $defaultEndHour = array(
         '' => '17:00',
         'kapoenen' => '17:00',
         'wouters' => '17:00',
         'jonggivers' => '17:30',
         'givers' => '17:30',
-        'jin' => '17:30'
+        'jin' => '17:30',
     );
 
-    function __construct($row = array()) {
-        if (count($row) == 0){
+    public static function getGroups()
+    {
+        $groups = [];
+        foreach (Environment::getSetting('scouts.takken') as $tak => $data) {
+            $groups[] = ucfirst($tak);
+        }
+        $groups[] = 'Leiding';
+        $groups[] = 'Oudercomité';
+
+        if (Environment::getSetting('theme') == 'sint-jan') {
+            $groups[] = 'VZW';
+        }
+
+        $groups[] = 'Alle takken';
+        $groups[] = 'Familie en vrienden';
+
+        if (Environment::getSetting('theme') == 'prins-boudewijn') {
+            $groups[] = '(Jong)givers';
+        }
+        return $groups;
+    }
+
+    public function __construct($row = array())
+    {
+        if (count($row) == 0) {
             return;
         }
 
@@ -52,12 +78,15 @@ class Event extends Model {
             $this->order_sheet = new OrderSheet($row);
         }
 
-        if (isset($row['in_past']))
+        if (isset($row['in_past'])) {
             $this->in_past = $row['in_past'];
+        }
+
     }
 
     // Maximaal 30 events! Rest wordt weg geknipt
-    static function getEvents($startdate, $enddate) {
+    public static function getEvents($startdate, $enddate)
+    {
         $startdate = self::getDb()->escape_string($startdate);
         $enddate = self::getDb()->escape_string($enddate);
 
@@ -65,11 +94,11 @@ class Event extends Model {
         $query = 'SELECT e.*, o.*, b.*, case when startdate < CURDATE() then 1 else 0 end as in_past FROM events e
         left join order_sheets o on e.order_sheet_id = o.sheet_id
         left join bank_accounts b on b.account_id = o.sheet_bank_account
-        
-        WHERE (startdate >= "'.$startdate.'" AND startdate < "'.$enddate.'") OR (enddate >= "'.$startdate.'" AND enddate < "'.$enddate.'") OR (startdate <= "'.$startdate.'" AND enddate >= "'.$enddate.'") ORDER BY startdate, group_order LIMIT 30';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        WHERE (startdate >= "' . $startdate . '" AND startdate < "' . $enddate . '") OR (enddate >= "' . $startdate . '" AND enddate < "' . $enddate . '") OR (startdate <= "' . $startdate . '" AND enddate >= "' . $enddate . '") ORDER BY startdate, group_order LIMIT 30';
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $events[] = new Event($row);
                 }
@@ -79,15 +108,16 @@ class Event extends Model {
     }
 
     // Maximaal 30 events! Rest wordt weg geknipt
-    static function getEvent($id) {
+    public static function getEvent($id)
+    {
         $id = self::getDb()->escape_string($id);
-        $query = 'SELECT e.*, o.*, b.* FROM events e 
+        $query = 'SELECT e.*, o.*, b.* FROM events e
         left join order_sheets o on e.order_sheet_id = o.sheet_id
         left join bank_accounts b on b.account_id = o.sheet_bank_account
-        WHERE id = "'.$id.'"';
+        WHERE id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 return new Event($row);
             }
@@ -96,17 +126,18 @@ class Event extends Model {
         return null;
     }
 
-    static function searchEvents($needle) {
+    public static function searchEvents($needle)
+    {
         $needle = self::getDb()->escape_string($needle);
-        
+
         $events = array();
         $query = 'SELECT e.*, o.*, b.*, case when startdate < CURDATE() then 1 else 0 end as in_past FROM events e
         left join order_sheets o on e.order_sheet_id = o.sheet_id
         left join bank_accounts b on b.account_id = o.sheet_bank_account
-        WHERE `name` like "%'.$needle.'%" OR `group` like "%'.$needle.'%" ORDER BY in_past, startdate, group_order LIMIT 30';
-        
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        WHERE `name` like "%' . $needle . '%" OR `group` like "%' . $needle . '%" ORDER BY in_past, startdate, group_order LIMIT 30';
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $events[] = new Event($row);
                 }
@@ -115,17 +146,18 @@ class Event extends Model {
         return $events;
     }
 
-    static function getEventsForTak($tak) {
+    public static function getEventsForTak($tak)
+    {
         $tak = self::getDb()->escape_string($tak);
 
         $events = array();
         $query = 'SELECT e.*, o.*, b.* FROM events e
         left join order_sheets o on e.order_sheet_id = o.sheet_id
         left join bank_accounts b on b.account_id = o.sheet_bank_account
-        WHERE startdate >= CURDATE() AND (`group` = "'.ucfirst($tak).'" OR `group` = "Familie en vrienden" OR `group` = "Alle takken" OR `group` = "(Jong)givers") ORDER BY startdate LIMIT 30';
+        WHERE startdate >= CURDATE() AND (`group` = "' . ucfirst($tak) . '" OR `group` = "Familie en vrienden" OR `group` = "Alle takken" OR `group` = "(Jong)givers") ORDER BY startdate LIMIT 30';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $events[] = new Event($row);
                 }
@@ -134,7 +166,8 @@ class Event extends Model {
         return $events;
     }
 
-    static function getDefaultEndHour() {
+    public static function getDefaultEndHour()
+    {
         if (Leiding::isLoggedIn()) {
             $user = Leiding::getUser();
             if (!empty($user->tak) && isset(self::$defaultEndHour[$user->tak])) {
@@ -144,11 +177,13 @@ class Event extends Model {
         return self::$defaultEndHour[''];
     }
 
-    static function getDefaultStartHour() {
+    public static function getDefaultStartHour()
+    {
         return '14:00';
     }
 
-    function setProperties(&$data) {
+    public function setProperties(&$data)
+    {
         $errors = array();
 
         if (strlen($data['name']) > 2) {
@@ -159,7 +194,7 @@ class Event extends Model {
         }
 
         // Startdatum
-        $startdate = \DateTime::createFromFormat('d-m-Y H:i', $data['startdate'].' '.$data['starttime']);
+        $startdate = \DateTime::createFromFormat('d-m-Y H:i', $data['startdate'] . ' ' . $data['starttime']);
         if ($startdate !== false) {
             $this->startdate = clone $startdate;
             $data['startdate'] = $startdate->format('d-m-Y');
@@ -176,7 +211,7 @@ class Event extends Model {
         }
 
         // Enddate
-        $enddate = \DateTime::createFromFormat('d-m-Y H:i', $data['enddate'].' '.$data['endtime']);
+        $enddate = \DateTime::createFromFormat('d-m-Y H:i', $data['enddate'] . ' ' . $data['endtime']);
         if ($enddate !== false) {
             $this->enddate = clone $enddate;
             $data['enddate'] = $enddate->format('d-m-Y');
@@ -197,7 +232,7 @@ class Event extends Model {
             $data['location'] = '';
         } else {
             if (strlen($data['location']) < 4) {
-                $errors[] = 'Ongeldige locatie. Laat leeg voor '.strtolower(self::$defaultLocation).'.';
+                $errors[] = 'Ongeldige locatie. Laat leeg voor ' . strtolower(self::$defaultLocation) . '.';
             } else {
                 $this->location = ucfirst($data['location']);
                 $data['location'] = $this->location;
@@ -210,7 +245,7 @@ class Event extends Model {
                 $data['endlocation'] = '';
             } else {
                 if (strlen($data['endlocation']) < 4) {
-                    $errors[] = 'Ongeldige eindlocatie. Laat leeg voor '.strtolower(self::$defaultLocation).'.';
+                    $errors[] = 'Ongeldige eindlocatie. Laat leeg voor ' . strtolower(self::$defaultLocation) . '.';
                 } else {
                     $this->endlocation = ucfirst($data['endlocation']);
                     $data['endlocation'] = $this->endlocation;
@@ -221,15 +256,15 @@ class Event extends Model {
         $found = false;
         $order = 0;
 
-        for ($i=0; $i < count(self::$groups); $i++) { 
-            $group = self::$groups[$i];
+        for ($i = 0; $i < count(self::getGroups()); $i++) {
+            $group = self::getGroups()[$i];
             if ($group == $data['group']) {
                 $found = true;
                 $order = $i;
                 break;
             }
         }
-        
+
         if (!$found) {
             $errors[] = 'Ongeldig doelpubliek';
         } else {
@@ -250,14 +285,14 @@ class Event extends Model {
                 } else {
                     $this->order_sheet->name = "Bestellingen voor $this->name";
                 }
-                
+
                 if (isset($this->startdate)) {
-                    $this->order_sheet->subtitle = datetimeToDateString($this->startdate) . " om ".$this->startdate->format('H:i');
+                    $this->order_sheet->subtitle = datetimeToDateString($this->startdate) . " om " . $this->startdate->format('H:i');
                 }
             } catch (\Exception $ex) {
                 $errors[] = $ex->getMessage();
             }
-            
+
         } else {
             if (isset($this->order_sheet) && count($errors) == 0) {
                 if (!$this->order_sheet->delete()) {
@@ -268,21 +303,21 @@ class Event extends Model {
             }
         }
 
-
         return $errors;
     }
 
-    function save() {
+    public function save()
+    {
         if (is_null($this->location)) {
             $location = "NULL";
         } else {
-            $location = "'".self::getDb()->escape_string($this->location)."'";
+            $location = "'" . self::getDb()->escape_string($this->location) . "'";
         }
 
         if (is_null($this->endlocation)) {
             $endlocation = "NULL";
         } else {
-            $endlocation = "'".self::getDb()->escape_string($this->endlocation)."'";
+            $endlocation = "'" . self::getDb()->escape_string($this->endlocation) . "'";
         }
 
         if (is_null($this->order_sheet)) {
@@ -291,7 +326,7 @@ class Event extends Model {
             if (!$this->order_sheet->save()) {
                 return false;
             }
-            $order_sheet = "'".self::getDb()->escape_string($this->order_sheet->id)."'";
+            $order_sheet = "'" . self::getDb()->escape_string($this->order_sheet->id) . "'";
         }
 
         $name = self::getDb()->escape_string($this->name);
@@ -304,13 +339,13 @@ class Event extends Model {
         $leiding_id = self::getDb()->escape_string(Leiding::getUser()->id);
 
         if (empty($this->id)) {
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 events (`name`,  `startdate`, `enddate`, `location`, `endlocation`, `group`, `group_order`, `leiding_id`, `order_sheet_id`)
                 VALUES ('$name', '$startdate', '$enddate', $location, $endlocation, '$group', '$group_order', '$leiding_id', $order_sheet)";
         } else {
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE events 
-                SET 
+            $query = "UPDATE events
+                SET
                  `name` = '$name',
                  `startdate` = '$startdate',
                  `enddate` = '$enddate',
@@ -319,7 +354,7 @@ class Event extends Model {
                  `group` = '$group',
                  `group_order` = '$group_order',
                  `order_sheet_id` = $order_sheet
-                 where id = '$id' 
+                 where id = '$id'
             ";
         }
 
@@ -334,14 +369,15 @@ class Event extends Model {
         //throw new \Exception(self::getDb()->error);
     }
 
-    function delete() {
+    public function delete()
+    {
         if (isset($this->order_sheet)) {
             if (!$this->order_sheet->delete()) {
                 return false;
             }
         }
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 events WHERE id = '$id' ";
 
         return self::getDb()->query($query);

@@ -12,7 +12,7 @@ class PhotosRouter extends Route {
             return true;
         }
         if (count($parts) == 2 && $parts[0] == 'fotos') {
-            if (in_array($parts[1], Album::$groups)) {
+            if (in_array($parts[1], Album::getGroups())) {
                 $this->tak = $parts[1];
                 return true;
             }

@@ -17,6 +17,8 @@
 @import "components/map";
 @import "components/home-calendar";
 @import "components/person";
+@import "../../shared/scss/components/photos";
+@import "components/albums";
 @import "../../shared/scss/components/search";
 
 @import "../../shared/scss/components/buttons-bar";
@@ -25,7 +27,6 @@
 @import "layout/blocks";
 @import "layout/splitted";
 
-@import "../../shared/scss/components/photos";
 @import "../../shared/scss/pages/login";
 
 @import "../../shared/scss/components/list";

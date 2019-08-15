@@ -1,0 +1,154 @@
+.albums {
+    & > h1 {
+        font-size: $size-prefix;
+        color: $color-main;
+        text-transform: uppercase;
+        margin: 0 -1px;
+        margin-top: 30px;
+        position: sticky;
+        position: -webkit-sticky;
+        top: $menu-height;
+        background: white;
+        padding: 5px 1px;
+        text-align: right;
+        z-index: 1;
+
+        &::before {
+            display: none;
+        }
+
+        &:first-child {
+            margin-top: -20px;
+        }
+    }
+
+    &> div {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    figcaption {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        text-align: center;
+        background: rgba($color-main-alternative-dark, 0.8);
+        padding: 20px 15px;
+
+        h1 {
+            font-size: $size-text-bigger;
+            color: white;
+            margin: 0;
+            padding: 0;
+
+            &::before {
+                display: none;
+            }
+        }
+
+        h2 {
+            color: $color-main;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: $size-smartphone-prefix;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 5px;
+
+            span {
+                margin: 0 5px;
+                display: inline-block;
+            }
+        }
+    }
+
+    a {
+        width: 32.5%;
+        margin: 0.8% 0;
+        padding-bottom: 32.5%;
+        position: relative;
+        display: block;
+
+        @media screen and (max-width: 1200px) {
+            figcaption { 
+                h1 {
+                    font-size: 14pt;
+                }
+            }
+        }
+
+        @media screen and (max-width: 1000px) {
+            width: 49%;
+            margin: 1% 0;
+            padding-bottom: 49%;
+
+            figcaption { 
+                padding: 15px 10px;
+
+                h2 {
+                    font-size: 1.5vw;
+                    margin-bottom: 0.5vw;
+                }
+
+                h1 {
+                    font-size: 2vw;
+                }
+            }
+        }
+
+        @media (max-width: 800px) {
+            width: 32.5%;
+            margin: 0.8% 0;
+            padding-bottom: 32.5%;
+        }
+
+        @media screen and (max-width: 600px) {
+            width: 49%;
+            margin: 1% 0;
+            padding-bottom: 49%;
+
+
+            figcaption { 
+                padding: 10px 5px;
+            }
+        }
+    }
+
+    img {
+        display: none;
+    }
+
+    figure {
+        width: 100%;
+        height: 100%;;
+        overflow: hidden;
+        cursor: pointer;
+        border-radius: $border-radius;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+
+        .image {
+            background: $color-main-alternative-shade no-repeat center center;
+            background-size: cover;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        &:hover, &:focus {
+            .image {
+                transform: scale(1.1, 1.1);
+            }
+        }
+    }
+}

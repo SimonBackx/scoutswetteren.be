@@ -42,6 +42,7 @@ class Albums extends Page
 
         return Template::render('pages/photos/albums', array(
             'albums' => $albums_data,
+            'groups' => Album::getGroups(),
             'tak' => $this->tak,
         ));
     }

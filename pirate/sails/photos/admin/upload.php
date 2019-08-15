@@ -56,7 +56,7 @@ class Upload extends Page {
                         'success' => $success,
                         'new' => true,
                         'data' => $data,
-                        'groups' => Album::$groups,
+                        'groups' => Album::getGroups(),
                         'errors' => $errors
                     ));
                 }
@@ -76,7 +76,7 @@ class Upload extends Page {
                 return Template::render('admin/photos/album', array(
                     'new' => true,
                     'data' => $data,
-                    'groups' => Album::$groups
+                    'groups' => Album::getGroups()
                 ));
             }
         }
@@ -86,7 +86,7 @@ class Upload extends Page {
             'max_upload_size' => File::$max_size,
             'images' => $images,
             'data' => $data,
-            'groups' => Album::$groups
+            'groups' => Album::getGroups()
         ));
     }
 }

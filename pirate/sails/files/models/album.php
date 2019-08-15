@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Sails\Files\Models;
 
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Files\Models\File;
 use Pirate\Sails\Files\Models\Image;
 use Pirate\Sails\Files\Models\ImageFile;
@@ -36,6 +37,13 @@ class Album extends Model
     public static $QUEUE_ID = 0;
 
     public static $groups = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'algemeen');
+
+    public static function getGroups()
+    {
+        $groups = array_keys(Environment::getSetting('scouts.takken'));
+        $groups[] = 'algemeen';
+        return $groups;
+    }
 
     public function __construct($row = null)
     {
@@ -440,7 +448,7 @@ class Album extends Model
             $overlap_max = 0;
 
             foreach ($events as $event) {
-                if (strtolower($event->group) != $group && !($group == 'algemeen' && !in_array($event->group, self::$groups))) {
+                if (strtolower($event->group) != $group && !($group == 'algemeen' && !in_array($event->group, self::getGroups()))) {
                     continue;
                 }
 
@@ -543,7 +551,7 @@ class Album extends Model
 
     public static function isValidGroup($group)
     {
-        foreach (self::$groups as $value) {
+        foreach (self::getGroups() as $value) {
             if ($value == $group) {
                 return true;
             }

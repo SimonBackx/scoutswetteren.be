@@ -54,7 +54,7 @@ class Edit extends Page {
             'data' => $data,
             'album' => $this->album,
             'new' => false,
-            'groups' => Album::$groups,
+            'groups' => Album::getGroups(),
             'max_upload_size' => File::$max_size,
             'errors' => $errors,
             'success' => $success,

@@ -165,7 +165,7 @@ class Edit extends Page {
             'new' => $new,
             'event' => $data,
             'errors' => $errors,
-            'groups' => Event::$groups,
+            'groups' => Event::getGroups(),
             'default_locatie' => Event::$defaultLocation,
             'default_start_hour' => Event::getDefaultStartHour(),
             'default_end_hour' => Event::getDefaultEndHour(),
