@@ -5,7 +5,7 @@
 
 form {
     blockquote {
-        border-left: 2px solid $color-main;
+        border-left: $border-width solid $color-main;
         color: $color-main;
         padding: 0 20px;
         width: 800px;
@@ -27,8 +27,8 @@ form {
             left: 0;
             right: 0;
             top: $slider-top;
-            height: 2px;
-            border-radius: 2px;
+            height: $border-width;
+            border-radius: $border-width;
             overflow: hidden;
 
             .progress {
@@ -43,7 +43,7 @@ form {
         .slide {
             .circle {
                 position: absolute;
-                top: $slider-top - ($slider-circle - 2)/2;
+                top: $slider-top - ($slider-circle - $border-width)/2;
                 left: ($slider-box - $slider-circle)/2;
                 right: ($slider-box - $slider-circle)/2;
                 height: $slider-circle;
@@ -87,7 +87,7 @@ form {
     input[type=file] + label {
         cursor: pointer;
         padding: 10px 30px;
-        border: 2px solid $color-main-dark;
+        border: $border-width solid $color-main-dark;
         border-radius: 40px;
         text-transform: uppercase;
         font-size: $size-text-bigger;
@@ -110,7 +110,6 @@ form {
         background: none;
         border: 0;
         overflow: none;
-        border-bottom: 2px solid $gray;
         padding: 10px 0;
         margin: 0 0 20px 0;
         color: $color-main;
@@ -140,6 +139,8 @@ form {
             border-color: $color-error;
             color: $color-error; 
         }
+
+        border-bottom: $border-width solid $gray;
     }
 
     textarea { 
@@ -160,11 +161,13 @@ form {
 
     input[type=checkbox] + label {
         margin: 30px 0;
+        cursor: pointer;
     }
 
     input[type=radio] + label {
         margin: 15px 20px 20px 0;
         display: block;
+        cursor: pointer;
     }
 
     input[type=checkbox] + label:before, 
@@ -176,13 +179,13 @@ form {
       display: inline-block;
       vertical-align: text-bottom;
      
-      width: 22px;
-      height: 22px;
+      width: 26px - $border-width*2;
+      height: 26px - $border-width*2;
      
       margin-right: 20px;
       background-color: white;
-      border: 2px solid $gray;
-      border-radius: 2px;
+      border: $border-width solid $gray;
+      border-radius: $checkbox-border-radius;
     }
 
     input[type=checkbox]:checked + label:before, 
@@ -191,10 +194,9 @@ form {
     input[type=radio]:checked + .checkbox-controllable label.checkbox-label-inside:before
     {
         border: 0;
-        padding: 2px;
-        background: $color-main url(../prins-boudewijn/images/checkbox-checked.png) no-repeat center center;
-        background-image: url(../prins-boudewijn/images/checkbox-checked.svg),
-        linear-gradient(transparent, transparent);
+        padding: $border-width;
+        background: $color-main url('../'+$theme+'/icons/white/checkbox.svg') no-repeat center center;
+        cursor: pointer;
     }
 
 
@@ -262,7 +264,6 @@ form {
 
     .select-box {
         overflow: hidden;
-        border-color: $color-main;
         padding: 0;
 
         select::-ms-expand {

@@ -1,6 +1,7 @@
 $font-family: 'Ubuntu';
 $menu-height: 80px;
 $border-radius: 4px;
+$checkbox-border-radius: $border-radius;
 $border-width: 3px;
 $menu-margin: 60px;
 $theme: 'sint-jan';
@@ -9,21 +10,21 @@ $theme: 'sint-jan';
 $color-main-dark: #3E0007;
 $color-main: #FF3333;
 $color-main-shade: #FFECEC;
-$color-main-gray: rgba($color-main-dark, 0.5);
+$color-main-gray: rgba($color-main-dark, 0.4);
 $color-main-gradient-destination: #FF3370;
 
 
 $color-main-alternative: #0062F4;
 $color-main-alternative-shade: #ECF4FF;
 $color-main-alternative-dark: #001640;
-$color-main-alternative-gray: rgba($color-main-alternative-dark, 0.5);
+$color-main-alternative-gray: rgba($color-main-alternative-dark, 0.4);
 $color-main-alternative-gradient-destination: #1400F4;
 
 $color-background-shade: rgba(black, 0.03);
 
 // Not used outside admin (default to other colors)
 $color-text: $color-main-dark;
-$gray: $color-main-shade;
+$gray: $color-main-gray;
 $color-error: $color-main;
 
 // Should get moved to scoutswetteren

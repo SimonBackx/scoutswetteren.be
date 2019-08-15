@@ -1,12 +1,13 @@
 <?php
 namespace Pirate\Sails\Leden\Pages;
 
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Environment\Classes\Localization;
-use Pirate\Wheel\Database;
 use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Wheel\Database;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 
@@ -57,6 +58,7 @@ class BroerZusToevoegen extends Page
                 'geboortedatum_maand' => $_POST['lid-geboortedatum-maand'],
                 'geboortedatum_jaar' => $_POST['lid-geboortedatum-jaar'],
                 'gsm' => $_POST['lid-gsm'],
+                'akabe' => isset($_POST['lid-akabe']),
                 'geslacht' => '',
             );
 
@@ -105,6 +107,7 @@ class BroerZusToevoegen extends Page
             $jaren[] = $i;
         }
 
+        // Is dit gewoon een aanpassing na het inschrijven? => tak ligt vast
         if (!$new && $this->lid->isIngeschreven()) {
             // geen mogelijkheid om tak te wisselen, die ligt al vast
             foreach ($verdeling['M'] as $key => $value) {
@@ -124,6 +127,7 @@ class BroerZusToevoegen extends Page
             'success' => $success,
             'errors' => $errors,
             'takken' => json_encode($verdeling),
+            'alle_takken' => Environment::getSetting('scouts.takken'),
             'limits_ignored' => Lid::areLimitsIgnored(),
         ));
     }

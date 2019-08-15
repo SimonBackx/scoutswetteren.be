@@ -244,9 +244,10 @@ blockquote {
 
 
 ul.error {
-    padding: 0;
+    padding: 15px 20px;
     margin: 20px 0;
-
+    background: $color-main-shade;
+    border-radius: $border-radius;
 
     li {
         color: $color-error;
@@ -254,8 +255,8 @@ ul.error {
         padding: 0;
         margin: 0;
         font-size: $size-text-bigger;
-        background: url(../prins-boudewijn/images/error.svg) no-repeat left center;
-        padding-left: 30px;
+        background: url('../'+$theme+'/icons/error.svg') no-repeat left center;
+        padding-left: 25px;
     }
 }
 
