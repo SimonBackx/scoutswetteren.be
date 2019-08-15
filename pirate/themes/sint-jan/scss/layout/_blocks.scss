@@ -17,7 +17,7 @@ main > .block, main > .block.with-menu .block {
     position: relative;
     overflow-wrap: break-word;
 
-    &.white {
+    &.white, &:first-child {
         @include block-underlay();
 
         &::before {
@@ -59,7 +59,7 @@ main > .block {
         margin: 30px auto;
     }
 
-    &.white {
+    &.white, &:first-child  {
         margin-top: 0px;
         padding-bottom: 0;
     }
@@ -68,7 +68,7 @@ main > .block {
        
     }
 
-    &.white, &.blue {
+    &.white, &:first-child , &.blue {
         @media (min-width: $page-width + 160px) {
             &::before {
                 left: calc(-50vw + #{$page-width/2 + 80px} );

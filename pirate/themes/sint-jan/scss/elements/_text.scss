@@ -15,6 +15,7 @@
     }
 
     button.more, a.main.fill, button.main.fill,input[type=submit].main.fill {
+        color: white;
         @include main-alternative-gradient($main, $gradient-dest);
     }
 

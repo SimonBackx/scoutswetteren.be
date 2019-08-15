@@ -11,6 +11,10 @@
 @import "elements/buttons";
 @import "../../shared/scss/elements/forms";
 
+@import "../../shared/scss/layout/container";
+@import "layout/blocks";
+@import "layout/splitted";
+
 @import "components/menu";
 @import "components/footer";
 @import "components/blog";
@@ -23,9 +27,7 @@
 
 @import "../../shared/scss/components/buttons-bar";
 
-@import "../../shared/scss/layout/container";
-@import "layout/blocks";
-@import "layout/splitted";
+
 
 @import "../../shared/scss/pages/login";
 

@@ -3,7 +3,7 @@
 main {
     padding-top: $menu-height;
 
-    &> .block.white:first-child {
+    &> .block:first-child {
         padding-top: $menu-height;
 
         @media (max-height: 600px), (max-width: 500px) {
@@ -173,6 +173,14 @@ main {
 
         &:hover {
             opacity: 0.6;
+        }
+    }
+
+    &> button.dropdown {
+        transition: color 0.2s;
+
+        &:hover {
+            color: rgba(white, 0.5);
         }
     }
 }

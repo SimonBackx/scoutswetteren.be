@@ -116,6 +116,10 @@ a.button, button.button, input[type=submit] {
     }
 }
 
+button {
+    cursor: pointer;
+}
+
 a.icon-button, button.icon-button {
     &, &:hover, &:visited, &:active, &:link {
         color: $color-main-dark;
