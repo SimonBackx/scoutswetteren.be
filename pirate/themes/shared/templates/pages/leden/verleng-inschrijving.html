@@ -55,8 +55,8 @@
                         {% endfor %}
 
                         {% for lid in leden %}
-                            <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" name="leden[]" value="{{ lid.id }}"{% if lid.inschrijving.scoutsjaar == scoutsjaar-1 %} checked{% endif %}>
-                            <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }})</label>
+                            <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" name="leden[]" value="{{ lid.id }}"{% if lid.inschrijving.scoutsjaar == scoutsjaar-1 or lid.inschrijving is empty %} checked{% endif %}>
+                            <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }}) <a class="button main noborder" href="/ouders/lid-aanpassen/{{ lid.id }}">Wijzigen</a></label>
                         {% endfor %}
                     
                         <div><a href="/ouders/broer-zus-toevoegen" class="icon-button plus">Broer of zus toevoegen die nog niet in het systeem zit</a></div>
