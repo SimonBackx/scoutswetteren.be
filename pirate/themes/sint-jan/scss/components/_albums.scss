@@ -75,7 +75,7 @@
         @media screen and (max-width: 1200px) {
             figcaption { 
                 h1 {
-                    font-size: 14pt;
+                    font-size: 12pt;
                 }
             }
         }
@@ -112,7 +112,16 @@
 
 
             figcaption { 
-                padding: 10px 5px;
+                padding: 12px 5px;
+
+                h2 {
+                    font-size: 2vw;
+                    margin-bottom: 0.5vw;
+                }
+
+                h1 {
+                    font-size: 2.5vw;
+                }
             }
         }
     }
