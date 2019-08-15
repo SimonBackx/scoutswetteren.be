@@ -4,7 +4,7 @@ main {
     padding-top: $menu-height;
 
     &> .block:first-child {
-        padding-top: $menu-height;
+        padding-top: $menu-height + 20px;
 
         @media (max-height: 600px), (max-width: 500px) {
             padding-top: 20px;

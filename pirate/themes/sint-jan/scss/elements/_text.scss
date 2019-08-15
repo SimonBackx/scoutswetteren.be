@@ -301,3 +301,27 @@ ul.error {
         margin: 15px 0;
     }
 }
+
+.subtext {
+    color: $color-text;
+
+    h1, h2 {
+        color: $color-main-dark;
+        line-height: 1.5;
+    }
+
+    h2 {
+        font-size: $size-question;
+        
+        span {
+            font-size: $size-text;
+            display: inline-block;
+            color: $gray;
+            margin-left: 10px;
+        }
+    }
+
+    p {
+        color: $color-main-gray;
+    }
+}
