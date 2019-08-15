@@ -1,23 +1,17 @@
 {% block head %}
-    <style type="text/css">
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="/js/lazy-load.js"></script>
+    <script>
         {% for data in albums %}
             {% for album in data %}
-                #album_{{album.id}} {
-                    background-image: url("{{ album.cover.getBestfit(384, 384).file.getPublicPath() }}");
-                }
+                var sources = {{ album.cover.getSourcesJSON | raw }};
+                LazyLoading.lazyLoadBackground(document.getElementById('album_{{album.id}}'), sources);
             {% endfor %}
         {% endfor %}
-
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
-             {% for data in albums %}
-                {% for album in data %}
-                    #album_{{album.id}} {
-                        background-image: url("{{ album.cover.getBestfit(768, 768).file.getPublicPath() }}");
-                    }
-                {% endfor %}
-            {% endfor %}
-        }
-    </style>
+    </script>
 {% endblock %}
 
 {% block albums %}
