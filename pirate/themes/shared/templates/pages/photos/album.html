@@ -35,7 +35,7 @@
         <section class="block album_block">
             <header><h1>{{ album.name }}</h1></header>
             <div class="button-bar">
-                <a class="button aubergine noborder" href="/fotos">
+                <a class="button main noborder" href="/fotos">
                     <svg width="12px" height="19px" viewBox="853 21 12 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <defs></defs>
                         <polyline id="back" stroke="#470A14" stroke-width="2" stroke-linecap="round" fill="none" transform="translate(859.000000, 30.500000) scale(-1, 1) translate(-859.000000, -30.500000) " points="855 23 863 30.5 855 38"></polyline>
@@ -46,18 +46,18 @@
             <div id="album_container"></div>
             <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
             <div class="button-bar">
-                <a class="button aubergine noborder" href="/fotos">
+                <a class="button main noborder" href="/fotos">
                     <svg width="12px" height="19px" viewBox="853 21 12 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                         <defs></defs>
                         <polyline id="back" stroke="#470A14" stroke-width="2" stroke-linecap="round" fill="none" transform="translate(859.000000, 30.500000) scale(-1, 1) translate(-859.000000, -30.500000) " points="855 23 863 30.5 855 38"></polyline>
                     </svg>Alle albums</a>
                     {% if album.canDownload() %}
-                        <a href="/fotos/download/{{ album.getUrl }}" class="button aubergine noborder" rel="nofollow">Download</a>
+                        <a href="/fotos/download/{{ album.getUrl }}" class="button main noborder" rel="nofollow">Download</a>
                     {% endif %}
                     
-                    <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button aubergine noborder">Deel op facebook</a>
+                    <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button main noborder">Deel op facebook</a>
                     {% if general.logged_in_leiding %}
-                    <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
+                    <a href="/admin/photos/edit/{{ album.id }}" class="button main noborder">Foto's toevoegen</a>
                     {% endif %}
             </div>
 

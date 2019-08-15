@@ -37,10 +37,10 @@
                 Uploaden
             </label>
 
-            <input type="submit" class="aubergine fill display_only_more_photo" value="Album aanmaken" {% if images | length == 0 %}style="display: none"{%endif%}>
-            <input type="submit" name="delete_queue" class="display_only_more_photo aubergine" value="Wis alles" {% if images | length == 0 %}style="display: none"{%endif%}>
+            <input type="submit" class="main fill display_only_more_photo" value="Album aanmaken" {% if images | length == 0 %}style="display: none"{%endif%}>
+            <input type="submit" name="delete_queue" class="display_only_more_photo main" value="Wis alles" {% if images | length == 0 %}style="display: none"{%endif%}>
 
-            <a href="/admin/photos" class="button aubergine">Annuleren</a>
+            <a href="/admin/photos" class="button main">Annuleren</a>
         </footer>
 
         <div id="upload-progress" style="display: none;"><div></div></div>

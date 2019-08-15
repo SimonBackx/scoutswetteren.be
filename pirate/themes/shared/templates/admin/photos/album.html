@@ -10,7 +10,7 @@
                 {% endif %}
             </header>
             <footer>
-                <a href="/admin/photos" class="fill button aubergine">Terug</a>
+                <a href="/admin/photos" class="fill button main">Terug</a>
             </footer>
         {% else %}
             <header>
@@ -50,7 +50,7 @@
             {% endif %}
 
             <footer>
-                <input type="submit" class="aubergine fill" value="Opslaan">
+                <input type="submit" class="main fill" value="Opslaan">
                 {% if not new %}
                     <input type="file" multiple="multiple" id="file" />
                     <label for="file">
@@ -62,9 +62,9 @@
                         </svg>
                         Uploaden
                     </label>
-                    <a href="/admin/photos/delete/{{ data.id }}" class="button aubergine">Verwijderen</a>
+                    <a href="/admin/photos/delete/{{ data.id }}" class="button main">Verwijderen</a>
                 {% endif %}
-                <a href="/admin/photos" class="button aubergine">Annuleren</a>
+                <a href="/admin/photos" class="button main">Annuleren</a>
             </footer>
             
             {% if not new %}

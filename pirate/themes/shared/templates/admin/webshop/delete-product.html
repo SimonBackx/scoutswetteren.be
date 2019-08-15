@@ -11,11 +11,11 @@
             </header>
 
             <footer>
-                <input type="submit" class="aubergine fill" name="confirm-delete" value="Ja, verwijderen">
+                <input type="submit" class="main fill" name="confirm-delete" value="Ja, verwijderen">
                 {% if order_sheet is not empty %}
-                    <a href="/admin/order-sheets/{{ order_sheet.id }}" class="aubergine button">Annuleren</a>
+                    <a href="/admin/order-sheets/{{ order_sheet.id }}" class="main button">Annuleren</a>
                 {% else %}
-                    <a href="/admin/products" class="aubergine button">Annuleren</a>
+                    <a href="/admin/products" class="main button">Annuleren</a>
                 {% endif %}
             </footer>
         {% endif %}

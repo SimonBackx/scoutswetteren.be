@@ -4,7 +4,7 @@
             <header>
                 <h1>Verwijderen mislukt!</h1>
                 <footer>
-                    <input type="submit" class="aubergine fill" name="confirm-delete" value="Opnieuw proberen">
+                    <input type="submit" class="main fill" name="confirm-delete" value="Opnieuw proberen">
                     <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button merlot">Annuleren</a>
                 </footer>
             </header>
@@ -20,7 +20,7 @@
                 </header>
 
                 <footer>
-                    <input type="submit" class="aubergine fill" name="confirm-delete" value="Ja, verwijderen">
+                    <input type="submit" class="main fill" name="confirm-delete" value="Ja, verwijderen">
                     <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button merlot">Annuleren</a>
                 </footer>
             {% endif %}

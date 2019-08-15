@@ -1,5 +1,3 @@
-@import "../../../shared/scss/elements/buttons";
-
 
 a.go {
     font-size: $size-prefix;
@@ -38,26 +36,115 @@ button.more {
     margin: 20px 0;
 }
 
-a, button {
-    &.main {
-        margin: 18px 15px;
-        padding: 14px 25px;
+a.button, button.button, input[type=submit] {
+    text-transform: uppercase;
+    font-size: $size-button;
+    display: inline-block;
+    font-weight: bold;
+    cursor: pointer;
+
+    svg {
+        margin-right: 15px;
+        vertical-align: text-top;
+    }
+
+    &.main, &.merlot {
+        color: $color-main-dark;
+        margin: 18px 5px;
+        padding: (14px - $border-width) (25px - $border-width);
         border-radius: $border-radius;
-        @include main-gradient;
+        border: $border-width solid $color-main-dark;
+
+        &.fill {
+            margin: 18px 10px;
+            padding: 14px 25px;
+            border: 0;
+            @include main-gradient;
+            color: white;
+
+            &:first-child {
+                margin-left: 0;
+            }
+        }
+
+        &.search {
+            background: url(../prins-boudewijn/images/hourglass-aubergine.png) no-repeat left center;
+        }
+    }
+
+    &.white {
         color: white;
-        text-transform: uppercase;
-        font-size: $size-button;
-        font-weight: bold;
 
-        &:first-child {
-            margin-left: 0;
+        &.search {
+            background: url(../prins-boudewijn/images/hourglass-white.png) no-repeat left center;
+        }
+    }
+
+    &.noborder {
+        border: 0;
+        padding: 0;
+        margin: 15px;
+
+        &.arrow-right {
+            background: url(../prins-boudewijn/images/icon-button.svg) no-repeat right center;
+            padding-right: 20px;
         }
 
-        opacity: 1;
-        transition: opacity 0.2s;
-    
-        &:hover {
-            opacity: 0.5;
+        &.arrow-left {
+            background: url(../prins-boudewijn/images/icon-button-back.svg) no-repeat left center;
+            padding-left: 20px;
         }
+    }
+
+    &.search {
+        padding: 10px 0 10px 40px;
+    }
+
+    &.big {
+        font-size: $size-button-big;
+    }
+
+    &:first-child {
+        margin-left: 0;
+    }
+
+    opacity: 1;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.5;
+    }
+}
+
+a.icon-button, button.icon-button {
+    &, &:hover, &:visited, &:active, &:link {
+        color: $color-main-dark;
+    }
+
+    text-transform: uppercase;
+    padding: 5px 5px 5px 20px;
+    margin: 5px 0 20px 0;
+    font-size: $size-button;
+    display: block;
+    text-align: left;
+    background: url(../prins-boudewijn/images/icon-button.png) no-repeat left center;
+    background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/icon-button.svg);
+
+    &.plus {
+       background: url(../prins-boudewijn/images/plus-button.png) no-repeat left center;
+       background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/plus-button.svg);
+    }
+
+    &.delete {
+       background: url(../prins-boudewijn/images/delete-button.png) no-repeat left center; 
+       background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/delete-button.svg);
+    }
+}
+
+
+// Resize font sizes on small screens
+@media screen and (max-width: 480px) {
+    a.button {
+        font-size: $size-button-mini;
     }
 }

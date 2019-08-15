@@ -3,10 +3,10 @@
     <h1>{{ lid.voornaam }} {{ lid.achternaam }}</h1>
 
     <div>
-        <a href="/admin/inschrijvingen" class="aubergine fill button">Terug</a>
-        <a href="/admin/afrekeningen/{{ lid.inschrijving.afrekening }}" class="aubergine button">Betalingsoverzicht</a>
+        <a href="/admin/inschrijvingen" class="main fill button">Terug</a>
+        <a href="/admin/afrekeningen/{{ lid.inschrijving.afrekening }}" class="main button">Betalingsoverzicht</a>
         {% if lid.isIngeschreven() %}
-            <a href="/admin/inschrijvingen/lid-uitschrijven/{{ lid.id }}" class="aubergine button">Uitschrijven</a>
+            <a href="/admin/inschrijvingen/lid-uitschrijven/{{ lid.id }}" class="main button">Uitschrijven</a>
         {% endif %}
     </div>
 
@@ -45,10 +45,10 @@
             <h2>Scouting op maat</h2>
             {% if lid.gezin.scouting_op_maat %}
                 <p><strong>Dit gezin heeft aangegeven financiële problemen te hebben</strong>. Je kan dit nog manueel aanpassen.</p>
-                <div><a href="/admin/inschrijvingen/scouting-op-maat/uitschakelen/{{ lid.gezin.id }}" class="aubergine button">Uitschakelen</a></div>
+                <div><a href="/admin/inschrijvingen/scouting-op-maat/uitschakelen/{{ lid.gezin.id }}" class="main button">Uitschakelen</a></div>
             {% else %}
                 <p>Dit gezin heeft niet aangegeven financiële problemen te hebben. Je kan dit nog manueel aanpassen.</p>
-                <div><a href="/admin/inschrijvingen/scouting-op-maat/inschakelen/{{ lid.gezin.id }}" class="aubergine button">Inschakelen</a></div>
+                <div><a href="/admin/inschrijvingen/scouting-op-maat/inschakelen/{{ lid.gezin.id }}" class="main button">Inschakelen</a></div>
             {% endif %}
 
         </div>

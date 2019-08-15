@@ -30,12 +30,12 @@
                         {{ include('leden/ouder-aanpassen.part.html') }}
                          
                         <footer>
-                            <input type="submit" class="aubergine fill" value="{% if new %}Toevoegen{% else %}Opslaan{% endif %}">
+                            <input type="submit" class="main fill" value="{% if new %}Toevoegen{% else %}Opslaan{% endif %}">
                             {% if not new %}
-                                <a class="button aubergine" href="/ouders/ouder-verwijderen/{{ id }}">Verwijderen</a>
+                                <a class="button main" href="/ouders/ouder-verwijderen/{{ id }}">Verwijderen</a>
                             {% endif %}
                             {% if cancelable %}
-                                <a class="button aubergine" href="/ouders">Annuleren</a>
+                                <a class="button main" href="/ouders">Annuleren</a>
                             {% endif %}
                         </footer>
 

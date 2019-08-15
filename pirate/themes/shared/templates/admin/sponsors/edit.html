@@ -6,8 +6,8 @@
         </header>
 
         <footer>
-            <a href="/admin/sponsors/sponsor" class="button aubergine">Nieuw</a>
-            <a href="/admin/sponsors" class="aubergine button">Terug</a>
+            <a href="/admin/sponsors/sponsor" class="button main">Nieuw</a>
+            <a href="/admin/sponsors" class="main button">Terug</a>
         </footer>
 
         {% else %}
@@ -45,11 +45,11 @@
         </label>
 
         <footer>
-            <input type="submit" class="aubergine fill" value="Opslaan">
+            <input type="submit" class="main fill" value="Opslaan">
             {% if not new %}
-                <a href="/admin/sponsors/delete/{{ sponsor.id }}" class="button aubergine">Verwijderen</a>
+                <a href="/admin/sponsors/delete/{{ sponsor.id }}" class="button main">Verwijderen</a>
             {% endif %}
-            <a href="/admin/sponsors" class="aubergine button">Annuleren</a>
+            <a href="/admin/sponsors" class="main button">Annuleren</a>
         </footer>
         {% endif %}
 

@@ -1,7 +1,7 @@
 <div>
     <div>
-        <button class="button noborder arrow-left aubergine" onclick="previousWeek();">Vorige</button>
-        <button class="button noborder arrow-right aubergine" onclick="nextWeek();">Volgende week</button>
+        <button class="button noborder arrow-left main" onclick="previousWeek();">Vorige</button>
+        <button class="button noborder arrow-right main" onclick="nextWeek();">Volgende week</button>
     </div>
 
     {% for day in days %}
@@ -43,7 +43,7 @@
 
                 {% if activity.event.order_sheet_id is not null %}
                     <div class="buttons column">
-                        <a href="{{ activity.event.order_sheet.getUrl() }}" class="small aubergine button noborder">{{ activity.event.order_sheet.getButtonName() }}</a>
+                        <a href="{{ activity.event.order_sheet.getUrl() }}" class="small main button noborder">{{ activity.event.order_sheet.getButtonName() }}</a>
                     </div>
                 {% endif %}
             </article>

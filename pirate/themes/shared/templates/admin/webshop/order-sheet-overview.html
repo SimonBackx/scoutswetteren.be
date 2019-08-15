@@ -8,8 +8,8 @@
         {% endif %}
 
         <div>
-            <a href="/admin/maandplanning" class="aubergine fill button">Terug</a>
-            <a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/edit" class="aubergine button">Wijzigen</a>
+            <a href="/admin/maandplanning" class="main fill button">Terug</a>
+            <a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/edit" class="main button">Wijzigen</a>
         </div>
 
     <div class="splitted">
@@ -31,7 +31,7 @@
         <div class="part column last">
             <h2>{{ sheet.getButtonName() }}</h2>
                 
-            <footer><a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/orders" class="aubergine button">Bekijken</a></footer>
+            <footer><a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/orders" class="main button">Bekijken</a></footer>
         </div>
     </div>
 
@@ -57,7 +57,7 @@
 
 
     <footer>
-        <a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/products/new" class="aubergine fill button">Product toevoegen</a>
+        <a href="/admin/order-sheets/{{ sheet.id | e('html_attr')}}/products/new" class="main fill button">Product toevoegen</a>
 
     </footer>
 

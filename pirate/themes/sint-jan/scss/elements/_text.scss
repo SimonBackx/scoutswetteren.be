@@ -10,7 +10,11 @@
         color: $main;
     }
 
-    button.more, a.main, button.main {
+    a.main, button.main,input[type=submit].main {
+        color: $main;
+    }
+
+    button.more, a.main.fill, button.main.fill,input[type=submit].main.fill {
         @include main-alternative-gradient($main, $gradient-dest);
     }
 

@@ -71,7 +71,7 @@ form {
         display: block;
     }
 
-    input, textarea, select, a.button, .StripeElement {
+    input, textarea, select, .StripeElement {
         font-size: $size-text-bigger;
     }
 
@@ -350,13 +350,6 @@ form {
 
     .select-box, input[type=text].dropdown {
         background: url(../prins-boudewijn/images/input-arrow.png) no-repeat right center;
-    }
-
-
-
-    input[type=submit] {
-        font-size: $size-text-bigger;
-        cursor: pointer;
     }
 
     &.error {

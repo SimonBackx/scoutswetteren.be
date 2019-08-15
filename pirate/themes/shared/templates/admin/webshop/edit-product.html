@@ -78,7 +78,7 @@
         <template v-for="(optionset, index) in product.optionsets">
             <h2>
                 Keuzemenu [[ index+1 ]]
-                <button class="button noborder aubergine" type="button" v-on:click="deleteOptionset(index);" style="margin-left: 20px;">Verwijderen</button>
+                <button class="button noborder main" type="button" v-on:click="deleteOptionset(index);" style="margin-left: 20px;">Verwijderen</button>
             </h2>
 
             <!-- Todo: hidden input: id -->
@@ -118,19 +118,19 @@
 
 
         <footer>
-            <input type="submit" class="aubergine fill" value="Opslaan">
+            <input type="submit" class="main fill" value="Opslaan">
             {% if not new %}
                 {% if order_sheet is not empty %}
-                    <a href="/admin/order-sheets/{{ order_sheet.id }}/products/delete/{{ product.id }}" class="aubergine button">Verwijderen</a>
+                    <a href="/admin/order-sheets/{{ order_sheet.id }}/products/delete/{{ product.id }}" class="main button">Verwijderen</a>
                 {% else %}
-                <a href="/admin/products/delete/{{ product.id }}" class="aubergine button">Verwijderen</a>
+                <a href="/admin/products/delete/{{ product.id }}" class="main button">Verwijderen</a>
                 {% endif %}
             {% endif %}
 
             {% if order_sheet is not empty %}
-                <a href="/admin/order-sheets/{{ order_sheet.id }}" class="aubergine button">Annuleren</a>
+                <a href="/admin/order-sheets/{{ order_sheet.id }}" class="main button">Annuleren</a>
             {% else %}
-                <a href="/admin/products" class="aubergine button">Annuleren</a>
+                <a href="/admin/products" class="main button">Annuleren</a>
             {% endif %}
         </footer>
 

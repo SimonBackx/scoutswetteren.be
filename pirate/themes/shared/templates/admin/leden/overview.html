@@ -2,7 +2,7 @@
 
     {% if jaar is empty %}
         <div class="sticky search-box">
-            <input type="text" name="" class="aubergine search" placeholder="Zoeken" data-sail="leden">
+            <input type="text" name="" class="main search" placeholder="Zoeken" data-sail="leden">
             <div class="results-anchor">
                 <div class="results"></div>
             </div>
@@ -35,11 +35,11 @@
         </form>
 
         <div>
-            <a href="/admin/inschrijvingen/mail" class="aubergine fill button">Mailen</a>
-            <a href="/admin/inschrijvingen/sms" class="aubergine button">Sms'en</a>
+            <a href="/admin/inschrijvingen/mail" class="main fill button">Mailen</a>
+            <a href="/admin/inschrijvingen/sms" class="main button">Sms'en</a>
             •
-            <a href="/admin/inschrijvingen/steekkaart/{{tak}}" class="aubergine button">Steekkaart</a>
-            <a href="/admin/inschrijvingen/exporteren" class="aubergine button">Excel</a>
+            <a href="/admin/inschrijvingen/steekkaart/{{tak}}" class="main button">Steekkaart</a>
+            <a href="/admin/inschrijvingen/exporteren" class="main button">Excel</a>
         </div>
                 
     {% endif %}
@@ -110,7 +110,7 @@
     </div>
 
     <div>
-        <a href="/admin/inschrijvingen/{{ tak }}/{{ prev }}" class="aubergine fill button">Bekijk {{ prev }} - {{ prev + 1}}</a>
+        <a href="/admin/inschrijvingen/{{ tak }}/{{ prev }}" class="main fill button">Bekijk {{ prev }} - {{ prev + 1}}</a>
     </div>
 
     {% if jaar is empty %}

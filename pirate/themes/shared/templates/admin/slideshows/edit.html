@@ -6,7 +6,7 @@
         </header>
 
         <footer>
-            <a href="/admin/slideshows" class="aubergine button">Terug</a>
+            <a href="/admin/slideshows" class="main button">Terug</a>
         </footer>
 
         {% else %}
@@ -68,11 +68,11 @@
 
 
         <footer>
-            <input type="submit" name="submit" class="aubergine fill" value="Opslaan">
+            <input type="submit" name="submit" class="main fill" value="Opslaan">
             {% if not new %}
-                <a href="/admin/slideshows/delete/{{ slideshow.id }}" class="button aubergine">Verwijderen</a>
+                <a href="/admin/slideshows/delete/{{ slideshow.id }}" class="button main">Verwijderen</a>
             {% endif %}
-            <a href="/admin/slideshows" class="aubergine button">Annuleren</a>
+            <a href="/admin/slideshows" class="main button">Annuleren</a>
         </footer>
         {% endif %}
 

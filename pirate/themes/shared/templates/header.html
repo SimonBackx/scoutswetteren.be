@@ -28,14 +28,14 @@
                             <p>{{ logged_in_user.name }}</p>
                         </div>
                         <!--<div class="box">
-                            <a href="/logout" class="aubergine button noborder">Meldingen bekijken</a>
+                            <a href="/logout" class="main button noborder">Meldingen bekijken</a>
                         </div>-->
                         {% if general.logged_in_ouders %}
                             <div class="{% if not general.logged_in_leiding %}last {% endif %}box">
-                                <a href="/ouders" class="aubergine button noborder">Mijn inschrijvingen</a>
-                                <a href="/ouders/attesten" class="aubergine button noborder">Attesten</a>
+                                <a href="/ouders" class="main button noborder">Mijn inschrijvingen</a>
+                                <a href="/ouders/attesten" class="main button noborder">Attesten</a>
                                 {% if not general.logged_in_leiding %}
-                                    <a href="/gebruikers/wachtwoord-wijzigen" class="aubergine button noborder">Wachtwoord wijzigen</a>
+                                    <a href="/gebruikers/wachtwoord-wijzigen" class="main button noborder">Wachtwoord wijzigen</a>
                                 {% endif %}
                             </div>
                         {% endif %}
@@ -43,9 +43,9 @@
                         {% if general.logged_in_leiding %}
                             <div class="last box">
                                 {% for button in admin.buttons %}
-                                    <a href="/admin/{{ button.url }}" class="aubergine button noborder">{{ button.name }}</a>
+                                    <a href="/admin/{{ button.url }}" class="main button noborder">{{ button.name }}</a>
                                 {% endfor %}
-                                <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank" class="aubergine button noborder">Drive</a>
+                                <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank" class="main button noborder">Drive</a>
                             </div>
                         {% endif %}
                     </div>
