@@ -65,7 +65,7 @@
         }
     }
 
-    a {
+    &> div > * {
         width: 32.5%;
         margin: 0.8% 0;
         padding-bottom: 32.5%;
@@ -114,6 +114,13 @@
             figcaption { 
                 padding: 10px 5px;
             }
+        }
+    }
+
+    .empty {
+        display: none;
+        &:nth-child(3n+3) {
+            display: block;
         }
     }
 
