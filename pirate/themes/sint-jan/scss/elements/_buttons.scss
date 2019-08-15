@@ -41,9 +41,7 @@ button.more {
 a, button {
     &.main {
         margin: 18px 15px;
-        height: $menu-height - 36px;
-        padding: 10px 25px;
-        line-height: $menu-height - 56px;
+        padding: 14px 25px;
         border-radius: $border-radius;
         @include main-gradient;
         color: white;

@@ -56,18 +56,6 @@
             font-size: $size-smartphone-text;
         }
     }
-    article time {
-        color: $color-main-alternative-gray;
-        font-size: $size-prefix;
-        margin: 5px 0;
-        font-weight: bold;
-        display: block;
-
-        @media (max-width: 600px), (max-height: 450px)  {
-            font-size: $size-smartphone-prefix;
-            margin: 2px 0;
-        }
-    }
 
     &> section section {
         padding-bottom: 30px;

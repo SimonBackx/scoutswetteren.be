@@ -13,6 +13,12 @@
     button.more, a.main, button.main {
         @include main-alternative-gradient($main, $gradient-dest);
     }
+
+    a .prefix {
+        &::after {
+            background-image: url('../'+$theme+'/icons/alternative/arrow-right.svg');
+        }
+    }
 }
 
 h1 {
@@ -58,11 +64,23 @@ h1:first-of-type {
 .h1-prefix {
     margin-top: 30px;
     line-height: 33px;
-    vertical-align: middle;
     color: $color-main;
     text-transform: uppercase;
     font-weight: bold;
     font-size: $size-prefix;
+    display: block;
+
+    &:visited, &:link {
+        color: $color-main;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: opacity 0.2s;
+        opacity: 1;
+
+        &:hover {
+            opacity: 0.5;
+        }
+    }
 
     @media (max-width: 600px), (max-height: 450px)  {
         margin-top: 20px;
@@ -104,7 +122,7 @@ h1:first-of-type {
     font-weight: bold;
     font-size: $size-prefix;
     padding: 0;
-    margin: 5px 0;
+    margin: 4px 0;
 
     @media (max-width: 600px), (max-height: 450px)  {
         font-size: $size-smartphone-prefix;
@@ -117,6 +135,20 @@ h1:first-of-type {
 
     &> span {
         font-weight: normal;
+        text-transform: none;
+    }
+}
+.suffix {
+    color: $color-main-alternative-gray;
+    font-size: $size-prefix;
+    margin: 5px 0;
+    font-weight: bold;
+    display: block;
+    line-height: 1.1;
+
+    @media (max-width: 600px), (max-height: 450px)  {
+        font-size: $size-smartphone-prefix;
+        margin: 2px 0;
     }
 }
 
@@ -147,7 +179,7 @@ p {
     margin: 10px 0;
     font-weight: normal;
     font-size: $size-text;
-    line-height: 170%;
+    line-height: 1.5;
 }
 
 ul {
