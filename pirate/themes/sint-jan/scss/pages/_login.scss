@@ -1,7 +1,6 @@
 .login {
 
     header {
-        text-align: center;
         h1 {
             color: $color-main-dark;
         }
@@ -12,21 +11,11 @@
     }
 
     footer {
-        text-align: center;
         padding-top: 20px;
 
         .button {
             padding-top: 0;
             margin-top: 0;
         }
-    }
-}
-
-main .block.login {
-    max-width: 400px;
-    padding: 40px;
-
-    @media (max-width: 600px) {
-        padding: 20px;
     }
 }
