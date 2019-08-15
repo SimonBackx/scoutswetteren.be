@@ -1,0 +1,61 @@
+{% set description = "Bekijk hier de foto\'s van het album " ~ album.name %}
+{% set title = album.name ~ " - Foto's" %}
+{% set social_image = album.cover.getBiggestSource().file.getPublicPath() %}
+{% extends "base.html" %}
+
+{% block javascript %}
+    <link rel="stylesheet" href="/css/photoswipe.css"> 
+    <script src="/js/photoswipe.min.js"></script> 
+    <script src="/js/photos.js"></script>
+    <script type="text/javascript">
+        var grid = new photos.Grid({});
+        grid.trackWidth(document.getElementById('album_container'));
+        grid.margin = 8;
+        grid.max_height = 400;
+
+        var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
+
+        {% for image in images %}
+            var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+            photo.title = "{{image.title | e('js')}}";
+            photo.sources = {{ image.getSourcesJSON | raw }};
+            grid.add(photo);
+        {% endfor %}
+        
+        var element = grid.toDOM();
+        document.getElementById('album_container').appendChild(element);
+        grid.updateVisiblePhotos();
+
+        grid.enablePhotoSwipe();
+    </script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="block white">
+            <a class="h1-prefix" href="/fotos">Alle albums</a>
+            <h1>{{ album.name }} <span>{{ album.tak }}</span></h1>
+
+            <div id="album_container"></div>
+            <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
+            
+            <div class="button-bar">
+                <a class="button aubergine noborder" href="/fotos">Alle albums</a>
+                {% if album.canDownload() %}
+                    <a href="/fotos/download/{{ album.getUrl }}" class="button aubergine noborder" rel="nofollow">Download</a>
+                {% endif %}
+                
+                <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button aubergine noborder">Deel op facebook</a>
+                {% if general.logged_in_leiding %}
+                <a href="/admin/photos/edit/{{ album.id }}" class="button aubergine noborder">Foto's toevoegen</a>
+                {% endif %}
+            </div>
+
+            {% if not album.canDownload() %}
+                <p>Je kan dit album binnen enkele minuten downloaden.</p>
+            {% endif %}
+        </section>
+    </main>
+
+    {% include 'libs/photoswipe.html' %}
+{% endblock %}
