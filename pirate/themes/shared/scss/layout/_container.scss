@@ -9,4 +9,8 @@
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
     flex-direction: column;
+
+    &> main {
+        flex-grow: 1;
+    }
 }

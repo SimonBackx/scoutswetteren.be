@@ -108,6 +108,11 @@ main > .block {
             flex-grow: 0;
             flex-shrink: 0;
 
+            @media (max-height: 600px), (max-width: 500px) {
+                padding-top: 15px;
+                top: $menu-height + 10px;
+            }
+
             @media (max-width: 800px) {
                 border-top: $border-width solid $color-main-shade;
                 position: static;
