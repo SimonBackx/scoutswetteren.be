@@ -27,7 +27,7 @@
 
                         <h2>Samenstelling</h2>
 
-                        {{ include('leden/gezinsituatie.part.html') }}
+                        {{ include('pages/leden/gezinsituatie.part.html') }}
 
 
                         <input id="eenoudergezin" type="checkbox" name="eenoudergezin" value="1" {% if gezin.eenoudergezin %} checked{% endif %}>
@@ -45,7 +45,7 @@
                                     {% endfor %}
                                 </ul>
                             {% endif %}
-                            {{ include('leden/ouder-aanpassen.part.html') }}
+                            {{ include('pages/leden/ouder-aanpassen.part.html') }}
 
                             <div class="hidden-when-checked">
                                 
@@ -61,12 +61,12 @@
                                     </ul>
                                 {% endif %}
 
-                                {{ include('leden/ouder-aanpassen.part.html') }}
+                                {{ include('pages/leden/ouder-aanpassen.part.html') }}
                             </div>
                         </div>
 
                        
-                        {{ include('leden/scouting-op-maat.html') }}
+                        {{ include('pages/leden/scouting-op-maat.html') }}
 
                         <footer>
                             <input type="submit" class="main fill" value="Volgende">
@@ -78,7 +78,7 @@
         <script type="text/javascript">
             var id_counter = 0;
 
-            {{ include('leden/lid-aanpassen.part.js') }}
+            {{ include('pages/leden/lid-aanpassen.part.js') }}
 
             $( document ).ready(function() {
                 $('.add-count').click(function(event) {

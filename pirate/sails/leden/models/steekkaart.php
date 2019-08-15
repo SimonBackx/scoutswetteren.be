@@ -1,12 +1,14 @@
 <?php
 namespace Pirate\Sails\Leden\Models;
-use Pirate\Wheel\Model;
-use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Sails\Leden\Models\Gezin;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Inschrijving;
 
-class Steekkaart extends Model {
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Model;
+
+class Steekkaart extends Model
+{
     public $id;
     public $lid; // object Lid
     public $laatst_nagekeken;
@@ -42,7 +44,8 @@ class Steekkaart extends Model {
     public $aanvullend_voeding;
     public $aanvullend_andere;
 
-    function __construct($row = array(), $lid_object = null) {
+    public function __construct($row = array(), $lid_object = null)
+    {
         if (count($row) == 0) {
             return;
         }
@@ -91,14 +94,16 @@ class Steekkaart extends Model {
         $this->aanvullend_andere = $row['aanvullend_andere'];
     }
 
-    function getNagekekenString() {
+    public function getNagekekenString()
+    {
         if (empty($this->laatst_nagekeken)) {
             return 'Nog niet ingevuld';
         }
         return datetimeToDateString($this->laatst_nagekeken);
     }
 
-    function isEmpty($text) {
+    public function isEmpty($text)
+    {
         $text = strtolower(trim($text));
         if ($text == 'geen' || $text == 'geen.' || $text == '/' || $text == 'nee' || $text == 'neen' || $text == 'nvt') {
             return true;
@@ -110,11 +115,12 @@ class Steekkaart extends Model {
     // en indien goed, overgezet moet worden op het huidige object
     // $errors bevat een lijst met fouten
     // return true wanneer succesvol
-     // Return true on success
-    function setProperties(&$data, &$bereikbaarheid_errors, &$deelname_errors, &$medische_errors, &$aanvullende_errors, &$bevestiging_errors) {
+    // Return true on success
+    public function setProperties(&$data, &$bereikbaarheid_errors, &$deelname_errors, &$medische_errors, &$aanvullende_errors, &$bevestiging_errors)
+    {
 
         // Bereikbaarheid ------------------------------------------------------
-        
+
         if (Validator::isValidName($data['contactpersoon_naam'])) {
             $this->contactpersoon_naam = ucwords($data['contactpersoon_naam']);
             $data['contactpersoon_naam'] = $this->contactpersoon_naam;
@@ -123,7 +129,7 @@ class Steekkaart extends Model {
         }
 
         Validator::validatePhone($data['contactpersoon_gsm'], $this->contactpersoon_gsm, $bereikbaarheid_errors);
-        
+
         if (strlen($data['contactpersoon_functie']) > 2) {
             $this->contactpersoon_functie = ucfirst($data['contactpersoon_functie']);
             $data['contactpersoon_functie'] = $this->contactpersoon_functie;
@@ -184,7 +190,7 @@ class Steekkaart extends Model {
             $this->deelname_andere = ucsentence($data['deelname_andere']);
         }
         $data['deelname_andere'] = $this->deelname_andere;
-        
+
         // Medische gegevens ------------------------------------------------------
 
         if ($data['medisch_toestemming_medicatie'] != 'ja' && $data['medisch_toestemming_medicatie'] != 'nee') {
@@ -215,7 +221,7 @@ class Steekkaart extends Model {
             $this->medisch_ziekten = null;
             $this->medisch_ziekten_aanpak = null;
         }
-        
+
         if ($data['medisch_dieet_checkbox'] != 'ja' && $data['medisch_dieet_checkbox'] != 'nee') {
             $medische_errors[] = 'Gelieve dieet aan te vinken met ja of nee';
         } elseif ($data['medisch_dieet_checkbox'] == 'ja') {
@@ -259,7 +265,7 @@ class Steekkaart extends Model {
         if (empty($data['bloedgroep'])) {
             $medische_errors[] = 'Gelieve een bloedgroep te selecteren.';
         } else {
-            if (in_array($data['bloedgroep'], array('onbekend','O-','O+','A+','A-','B+','B-','AB+','AB-'))) {
+            if (in_array($data['bloedgroep'], array('onbekend', 'O-', 'O+', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'))) {
                 $this->bloedgroep = $data['bloedgroep'];
             } else {
                 $medische_errors[] = 'Ongeldige bloedgroep. Contacteer webmaster bij problemen.';
@@ -273,8 +279,6 @@ class Steekkaart extends Model {
         } else {
             $this->toestemming_fotos = $data['toestemming_fotos'];
         }
-
-
 
         if ($this->isEmpty($data['aanvullend_voeding'])) {
             $this->aanvullend_voeding = '';
@@ -297,25 +301,28 @@ class Steekkaart extends Model {
             $bevestiging_errors[] = 'Opgegeven naam ongeldig';
         }
 
-        if (!in_array($data['nagekeken_door_titel'], array('ouder','voogd'))) {
+        if (!in_array($data['nagekeken_door_titel'], array('ouder', 'voogd'))) {
             $bevestiging_errors[] = 'Geen titel geselecteerd';
         } else {
             $this->nagekeken_door_titel = $data['nagekeken_door_titel'];
         }
 
-        return (count($bevestiging_errors)+count($aanvullende_errors)+count($medische_errors)+count($deelname_errors)+count($bereikbaarheid_errors) == 0);
+        return (count($bevestiging_errors) + count($aanvullende_errors) + count($medische_errors) + count($deelname_errors) + count($bereikbaarheid_errors) == 0);
     }
 
-    function setLid(Lid $lid) {
+    public function setLid(Lid $lid)
+    {
         $this->lid = $lid;
     }
 
-    function isIngevuld() {
+    public function isIngevuld()
+    {
         return !empty($this->nagekeken_door) && !empty($this->nagekeken_door_titel);
     }
 
     // Moet verplicht nagekeken worden
-    function moetNagekekenWorden() {
+    public function moetNagekekenWorden()
+    {
         if (!$this->lid->isIngeschreven()) {
             return false;
         }
@@ -336,10 +343,10 @@ class Steekkaart extends Model {
         // OPGELET: pas ook query aan in ouder.php voor mails naar ouders die hun steekkaart moeten nakijken
 
         // Als al eens nagekenen geweest...
-        
+
         $jaar = intval($this->laatst_nagekeken->format('Y'));
         $maand = intval($this->laatst_nagekeken->format('n'));
-        if ($maand < Inschrijving::$inschrijvings_start_maand) {
+        if ($maand < Environment::getSetting('scouts.inschrijvings_start_maand')) {
             $jaar--;
         }
 
@@ -351,7 +358,8 @@ class Steekkaart extends Model {
         return false;
     }
 
-    function save() {
+    public function save()
+    {
         if (empty($this->lid)) {
             return false;
         }
@@ -361,7 +369,7 @@ class Steekkaart extends Model {
         if (empty($this->nagekeken_door)) {
             // Helemaal zonder enige data, enkel voor overslaan functie
             if (empty($this->id)) {
-                $query = "INSERT INTO 
+                $query = "INSERT INTO
                 steekkaarten (`lid`)
                 VALUES ('$lid')";
 
@@ -373,7 +381,7 @@ class Steekkaart extends Model {
 
             } else {
                 // Er moet niets gebeuren
-               return true;
+                return true;
             }
         }
 
@@ -389,37 +397,37 @@ class Steekkaart extends Model {
         if (empty($this->verblijfsinstelling)) {
             $verblijfsinstelling = "NULL";
         } else {
-            $verblijfsinstelling = "'".self::getDb()->escape_string($this->verblijfsinstelling)."'";
+            $verblijfsinstelling = "'" . self::getDb()->escape_string($this->verblijfsinstelling) . "'";
         }
         if (empty($this->deelname_onmogelijke_activiteiten)) {
             $deelname_onmogelijke_activiteiten = "NULL";
         } else {
-            $deelname_onmogelijke_activiteiten = "'".self::getDb()->escape_string($this->deelname_onmogelijke_activiteiten)."'";
+            $deelname_onmogelijke_activiteiten = "'" . self::getDb()->escape_string($this->deelname_onmogelijke_activiteiten) . "'";
         }
         if (empty($this->deelname_reden)) {
             $deelname_reden = "NULL";
         } else {
-            $deelname_reden = "'".self::getDb()->escape_string($this->deelname_reden)."'";
+            $deelname_reden = "'" . self::getDb()->escape_string($this->deelname_reden) . "'";
         }
         if (empty($this->medisch_ziekten)) {
             $medisch_ziekten = "NULL";
         } else {
-            $medisch_ziekten = "'".self::getDb()->escape_string($this->medisch_ziekten)."'";
+            $medisch_ziekten = "'" . self::getDb()->escape_string($this->medisch_ziekten) . "'";
         }
         if (empty($this->medisch_ziekten_aanpak)) {
             $medisch_ziekten_aanpak = "NULL";
         } else {
-            $medisch_ziekten_aanpak = "'".self::getDb()->escape_string($this->medisch_ziekten_aanpak)."'";
+            $medisch_ziekten_aanpak = "'" . self::getDb()->escape_string($this->medisch_ziekten_aanpak) . "'";
         }
         if (empty($this->medisch_dieet)) {
             $medisch_dieet = "NULL";
         } else {
-            $medisch_dieet = "'".self::getDb()->escape_string($this->medisch_dieet)."'";
+            $medisch_dieet = "'" . self::getDb()->escape_string($this->medisch_dieet) . "'";
         }
         if (empty($this->medisch_klem_jaar)) {
             $medisch_klem_jaar = "NULL";
         } else {
-            $medisch_klem_jaar = "'".self::getDb()->escape_string($this->medisch_klem_jaar)."'";
+            $medisch_klem_jaar = "'" . self::getDb()->escape_string($this->medisch_klem_jaar) . "'";
         }
 
         $laatst_nagekeken = (new \DateTime())->format('Y-m-d H:i');
@@ -443,17 +451,17 @@ class Steekkaart extends Model {
         $aanvullend_andere = self::getDb()->escape_string($this->aanvullend_andere);
 
         if (empty($this->id)) {
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 steekkaarten (`lid`, `laatst_nagekeken`, `nagekeken_door` , `nagekeken_door_titel`, `contactpersoon_naam`, `contactpersoon_gsm`, `contactpersoon_functie`, `verblijfsinstelling`, `deelname_onmogelijke_activiteiten`, `deelname_reden`, `deelname_sporten`, `deelname_sociaal`, `deelname_hygiene`, `deelname_andere`, `medisch_toestemming_medicatie`, `medisch_specifieke_medicatie`, `medisch_ziekten`, `medisch_ziekten_aanpak`, `medisch_dieet`, `medisch_klem_jaar`, `bloedgroep`, `huisarts_naam`, `huisarts_telefoon`, `toestemming_fotos`, `aanvullend_voeding`, `aanvullend_andere`)
                 VALUES ('$lid', '$laatst_nagekeken', '$nagekeken_door' , '$nagekeken_door_titel', '$contactpersoon_naam', '$contactpersoon_gsm', '$contactpersoon_functie', $verblijfsinstelling, $deelname_onmogelijke_activiteiten, $deelname_reden, '$deelname_sporten', '$deelname_sociaal', '$deelname_hygiene', '$deelname_andere', '$medisch_toestemming_medicatie', '$medisch_specifieke_medicatie', $medisch_ziekten, $medisch_ziekten_aanpak, $medisch_dieet, $medisch_klem_jaar, '$bloedgroep', '$huisarts_naam', '$huisarts_telefoon', '$toestemming_fotos', '$aanvullend_voeding', '$aanvullend_andere')";
         } else {
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE steekkaarten 
-                SET 
+            $query = "UPDATE steekkaarten
+                SET
                  `lid` = '$lid',
                  `laatst_nagekeken` = '$laatst_nagekeken',
-                 `nagekeken_door` = '$nagekeken_door', 
-                 `nagekeken_door_titel` = '$nagekeken_door_titel', 
+                 `nagekeken_door` = '$nagekeken_door',
+                 `nagekeken_door_titel` = '$nagekeken_door_titel',
                  `contactpersoon_naam` = '$contactpersoon_naam',
                  `contactpersoon_gsm` = '$contactpersoon_gsm',
                  `contactpersoon_functie` = '$contactpersoon_functie',
@@ -476,7 +484,7 @@ class Steekkaart extends Model {
                  `toestemming_fotos` = '$toestemming_fotos',
                  `aanvullend_voeding` = '$aanvullend_voeding',
                  `aanvullend_andere` = '$aanvullend_andere'
-                where steekkaart_id = '$id' 
+                where steekkaart_id = '$id'
             ";
         }
 

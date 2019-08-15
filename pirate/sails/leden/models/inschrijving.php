@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Sails\Leden\Models;
 
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Afrekening;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
@@ -26,10 +27,6 @@ class Inschrijving extends Model
     public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 20, 'wouters' => 20, 'jonggivers' => 20, 'givers' => 20, 'jin' => 20);
 
     public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
-
-    public static $inschrijvings_start_maand = 9;
-    public static $inschrijvings_einde_maand = 7;
-    public static $inschrijvings_halfjaar_maand = 3; // Vanaf maart halfjaarlijks lidgeld
 
     private static $scoutsjaar_cache = null; // cache
 
@@ -160,7 +157,7 @@ class Inschrijving extends Model
     public static function isInschrijvingsPeriode()
     {
         $maand = intval(date('n'));
-        if ($maand < self::$inschrijvings_start_maand && $maand > self::$inschrijvings_einde_maand) {
+        if ($maand < Environment::getSetting('scouts.inschrijvings_start_maand') && $maand > Environment::getSetting('scouts.inschrijvings_einde_maand')) {
             return false;
         }
         return true;
@@ -169,12 +166,12 @@ class Inschrijving extends Model
     public static function isHalfjaarlijksLidgeld()
     {
         $maand = intval(date('n'));
-        if (self::$inschrijvings_halfjaar_maand >= self::$inschrijvings_start_maand) {
+        if (Environment::getSetting('scouts.inschrijvings_halfjaar_maand') >= Environment::getSetting('scouts.inschrijvings_start_maand')) {
             // Halfjaar ligt nog voor januari
-            if ($maand >= self::$inschrijvings_halfjaar_maand) {
+            if ($maand >= Environment::getSetting('scouts.inschrijvings_halfjaar_maand')) {
                 return true;
             }
-        } elseif ($maand >= self::$inschrijvings_halfjaar_maand && $maand <= self::$inschrijvings_einde_maand) {
+        } elseif ($maand >= Environment::getSetting('scouts.inschrijvings_halfjaar_maand') && $maand <= Environment::getSetting('scouts.inschrijvings_einde_maand')) {
             return true;
         }
         return false;
@@ -182,7 +179,7 @@ class Inschrijving extends Model
 
     public static function getScoutsjaarFor($year, $month)
     {
-        if ($month >= self::$inschrijvings_start_maand) {
+        if ($month >= Environment::getSetting('scouts.inschrijvings_start_maand')) {
             return $year;
         } else {
             return $year - 1;
@@ -194,7 +191,7 @@ class Inschrijving extends Model
         if (is_null(self::$scoutsjaar_cache)) {
             $jaar = intval(date('Y'));
             $maand = intval(date('n'));
-            if ($maand >= self::$inschrijvings_start_maand) {
+            if ($maand >= Environment::getSetting('scouts.inschrijvings_start_maand')) {
                 self::$scoutsjaar_cache = $jaar;
             } else {
                 self::$scoutsjaar_cache = $jaar - 1;

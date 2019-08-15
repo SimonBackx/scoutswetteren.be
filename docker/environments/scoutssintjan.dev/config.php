@@ -45,8 +45,8 @@ $config = [
     ],
 
     'scouts' => [
-        'inschrijvings_start_maand' => 9,
-        'inschrijvings_einde_maand' => 7,
+        'inschrijvings_start_maand' => 9 - 1,
+        'inschrijvings_einde_maand' => 7 - 1,
         'inschrijvings_halfjaar_maand' => 3,
 
         'takken' => [
