@@ -302,7 +302,7 @@ class Steekkaart extends Model
         }
 
         if (!in_array($data['nagekeken_door_titel'], array('ouder', 'voogd'))) {
-            $bevestiging_errors[] = 'Geen titel geselecteerd';
+            $bevestiging_errors[] = 'Geen functie geselecteerd';
         } else {
             $this->nagekeken_door_titel = $data['nagekeken_door_titel'];
         }

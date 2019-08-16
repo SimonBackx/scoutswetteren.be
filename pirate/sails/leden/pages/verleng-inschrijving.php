@@ -25,6 +25,7 @@ class VerlengInschrijving extends Page
         $success = false;
         $errors = array();
 
+        $nog_afrekenen = array();
         $al_ingeschreven = array();
         $niet_inschrijfbaar = array();
 
@@ -36,7 +37,11 @@ class VerlengInschrijving extends Page
                 }
                 $leden[] = $lid;
             } else {
-                $al_ingeschreven[] = $lid;
+                if ($lid->inschrijving->isAfgerekend()) {
+                    $al_ingeschreven[] = $lid;
+                } else {
+                    $nog_afrekenen[] = $lid;
+                }
             }
         }
 
@@ -67,6 +72,7 @@ class VerlengInschrijving extends Page
         return Template::render('pages/leden/verleng-inschrijving', array(
             'leden' => $leden,
             'al_ingeschreven' => $al_ingeschreven,
+            'nog_afrekenen' => $nog_afrekenen,
             'niet_inschrijfbaar' => $niet_inschrijfbaar,
             'scoutsjaar' => $scoutsjaar,
             'success' => $success,

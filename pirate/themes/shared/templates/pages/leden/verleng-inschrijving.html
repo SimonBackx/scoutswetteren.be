@@ -7,32 +7,47 @@
                     <div class="text">
                         
                         <header>
-                            
-                            {% if al_ingeschreven | length > 0 %}
-                                <h1>Broers of zussen inschrijven</h1>
-                                <p>Hieronder vind je broers en zussen die ooit al eens ingeschreven zijn. Je kan hen opnieuw inschrijven voor het huidige scoutsjaar of een nieuwe broer of zus inschrijven die nog niet in het systeem zit.</p>
+                            {% if leden |length == 0 and nog_afrekenen | length > 0 %}
+                                <h1>Wil je nog een broer of zus inschrijven?</h1>
+
                                 <p>
                                     <strong>
-                                        {% for lid in al_ingeschreven %}
-                                            {{ lid.voornaam }}
-                                            {% if loop.index < (al_ingeschreven | length)-1 %}, {% endif %}
-                                            {% if loop.index == (al_ingeschreven | length)-1 %} en {% endif %}
+                                        {% for lid in nog_afrekenen %}
+                                            {{ lid.voornaam }}{% if loop.index < (nog_afrekenen | length)-1 %}, {% endif %}
+                                            {% if loop.index == (nog_afrekenen | length)-1 %} en {% endif %}
                                         {% endfor %} 
-                                        {% if al_ingeschreven | length == 1 %}
-                                            is
-                                        {% else %}
-                                            zijn
-                                        {% endif %}
-                                        al ingeschreven.
+                                        kan je daarna samen inschrijven voor het nieuwe scoutsjaar.
                                     </strong>
                                 </p>
+                                
                             {% else %}
-                                <h1>Leden inschrijven</h1>
-                                <p>Selecteer de gezinsleden die je wilt inschrijven voor het nieuwe scoutsjaar. Hieronder vind je de gezinsleden die we kennen, maar je kan altijd broers of zussen toevoegen. Je kan tijdens het jaar ook nog bijkomende broers en zussen inschrijven.</p>
-                            {% endif %}
+                                {% if al_ingeschreven | length > 0 %}
+                                    <h1>Broers of zussen inschrijven</h1>
+                                    <p>Hieronder vind je broers en zussen die ooit al eens ingeschreven zijn. Je kan hen opnieuw inschrijven voor het huidige scoutsjaar of een nieuwe broer of zus inschrijven die nog niet in het systeem zit.</p>
+                                    <p>
+                                        <strong>
+                                            {% for lid in al_ingeschreven %}
+                                                {{ lid.voornaam }}
+                                                {% if loop.index < (al_ingeschreven | length)-1 %}, {% endif %}
+                                                {% if loop.index == (al_ingeschreven | length)-1 %} en {% endif %}
+                                            {% endfor %} 
+                                            {% if al_ingeschreven | length == 1 %}
+                                                is
+                                            {% else %}
+                                                zijn
+                                            {% endif %}
+                                            al ingeschreven voor het huidige scoutsjaar.
+                                        </strong>
+                                    </p>
 
-                            {% if limits_ignored %}
-                                <p><strong>Je hebt van de leiding toegang gekregen om leden in te schrijven met een uitzondering op de leeftijd (< 6 jaar, 4e jaar giver, 2e jaar jin).</strong> </p>
+                                {% else %}
+                                    <h1>Leden inschrijven</h1>
+                                    <p>Selecteer de gezinsleden die je wilt inschrijven voor het nieuwe scoutsjaar. Hieronder vind je de gezinsleden die we kennen, maar je kan altijd broers of zussen toevoegen. Je kan tijdens het jaar ook nog bijkomende broers en zussen inschrijven.</p>
+                                {% endif %}
+
+                                {% if limits_ignored %}
+                                    <p><strong>Je hebt van de leiding toegang gekregen om leden in te schrijven met een uitzondering op de leeftijd (< 6 jaar, 4e jaar giver, 2e jaar jin).</strong> </p>
+                                {% endif %}
                             {% endif %}
                         </header>
 
@@ -58,12 +73,25 @@
                             <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" name="leden[]" value="{{ lid.id }}"{% if lid.inschrijving.scoutsjaar == scoutsjaar-1 or lid.inschrijving is empty %} checked{% endif %}>
                             <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }}) <a class="button main noborder" href="/ouders/lid-aanpassen/{{ lid.id }}">Wijzigen</a></label>
                         {% endfor %}
+
+                        {% if leden |length == 0 and nog_afrekenen | length > 0 %}
+
+                        {% else %}
+                            <div><a href="/ouders/broer-zus-toevoegen" class="icon-button plus">Broer of zus toevoegen die nog niet in het systeem zit</a></div>
+                        {% endif %}
                     
-                        <div><a href="/ouders/broer-zus-toevoegen" class="icon-button plus">Broer of zus toevoegen die nog niet in het systeem zit</a></div>
                          
                         <footer>
-                            <input type="submit" class="main fill" value="Inschrijven" name="submit">
-                            <input type="submit" class="main" value="Annuleren" name="annuleren">
+                            {% if leden |length == 0 and nog_afrekenen | length > 0 %}
+                                <a href="/ouders/broer-zus-toevoegen" class="button main fill">Ja, nog een lid inschrijven</a>
+                                <input type="submit" class="main" value="Nee, doorgaan" name="annuleren">
+                            {% else %}
+                                {% if leden |length > 0 %}
+                                    <input type="submit" class="main fill" value="Inschrijven" name="submit">
+                                {% endif %}
+                                <input type="submit" class="main" value="Annuleren" name="annuleren">
+                            {% endif %}
+
                         </footer>
 
                     </div>

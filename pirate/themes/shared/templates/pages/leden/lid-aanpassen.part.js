@@ -33,6 +33,7 @@ function check_birthday() {
                 return;
             } else {
                 $('#tak-ongeldig').show();
+                $('.optional_mobile').hide();
                 return;
             }
             
@@ -41,6 +42,7 @@ function check_birthday() {
 
     if (typeof geboortedatums[gender][year] === 'undefined') {
         $('#tak-ongeldig').show();
+        $('.optional_mobile').hide();
     } else {
         $('#tak-'+geboortedatums[gender][year]).show();
 
