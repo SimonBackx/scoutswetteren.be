@@ -63,6 +63,13 @@ class Lid extends Model
         }
     }
 
+    public function getLeeftijd()
+    {
+        $today = new \Datetime(date('m.d.y'));
+        $diff = $today->diff($this->geboortedatum);
+        return $diff->y;
+    }
+
     public static function areLimitsIgnored()
     {
         if (!isset(self::$IGNORE_LIMITS)) {

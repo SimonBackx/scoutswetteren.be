@@ -1,14 +1,15 @@
 <?php
 namespace Pirate\Sails\Leden;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\AdminRoute;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Gezin;
-use Pirate\Sails\Leden\Models\Afrekening;
-use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Sails\Leden\Models\Inschrijving;
 
-class LedenAdminRouter extends AdminRoute {
+use Pirate\Sails\Leden\Models\Afrekening;
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\AdminRoute;
+
+class LedenAdminRouter extends AdminRoute
+{
     private $lid = null;
     private $gezin = null;
     private $inschakelen = false;
@@ -16,18 +17,20 @@ class LedenAdminRouter extends AdminRoute {
     private $tak = null;
     private $jaar = null;
 
-    static function getAvailablePages() {
+    public static function getAvailablePages()
+    {
         return [
             'leiding' => array(
-                array('priority' => 100, 'name' => 'Leden', 'url' => 'inschrijvingen')
+                array('priority' => 100, 'name' => 'Leden', 'url' => 'inschrijvingen'),
             ),
             'financieel' => array(
-                array('priority' => 2, 'name' => 'Rekeningen', 'url' => 'afrekeningen')
+                array('priority' => 2, 'name' => 'Rekeningen', 'url' => 'afrekeningen'),
             ),
         ];
     }
 
-    function doMatch($url, $parts) {
+    public function doMatch($url, $parts)
+    {
         if ($url == 'afrekeningen') {
             if (!Leiding::hasPermission('financieel')) {
                 return false;
@@ -66,7 +69,7 @@ class LedenAdminRouter extends AdminRoute {
             if (count($parts) == 1) {
                 return true;
 
-            } elseif(count($parts) == 2 && ($parts[1] == 'mail' || $parts[1] == 'sms' || $parts[1] == 'exporteren')) {
+            } elseif (count($parts) == 2 && ($parts[1] == 'mail' || $parts[1] == 'sms' || $parts[1] == 'exporteren')) {
                 return true;
 
             } elseif (count($parts) == 3 && ($parts[1] == 'lid')) {
@@ -92,7 +95,7 @@ class LedenAdminRouter extends AdminRoute {
                 return false;
 
             } elseif (count($parts) == 3 && $parts[1] == 'steekkaart') {
-                $takken = Inschrijving::$takken;
+                $takken = Inschrijving::getTakken();
                 if (in_array($parts[2], $takken)) {
                     $this->tak = $parts[2];
                     return true;
@@ -113,15 +116,15 @@ class LedenAdminRouter extends AdminRoute {
                     if ($parts[2] == 'uitschakelen') {
                         $this->inschakelen = false;
                         return true;
-                    } 
+                    }
                 }
                 return false;
-            } elseif(isset($parts[1])) {
-                $takken = Inschrijving::$takken;
+            } elseif (isset($parts[1])) {
+                $takken = Inschrijving::getTakken();
                 if (in_array($parts[1], $takken)) {
                     $this->tak = $parts[1];
 
-                    if(isset($parts[2])) {
+                    if (isset($parts[2])) {
                         if (is_numeric($parts[2])) {
                             $this->jaar = intval($parts[2]);
                             return true;
@@ -137,19 +140,20 @@ class LedenAdminRouter extends AdminRoute {
         return false;
     }
 
-    function getPage($url, $parts) {
+    public function getPage($url, $parts)
+    {
         if ($url == 'afrekeningen') {
-            require(__DIR__.'/admin/afrekeningen.php');
+            require __DIR__ . '/admin/afrekeningen.php';
             return new Admin\Afrekeningen();
         }
-        
+
         if (count($parts) == 3 && $parts[1] == 'steekkaart') {
-            require(__DIR__.'/admin/steekkaart-overzicht.php');
+            require __DIR__ . '/admin/steekkaart-overzicht.php';
             return new Admin\SteekkaartOverzicht($this->tak);
         }
 
         if (count($parts) == 1 || isset($this->tak)) {
-            require(__DIR__.'/admin/overview.php');
+            require __DIR__ . '/admin/overview.php';
             if (is_null($this->tak)) {
                 return new Admin\Overview();
             }
@@ -158,48 +162,47 @@ class LedenAdminRouter extends AdminRoute {
 
         if (!is_null($this->afrekening)) {
             if (isset($parts[2]) && $parts[1] == 'betalen') {
-                require(__DIR__.'/admin/betaal-afrekening.php');
+                require __DIR__ . '/admin/betaal-afrekening.php';
                 return new Admin\BetaalAfrekening($this->afrekening);
             }
-            require(__DIR__.'/admin/afrekening.php');
+            require __DIR__ . '/admin/afrekening.php';
             return new Admin\ViewAfrekening($this->afrekening);
         }
 
         if ($parts[1] == 'scouting-op-maat') {
-            require(__DIR__.'/admin/scouting-op-maat.php');
+            require __DIR__ . '/admin/scouting-op-maat.php';
             return new Admin\ScoutingOpMaat($this->gezin, $this->inschakelen);
         }
 
         if ($parts[1] == 'lid') {
-            require(__DIR__.'/admin/lid.php');
+            require __DIR__ . '/admin/lid.php';
             return new Admin\ViewLid($this->lid);
         }
 
         if ($parts[1] == 'lid-uitschrijven') {
-            require(__DIR__.'/admin/lid-uitschrijven.php');
+            require __DIR__ . '/admin/lid-uitschrijven.php';
             return new Admin\LidUitschrijven($this->lid);
         }
 
         if ($parts[1] == 'lid-tak') {
-            require(__DIR__.'/admin/lid-tak.php');
+            require __DIR__ . '/admin/lid-tak.php';
             return new Admin\LidTak($this->lid);
         }
 
         if ($parts[1] == 'mail') {
-            require(__DIR__.'/admin/mail.php');
+            require __DIR__ . '/admin/mail.php';
             return new Admin\MailPage();
         }
 
         if ($parts[1] == 'sms') {
-            require(__DIR__.'/admin/sms.php');
+            require __DIR__ . '/admin/sms.php';
             return new Admin\SmsPage();
         }
 
         //if ($parts[1] == 'exporteren') {
-            require(__DIR__.'/admin/exporteren.php');
-            return new Admin\Exporteren();
+        require __DIR__ . '/admin/exporteren.php';
+        return new Admin\Exporteren();
         //}
 
-        
     }
 }

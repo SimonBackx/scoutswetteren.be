@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Sails\Leiding\Admin;
 
+use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
@@ -118,7 +119,7 @@ class Gegevens extends Page
             'functies' => $functies,
             'permissions' => $permission_data,
             'errors' => $errors,
-            'takken' => Leiding::$takken,
+            'takken' => Inschrijving::getTakken(),
             'success' => $success,
             'id' => $user->id,
         ));

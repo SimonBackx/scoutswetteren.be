@@ -14,7 +14,7 @@ foreach (new DirectoryIterator(__DIR__ . '/../') as $fileInfo) {
         continue;
     }
 
-    if (in_array($fileInfo->getFilename(), Environment::getSetting('disable_sails', []))) {
+    if (class_exists('Environment') && in_array($fileInfo->getFilename(), Environment::getSetting('disable_sails', []))) {
         continue;
     }
 

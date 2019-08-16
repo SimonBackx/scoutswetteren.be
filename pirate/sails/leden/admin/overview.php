@@ -1,29 +1,33 @@
 <?php
 namespace Pirate\Sails\Leden\Admin;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
-use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Inschrijving;
 
-class Overview extends Page {
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+
+class Overview extends Page
+{
     public $tak = '';
     public $jaar = null;
 
-    function __construct($tak = '', $jaar = null) {
+    public function __construct($tak = '', $jaar = null)
+    {
         $this->tak = $tak;
         $this->jaar = $jaar;
     }
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $user = Leiding::getUser();
 
         $tak = $this->tak;
-        $takken = Inschrijving::$takken;
+        $takken = Inschrijving::getTakken();
 
         if (empty($tak) && !empty($user->tak)) {
             $tak = $user->tak;
@@ -41,7 +45,7 @@ class Overview extends Page {
             'takken' => $takken,
             'jaar' => $this->jaar,
             'prev' => $prev,
-            'tak' => $tak
+            'tak' => $tak,
         ));
     }
 }

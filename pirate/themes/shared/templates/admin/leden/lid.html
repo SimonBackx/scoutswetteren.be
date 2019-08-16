@@ -11,7 +11,7 @@
     </div>
 
     <p>{{ lid.getGeslacht() }}</p>
-    <p>{{ lid.geboortedatum | date("d/m/Y") }}</p>
+    <p>{{ lid.geboortedatum | date("d/m/Y") }} ({{ lid.getLeeftijd }} jaar)</p>
     {% if lid.gsm | length > 0 %}<p>{{ lid.gsm }} (van lid zelf)</p>{% endif %}
 
     {% if lid.isIngeschreven() %}

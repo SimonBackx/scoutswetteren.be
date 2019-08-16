@@ -26,7 +26,7 @@ class Inschrijving extends Model
     //public static $lidgeld_per_tak = array('kapoenen' => 40, 'wouters' => 40, 'jonggivers' => 40, 'givers' => 40, 'jin' => 40);
     //public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 20, 'wouters' => 20, 'jonggivers' => 20, 'givers' => 20, 'jin' => 20);
 
-    public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
+    //public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
     private static $scoutsjaar_cache = null; // cache
 
@@ -135,6 +135,11 @@ class Inschrijving extends Model
         return '€ ' . money_format('%!.2n', $this->prijs);
     }
 
+    public static function getTakken()
+    {
+        return array_keys(Environment::getSetting('scouts.takken'));
+    }
+
     public function getTakJaar()
     {
         $verdeling = Lid::getTakkenVerdeling($this->scoutsjaar, $this->lid->geslacht);
@@ -142,11 +147,16 @@ class Inschrijving extends Model
         $max = 0;
 
         foreach ($verdeling as $geboortejaar => $tak) {
-            if ($tak == $this->tak || $this->tak == 'akabe') {
+            if ($tak == $this->tak) {
                 if ($geboortejaar > $max) {
                     $max = $geboortejaar;
                 }
             }
+        }
+
+        if ($max == 0) {
+            // Default naar leeftijd van het lid
+            return $this->lid->getLeeftijd();
         }
 
         return $max - $jaar + 1;
@@ -272,7 +282,7 @@ class Inschrijving extends Model
         if ($halfjaarlijks) {
             return $takken[$tak]['lidgeld_halfjaar'];
         }
-        
+
         return $takken[$tak]['lidgeld'];
     }
 

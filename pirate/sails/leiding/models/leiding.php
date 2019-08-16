@@ -2,11 +2,12 @@
 namespace Pirate\Sails\Leiding\Models;
 
 use Pirate\Sails\Environment\Classes\Environment;
-use Pirate\Wheel\Mail;
-use Pirate\Wheel\Model;
+use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Settings\Models\Setting;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Mail;
+use Pirate\Wheel\Model;
 
 class Leiding extends Model
 {
@@ -19,8 +20,6 @@ class Leiding extends Model
     // als didCheckLogin == false, dan hebben we nog niet gecontrolleerd of de huidige gebruiker een leider is
     /*private static $didCheckLogin = false;
     private static $currentUser = null;*/
-
-    public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
     private static $allPermissions;
     private static $adminMenu;
@@ -463,7 +462,7 @@ class Leiding extends Model
                 if (empty($data['tak'])) {
                     $this->tak = null;
                 } else {
-                    if (in_array($data['tak'], self::$takken)) {
+                    if (Inschrijving::isGeldigeTak($data['tak'])) {
                         $this->tak = $data['tak'];
                     } else {
                         $errors[] = 'Ongeldige tak';
