@@ -60,6 +60,7 @@ $config = [
                 'auto_assign' => false,
                 'require_mobile' => false,
                 'optional_mobile' => true,
+                'default_end_hour' => '17:30',
                 'description' => 'Bij Akabe zit het scouting-DNA in hart en nieren! Elke persoon, ongeacht zijn beperkingen, moet de kansen en mogelijkheden krijgen om deel uit te maken van scouting.',
             ],
 
@@ -72,6 +73,7 @@ $config = [
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => false,
+                'default_end_hour' => '17:00',
                 'description' => 'De Kapoenen is de tak voor de allerkleinsten. Het leven van een kapoen (6-8) is er één vol spel, fantasie, creativiteit en expressie. Sommigen gaan voor de eerste keer naar de scouts, voor de eerste keer op weekend, voor de eerste keer op kamp. Zoveel nieuwe dingen! Wat doen we bij de kapoenen? We spelen, we ravotten, we maken ons vuil, we kliederen en kladderen, we zingen, we klimmen in de bomen... Een heleboel dus! Speelkledij is een must!',
             ],
 
@@ -84,6 +86,7 @@ $config = [
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => false,
+                'default_end_hour' => '17:00',
                 'description' => 'Wie tussen 8 en 11 jaar is, kan meespelen bij de kabouters of welpen (wouters). Zij voelen zich vaak al ervaren scouten, en dat zijn ze eigenlijk ook wel een beetje. Wouters worden zich steeds meer bewust van wat er rond hen gebeurt: op school, thuis en op de scouts. Ze krijgen ruimte en kansen om dingen uit te proberen en van elkaar te leren. Ze verleggen hun grenzen, halen kattenkwaad uit en kunnen vooral onbezorgd spelen.',
             ],
 
@@ -96,6 +99,7 @@ $config = [
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => false,
+                'default_end_hour' => '17:00',
                 'description' => 'Wie tussen 8 en 11 jaar is, kan meespelen bij de welpen of kabouters (wouters). Zij voelen zich vaak al ervaren scouten, en dat zijn ze eigenlijk ook wel een beetje. Wouters worden zich steeds meer bewust van wat er rond hen gebeurt: op school, thuis en op de scouts. Ze krijgen ruimte en kansen om dingen uit te proberen en van elkaar te leren. Ze verleggen hun grenzen, halen kattenkwaad uit en kunnen vooral onbezorgd spelen.,',
             ],
 
@@ -109,6 +113,7 @@ $config = [
                 'auto_assign' => true,
                 'require_mobile' => false,
                 'optional_mobile' => true,
+                'default_end_hour' => '17:30',
                 'description' => 'Niet oud, maar ook niet zo jong meer. In ieder geval in volle ontwikkeling. Ze mogen al alleen op pad, leren sjorren, kaartlezen en gaan op tentenkamp, waar ze zelfs hun eigen potje leren koken! Jonggivers krijgen een waaier van mogelijkheden om mee te beslissen, zelf de handen uit de mouwen te steken en allerlei vaardigheden onder de knie te krijgen. Een tak boordevol nieuwe dingen!',
             ],
 
@@ -122,6 +127,7 @@ $config = [
                 'auto_assign' => true,
                 'require_mobile' => false,
                 'optional_mobile' => true,
+                'default_end_hour' => '17:30',
                 'description' => 'Niet oud, maar ook niet zo jong meer. In ieder geval in volle ontwikkeling. Ze mogen al alleen op pad, leren sjorren, kaartlezen en gaan op tentenkamp, waar ze zelfs hun eigen potje leren koken! Jonggivers krijgen een waaier van mogelijkheden om mee te beslissen, zelf de handen uit de mouwen te steken en allerlei vaardigheden onder de knie te krijgen. Een tak boordevol nieuwe dingen!',
             ],
 
@@ -134,6 +140,7 @@ $config = [
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => true,
+                'default_end_hour' => '17:30',
                 'description' => 'Givers trekken samen op, hun vrienden zijn heilig. Ze hechten heel veel belang aan de groepssfeer. Van hun leiding krijgen ze alle mogelijkheden, ervaringen, spanning en enthousiasme die ze alleen binnen scouting kunnen vinden. Maar givers hebben ook hun eigen willetje. Ze krijgen dan ook elke keer dat ietsje meer. Dat ietsje meer participatie, dat ietsje meer zelfstandigheid, dat ietsje meer uitdaging. Als je hier zit, ben je al een echte!',
             ],
 
@@ -146,6 +153,7 @@ $config = [
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => true,
+                'default_end_hour' => '17:30',
                 'description' => 'Givers trekken samen op, hun vrienden zijn heilig. Ze hechten heel veel belang aan de groepssfeer. Van hun leiding krijgen ze alle mogelijkheden, ervaringen, spanning en enthousiasme die ze alleen binnen scouting kunnen vinden. Maar givers hebben ook hun eigen willetje. Ze krijgen dan ook elke keer dat ietsje meer. Dat ietsje meer participatie, dat ietsje meer zelfstandigheid, dat ietsje meer uitdaging. Als je hier zit, ben je al een echte!',
             ],
 
@@ -158,15 +166,10 @@ $config = [
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true, // if auto assign is off, members need to moved manually. Renewed membership will be automatically in the same tak.
                 'require_mobile' => true,
+                'default_end_hour' => '17:30',
                 'description' => 'Jin, Jij en Ik een Noodzaak. Als jin sta je op een grens: die tussen lid en leiding. In hun eigen \'jonge\' stijl werken ze gekke activiteiten, projecten en zelfs hun kamp uit. Al doende leren ze samen te werken en verantwoordelijkheid op te nemen. Hieruit groeit engagement voor de groep en voor de samenleving. Het is een jaar waarin ze hun eigen zegje hebben, waar ze samen met hun medejin tot ideeën komen en ze samen uitwerken. De jin gaat op buitenlands kamp. Ze organiseren financiële activiteiten om dat te kunnen bekostigen. Ze mogen zelf hun kamp invullen en vorm geven. Jin, gun ze hun apenjaar!',
             ],
 
-            /*
-        $scoutsjaar - 7 => 'kapoenen', $scoutsjaar - 6 => 'kapoenen',
-        $scoutsjaar - 8 => 'wouters', $scoutsjaar - 9 => 'wouters', $scoutsjaar - 10 => 'wouters',
-        $scoutsjaar - 11 => 'jonggivers', $scoutsjaar - 12 => 'jonggivers', $scoutsjaar - 13 => 'jonggivers',
-        $scoutsjaar - 14 => 'givers', $scoutsjaar - 15 => 'givers', $scoutsjaar - 16 => 'givers',
-        $scoutsjaar - 17 => 'jin', $scoutsjaar - 18 => 'jin',*/
         ],
     ],
 

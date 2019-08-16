@@ -23,7 +23,6 @@ class Event extends Model
     /// Only filled if requesting by id$
     public $order_sheet; /// object
 
-    static $groups = array('Kapoenen', 'Wouters', 'Jonggivers', 'Givers', 'Jin', 'Leiding', 'Oudercomité', 'Alle takken', 'Familie en vrienden', '(Jong)givers');
     static $defaultLocation = 'Scoutsterrein';
 
     private static $defaultEndHour = array(
@@ -55,6 +54,21 @@ class Event extends Model
             $groups[] = '(Jong)givers';
         }
         return $groups;
+    }
+
+    public static function getDefaultEndHourList()
+    {
+        $defaultEndHour = [
+            '' => '17:00',
+        ];
+
+        foreach (Environment::getSetting('scouts.takken') as $tak => $data) {
+            if (isset($data['default_end_hour'])) {
+                $defaultEndHour[$tak] = $data['default_end_hour'];
+            }
+        }
+
+        return $defaultEndHour;
     }
 
     public function __construct($row = array())
@@ -168,13 +182,14 @@ class Event extends Model
 
     public static function getDefaultEndHour()
     {
+        $defaultEndHour = static::getDefaultEndHourList();
         if (Leiding::isLoggedIn()) {
             $user = Leiding::getUser();
-            if (!empty($user->tak) && isset(self::$defaultEndHour[$user->tak])) {
-                return self::$defaultEndHour[$user->tak];
+            if (!empty($user->tak) && isset($defaultEndHour[$user->tak])) {
+                return $defaultEndHour[$user->tak];
             }
         }
-        return self::$defaultEndHour[''];
+        return $defaultEndHour[''];
     }
 
     public static function getDefaultStartHour()
