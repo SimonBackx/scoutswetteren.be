@@ -23,8 +23,8 @@ class Inschrijving extends Model
     public $afrekening_oke;
     public $halfjaarlijks;
 
-    public static $lidgeld_per_tak = array('kapoenen' => 40, 'wouters' => 40, 'jonggivers' => 40, 'givers' => 40, 'jin' => 40);
-    public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 20, 'wouters' => 20, 'jonggivers' => 20, 'givers' => 20, 'jin' => 20);
+    //public static $lidgeld_per_tak = array('kapoenen' => 40, 'wouters' => 40, 'jonggivers' => 40, 'givers' => 40, 'jin' => 40);
+    //public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 20, 'wouters' => 20, 'jonggivers' => 20, 'givers' => 20, 'jin' => 20);
 
     public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
 
@@ -139,17 +139,17 @@ class Inschrijving extends Model
     {
         $verdeling = Lid::getTakkenVerdeling($this->scoutsjaar, $this->lid->geslacht);
         $jaar = intval($this->lid->geboortedatum->format('Y'));
-        $min = 0;
+        $max = 0;
 
         foreach ($verdeling as $geboortejaar => $tak) {
-            if ($tak == $this->tak) {
-                if ($geboortejaar > $min) {
-                    $min = $geboortejaar;
+            if ($tak == $this->tak || $this->tak == 'akabe') {
+                if ($geboortejaar > $max) {
+                    $max = $geboortejaar;
                 }
             }
         }
 
-        return $min - $jaar + 1;
+        return $max - $jaar + 1;
 
     }
 
@@ -262,20 +262,18 @@ class Inschrijving extends Model
     {
         $tak = strtolower($tak);
 
-        if (!isset(self::$lidgeld_per_tak[$tak])) {
+        $takken = Environment::getSetting('scouts.takken');
+
+        if (!isset($takken[$tak])) {
             // Fatale fout!
-            return 0;
+            throw new \Exception("Ongeldige tak. Kon prijs niet bepalen");
         }
 
         if ($halfjaarlijks) {
-            if (!isset(self::$lidgeld_per_tak_halfjaar[$tak])) {
-                // Fatale fout!
-                return 0;
-            }
-            return self::$lidgeld_per_tak_halfjaar[$tak];
+            return $takken[$tak]['lidgeld_halfjaar'];
         }
-
-        return self::$lidgeld_per_tak[$tak];
+        
+        return $takken[$tak]['lidgeld'];
     }
 
     public function save()

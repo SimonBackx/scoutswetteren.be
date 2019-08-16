@@ -39,7 +39,11 @@
                          
                         <footer>
                             <input type="submit" class="main fill" value="{% if new %}Inschrijven{% else %}Opslaan{% endif %}">
-                            <a class="button main" href="/ouders/verleng-inschrijving">Annuleren</a>
+                            {% if new %}
+                                <a class="button main" href="/ouders/verleng-inschrijving">Annuleren</a>
+                            {% else %}
+                                <a class="button main" href="/ouders">Annuleren</a>
+                            {% endif %}
                         </footer>
 
                     </div>
