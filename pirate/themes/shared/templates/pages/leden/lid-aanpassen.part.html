@@ -57,8 +57,8 @@
         <input id="akabe-{{ loop.index }}" class="randomize-id" type="checkbox" name="lid-akabe{{ multiple }}"{% if lid.akabe %} checked{% endif %}>
         <label for="akabe-{{ loop.index }}">Inschrijven in de Akabe-tak</label>
 
-        <aside class="tak-givers tak-jin"{% if lid.tak != 'givers' and lid.tak != 'jin' %} style="display: none;"{% endif %}>
-            <label>GSM van de jongere</label>
+        <aside class="optional_mobile require_mobile">
+            <label>GSM van de jongere<span class="optional_mobile" style="display: none;"> (optioneel)</span></label>
             <input type="text" name="lid-gsm{{ multiple }}" placeholder="Vul GSM-nummer in van het lid" value="{{ lid.gsm | e('html_attr') }}">
         </aside>
 
@@ -70,7 +70,7 @@
 {% for taknaam, tak in alle_takken %}
 
 <aside id="tak-{{ taknaam }}"{% if lid.tak != taknaam %} style="display: none;"{% endif %} class="tak-text">
-    <h2>Welkom bij de {{ taknaam | capitalize }}</h2>
+    <h2>Welkom bij de {{ tak.name }}</h2>
     <p>
         {{ tak.description }}
     </p>

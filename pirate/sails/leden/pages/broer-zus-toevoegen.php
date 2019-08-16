@@ -1,7 +1,6 @@
 <?php
 namespace Pirate\Sails\Leden\Pages;
 
-use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Environment\Classes\Localization;
 use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Sails\Leden\Models\Inschrijving;
@@ -85,12 +84,22 @@ class BroerZusToevoegen extends Page
                     $errors[] = 'Er ging iets mis: ' . Database::getDb()->error . ' Contacteer de webmaster.';
                 } else {
                     if ($new) {
-                        header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving");
-                        return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving";
-                    }
+                        // Schrijf in + onthoud akabe
+                        $force_tak = null;
+                        if ($lid['akabe']) {
+                            $force_tak = 'akabe';
+                        }
 
-                    header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders");
-                    return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders";
+                        if ($this->lid->schrijfIn($force_tak)) {
+                            header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving");
+                            return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving";
+                        } else {
+                            $errors[] = 'Er ging iets mis bij het inschrijven. Controleer of je geldige gegevens hebt opgegeven.';
+                        }
+                    } else {
+                        header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders");
+                        return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders";
+                    }
                 }
             }
         }
@@ -127,7 +136,7 @@ class BroerZusToevoegen extends Page
             'success' => $success,
             'errors' => $errors,
             'takken' => json_encode($verdeling),
-            'alle_takken' => Environment::getSetting('scouts.takken'),
+            'alle_takken' => Lid::getTakInfo(),
             'limits_ignored' => Lid::areLimitsIgnored(),
         ));
     }

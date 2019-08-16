@@ -1,4 +1,5 @@
 var geboortedatums = {{ takken | raw }};
+var alle_takken = {{ alle_takken | json_encode() | raw }};
 
 function check_birthday() {
     var gender = $('input[name=lid-geslacht]:checked').val();
@@ -14,17 +15,45 @@ function check_birthday() {
         return;
     }
 
-    {% if alle_takken.akabe is defined %}
+    if (alle_takken.akabe) {
         if ($('input[name=lid-akabe]').is(':checked')) {
-            $('#tak-akabe').show();
-            return;
+            if (year >= alle_takken.akabe.min_year && year <= alle_takken.akabe.max_year) {
+                $('#tak-akabe').show();
+
+                if (alle_takken.akabe.optional_mobile) {
+                    $('.optional_mobile').show();
+                } else {
+                    $('.optional_mobile').hide();
+                }
+
+                if (alle_takken.akabe.require_mobile) {
+                    $('.require_mobile').show();
+                }
+                
+                return;
+            } else {
+                $('#tak-ongeldig').show();
+                return;
+            }
+            
         }
-    {% endif %}
+    }
 
     if (typeof geboortedatums[gender][year] === 'undefined') {
         $('#tak-ongeldig').show();
     } else {
         $('#tak-'+geboortedatums[gender][year]).show();
+
+        if (alle_takken[geboortedatums[gender][year]].optional_mobile) {
+            $('.optional_mobile').show();
+        } else {
+            $('.optional_mobile').hide();
+        }
+
+        if (alle_takken[geboortedatums[gender][year]].require_mobile) {
+            $('.require_mobile').show();
+        }
+        
     }
 }
 

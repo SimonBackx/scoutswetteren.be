@@ -369,7 +369,7 @@ class Lid extends Model
     // Bv. Jin van vorig jaar is niet meer inschrijfbaar (of bv na takherverdeling)
     public function isInschrijfbaar()
     {
-        $tak = $this->getTakVoorHuidigScoutsjaar(self::areLimitsIgnored());
+        $tak = $this->getTakVoorHuidigScoutsjaar();
         if ($tak === false) {
             return false;
         }
@@ -383,8 +383,6 @@ class Lid extends Model
         }
         return $this->steekkaart->isIngevuld();
     }
-
-    
 
     // Mapping from birth year to tak name
     public static function getTakkenVerdeling($scoutsjaar, $gender = null, $allow_limits = false)
@@ -417,22 +415,52 @@ class Lid extends Model
         return $data;
     }
 
+    public static function getTakInfo()
+    {
+        $scoutsjaar = Inschrijving::getScoutsjaar();
+        $takken = Environment::getSetting('scouts.takken');
+        $info = array();
+        foreach ($takken as $taknaam => $tak) {
+            $min = $scoutsjaar - $tak['age_end'];
+            $max = $scoutsjaar - $tak['age_start'];
+
+            $info[$taknaam] = [
+                'name' => ucfirst($taknaam),
+                'require_mobile' => $tak['require_mobile'],
+                'optional_mobile' => isset($tak['optional_mobile']) ? $tak['optional_mobile'] : false,
+                'auto_assign' => $tak['auto_assign'],
+                'min_year' => $min,
+                'max_year' => $max,
+                'description' => $tak['description'],
+            ];
+        }
+        return $info;
+    }
+
     /// Return the automatic tak for the current lid. Try to stay with the current tak if possible (if it doesnt have auto assign)
     public function getTakVoorHuidigScoutsjaar()
     {
+        $allow_limits = self::areLimitsIgnored();
+        $geboortejaar = intval($this->geboortedatum->format('Y'));
+        $gender = $this->geslacht;
+        $scoutsjaar = Inschrijving::getScoutsjaar();
+
         // Check if we are in a non auto assign tak
         if (isset($this->inschrijving)) {
             $takken = Environment::getSetting('scouts.takken');
             if (isset($takken[$this->inschrijving->tak]) && !$takken[$this->inschrijving->tak]['auto_assign']) {
-                return $this->inschrijving->tak;
+                $tak_info = $takken[$this->inschrijving->tak];
+
+                $min = $scoutsjaar - $tak_info['age_end'];
+                $max = $scoutsjaar - $tak_info['age_start'];
+
+                if ((empty($tak_info['gender']) || $tak_info['gender'] == $gender) && (($geboortejaar >= $min && $geboortejaar <= $max) || $allow_limits)) {
+                    return $this->inschrijving->tak;
+                }
             }
         }
 
-        $allow_limits = self::areLimitsIgnored();
-        $geboortejaar = intval($this->geboortedatum->format('Y'));
-        $gender = $this->geslacht;
-
-        $verdeling = self::getTakkenVerdeling(Inschrijving::getScoutsjaar(), $gender, $allow_limits);
+        $verdeling = self::getTakkenVerdeling($scoutsjaar, $gender, $allow_limits);
         if (isset($verdeling[$geboortejaar])) {
             return $verdeling[$geboortejaar];
         }
@@ -448,13 +476,13 @@ class Lid extends Model
         return null;
     }
 
-    public function schrijfIn()
+    public function schrijfIn($force_tak = null)
     {
-        if (!$this->isInschrijfbaar()) {
+        if (!isset($force_tak) && !$this->isInschrijfbaar()) {
             return false;
         }
 
-        return Inschrijving::schrijfIn($this);
+        return Inschrijving::schrijfIn($this, $force_tak);
     }
 
     // empty array on success
@@ -497,6 +525,8 @@ class Lid extends Model
         if (isset($this->geboortedatum, $this->geslacht, $this->voornaam)) {
             if ($this->isIngeschreven()) {
                 $tak = $this->inschrijving->tak;
+            } else if (isset($data['akabe']) && $data['akabe'] && Inschrijving::isGeldigeTak('akabe')) {
+                $tak = 'akabe';
             } else {
                 $tak = $this->getTakVoorHuidigScoutsjaar();
             }
@@ -508,6 +538,14 @@ class Lid extends Model
 
                 if (Environment::getSetting("scouts.takken.$tak.require_mobile", false)) {
                     Validator::validatePhone($data['gsm'], $this->gsm, $errors);
+                } else if (Environment::getSetting("scouts.takken.$tak.optional_mobile", false)) {
+                    if (!empty($data['gsm'])) {
+                        Validator::validatePhone($data['gsm'], $this->gsm, $errors);
+                    } else {
+                        $this->gsm = '';
+                    }
+                } else {
+                    $this->gsm = '';
                 }
             }
         }
@@ -522,7 +560,7 @@ class Lid extends Model
     public function moetNagekekenWorden()
     {
         if ($this->isIngeschreven()) {
-            if ($this->inschrijving->tak == 'givers' || $this->inschrijving->tak == 'jin') {
+            if (Environment::getSetting("scouts.takken." . $this->inschrijving->tak . ".require_mobile", false)) {
                 $errors = array();
                 if (!Validator::validatePhone($this->gsm, $this->gsm, $errors)) {
                     return true;

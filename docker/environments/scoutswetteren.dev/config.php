@@ -90,6 +90,7 @@ $config = [
                 'lidgeld_halfjaar' => 20,
                 'auto_assign' => true,
                 'require_mobile' => false,
+                'optional_mobile' => true,
                 'description' => 'De jonggivers, een geval apart. Niet oud, maar ook niet zo jong meer. In ieder geval in volle ontwikkeling. Ze mogen al alleen op pad, leren sjorren, kaartlezen en gaan op tentenkamp, waar ze zelfs hun eigen potje leren koken! Jonggivers krijgen een waaier van mogelijkheden om mee te beslissen, zelf de handen uit de mouwen te steken en allerlei vaardigheden onder de knie te krijgen. Een tak boordevol nieuwe dingen!',
             ],
             "givers" => [

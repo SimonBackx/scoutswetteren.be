@@ -61,7 +61,7 @@ class Inschrijving extends Model
 
     public static function isGeldigeTak($tak)
     {
-        return in_array($tak, Self::$takken);
+        return array_key_exists($tak, Environment::getSetting('scouts.takken'));
     }
 
     public function getVerbondTak()
@@ -202,8 +202,12 @@ class Inschrijving extends Model
 
     // UPDATE inschrijvingen set halfjaarlijks = 0
 
-    public static function schrijfIn(Lid $lid)
+    public static function schrijfIn(Lid $lid, $force_tak = null)
     {
+        if (isset($force_tak) && !static::isGeldigeTak($force_tak)) {
+            return false;
+        }
+
         $scoutsjaar = self::getScoutsjaar();
 
         if (isset($lid->inschrijving) && !empty($lid->inschrijving->datum_uitschrijving) && $lid->inschrijving->scoutsjaar == $scoutsjaar) {
@@ -213,7 +217,7 @@ class Inschrijving extends Model
 
         $jaar = self::getDb()->escape_string($scoutsjaar);
 
-        $tak = $lid->getTakVoorHuidigScoutsjaar();
+        $tak = isset($force_tak) ? $force_tak : $lid->getTakVoorHuidigScoutsjaar();
         if ($tak === false) {
             return false;
         }
