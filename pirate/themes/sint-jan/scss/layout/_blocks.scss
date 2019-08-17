@@ -120,7 +120,7 @@ main > .block {
                 padding-top: 20px;
             }
 
-            &> a {
+            &> a, .box > a {
                 text-transform: uppercase;
                 font-weight: bold;
                 font-size: $size-button;

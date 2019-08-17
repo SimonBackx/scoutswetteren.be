@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <section class="block white with-menu">
+            <nav>
+                <p>Ingelogd als {{ logged_in_user.firstname }}</p>
+                {% include "pages/leden/ouder-partials/menu.html" %}
+            </nav>
+            <div>
+                <h1>Attesten</h1>
+                <p>Op deze pagina vinden jullie een reeks documenten en attesten die jullie kunnen afdrukken. Hiermee kunnen jullie mogelijks geld terugkrijgen van je ziekenfonds of deze kunnen jullie inbrengen in jullie belastingen. Dit op voorwaarde dat de ingeschreven leden deelnamen en betaalden voor de activiteiten die recht geven op deze verminderingen of terugbetalingen.</p>
+                
+                {% for group in attesten %}
+                    <h2>{{ group.name }}</h2>
+
+                    <div class="list-bundle">
+                        {% for attest in group.attesten %}
+                            <article class="list">
+                                <div class="max merlot column">{{ attest.name }}</div>
+                                <div class="small column">
+                                    {{ attest.ziekenfonds }}
+                                </div>
+                                <div class="last column right">
+                                    <a href="{{ attest.url }}" class="icon-button" target="_blank" download>
+                                        Downloaden
+                                    </a>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+{% endblock %}
+

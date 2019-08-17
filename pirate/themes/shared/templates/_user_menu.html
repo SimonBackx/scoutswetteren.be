@@ -1,0 +1,23 @@
+<div class="box logout">
+        <p>{{ logged_in_user.name }}</p>
+        <a href="/gebruikers/logout" class="logout">Uitloggen</a>
+    </div>
+
+{% if general.logged_in_ouders %}
+    <div class="{% if not general.logged_in_leiding %}last {% endif %}box">
+        <a href="/ouders">Mijn inschrijvingen</a>
+        <a href="/ouders/attesten">Attesten</a>
+        {% if not general.logged_in_leiding %}
+            <a href="/gebruikers/wachtwoord-wijzigen">Wachtwoord wijzigen</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% if general.logged_in_leiding %}
+    <div class="box">
+        {% for button in admin.buttons %}
+            <a href="/admin/{{ button.url }}">{{ button.name }}</a>
+        {% endfor %}
+        <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank">Drive</a>
+    </div>
+{% endif %}

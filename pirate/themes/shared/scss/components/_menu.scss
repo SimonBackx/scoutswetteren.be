@@ -161,7 +161,7 @@
             align-items: center;
             line-height: $menu-height;
 
-            & > a, & > button {
+            & > a, & > button, .dropdown-group, .dropdown-group > a, .dropdown-group > button{
                 height: $menu-height;
                 // Height of an item should always be equal to $menu-height; Add padding or margin if you want a smaller background
                 box-sizing: border-box;
@@ -193,55 +193,43 @@
             // top is relative to parent, transform relative to own height. As soon as the heigt of the parent is higher than the elements height, the height will wrap to the top, causing it to hide
         }
     }
+}
 
-    .admin {
-        float: right;
-        height: $menu-height;
-        padding: 0 10px;
-        line-height: $menu-height;
-        cursor: pointer;
-        margin-right: -10px;
+.dropdown-group {
+    position: relative;
 
-        svg {
-            vertical-align: middle;
-        }
+    button.dropdown {
+        padding-right: 20px;
+        background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
+        position: relative;
+        text-align: left;
+    }
 
-        &:hover {
-            svg {
-                opacity: 0.6;
-            }
-        }
+    .dropdown-menu {
+        left: 0;
+        top: $menu-height - 10px;
+        position: absolute;
+        width: 300px;
+        line-height: 1;
 
-        .admin-menu {
-            display: none;
-            position: absolute;
-            z-index: 10;
-            right: 0px;
-            top: 50px;
-            padding: 10px;
-            line-height: normal;
-            cursor: default;
+        background: white;
+        text-align: left;
 
-            .content {
-                width: 350px;
-                box-sizing: border-box;
-            }
-
-            @media screen and (max-width: 350px) {
-                left: 0;
-                right: 0;
-                padding: 10px 0;
-
-                .content {
-                    width: 100%;
-                }
-            }
-        }
+        transform: translate(0, -40px);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.2s, opacity 0.2s, visibility 0.2s step-end;
 
         &.open {
-            .admin-menu {
-                display: block;
-            }
+            visibility: visible;
+            transition: transform 0.2s, opacity 0.2s, visibility 0.3s step-start;
+            transform: translate(0, 0);
+            opacity: 1;
         }
+    }
+
+    &:last-child .dropdown-menu {
+        left: auto;
+        right: 0;
     }
 }

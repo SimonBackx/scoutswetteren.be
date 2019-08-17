@@ -10,51 +10,8 @@
         </div>
     </div>
     <div>
-        {% if general.logged_in %}
-            <div class="admin">
-                <svg width="25px" height="15px" viewBox="0 -1 13 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <g id="Lock" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                        <rect id="Rectangle-2" fill="#FFFFFF" x="0" y="6" width="13" height="8" rx="1"></rect>
-                        <path d="M3,11.5 L10,11.5 L10,3.5 C10,1.56700338 8.43299662,0 6.5,0 C4.56700338,0 3,1.56700338 3,3.5 L3,11.5 Z" id="Oval" stroke="#FFFFFF" stroke-width="2"></path>
-                    </g>
-                </svg>
-                <svg width="10px" height="7px" viewBox="24 6 10 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                    <polyline id="Path-2" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" points="33 7 29 11 25 7"></polyline>
-                </svg>
-                <div class="admin-menu">
-                    <div class="content">
-                        <div class="box">
-                            <a href="/gebruikers/logout" class="logout merlot button noborder">Uitloggen</a>
-                            <p>{{ logged_in_user.name }}</p>
-                        </div>
-                        <!--<div class="box">
-                            <a href="/logout" class="main button noborder">Meldingen bekijken</a>
-                        </div>-->
-                        {% if general.logged_in_ouders %}
-                            <div class="{% if not general.logged_in_leiding %}last {% endif %}box">
-                                <a href="/ouders" class="main button noborder">Mijn inschrijvingen</a>
-                                <a href="/ouders/attesten" class="main button noborder">Attesten</a>
-                                {% if not general.logged_in_leiding %}
-                                    <a href="/gebruikers/wachtwoord-wijzigen" class="main button noborder">Wachtwoord wijzigen</a>
-                                {% endif %}
-                            </div>
-                        {% endif %}
-
-                        {% if general.logged_in_leiding %}
-                            <div class="last box">
-                                {% for button in admin.buttons %}
-                                    <a href="/admin/{{ button.url }}" class="main button noborder">{{ button.name }}</a>
-                                {% endfor %}
-                                <a href="https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA" target="_blank" class="main button noborder">Drive</a>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
         <div class="overflow-bar">
             <a class="logo" href="/" title="Startpagina">
-                <!--<a href="/"><img src="{{ http }}/images/menu-logo.png" alt="Prins Boudewijn"></a>-->
             </a>
             <div class="items">
                 <div class="space">

@@ -54,7 +54,7 @@ function toggleDropdownMenu(e) {
     if (did_click_popup) {
         return;
     }
-    var menu = e.currentTarget.getElementsByClassName('dropdown-menu')[0];
+    var menu = e.currentTarget.nextElementSibling;
     did_click_popup = true;
 
     if (menu.className == 'dropdown-menu') {

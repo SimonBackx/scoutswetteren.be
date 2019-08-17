@@ -36,40 +36,6 @@ main {
     }
 }
 
-#menu .admin-menu .content {
-    background: #FFFFFF;
-    box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.50);
-    border-radius: 4px;
-
-    .box {
-        border-bottom: 1px solid $color-border;
-        padding: 10px 0;
-
-        &.last {
-            border: 0;
-        }
-        .logout {
-            float: right;
-        }
-
-        a.button {
-            display: block;
-            margin: 0;
-            padding: 10px 20px;
-
-            &:hover {
-                font-weight: bold;
-            }
-        }
-    }
-
-    p {
-        font-size: $size-button;
-        margin: 10px 20px;
-        padding: 0;
-    }
-}
-
 #menu .logo {
     height: $menu-height;
     width: 150px;
@@ -135,13 +101,20 @@ main {
 // They are used twice: once in the invisible space div
 // and once in a visible form, forcing to stick to the bottom of that invisible one
 // to hide it when it starts to wrap
-#menu .items > div {
+#menu .items > div, #menu .items > div .dropdown-group {
     &> a, &> button {
         margin: 0 15px;
         text-transform: uppercase;
         font-weight: bold;
         font-size: $size-button;
         display: inline-block;
+
+        opacity: 1;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 0.6;
+        }
 
         &, &:hover, &:visited, &:active, &:link {
             color: white;
@@ -166,46 +139,58 @@ main {
             }
         }
     }
-
-    &> a {
-        opacity: 1;
-        transition: opacity 0.2s;
-
-        &:hover {
-            opacity: 0.6;
-        }
-    }
-
-    &> button.dropdown {
-        transition: color 0.2s;
-
-        &:hover {
-            color: rgba(white, 0.5);
-        }
-    }
 }
 
-#menu .items button.dropdown {
-    padding-right: 20px;
-    background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
-    position: relative;
-    text-align: left;
+.dropdown-group {
 
-    & > .dropdown-menu {
-        left: 0;
-        top: $menu-height - 10px;
-        position: absolute;
-        width: 250px;
-
+    .dropdown-menu {
         background: white;
         box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.25);
         border-radius: $border-radius;
-        padding: 20px;
-        text-align: left;
+        padding: 15px 20px;
+        max-height: calc(100vh - #{$menu-height + 40px});
+        overflow-y: auto;
+        color: $color-main-alternative-dark;
+        
+        .box {
+
+            &::after {
+                content: '';
+                height: $border-width;
+                width: 100%;
+                padding: 0;
+                margin: 10px 0px;
+                background: $color-border;
+                border-radius: $border-width/2;
+                display: block;
+            }
+
+            &:last-child {
+                &::after {
+                    display: none;
+                }
+            }
+
+            &.logout {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap
+            }
+        }
+
+        p {
+            padding: 12px 15px;
+            margin: 0;
+        }
 
         a {
             display: block;
             padding: 12px 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: $size-button;
             color: $color-main-alternative-dark;
             border-radius: $border-radius;
             transition: background-color 0.2s;
@@ -215,20 +200,11 @@ main {
                 background-color: $color-main-alternative-shade;
             }
         }
-        
-        transform: translate(0, -40px);
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.2s, opacity 0.2s, visibility 0.2s step-end;
-
-        &.open {
-            visibility: visible;
-            transition: transform 0.2s, opacity 0.2s, visibility 0.3s step-start;
-            transform: translate(0, 0);
-            opacity: 1;
-        }
     }
 }
+
+
+
 
 #smartphone-menu-items {
     a, button {
