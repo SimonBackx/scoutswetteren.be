@@ -118,18 +118,21 @@ class BroerZusToevoegen extends Page
 
         // Is dit gewoon een aanpassing na het inschrijven? => tak ligt vast
         if (!$new && $this->lid->isIngeschreven()) {
-            // geen mogelijkheid om tak te wisselen, die ligt al vast
-            foreach ($verdeling['M'] as $key => $value) {
-                $verdeling['M'][$key] = $this->lid->inschrijving->tak;
-            }
-            foreach ($verdeling['V'] as $key => $value) {
-                $verdeling['V'][$key] = $this->lid->inschrijving->tak;
+            $info = Lid::getTakInfo();
+            if (isset($info[$this->lid->inschrijving->tak])) {
+                $info = $info[$this->lid->inschrijving->tak];
+
+                for ($i = $info['min_year']; $i <= $info['max_year']; $i++) {
+                    $verdeling['M'][$i] = $this->lid->inschrijving->tak;
+                    $verdeling['V'][$i] = $this->lid->inschrijving->tak;
+                }
             }
         }
 
         return Template::render('pages/leden/broer-zus-toevoegen', array(
             'new' => $new,
             'lid' => $lid,
+            'lid_model' => $this->lid,
             'maanden' => Localization::getMonths(),
             'jaren' => $jaren,
             'fail' => $fail,
@@ -138,6 +141,7 @@ class BroerZusToevoegen extends Page
             'takken' => json_encode($verdeling),
             'alle_takken' => Lid::getTakInfo(),
             'limits_ignored' => Lid::areLimitsIgnored(),
+            'is_ingeschreven' => $this->lid->isIngeschreven(),
         ));
     }
 }

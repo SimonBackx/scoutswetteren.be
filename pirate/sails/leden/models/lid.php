@@ -492,6 +492,35 @@ class Lid extends Model
         return Inschrijving::schrijfIn($this, $force_tak);
     }
 
+    public function isPhoneOptional()
+    {
+        if ($this->isIngeschreven()) {
+            $tak = $this->inschrijving->tak;
+        } else {
+            $tak = $this->getTakVoorHuidigScoutsjaar();
+        }
+
+        if ($tak === false) {
+            return false;
+        }
+
+        return Environment::getSetting("scouts.takken.$tak.optional_mobile", false);
+    }
+
+    public function isPhoneRequired()
+    {
+        if ($this->isIngeschreven()) {
+            $tak = $this->inschrijving->tak;
+        } else {
+            $tak = $this->getTakVoorHuidigScoutsjaar();
+        }
+
+        if ($tak === false) {
+            return false;
+        }
+        return Environment::getSetting("scouts.takken.$tak.require_mobile", false);
+    }
+
     // empty array on success
     // array of errors on failure
     public function setProperties(&$data)
@@ -532,7 +561,7 @@ class Lid extends Model
         if (isset($this->geboortedatum, $this->geslacht, $this->voornaam)) {
             if ($this->isIngeschreven()) {
                 $tak = $this->inschrijving->tak;
-            } else if (isset($data['akabe']) && $data['akabe'] && Inschrijving::isGeldigeTak('akabe')) {
+            } else if (isset($data['akabe']) && $data['akabe'] && Inschrijving::isGeldigeTak('akabe') && empty($this->id)) {
                 $tak = 'akabe';
             } else {
                 $tak = $this->getTakVoorHuidigScoutsjaar();
@@ -567,7 +596,7 @@ class Lid extends Model
     public function moetNagekekenWorden()
     {
         if ($this->isIngeschreven()) {
-            if (Environment::getSetting("scouts.takken." . $this->inschrijving->tak . ".require_mobile", false)) {
+            if ($this->isPhoneRequired()) {
                 $errors = array();
                 if (!Validator::validatePhone($this->gsm, $this->gsm, $errors)) {
                     return true;

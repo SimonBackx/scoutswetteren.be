@@ -54,15 +54,17 @@
             </label>
         </div>
 
-        <input id="akabe-{{ loop.index }}" class="randomize-id" type="checkbox" name="lid-akabe{{ multiple }}"{% if lid.akabe %} checked{% endif %}>
-        <label for="akabe-{{ loop.index }}">Inschrijven in de Akabe-tak <a class="help-icon" target="_blank" title="Wie of wat is Akabe?" href="https://www.scoutsengidsenvlaanderen.be/akabe/wie-of-wat-is-akabe"></a></label>
+        {% if new and alle_takken.akabe is defined %}
+            <input id="akabe-{{ loop.index }}" class="randomize-id" type="checkbox" name="lid-akabe{{ multiple }}"{% if lid.akabe %} checked{% endif %}>
+            <label for="akabe-{{ loop.index }}">Inschrijven in de Akabe-tak <a class="help-icon" target="_blank" title="Wie of wat is Akabe?" href="https://www.scoutsengidsenvlaanderen.be/akabe/wie-of-wat-is-akabe"></a></label>
 
-        <div class="checkbox-controllable">
-            <p class="visible-when-checked" style="margin-bottom: 20px;">Indien je reeds bij ons hebt geïnformeerd over Akabe kan je dit lid meteen inschrijven in de Akabe-tak. Dit kan later altijd door de leiding gewijzigd worden. Als je het niet zeker bent kan je het gewoon uitvinken.</p>
-        </div>
+            <div class="checkbox-controllable">
+                <p class="visible-when-checked" style="margin-bottom: 20px;">Indien je reeds bij ons hebt geïnformeerd over Akabe kan je dit lid meteen inschrijven in de Akabe-tak. Dit kan later altijd door de leiding gewijzigd worden. Als je het niet zeker bent kan je het gewoon uitvinken.</p>
+            </div>
+        {% endif %}
 
-        <aside class="optional_mobile require_mobile">
-            <label>GSM van de jongere<span class="optional_mobile" style="display: none;"> (optioneel)</span></label>
+        <aside class="optional_mobile require_mobile" {% if not lid_model.isPhoneRequired() and not lid_model.isPhoneOptional() %} style="display: none;"{% endif%}>
+            <label>GSM van de jongere<span class="optional_mobile" {% if not lid_model.isPhoneOptional() %} style="display: none;"{% endif%}> (optioneel)</span></label>
             <input type="text" name="lid-gsm{{ multiple }}" placeholder="Vul GSM-nummer in van het lid (niet de ouders)" value="{{ lid.gsm | e('html_attr') }}">
         </aside>
 
@@ -72,22 +74,21 @@
 </div>
 
 
-{% for taknaam, tak in alle_takken %}
+{% if new or not is_ingeschreven %}
+    {% for taknaam, tak in alle_takken %}
+        <aside id="tak-{{ taknaam }}"{% if lid.tak != taknaam %} style="display: none;"{% endif %} class="tak-text">
+            <h2>Welkom bij de {{ tak.name }}</h2>
+            <p>
+                {{ tak.description }}
+            </p>
+        </aside>
+    {% endfor %}
 
-<aside id="tak-{{ taknaam }}"{% if lid.tak != taknaam %} style="display: none;"{% endif %} class="tak-text">
-    <h2>Welkom bij de {{ tak.name }}</h2>
-    <p>
-        {{ tak.description }}
-    </p>
-</aside>
-{% endfor %}
-
-
-
-<aside id="tak-ongeldig" style="display: none;" class="tak-text">
-    <ul class="error">
-        <li>
-            Jouw zoon/dochter is te jong/oud voor onze scouts. Leden zijn welkom vanaf 6 jaar, of als ze nog 6 jaar worden in dat jaar. Kinderen van 5 jaar kan je wel inschrijven als ze al in het eerste leerjaar zitten, maar daarvoor moet je eerst contact opnemen met de leiding zodat zij jou hier toegang tot kunnen geven.
-        </li>
-    </ul>
-</aside>
+    <aside id="tak-ongeldig" style="display: none;" class="tak-text">
+        <ul class="error">
+            <li>
+                Jouw zoon/dochter is te jong/oud voor onze scouts. Leden zijn welkom vanaf 6 jaar, of als ze nog 6 jaar worden in dat jaar. Kinderen van 5 jaar kan je wel inschrijven als ze al in het eerste leerjaar zitten, maar daarvoor moet je eerst contact opnemen met de leiding zodat zij jou hier toegang tot kunnen geven.
+            </li>
+        </ul>
+    </aside>
+{% endif %}

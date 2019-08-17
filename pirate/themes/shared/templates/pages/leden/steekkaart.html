@@ -19,11 +19,11 @@
                             {% if new %}
                                 <h1>Vul de individuele steekkaart van {{ lid.voornaam }} in</h1>
                                 <p>De individuele steekkaart vul je het best meteen in, maar moet sowieso binnen 3 weken ingevuld worden.</p>
-                                <input type="submit" class="main fill" name="overslaan" value="Overslaan">
+                                <div><input type="submit" class="main fill" name="overslaan" value="Overslaan"></div>
                             {% else %}
                                 <h1>Individuele steekkaart van {{ lid.voornaam }}</h1>
                                 <p>Laatst nagekeken op {{ nagekekenString }}.</p>
-                                <input type="submit" class="main fill" name="overslaan" value="Terug">
+                                <div><input type="submit" class="main fill" name="overslaan" value="Terug"></div>
                             {% endif %}
                         {% endif %}
 

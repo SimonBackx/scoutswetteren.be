@@ -10,7 +10,11 @@
                         {% if new %}
                             <h1>Nieuw lid inschrijven</h1>
                         {% else %}
-                            <h1>Algemene gegevens van {{ lid['voornaam'] }} nakijken</h1>
+                            {% if lid_model.moetNagekekenWorden %}
+                                <h1>Kijk de gegevens van {{ lid['voornaam'] }} na</h1>
+                            {% else %}
+                                <h1>Algemene gegevens van {{ lid['voornaam'] }} bewerken</h1>
+                            {% endif %}
                         {% endif %}
 
                             {% if limits_ignored %}
@@ -39,10 +43,13 @@
                          
                         <footer>
                             <input type="submit" class="main fill" value="{% if new %}Inschrijven{% else %}Opslaan{% endif %}">
-                            {% if new %}
-                                <a class="button main" href="/ouders/verleng-inschrijving">Annuleren</a>
-                            {% else %}
-                                <a class="button main" href="/ouders">Annuleren</a>
+
+                            {% if not lid_model.moetNagekekenWorden %}
+                                {% if new %}
+                                    <a class="button main" href="/ouders/verleng-inschrijving">Annuleren</a>
+                                {% else %}
+                                    <a class="button main" href="/ouders">Annuleren</a>
+                                {% endif %}
                             {% endif %}
                         </footer>
 
