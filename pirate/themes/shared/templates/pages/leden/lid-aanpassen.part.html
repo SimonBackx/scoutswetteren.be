@@ -1,3 +1,4 @@
+
 <div class="splitted">
     <div class="part column first">
         <label>Voornaam</label>
@@ -53,19 +54,23 @@
             </label>
         </div>
 
-        <p>Indien je reeds bij ons hebt geïnformeerd over Akabe kan je dit lid meteen inschrijven in de Akabe-tak. Dit kan later altijd door de leiding gewijzigd worden. Als je het niet zeker bent kan je het gewoon uitvinken.</p>
         <input id="akabe-{{ loop.index }}" class="randomize-id" type="checkbox" name="lid-akabe{{ multiple }}"{% if lid.akabe %} checked{% endif %}>
-        <label for="akabe-{{ loop.index }}">Inschrijven in de Akabe-tak</label>
+        <label for="akabe-{{ loop.index }}">Inschrijven in de Akabe-tak <a class="help-icon" target="_blank" title="Wie of wat is Akabe?" href="https://www.scoutsengidsenvlaanderen.be/akabe/wie-of-wat-is-akabe"></a></label>
+
+        <div class="checkbox-controllable">
+            <p class="visible-when-checked" style="margin-bottom: 20px;">Indien je reeds bij ons hebt geïnformeerd over Akabe kan je dit lid meteen inschrijven in de Akabe-tak. Dit kan later altijd door de leiding gewijzigd worden. Als je het niet zeker bent kan je het gewoon uitvinken.</p>
+        </div>
 
         <aside class="optional_mobile require_mobile">
             <label>GSM van de jongere<span class="optional_mobile" style="display: none;"> (optioneel)</span></label>
-            <input type="text" name="lid-gsm{{ multiple }}" placeholder="Vul GSM-nummer in van het lid" value="{{ lid.gsm | e('html_attr') }}">
+            <input type="text" name="lid-gsm{{ multiple }}" placeholder="Vul GSM-nummer in van het lid (niet de ouders)" value="{{ lid.gsm | e('html_attr') }}">
         </aside>
 
       
     </div>
 
 </div>
+
 
 {% for taknaam, tak in alle_takken %}
 
@@ -76,6 +81,8 @@
     </p>
 </aside>
 {% endfor %}
+
+
 
 <aside id="tak-ongeldig" style="display: none;" class="tak-text">
     <ul class="error">

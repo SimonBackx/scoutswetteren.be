@@ -160,7 +160,8 @@ form {
     }
 
     input[type=checkbox] + label {
-        margin: 30px 0;
+        margin: 15px 20px 20px 0;
+        display: block;
         cursor: pointer;
     }
 
@@ -346,11 +347,11 @@ form {
     }
 
     input[type=text].datepicker {
-        background: url(../prins-boudewijn/images/input-arrow.png) no-repeat right center;
+        background: url('../'+ $theme +'/icons/input-down.svg') no-repeat right 10px center;
     }
 
     .select-box, input[type=text].dropdown {
-        background: url(../prins-boudewijn/images/input-arrow.png) no-repeat right center;
+        background: url('../'+ $theme +'/icons/input-down.svg') no-repeat right 10px  center;
     }
 
     &.error {
@@ -360,5 +361,22 @@ form {
         label {
             color: $color-error;
         }
+    }
+}
+
+
+a.help-icon {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin: 0 5px;
+    background: url('../'+$theme+'/icons/dark/help.svg') no-repeat center center; 
+    vertical-align: middle;
+
+    opacity: 1;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.5;
     }
 }
