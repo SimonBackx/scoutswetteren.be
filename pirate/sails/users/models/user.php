@@ -1,16 +1,17 @@
 <?php
 namespace Pirate\Sails\Users\Models;
-use Pirate\Wheel\Model;
-use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Wheel\Mail;
-use Pirate\Sails\Settings\Models\Setting;
-use Pirate\Sails\Sentry\Classes\Sentry;
 
-// Should remove these dependencies:
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Sentry\Classes\Sentry;
+use Pirate\Sails\Validating\Models\Validator;
 
-class User extends Model {
+// Should remove these dependencies:
+use Pirate\Wheel\Mail;
+use Pirate\Wheel\Model;
+
+class User extends Model
+{
     public $id;
     public $firstname;
     public $lastname;
@@ -28,7 +29,8 @@ class User extends Model {
 
     private static $login_days = 60;
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (is_null($row)) {
             return;
         }
@@ -42,15 +44,16 @@ class User extends Model {
         $this->set_password_key = $row['user_set_password_key'];
     }
 
-    static function getForEmail($email) {
+    public static function getForEmail($email)
+    {
         $email = self::getDb()->escape_string($email);
 
         $query = '
             SELECT u.* from users u
-            where u.user_mail = "'.$email.'"';
+            where u.user_mail = "' . $email . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new User($row);
             }
@@ -58,15 +61,16 @@ class User extends Model {
         return null;
     }
 
-    static function getById($id) {
+    public static function getById($id)
+    {
         $id = self::getDb()->escape_string($id);
 
         $query = '
             SELECT u.* from users u
-            where u.user_id = "'.$id.'"';
+            where u.user_id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new User($row);
             }
@@ -74,15 +78,16 @@ class User extends Model {
         return null;
     }
 
-    static function getForPhone($phone) {
+    public static function getForPhone($phone)
+    {
         $phone = self::getDb()->escape_string($phone);
 
         $query = '
             SELECT u.* from users u
-            where u.user_phone = "'.$phone.'"';
+            where u.user_phone = "' . $phone . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new User($row);
             }
@@ -90,14 +95,15 @@ class User extends Model {
         return null;
     }
 
-    static function temporaryLoginWithPasswordKey($key) {
+    public static function temporaryLoginWithPasswordKey($key)
+    {
         $key = self::getDb()->escape_string($key);
         $query = "SELECT l.*
         from users l
         where l.user_set_password_key = '$key'";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 self::$currentUser = new User($row);
                 self::$didCheckLogin = true;
@@ -107,7 +113,8 @@ class User extends Model {
         return false;
     }
 
-    static function loginWithMagicToken($mail, $magicToken) {
+    public static function loginWithMagicToken($mail, $magicToken)
+    {
         $mail = self::getDb()->escape_string($mail);
         $magicToken = self::getDb()->escape_string($magicToken);
 
@@ -116,13 +123,13 @@ class User extends Model {
         join user_magic_tokens t on t.client = o.user_id
         where o.user_mail = '$mail' and o.user_password is not null and t.token = '$magicToken'";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
-                
+
                 $expires = $row['expires'];
                 // todo: validate magic token
-                
+
                 self::$currentUser = new User($row);
                 self::$didCheckLogin = true;
 
@@ -135,19 +142,20 @@ class User extends Model {
     // Returns true on success
     // Sets cookies if succeeded
     // isLoggedIn() etc kan gebruikt worden hierna
-    static function login($mail, $password) {
+    public static function login($mail, $password)
+    {
         $mail = self::getDb()->escape_string($mail);
         $query = "SELECT l.*
         from users l
         where user_mail = '$mail'";
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 $hash = $row['user_password'];
 
                 // hash_equals kijkt of beide argumenten gelijk zijn
-                // Maar hash_equals is time safe, het duurt dus even lang om gelijke 
+                // Maar hash_equals is time safe, het duurt dus even lang om gelijke
                 // en ongelijke argumenten te vergelijken
                 // Meer info: http://blog.ircmaxell.com/2014/11/its-all-about-time.html
                 if (password_verify($password, $hash)) {
@@ -166,7 +174,8 @@ class User extends Model {
     }
 
     // returns if password is correct
-    function confirmPassword($password) {
+    public function confirmPassword($password)
+    {
         if (password_verify($password, $this->password)) {
             return true;
         }
@@ -174,7 +183,8 @@ class User extends Model {
     }
 
     //
-    function changePassword($new) {
+    public function changePassword($new)
+    {
         // check if logged in as same account
         if (!self::isLoggedIn()) {
             return false;
@@ -184,11 +194,11 @@ class User extends Model {
         }
 
         // Geldigheid controleren
-        
+
         if (strlen($new) < 8) {
             return false;
         }
-        
+
         // Alle tokens wissen en huidige token opnieuw aanmaken
         $client = intval($this->id);
         $query = "DELETE FROM tokens WHERE client = '$client'";
@@ -202,16 +212,17 @@ class User extends Model {
         return $this->setPassword($new);
     }
 
-    private function setPassword($new) {
+    private function setPassword($new)
+    {
         $id = self::getDb()->escape_string($this->id);
         $encrypted = $this->passwordEncrypt($new);
         $password = self::getDb()->escape_string($encrypted);
 
-        $query = "UPDATE users 
-            SET 
+        $query = "UPDATE users
+            SET
             user_password = '$password',
             user_set_password_key = NULL
-             where `user_id` = '$id' 
+             where `user_id` = '$id'
         ";
 
         if (self::getDb()->query($query)) {
@@ -222,15 +233,16 @@ class User extends Model {
     }
 
     /// Zet het wachtwoord van deze user gelijk aan die van een andere user (tijdelijke functie voor migrations)
-    function setPasswordToUser($user) {
+    public function setPasswordToUser($user)
+    {
         $id = self::getDb()->escape_string($this->id);
         $encrypted = $user->password;
         $password = self::getDb()->escape_string($encrypted);
 
-        $query = "UPDATE users 
-            SET 
+        $query = "UPDATE users
+            SET
             user_password = '$password'
-             where `user_id` = '$id' 
+             where `user_id` = '$id'
         ";
 
         if (self::getDb()->query($query)) {
@@ -240,19 +252,21 @@ class User extends Model {
         return false;
     }
 
-    static function logout() {
+    public static function logout()
+    {
         self::deleteToken(self::$currentToken);
         self::$currentToken = null;
         self::$currentUser = null;
         self::$didCheckLogin = true;
     }
 
-    static function getAdminMenu() {
+    public static function getAdminMenu()
+    {
         if (isset(self::$adminMenu)) {
             return self::$adminMenu;
         }
 
-        include(__DIR__.'/../../_bindings/admin.php');
+        include __DIR__ . '/../../_bindings/admin.php';
 
         $allButtons = [];
         $urls = [];
@@ -269,17 +283,17 @@ class User extends Model {
                         if ($priority <= $o->priority) {
                             continue;
                         }
-                        
+
                         // Remove old button
                         array_splice($allButtons[$o->priority], $o->index, 1);
-                        
+
                         // Nu alle oude priority indexen updaten
                         foreach ($urls as $key => $value) {
                             if ($value->priority == $o->priority && $value->index >= $o->index) {
                                 $value->index--;
                             }
                         }
-                    } 
+                    }
 
                     if (!isset($allButtons[$priority])) {
                         $allButtons[$priority] = [];
@@ -287,7 +301,7 @@ class User extends Model {
 
                     $urls[$button['url']] = (object) [
                         'priority' => $priority,
-                        'index' => count($allButtons[$priority])
+                        'index' => count($allButtons[$priority]),
                     ];
 
                     $allButtons[$priority][] = $button;
@@ -302,21 +316,20 @@ class User extends Model {
             $sortedButtons = array_merge($buttons, $sortedButtons);
         }
 
-           
-
         return $sortedButtons;
     }
 
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies
     // Indien al token op huidige sessie, dan verwijdert hij die eerst
-    private static function createToken() {
+    private static function createToken()
+    {
         if (!self::isLoggedIn()) {
             return false;
         }
 
         // Het is mogelijk om ingelogd te zijn zonder token te hebben
         // namelijk heel even tijdens het inloggen zelf
-        if (!is_null(self::$currentToken)){
+        if (!is_null(self::$currentToken)) {
             self::deleteToken(self::$currentToken, false);
         }
 
@@ -338,58 +351,67 @@ class User extends Model {
     }
 
     // Verwijdert de opgegeven token
-    private static function deleteToken($token, $removeCookies = true) {
+    private static function deleteToken($token, $removeCookies = true)
+    {
         // Token die bij de huidige sessie hoort verwijderen
         $token = self::getDb()->escape_string($token);
 
         $now = new \DateTime();
-        $now->sub(new \DateInterval('P'.Self::$login_days.'D'));
+        $now->sub(new \DateInterval('P' . Self::$login_days . 'D'));
         $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
         $query = "DELETE FROM tokens WHERE token = '$token' OR `time` < '$time'";
 
         if (self::getDb()->query($query)) {
-            if ($removeCookies)
+            if ($removeCookies) {
                 self::removeCookies();
+            }
+
             return true;
         }
         return false;
     }
 
-    private static function setCookies($id, $token){
+    private static function setCookies($id, $token)
+    {
         // We slaan ook de client id op, omdat we hierdoor een time safe operatie kunnen doen
-        setcookie('client', $id, time()+5184000,'/', '', true, true); 
-        setcookie('token', $token, time()+5184000,'/', '', true, true); 
+        setcookie('client', $id, time() + 5184000, '/', '', true, true);
+        setcookie('token', $token, time() + 5184000, '/', '', true, true);
 
         // Old: migration
-        setcookie('ouder_client', '', time()-604800,'/');
-        setcookie('ouder_token', '', time()-604800,'/');
+        setcookie('ouder_client', '', time() - 604800, '/');
+        setcookie('ouder_token', '', time() - 604800, '/');
     }
 
-    private static function removeCookies(){
-        setcookie('client', '', time()-604800,'/');
-        setcookie('token', '', time()-604800,'/');
-        
+    private static function removeCookies()
+    {
+        setcookie('client', '', time() - 604800, '/');
+        setcookie('token', '', time() - 604800, '/');
+
         // Old: migration
-        setcookie('ouder_client', '', time()-604800,'/');
-        setcookie('ouder_token', '', time()-604800,'/');
+        setcookie('ouder_client', '', time() - 604800, '/');
+        setcookie('ouder_token', '', time() - 604800, '/');
     }
 
     // 256 bit, 44 characters long met speciale characters!!
-    private static function generateToken() {
+    private static function generateToken()
+    {
         $bytes = openssl_random_pseudo_bytes(32);
         return base64_encode($bytes);
     }
-    private static function generateKey() {
+    private static function generateKey()
+    {
         $bytes = openssl_random_pseudo_bytes(16);
         return bin2hex($bytes);
     }
 
-    private static function generateLongKey() {
+    private static function generateLongKey()
+    {
         $bytes = openssl_random_pseudo_bytes(32);
         return bin2hex($bytes);
     }
 
-    function getMagicToken() {
+    public function getMagicToken()
+    {
         if (isset($this->temporaryMagicToken)) {
             return $this->temporaryMagicToken;
         }
@@ -407,14 +429,16 @@ class User extends Model {
         return null;
     }
 
-    function getMagicTokenUrl() {
+    public function getMagicTokenUrl()
+    {
         $mail = $this->mail;
         $token = $this->getMagicToken();
-        return "https://".$_SERVER['SERVER_NAME']."/gebruikers/login/$mail/$token";
+        return "https://" . $_SERVER['SERVER_NAME'] . "/gebruikers/login/$mail/$token";
     }
 
     // Multiple ouders
-    static function createMagicTokensFor($users) {
+    public static function createMagicTokensFor($users)
+    {
         $query = '';
         $query = "";
 
@@ -423,12 +447,12 @@ class User extends Model {
         $users_copy = array();
         $now = new \DateTime();
         $time = self::getDb()->escape_string($now->format('Y-m-d H:i:s'));
-        
+
         foreach ($users as $user) {
             if (!isset($user->temporaryMagicToken)) {
                 $token = self::getDb()->escape_string(self::generateLongKey());
                 $client = intval($user->id);
-                
+
                 if ($query != '') {
                     $query .= ', ';
                 }
@@ -442,8 +466,8 @@ class User extends Model {
         if (count($users_copy) == 0) {
             return true;
         }
-        
-        $query = 'INSERT INTO user_magic_tokens (client, token, `expires`) VALUES '.$query;
+
+        $query = 'INSERT INTO user_magic_tokens (client, token, `expires`) VALUES ' . $query;
 
         if (self::getDb()->query($query)) {
             return true;
@@ -455,7 +479,8 @@ class User extends Model {
         return false;
     }
 
-    function generatePasswordRecoveryKey() {
+    public function generatePasswordRecoveryKey()
+    {
         // Generate and put in $this->set_password_key
         $old = $this->set_password_key;
         $key = self::generateKey();
@@ -474,11 +499,12 @@ class User extends Model {
      * Controleert of de huidige bezoeker ingelogd is
      * @return User Geeft leiding object van bezoeker terug indien de gebruiker ingelogd is. NULL indien niet ingelogd
      */
-    private static function checkLogin() {
+    private static function checkLogin()
+    {
         if (Self::$didCheckLogin) {
             return Self::$currentUser;
         }
-        
+
         // Usertoken controleren in cookies
         // en als succesvol ingelogd: self::$currentUser setten!
         Self::$didCheckLogin = true;
@@ -513,13 +539,13 @@ class User extends Model {
 
                 self::$currentToken = $row['token'];
                 self::$currentUser = new User($row);
-                Sentry::shared()->setUser(self::$currentUser->id, self::$currentUser->firstname.' '.self::$currentUser->lastname, self::$currentUser->mail);
+                Sentry::shared()->setUser(self::$currentUser->id, self::$currentUser->firstname . ' ' . self::$currentUser->lastname, self::$currentUser->mail);
 
                 if ($interval->days >= 1) {
                     // Token vernieuwen als hij al een dag oud is
                     self::createToken();
                 }
-                
+
             } else {
                 // ?
                 return null;
@@ -529,43 +555,49 @@ class User extends Model {
         return self::$currentUser;
     }
 
-    static function isLoggedIn() {
+    public static function isLoggedIn()
+    {
         return !is_null(self::checkLogin());
     }
 
-    static function getPermissions() {
+    public static function getPermissions()
+    {
         if (!self::isLoggedIn()) {
             return array();
         }
         return self::$currentUser->permissions;
     }
 
-    static function getRedirectURL() {
+    public static function getRedirectURL()
+    {
         if (Ouder::isLoggedIn()) {
-            return "https://".$_SERVER['SERVER_NAME']."/ouders";
+            return "https://" . $_SERVER['SERVER_NAME'] . "/ouders";
         } elseif (Leiding::isLoggedIn()) {
-            return "https://".$_SERVER['SERVER_NAME']."/admin";
+            return "https://" . $_SERVER['SERVER_NAME'] . "/admin";
         }
-        return "https://".$_SERVER['SERVER_NAME'];
+        return "https://" . $_SERVER['SERVER_NAME'];
     }
 
-    static function getUser() {
+    public static function getUser()
+    {
         if (!self::isLoggedIn()) {
             return null;
         }
-        
+
         return self::$currentUser;
     }
 
     // TODO: private maken
-    private function passwordEncrypt($password){
+    private function passwordEncrypt($password)
+    {
         // Voor de eerste keer password hash maken
         return password_hash($password, PASSWORD_BCRYPT);
     }
 
     // empty array on success
     // array of errors on failure
-    function setProperties(&$data, $admin = false) {
+    public function setProperties(&$data, $admin = false)
+    {
         $errors = array();
 
         if (isset($data['firstname'], $data['lastname'])) {
@@ -584,27 +616,26 @@ class User extends Model {
             }
         }
 
-
         if (isset($data['mail'])) {
             if (Validator::isValidMail($data['mail'])) {
                 $mail = strtolower($data['mail']);
                 $escaped = self::getDb()->escape_string($mail);
-    
+
                 if (isset($this->id)) {
                     $id = self::getDb()->escape_string($this->id);
-                     // Zoek andere ouders met dit e-mailadres
+                    // Zoek andere ouders met dit e-mailadres
                     $query = "SELECT *
                     from users
                     where user_mail = '$escaped' and `user_id` != '$id'";
                 } else {
-                     // Zoek andere ouders met dit e-mailadres
+                    // Zoek andere ouders met dit e-mailadres
                     $query = "SELECT *
                     from users
                     where user_mail = '$escaped'";
                 }
-    
+
                 if ($result = self::getDb()->query($query)) {
-                    if ($result->num_rows == 0){
+                    if ($result->num_rows == 0) {
                         $this->mail = $mail;
                     } else {
                         if (static::isLoggedIn()) {
@@ -626,35 +657,15 @@ class User extends Model {
         if (strlen($data['phone']) > 0 || !$admin) {
 
             if (Validator::validatePhone($data['phone'], $this->phone, $errors)) {
-                $escaped = self::getDb()->escape_string($this->phone);
-    
-                if (isset($this->id)) {
-                    $id = self::getDb()->escape_string($this->id);
-                     // Zoek andere ouders met dit e-mailadres
-                    $query = "SELECT *
-                    from users
-                    where user_phone = '$escaped' and `user_id` != '$id'";
-                } else {
-                     // Zoek andere ouders met dit e-mailadres
-                    $query = "SELECT *
-                    from users
-                    where user_phone = '$escaped'";
-                }
-    
-                if ($result = self::getDb()->query($query)) {
-                    if ($result->num_rows > 0){
-                        $this->phone = null;
-
-                        if (static::isLoggedIn()) {
-                            $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet voor een ander account gebruikt en pas het daar eerst aan.';
-
-                        } else {
-                            $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
-                        }
-                    }
-                } else {
+                if (static::existsWithPhone($this->phone, $this->id)) {
                     $this->phone = null;
-                    $errors[] = 'Er ging iets mis';
+
+                    if (static::isLoggedIn()) {
+                        $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet voor een ander account gebruikt en pas het daar eerst aan.';
+
+                    } else {
+                        $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
+                    }
                 }
             }
 
@@ -665,67 +676,96 @@ class User extends Model {
         return $errors;
     }
 
-    function getSetPasswordUrl() {
-        if ($this->hasPassword()) {
-            return "https://".$_SERVER['SERVER_NAME']."/gebruikers/wachtwoord-vergeten/".$this->set_password_key;
+    public static function existsWithPhone($phone, $ignore_id = null)
+    {
+        $escaped = self::getDb()->escape_string($phone);
+
+        if (isset($ignore_id)) {
+            $id = self::getDb()->escape_string($ignore_id);
+            // Zoek andere ouders met dit e-mailadres
+            $query = "SELECT *
+            from users
+            where user_phone = '$escaped' and `user_id` != '$id'";
+        } else {
+            // Zoek andere ouders met dit e-mailadres
+            $query = "SELECT *
+            from users
+            where user_phone = '$escaped'";
         }
-        return "https://".$_SERVER['SERVER_NAME']."/gebruikers/wachtwoord-kiezen/".$this->set_password_key;
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    function hasPassword() {
+    public function getSetPasswordUrl()
+    {
+        if ($this->hasPassword()) {
+            return "https://" . $_SERVER['SERVER_NAME'] . "/gebruikers/wachtwoord-vergeten/" . $this->set_password_key;
+        }
+        return "https://" . $_SERVER['SERVER_NAME'] . "/gebruikers/wachtwoord-kiezen/" . $this->set_password_key;
+    }
+
+    public function hasPassword()
+    {
         return !empty($this->password);
     }
 
-    function sendPasswordEmail() {
+    public function sendPasswordEmail()
+    {
         $mail = new Mail('Account scoutswebsite', 'user-new', array('user' => $this));
         $mail->addTo(
-            $this->mail, 
+            $this->mail,
             array(),
-            $this->firstname.' '.$this->lastname
+            $this->firstname . ' ' . $this->lastname
         );
         return $mail->send();
     }
 
-    function save(){
+    public function save()
+    {
         $firstname = self::getDb()->escape_string($this->firstname);
         $lastname = self::getDb()->escape_string($this->lastname);
 
         if (!isset($this->phone)) {
             $phone = 'NULL';
         } else {
-            $phone = "'".self::getDb()->escape_string($this->phone)."'";
+            $phone = "'" . self::getDb()->escape_string($this->phone) . "'";
         }
 
         if (!isset($this->mail)) {
             $mail = 'NULL';
         } else {
-            $mail = "'".self::getDb()->escape_string($this->mail)."'";
+            $mail = "'" . self::getDb()->escape_string($this->mail) . "'";
         }
 
         // Permissions
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
-            
+
             if (!isset($this->set_password_key)) {
                 $set_password_key = 'NULL';
             } else {
-                $set_password_key = "'".self::getDb()->escape_string($this->set_password_key)."'";
+                $set_password_key = "'" . self::getDb()->escape_string($this->set_password_key) . "'";
             }
 
-            $query = "UPDATE users 
-                SET 
+            $query = "UPDATE users
+                SET
                 user_firstname = '$firstname',
                 user_lastname = '$lastname',
                 user_mail = $mail,
                 user_phone = $phone,
                 user_set_password_key = $set_password_key
-                 where `user_id` = '$id' 
+                 where `user_id` = '$id'
             ";
         } else {
             $key = self::generateKey();
             $this->set_password_key = $key;
 
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 users (`user_firstname`, `user_lastname`, `user_mail`, `user_phone`, `user_set_password_key`)
                 VALUES ('$firstname', '$lastname', $mail, $phone,  '$key')";
         }
@@ -741,23 +781,25 @@ class User extends Model {
             }
 
             /*if ($new) {
-                $this->sendPasswordEmail();
-            }*/
+        $this->sendPasswordEmail();
+        }*/
         }
 
         return $result;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 users WHERE `user_id` = '$id' ";
 
         return self::getDb()->query($query);
     }
 
     /// Return true when users are probably the same
-    function isProbablyEqual($user) {
+    public function isProbablyEqual($user)
+    {
         if (
             trim(clean_special_chars($user->firstname)) == trim(clean_special_chars($this->firstname))
             && trim(clean_special_chars($user->lastname)) == trim(clean_special_chars($this->lastname))

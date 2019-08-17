@@ -6,6 +6,7 @@ use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Leden\Models\Steekkaart;
+use Pirate\Sails\Users\Models\User;
 use Pirate\Sails\Validating\Models\Validator;
 use Pirate\Wheel\Model;
 
@@ -582,6 +583,13 @@ class Lid extends Model
                     }
                 } else {
                     $this->gsm = '';
+                }
+
+                if (!empty($this->gsm)) {
+                    if (User::existsWithPhone($this->gsm)) {
+                        $this->gsm = null;
+                        $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je wel het GSM-nummer van de jongere zelf hebt opgegeven.';
+                    }
                 }
             }
         }
