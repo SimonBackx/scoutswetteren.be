@@ -141,7 +141,7 @@ class BroerZusToevoegen extends Page
             'takken' => json_encode($verdeling),
             'alle_takken' => Lid::getTakInfo(),
             'limits_ignored' => Lid::areLimitsIgnored(),
-            'is_ingeschreven' => $this->lid->isIngeschreven(),
+            'is_ingeschreven' => !$new && $this->lid->isIngeschreven(),
         ));
     }
 }
