@@ -448,6 +448,10 @@ class Lid extends Model
     /// Return the automatic tak for the current lid. Try to stay with the current tak if possible (if it doesnt have auto assign)
     public function getTakVoorHuidigScoutsjaar()
     {
+        if (!isset($this->geboortedatum, $this->geslacht)) {
+            return false;
+        }
+
         $allow_limits = self::areLimitsIgnored();
         $geboortejaar = intval($this->geboortedatum->format('Y'));
         $gender = $this->geslacht;

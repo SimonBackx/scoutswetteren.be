@@ -129,6 +129,7 @@ main > .block {
 
                 display: block;
                 padding: 12px 15px;
+                margin: 0;
                 border-radius: $border-radius;
                 transition: background-color 0.2s;
                 background-color: transparent;
@@ -138,8 +139,10 @@ main > .block {
                 @media (max-width: 800px) {
                     left: 0;
                 }
+                opacity: 1;
                 
                 &:hover {
+                    opacity: 1;
                     background-color: $color-main-shade;
                 }
 
@@ -150,6 +153,10 @@ main > .block {
         }
         &> div {
             flex-grow: 1;
+
+            @media (min-width: 801px) {
+                max-width: calc(100% - 240px);
+            }
 
             img {
                 margin: 20px -30px;
@@ -190,4 +197,9 @@ main > .block.with-menu .block {
             margin: 30px -15px;
         }
     }
+}
+
+.list-bundle {
+    margin: 20px 0;
+    overflow-x: auto;
 }

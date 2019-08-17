@@ -103,17 +103,21 @@ a.icon-button, button.icon-button {
     font-size: $size-button;
     display: block;
     text-align: left;
-    background: url(../prins-boudewijn/images/icon-button.png) no-repeat left center;
-    background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/icon-button.svg);
+    background: url('../'+ $theme +'/icons/dark/arrow-right.svg') no-repeat left center;
 
     &.plus {
-       background: url(../prins-boudewijn/images/plus-button.png) no-repeat left center;
-       background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/plus-button.svg);
+       background: url('../'+ $theme +'/icons/dark/plus.svg') no-repeat left center;
     }
 
     &.delete {
-       background: url(../prins-boudewijn/images/delete-button.png) no-repeat left center; 
-       background-image: linear-gradient(transparent, transparent), url(../prins-boudewijn/images/delete-button.svg);
+       background: url('../'+ $theme +'/icons/dark/delete.svg') no-repeat left center; 
+    }
+
+    opacity: 1;
+    transition: opacity 0.2s;
+
+    &:hover {
+        opacity: 0.5;
     }
 }
 

@@ -23,7 +23,7 @@ form {
 
         .bar {
             position: absolute;
-            background: $gray;
+            background: $form-border-color;
             left: 0;
             right: 0;
             top: $slider-top;
@@ -62,7 +62,7 @@ form {
     }
 
     aside.source {
-        color: $gray;
+        color: $form-placeholder-color;
     }
 
     label {
@@ -115,19 +115,19 @@ form {
         color: $color-main;
 
         &::-webkit-input-placeholder {
-            color: $gray;
+            color: $form-placeholder-color;
         }
 
         &:-moz-placeholder { /* Firefox 18- */
-            color: $gray;
+            color: $form-placeholder-color;
         }
 
         &::-moz-placeholder {  /* Firefox 19+ */
-            color: $gray;
+            color: $form-placeholder-color;
         }
 
         &:-ms-input-placeholder {  
-            color: $gray;
+            color: $form-placeholder-color;
         }
 
         &:focus, &.selected {
@@ -140,7 +140,7 @@ form {
             color: $color-error; 
         }
 
-        border-bottom: $border-width solid $gray;
+        border-bottom: $border-width solid $form-border-color;
     }
 
     textarea { 
@@ -185,7 +185,7 @@ form {
      
       margin-right: 20px;
       background-color: white;
-      border: $border-width solid $gray;
+      border: $border-width solid $form-border-color;
       border-radius: $checkbox-border-radius;
     }
 
@@ -198,6 +198,14 @@ form {
         padding: $border-width;
         background: $color-main url('../'+$theme+'/icons/white/checkbox.svg') no-repeat center center;
         cursor: pointer;
+    }
+
+    input[type=checkbox]:disabled + label:before, 
+    input[type=radio]:disabled + label:before,
+    input[type=checkbox]:disabled + .checkbox-controllable label.checkbox-label-inside:before,
+    input[type=radio]:disabled + .checkbox-controllable label.checkbox-label-inside:before
+    {
+        opacity: 0.5;
     }
 
 
@@ -250,7 +258,7 @@ form {
         .option {
             cursor: pointer;
             padding: 20px 30px;
-            border-bottom: 1px solid $color-border;
+            border-bottom: 1px solid $form-border-color;
             color: $color-main;
 
             &:hover {
@@ -291,7 +299,7 @@ form {
             }
 
             &.empty {
-                color: $gray;
+                color: $form-placeholder-color;
             }
         }
     }

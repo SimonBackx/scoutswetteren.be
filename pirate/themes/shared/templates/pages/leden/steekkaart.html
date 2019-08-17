@@ -9,7 +9,10 @@
                         {% if moetNagekekenWorden %}
                             {% if new %}
                                 <h1>Vul de individuele steekkaart van {{ lid.voornaam }} in</h1>
-                                <p>De individuele steekkaart is nog niet ingevuld, dit moet binnen 3 weken na inschrijven gebeuren.</p>
+
+                                <ul class="warning">
+                                    <li>De individuele steekkaart is nog niet ingevuld, dit moet binnen 3 weken na inschrijven gebeuren.</li>
+                                </ul>
                             {% else %}
                                 <h1>Kijk de individuele steekkaart van {{ lid.voornaam }} na.</h1>
                                 <p>Pas eventuele wijzigingen aan en bevestig onderaan dat je de steekkaart hebt nagekeken (laatst nagekeken op {{ nagekekenString }}).</p>
@@ -18,7 +21,11 @@
                         {% else %}
                             {% if new %}
                                 <h1>Vul de individuele steekkaart van {{ lid.voornaam }} in</h1>
-                                <p>De individuele steekkaart vul je het best meteen in, maar moet sowieso binnen 3 weken ingevuld worden.</p>
+
+                                <ul class="warning">
+                                    <li>De individuele steekkaart vul je het best meteen in, maar moet sowieso binnen 3 weken ingevuld worden.</li>
+                                </ul>
+
                                 <div><input type="submit" class="main fill" name="overslaan" value="Overslaan"></div>
                             {% else %}
                                 <h1>Individuele steekkaart van {{ lid.voornaam }}</h1>

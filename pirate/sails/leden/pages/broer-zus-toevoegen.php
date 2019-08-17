@@ -97,8 +97,14 @@ class BroerZusToevoegen extends Page
                             $errors[] = 'Er ging iets mis bij het inschrijven. Controleer of je geldige gegevens hebt opgegeven.';
                         }
                     } else {
-                        header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders");
-                        return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders";
+                        if ($this->lid->isIngeschreven() && $this->lid->inschrijving->isAfgerekend()) {
+                            header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders");
+                            return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders";
+                        } else {
+                            header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving");
+                            return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders/verleng-inschrijving";
+                        }
+
                     }
                 }
             }

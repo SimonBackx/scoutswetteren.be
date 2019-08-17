@@ -4,132 +4,22 @@
     <main>
         <nav class="buttons">
             Ingelogd als {{ ouder.user.firstname }}
-            <a href="/ouders/attesten" class="button">Attesten</a>
-            <a href="/gebruikers/wachtwoord-wijzigen" class="button">Wachtwoord wijzigen</a>
-            <a href="/gebruikers/logout" class="button">Uitloggen</a>
+            {% include "pages/leden/ouder-partials/menu.html" %}
         </nav>
 
         <div class="white block withButtons">
             <div class="text">
-                <header>
-                <h1>Ingeschreven leden ({{ scoutsjaar }} - {{ scoutsjaar + 1 }})</h1>
-                </header>
-                {% if leden is not empty %}
-                    <div class="list-bundle">
-                        {% for lid in leden %}
-                            <article class="list">
-                                <div class="medium merlot column"><a href="/ouders/lid-aanpassen/{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }}</a></div>
-                                <div class="small merlot column">{{ lid.inschrijving.tak | capitalize }}</div>
-                                <div class="max column{% if not lid.heeftSteekkaart() %} bold{% endif %}">
-                                    {% if not lid.heeftSteekkaart() %}
-                                        Individuele steekkaart nog niet ingevuld
-                                    {% else %}
-                                        Laatst nagekeken op {{ lid.steekkaart.getNagekekenString() }}
-                                    {% endif %}
-                                </div>
-                                <div class="last column">
-                                    <a href="/ouders/lid-aanpassen/{{ lid.id | e('html_attr')}}" class="icon-button">
-                                    Wijzigen
-                                    </a>
-
-                                    <a href="/ouders/steekkaart/{{ lid.id | e('html_attr')}}" class="{% if lid.heeftSteekkaart() %}icon-button{% else %}icon-button plus{% endif %}">
-                                    {% if not lid.heeftSteekkaart() %}
-                                        Steekkaart invullen
-                                    {% else %}
-                                        Steekkaart nakijken
-                                    {% endif %}
-                                    </a>
-                                </div>
-                            </article>
-                        {% endfor %}
-                    </div>
-                    <footer>
-                        <a href="{% if niet_ingeschreven_aantal > 0 %}/ouders/verleng-inschrijving{% else %}/ouders/broer-zus-toevoegen{% endif %}" class="main fill button">Broer of zus inschrijven</a>
-                    </footer>
-                {% else %}
-                    <p>Er is nog niemand ingeschreven voor het huidige scoutsjaar.</p>
-                    <footer>
-                        <a href="{% if niet_ingeschreven_aantal > 0 %}/ouders/verleng-inschrijving{% else %}/ouders/broer-zus-toevoegen{% endif %}" class="main fill button">Leden inschrijven</a>
-                    </footer>
-                {% endif %}
-                
-
+                {% include "pages/leden/ouder-partials/ingeschreven-leden.html" %}
             </div>
         </div>
         <div class="white block">
             <div class="text">
-                <header>
-                    <h1>Gegevens van ouders</h1>
-                    <p>Elke ouder kan inloggen met zijn/haar e-mailadres en de inschrijvingen beheren. Deze gegevens worden gebruikt voor de algemene communicatie en voor in noodgevallen.</p>
-                </header>
-
-                <div class="list-bundle">
-                {% for ouder in ouders %}
-                    <article class="list">
-                        <div class="medium merlot column"><a href="/ouders/ouder-aanpassen/{{ ouder.id }}">{{ouder.user.firstname}} {{ouder.user.lastname}}</a></div>
-                        <div class="small merlot column">{{ouder.titel}}</div>
-                        <div class="max column">
-                            {% if ouder.user.mail is not empty %}
-                                {{ouder.user.mail}}
-                            {% else %}
-                                <strong>Geen e-mailadres ingesteld</strong>
-                            {% endif %}
-                            {% if not ouder.user.hasPassword() %}
-                                <br><strong>Heeft nog geen wachtwoord ingesteld</strong>
-                            {% endif %}
-                            <br>
-                            {{ouder.user.phone}}
-                            <br>
-                            {{ouder.getAdres}}
-                            
-                        </div>
-                        <div class="last column right">
-                            <a href="/ouders/ouder-aanpassen/{{ ouder.id | e('html_attr')}}" class="icon-button">
-                            Wijzigen
-                            </a>
-                            {% if not ouder.user.hasPassword() %}
-                                <a href="/ouders/wachtwoord-instellen/{{ ouder.id | e('html_attr')}}" class="icon-button">
-                                    Wachtwoord instellen
-                                </a>
-                            {% endif %}
-                        </div>
-                    </article>
-                {% endfor %}
-                </div>
-
-
-                <footer>
-                    <a href="/ouders/ouder-toevoegen" class="main fill button">Ouder toevoegen</a>
-                    <a href="/ouders/gezin-nakijken" class="main button">Gezinsituatie aanpassen</a>
-                </footer>
-
+                {% include "pages/leden/ouder-partials/ouders.html" %}
             </div>
         </div>
         <div class="white block">
             <div class="text">
-                <header>
-                    <h1>Nog te betalen</h1>
-                    <p>Hieronder vind je een overzicht van alle afrekeningen. Als er leden worden ingeschreven, bundelen we die in een nieuwe afrekening. Rechts van een afrekening kan je 'Bekijken' aanklikken, daar kan je zien of het lidgeld al betaald is en op welke manier. Hou er rekening mee dat het even kan duren voor we deze afrekeningen aanpassen nadat er betaald is. </p>
-                </header>
-
-                <div class="list-bundle">
-                   {% for afrekening in afrekeningen %}
-                    <article class="list">
-                        <div class="small column">
-                            {{ afrekening.inschrijvingen[0].scoutsjaar }} - {{ afrekening.inschrijvingen[0].scoutsjaar + 1 }}
-                        </div>
-                        <div class="max merlot column">{{ afrekening.mededeling }}</div>
-                        <div class="large merlot column">
-                            {{ afrekening.getNogTeBetalen() }}
-                        </div>
-                        <div class="last column">
-                            <a href="/ouders/afrekening/{{ afrekening.id }}" class="button noborder">Bekijken</a>
-                        </div>
-                    </article>
-                    {% else %}
-                        <p><i>Er is nog geen afrekeningen beschikbaar.</i></p>
-                    {% endfor %}
-                </div>
+                {% include "pages/leden/ouder-partials/afrekeningen.html" %}
             </div>
         </div>
     </main>

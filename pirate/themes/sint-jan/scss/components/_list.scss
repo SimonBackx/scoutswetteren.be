@@ -1,0 +1,86 @@
+// Lijst structuren
+// 
+
+.blue article.list {
+    .column {
+        color: $color-main-alternative-gray;
+
+        &.merlot {
+            color: $color-main-alternative-dark;
+        }
+    }
+}
+
+article.list {
+    padding: 15px 0 15px 0;
+
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: $size-text-bigger;
+    border-top: $border-width solid $color-border;
+    //background: $color-main-shade;
+    &:last-child {
+        border-bottom: $border-width solid $color-border;
+        //border: 0;
+        //background: $color-main-shade;
+    }
+
+    .column {
+        display: table-cell;
+        color: $color-main;
+        padding-right: 20px;
+        vertical-align: middle;
+
+        &.merlot {
+            color: $color-main-dark;
+        }
+
+        &.small {
+            min-width: 120px;
+        }
+
+        &.medium {
+            min-width: 180px;
+        }
+
+        &.large {
+            min-width: 300px;
+            text-align: right;
+        }
+
+        &.max {
+            width: 100%;
+        }
+
+        &.bold {
+            font-weight: bold;
+        }
+
+        &.last {
+            padding-right: 0;
+            white-space: nowrap;
+        }
+
+        .button, .icon-button {
+            margin: 0;
+            margin-left: 20px;
+        }
+    }
+
+    @media screen and (max-width: $page-width-reduce-padding + 200px) {
+        display: block;
+
+        .column {
+            display: block;
+            padding: 5px 0;
+
+            .button, .icon-button {
+                margin: 0;
+                margin-right: 10px;
+            }
+        }
+
+
+    }
+}

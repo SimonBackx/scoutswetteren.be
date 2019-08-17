@@ -45,7 +45,7 @@
                             <input type="submit" class="main fill" value="{% if new %}Inschrijven{% else %}Opslaan{% endif %}">
 
                             {% if not lid_model.moetNagekekenWorden %}
-                                {% if new %}
+                                {% if new or not is_ingeschreven or not lid_model.inschrijving.isAfgerekend %}
                                     <a class="button main" href="/ouders/verleng-inschrijving">Annuleren</a>
                                 {% else %}
                                     <a class="button main" href="/ouders">Annuleren</a>

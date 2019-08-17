@@ -23,6 +23,7 @@
                             {% else %}
                                 {% if al_ingeschreven | length > 0 %}
                                     <h1>Broers of zussen inschrijven</h1>
+
                                     <p>Hieronder vind je broers en zussen die ooit al eens ingeschreven zijn. Je kan hen opnieuw inschrijven voor het huidige scoutsjaar of een nieuwe broer of zus inschrijven die nog niet in het systeem zit.</p>
                                     <p>
                                         <strong>
@@ -66,17 +67,24 @@
                         {% endif %}
 
                         {% for lid in niet_inschrijfbaar %}
-                            <p><strong>Opgelet: {{ lid.voornaam }} {{ lid.achternaam }} kan niet meer ingeschreven worden. Hij / zij is te oud en moet overgaan naar de leidingingsploeg. Indien er een speciale regeling is i.v.m. een jin jaar (bv. door een 4e giverjaar) contacteer je best de leidingsploeg om dit probleem op te lossen.</strong></p>
-                        {% endfor %}
-
-                        {% for lid in leden %}
-                            <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" name="leden[]" value="{{ lid.id }}"{% if lid.inschrijving.scoutsjaar == scoutsjaar-1 or lid.inschrijving is empty %} checked{% endif %}>
-                            <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }}) <a class="button main noborder" href="/ouders/lid-aanpassen/{{ lid.id }}">Wijzigen</a></label>
+                            <ul class="warning">
+                                <li>Opgelet: {{ lid.voornaam }} {{ lid.achternaam }} kan niet meer ingeschreven worden. Hij / zij is te oud. Indien er een speciale regeling is contacteer je best de leidingsploeg om dit probleem op te lossen.</li>
+                            </ul>
                         {% endfor %}
 
                         {% if leden |length == 0 and nog_afrekenen | length > 0 %}
 
                         {% else %}
+                            {% for lid in nog_afrekenen %}
+                                <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" checked disabled>
+                                <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }}) <a class="button main noborder" href="/ouders/lid-aanpassen/{{ lid.id }}">Wijzigen</a></label>
+                            {% endfor %}
+
+                            {% for lid in leden %}
+                                <input id="checkbox-{{ lid.id }}" class="randomize-id" type="checkbox" data-name="lid-geslacht" name="leden[]" value="{{ lid.id }}"{% if lid.inschrijving.scoutsjaar == scoutsjaar-1 or lid.inschrijving is empty %} checked{% endif %}>
+                                <label for="checkbox-{{ lid.id }}">{{ lid.voornaam }} {{ lid.achternaam }} ({{ lid.getTakVoorHuidigScoutsjaar() }}) <a class="button main noborder" href="/ouders/lid-aanpassen/{{ lid.id }}">Wijzigen</a></label>
+                            {% endfor %}
+
                             <div><a href="/ouders/broer-zus-toevoegen" class="icon-button plus">Broer of zus toevoegen die nog niet in het systeem zit</a></div>
                         {% endif %}
                     
