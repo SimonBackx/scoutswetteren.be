@@ -12,7 +12,7 @@
 }
 
 article.list {
-    padding: 15px 0 15px 0;
+    padding: 17px 0 17px 0;
 
     display: table;
     width: 100%;
@@ -31,6 +31,7 @@ article.list {
         color: $color-main;
         padding-right: 20px;
         vertical-align: middle;
+        line-height: 1.3;
 
         &.merlot {
             color: $color-main-dark;

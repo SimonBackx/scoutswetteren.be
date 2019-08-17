@@ -158,7 +158,7 @@ main > .block {
                 max-width: calc(100% - 240px);
             }
 
-            img {
+            &> img, &> * > img {
                 margin: 20px -30px;
                 width: 100%;
                 width: calc(100% + 60px);
