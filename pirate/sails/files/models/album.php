@@ -36,8 +36,6 @@ class Album extends Model
 
     public static $QUEUE_ID = 0;
 
-    public static $groups = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'algemeen');
-
     public static function getGroups()
     {
         $groups = array_keys(Environment::getSetting('scouts.takken'));

@@ -1,26 +1,27 @@
 <?php
 namespace Pirate\Sails\Leden\Admin;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
-use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Ouder;
-use Pirate\Sails\Leden\Models\Inschrijving;
-use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Wheel\Mail;
 
-class Exporteren extends Page {
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+
+class Exporteren extends Page
+{
     private $layout = false;
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
-    function hasOwnLayout() {
+    public function hasOwnLayout()
+    {
         return $this->layout;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $user = Leiding::getUser();
         $scoutsjaar = Inschrijving::getScoutsjaar();
         $selected_scoutsjaar = $scoutsjaar;
@@ -28,15 +29,15 @@ class Exporteren extends Page {
         $tak = '';
         if (!empty($user->tak)) {
             $tak = $user->tak;
-        } 
+        }
 
-        $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'alle takken');
+        $takken = array_merge(Inschrijving::getTakken(), ['alle takken']);
         $filters = Ouder::$filters;
 
         $data = array(
             'tak' => $tak,
             'filter' => array_keys($filters)[0],
-            'scoutsjaar' => $scoutsjaar
+            'scoutsjaar' => $scoutsjaar,
         );
 
         $allSet = true;
@@ -63,7 +64,7 @@ class Exporteren extends Page {
             if ($selected_scoutsjaar == 0) {
                 $errors[] = 'Ongeldig scoutsjaar.';
             }
-          
+
             if (count($errors) == 0) {
 
                 if ($data['tak'] == 'alle takken') {
@@ -84,14 +85,14 @@ class Exporteren extends Page {
 
                 if (count($leden) == 0) {
                     $errors[] = 'Er werden geen leden gevonden die aan de criteria voldoen.';
-                }  else {
+                } else {
                     $success = true;
                     $this->layout = true;
                     $file = Template::render('admin/leden/exporteren_ledenlijst', array(
-                        'leden' => $leden
+                        'leden' => $leden,
                     ));
-                    $file = "sep=;\n".mb_convert_encoding($file, 'UTF-16LE', 'UTF-8');
-                    
+                    $file = "sep=;\n" . mb_convert_encoding($file, 'UTF-16LE', 'UTF-8');
+
                     if (function_exists('mb_strlen')) {
                         $size = mb_strlen($file, '8bit');
                     } else {
@@ -100,7 +101,7 @@ class Exporteren extends Page {
 
                     header('Content-Description: File Transfer');
                     header('Content-Type: application/octet-stream; charset=UTF-16LE');
-                    header('Content-Disposition: attachment; filename="'.$data['tak'].'.csv"'); 
+                    header('Content-Disposition: attachment; filename="' . $data['tak'] . '.csv"');
                     //header("Content-Length: ".$size);
                     echo $file;
                     exit(1);
@@ -109,15 +110,13 @@ class Exporteren extends Page {
             }
         }
 
-
-
         return Template::render('admin/leden/exporteren', array(
             'takken' => $takken,
             'filters' => $filters,
             'errors' => $errors,
             'data' => $data,
             'scoutsjaar' => $scoutsjaar,
-            'success' => $success
+            'success' => $success,
         ));
     }
 }

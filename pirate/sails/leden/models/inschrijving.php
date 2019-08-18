@@ -23,11 +23,6 @@ class Inschrijving extends Model
     public $afrekening_oke;
     public $halfjaarlijks;
 
-    //public static $lidgeld_per_tak = array('kapoenen' => 40, 'wouters' => 40, 'jonggivers' => 40, 'givers' => 40, 'jin' => 40);
-    //public static $lidgeld_per_tak_halfjaar = array('kapoenen' => 20, 'wouters' => 20, 'jonggivers' => 20, 'givers' => 20, 'jin' => 20);
-
-    //public static $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin');
-
     private static $scoutsjaar_cache = null; // cache
 
     public function __construct($row = array(), $lid_object = null)

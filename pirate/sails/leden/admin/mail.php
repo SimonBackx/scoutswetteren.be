@@ -1,31 +1,32 @@
 <?php
 namespace Pirate\Sails\Leden\Admin;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
-use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Ouder;
-use Pirate\Sails\Leden\Models\Inschrijving;
-use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Wheel\Mail;
-use Pirate\Sails\Files\Models\File;
-use Pirate\Sails\Users\Models\User;
 
-class MailPage extends Page {
-    function getStatusCode() {
+use Pirate\Sails\Files\Models\File;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Users\Models\User;
+use Pirate\Wheel\Mail;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+
+class MailPage extends Page
+{
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $user = Leiding::getUser();
 
         $tak = '';
         if (!empty($user->tak)) {
             $tak = $user->tak;
-        } 
+        }
 
-        $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'alle takken');
+        $takken = array_merge(Inschrijving::getTakken(), ['alle takken']);
         $senders = array();
         $filters = Ouder::$filters;
 
@@ -38,7 +39,7 @@ class MailPage extends Page {
             'filter' => array_keys($filters)[0],
             'subject' => '',
             'message' => '',
-            'scoutsjaar' => $scoutsjaar
+            'scoutsjaar' => $scoutsjaar,
         );
 
         $senders[] = $user->user->mail;
@@ -70,7 +71,7 @@ class MailPage extends Page {
                 }
 
                 if ($email == $data['sender'] && !$sender_default) {
-                    // Sender alleen goedkeuren als expliciet verzonden werd, 
+                    // Sender alleen goedkeuren als expliciet verzonden werd,
                     // niet default waarde die niet verzonden werd
                     $sender_okay = true;
                     $sender_name = $naam;
@@ -81,10 +82,9 @@ class MailPage extends Page {
 
         if (!$sender_okay && !$sender_default && $data['sender'] == $user->user->mail) {
             $sender_okay = true;
-            $sender_name = $user->user->firstname.' '.$user->user->lastname;
+            $sender_name = $user->user->firstname . ' ' . $user->user->lastname;
             $sender_send_from = false;
         }
-        
 
         $success = false;
         $errors = array();
@@ -96,7 +96,7 @@ class MailPage extends Page {
             if (!in_array($data['tak'], $takken)) {
                 $errors[] = 'Selecteer een tak waar je de e-mail wil naar versturen.';
             }
-            
+
             $selected_scoutsjaar = intval($data['scoutsjaar']);
             if ($selected_scoutsjaar == 0) {
                 $errors[] = 'Ongeldig scoutsjaar.';
@@ -112,7 +112,6 @@ class MailPage extends Page {
                 $errors[] = 'Het bericht is te kort. Gebruik a.u.b. een goede opbouw van je e-mail.';
             }
 
-            
             $attachment = null;
             if (count($errors) == 0) {
                 $form_name = "attachment";
@@ -120,7 +119,7 @@ class MailPage extends Page {
                     if (File::getUploaded($form_name, $fileExt, $fileName, $fileSize, $errors, 10000000, array("pdf", "png", "jpg", "jpeg", "gif", "tiff", "bmp", "heif", "heic", "mov", "mp4", "wav", "ppt", "pptx", "xls", "xlsx"))) {
                         $attachment = array(
                             "location" => $_FILES[$form_name]['tmp_name'],
-                            "name" => $fileName
+                            "name" => $fileName,
                         );
                     } else {
                         $errors[] = 'Converteer Word-documenten eerst naar PDF voor je ze doormailt (opslaan als - onderaan PDF selecteren), die zijn geschikter en vervormen niet. Niet elke smartphone kan een Word-document openen.';
@@ -140,17 +139,17 @@ class MailPage extends Page {
 
                 if (count($ouders) == 0) {
                     $errors[] = 'Er zijn geen ouders die aan de criteria voldoen.';
-                }  else {
+                } else {
 
                     $mail = new Mail(
-                            $data['subject'], 
-                            'mail', 
-                            array(
-                                'message' => $data['message'],
-                                'subject' => $data['subject'],
-                                'magic_url' => true
-                            )
-                        );
+                        $data['subject'],
+                        'mail',
+                        array(
+                            'message' => $data['message'],
+                            'subject' => $data['subject'],
+                            'magic_url' => true,
+                        )
+                    );
 
                     if ($sender_send_from) {
                         $mail->setFrom($data['sender'], $sender_name);
@@ -165,7 +164,7 @@ class MailPage extends Page {
                     }
 
                     $users = [];
-                    foreach($ouders as $ouder) {
+                    foreach ($ouders as $ouder) {
                         $users[] = $ouder->user;
                     }
 
@@ -176,35 +175,34 @@ class MailPage extends Page {
                     if (count($errors) == 0) {
                         foreach ($ouders as $ouder) {
                             $mail->addTo(
-                                $ouder->user->mail, 
+                                $ouder->user->mail,
                                 array(
                                     'magic_url' => $ouder->user->getMagicTokenUrl(),
                                     'voornaam' => $ouder->user->firstname,
-                                    'reason' => ''
+                                    'reason' => '',
                                 ),
-                                $ouder->user->firstname.' '.$ouder->user->lastname
+                                $ouder->user->firstname . ' ' . $ouder->user->lastname
                             );
                         }
 
-                        $mail->addTo( 
+                        $mail->addTo(
                             $data['sender'],
                             array(
-                                'magic_url' => "https://".$_SERVER['SERVER_NAME'],
+                                'magic_url' => "https://" . $_SERVER['SERVER_NAME'],
                                 'voornaam' => '<voornaam van ouder>',
-                                'reason' => "\n".'Dit bericht is een kopie van het bericht dat naar ouders ('.$data['tak'].') is verzonden via de website door '.$user->user->firstname.' '.$user->user->lastname
+                                'reason' => "\n" . 'Dit bericht is een kopie van het bericht dat naar ouders (' . $data['tak'] . ') is verzonden via de website door ' . $user->user->firstname . ' ' . $user->user->lastname,
                             )
                         );
 
                         $success = $mail->send();
 
                         if (!$success) {
-                            $errors[] = 'Er ging iets mis bij het versturen van de e-mails. Probeer het later opnieuw. ('.$mail->getErrorMessage().')';
+                            $errors[] = 'Er ging iets mis bij het versturen van de e-mails. Probeer het later opnieuw. (' . $mail->getErrorMessage() . ')';
                         }
                     }
                 }
             }
         }
-
 
         return Template::render('admin/leden/mail', array(
             'takken' => $takken,
@@ -213,7 +211,7 @@ class MailPage extends Page {
             'errors' => $errors,
             'data' => $data,
             'scoutsjaar' => $scoutsjaar,
-            'success' => $success
+            'success' => $success,
         ));
     }
 }

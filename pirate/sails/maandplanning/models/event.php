@@ -25,15 +25,6 @@ class Event extends Model
 
     static $defaultLocation = 'Scoutsterrein';
 
-    private static $defaultEndHour = array(
-        '' => '17:00',
-        'kapoenen' => '17:00',
-        'wouters' => '17:00',
-        'jonggivers' => '17:30',
-        'givers' => '17:30',
-        'jin' => '17:30',
-    );
-
     public static function getGroups()
     {
         $groups = [];

@@ -1,25 +1,24 @@
 <?php
 namespace Pirate\Sails\Leden\Admin;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
-use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Ouder;
-use Pirate\Sails\Leden\Models\Inschrijving;
-use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Wheel\Mail;
-use Pirate\Sails\Files\Models\File;
 
-class SmsPage extends Page {
-    function getStatusCode() {
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+
+class SmsPage extends Page
+{
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
-        $iPhone  = stripos($_SERVER['HTTP_USER_AGENT'],"iPhone");
-        $Mac  = stripos($_SERVER['HTTP_USER_AGENT'],"Macintosh");
-        $Android = stripos(strtolower($_SERVER['HTTP_USER_AGENT']),"android");
+    public function getContent()
+    {
+        $iPhone = stripos($_SERVER['HTTP_USER_AGENT'], "iPhone");
+        $Mac = stripos($_SERVER['HTTP_USER_AGENT'], "Macintosh");
+        $Android = stripos(strtolower($_SERVER['HTTP_USER_AGENT']), "android");
 
         if (!$iPhone && !$Android && !$Mac) {
             return Template::render('admin/leden/no-sms', array());
@@ -36,19 +35,19 @@ class SmsPage extends Page {
         $tak = '';
         if (!empty($user->tak)) {
             $tak = $user->tak;
-        } 
+        }
 
-        $takken = array('kapoenen', 'wouters', 'jonggivers', 'givers', 'jin', 'alle takken');
+        $takken = array_merge(Inschrijving::getTakken(), ['alle takken']);
         $filters = Ouder::$filters;
 
-         $scoutsjaar = Inschrijving::getScoutsjaar();
+        $scoutsjaar = Inschrijving::getScoutsjaar();
         $selected_scoutsjaar = $scoutsjaar;
 
         $data = array(
             'tak' => $tak,
             'filter' => array_keys($filters)[0],
             'message' => '',
-            'scoutsjaar' => $scoutsjaar
+            'scoutsjaar' => $scoutsjaar,
         );
 
         if ($noMessage) {
@@ -130,11 +129,10 @@ class SmsPage extends Page {
 
                 if (count($numbers) == 0) {
                     $errors[] = 'Er zijn geen leden die aan de criteria voldoen.';
-                }  else {
+                } else {
                     if ($Mac) {
                         $url = "imessage:";
-                    }
-                    elseif ($Android) {
+                    } elseif ($Android) {
                         $url = "sms:";
                     } else {
                         $url = "sms:/open?addresses=";
@@ -152,27 +150,24 @@ class SmsPage extends Page {
 
                         if ($Mac) {
                             // werkt niet
-                        }
-                        elseif ($Android) {
-                            $url .= "?body=".rawurlencode($data['message']);
+                        } elseif ($Android) {
+                            $url .= "?body=" . rawurlencode($data['message']);
                         } else {
-                            $url .= "&body=".rawurlencode($data['message']);
+                            $url .= "&body=" . rawurlencode($data['message']);
                         }
                     }
-                    
 
                     // Body instellen
                     // Android: <a href="sms:/* phone number here */?body=/* body text here */">Link</a>
                     // ios7: <a href="sms:/* phone number here */;body=/* body text here */">Link</a>
                     // ioS8: <a href="sms:/* phone number here */&body=/* body text here */">Link</a>
 
-                    @header('Location: '.$url);
+                    @header('Location: ' . $url);
                     $success = true;
                 }
 
             }
         }
-
 
         return Template::render('admin/leden/sms', array(
             'takken' => $takken,
@@ -183,7 +178,7 @@ class SmsPage extends Page {
             'no_message' => $noMessage,
             'scoutsjaar' => $scoutsjaar,
             'send_leden' => $send_leden,
-            'send_only_leden' => $send_only_leden
+            'send_only_leden' => $send_only_leden,
         ));
     }
 }
