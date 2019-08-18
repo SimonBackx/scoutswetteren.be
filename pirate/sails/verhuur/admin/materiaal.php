@@ -30,7 +30,7 @@ class Materiaal extends Page
             $file = new File();
             $file->location = $location;
 
-            if ($file->upload($form_name, $errors, array($extension), $file_name)) {
+            if ($file->upload($form_name, $errors, array($extension), $file_name, true)) {
                 $succes = true;
             }
         }

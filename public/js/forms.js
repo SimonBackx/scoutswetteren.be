@@ -179,22 +179,34 @@ $( document ).ready(function() {
             names += name;
         }
 
+        var label = $(this).next();
+
+        if (!label.attr('data-default-text')) {
+            label.attr('data-default-text', label.text());
+        }
+
         var info = $(this).nextAll(".file_info:first");
         if (files.length == 0) {
             info.text("");
+            label.text(label.attr('data-default-text'));
+            label.removeClass('selected');
         } 
         if (files.length == 1) {
             info.text("Eén bestand geselecteerd: "+names);
+            label.text(names);
+            label.addClass('selected');
         } 
         if (files.length > 1) {
             info.text(files.length+" bestanden geselecteerd: "+names);
+            label.text(files.length+" bestanden");
+            label.addClass('selected');
         } 
 
         var next = $(this).nextAll(".show-on-file-selected");
         if (files.length == 0) {
             next.css("display", "");
         } else {
-            next.css("display", "block");
+            next.css("display", "inline-block");
         }
 
         return false;

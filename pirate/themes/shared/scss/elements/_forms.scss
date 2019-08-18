@@ -85,21 +85,7 @@ form {
     }
 
     input[type=file] + label {
-        cursor: pointer;
-        padding: 10px 30px;
-        border: $border-width solid $color-main-dark;
-        border-radius: 40px;
-        text-transform: uppercase;
-        font-size: $size-text-bigger;
-        margin: 20px 7px;
-        display: inline-block;
-        margin-left: 0;
-        color: white;
-        background: $color-main-dark;
-
-        svg {
-            margin-right: 5px;
-        }
+        // todo: override in theme
     }
 
     input[type=text], input[type=password], input[type=email], input[type=tel], .input-box, .select-box, textarea, .StripeElement {

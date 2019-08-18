@@ -562,7 +562,7 @@ class File extends Model
 
     // Kan zowel nieuw uploaden als bestaand bestand overschrijven
     // use_name = sla op met deze naam (excl extensie)
-    public function upload($form_name, &$errors, $file_types = null, $use_name = null)
+    public function upload($form_name, &$errors, $file_types = null, $use_name = null, $overwrite = false)
     {
         if (!$this->new) {
             $errors[] = 'Kan bestand niet overschrijven.';
@@ -599,10 +599,13 @@ class File extends Model
         error_reporting(0);
 
         $prelocation = $this->location;
-        $num = 1;
-        while (file_exists($this->getPath())) {
-            $num++;
-            $this->location = $prelocation . 'v' . $num . '/';
+
+        if (!$overwrite) {
+            $num = 1;
+            while (file_exists($this->getPath())) {
+                $num++;
+                $this->location = $prelocation . 'v' . $num . '/';
+            }
         }
 
         // Vanaf nu willen we niet meer stoppen, en gaan we gewoon verder. Tenzij het echt te lang duurt.
@@ -638,6 +641,10 @@ class File extends Model
             $errors[] = 'Kon mapstructuur niet aanmaken: ' . $dir;
             error_reporting($error_reporting);
             return false;
+        }
+
+        if ($overwrite && file_exists($this->getPath())) {
+            unlink($this->getPath());
         }
 
         // Verplaatsen

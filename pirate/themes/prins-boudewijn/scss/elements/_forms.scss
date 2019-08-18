@@ -1,0 +1,29 @@
+@import "../../../shared/scss/elements/forms";
+
+form {
+    input[type=file] + label {
+        cursor: pointer;
+        padding: 10px 30px;
+        border: $border-width solid $color-main-dark;
+        border-radius: $border-radius;
+        text-transform: uppercase;
+        font-size: $size-text-bigger;
+        margin: 20px 7px;
+        display: inline-block;
+        margin-left: 0;
+        color: white;
+        background: $color-main-dark;
+
+        svg {
+            margin-right: 5px;
+        }
+
+        opacity: 1;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 0.5;
+        }
+    }
+
+}
