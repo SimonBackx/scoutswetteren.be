@@ -1,0 +1,25 @@
+{% block javascript %}
+    <script type="text/javascript">
+        
+        var map;
+        var initMap = function() {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: 51.018150, lng: 3.856562},
+              mapTypeControl: false,
+              scrollwheel: false,
+              streetViewControl: false,
+              rotateControl: false,
+              fullscreenControl: false,
+              zoom: 13
+            });
+            var marker_scouts = new google.maps.Marker({
+                position: {lat: 51.018150, lng: 3.856562},
+                map: map,
+                icon: '{{ http }}/sint-jan/icons/blue/pin.svg',
+                title: 'Groenstraat 33, Wetteren'
+            });
+        }
+        
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
+{% endblock %}

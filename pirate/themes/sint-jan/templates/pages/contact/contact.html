@@ -2,57 +2,58 @@
 {% set description = 'Op deze pagina vind je al onze contactgegevens.' %}
 {% extends "base.html" %}
 
-
-{% block javascript %}
-    <script type="text/javascript">
-       
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
-{% endblock %}
+{% use "pages/info/_map.html" %}
 
 {% block main %}
-    <main>
+    <main class="contact-page">
         <section class="block white">
-            <h1>Contacteer ons</h1>        
-                
-            <div class="splitted blocked">
+            <div class="splitted blocked bigger">
                 <div class="part column first">
-                    <article>
-                        <h1 class="prefix">Adres</h1>
-                        <p>Groenstraat 33<br>9230 Wetteren</p>
-                    </article>
-                    <article>
-                        <h1 class="prefix">Groepsleiding</h1>
-                        <p>Emailadres</p>
-                        <a class="suffix">groepsleiding@scoutssintjan.be</a>
-
-                        <p>Jasper Van de Gracht </p>
-                        <p class="suffix">+32 470 62 26 81 (enkel noodgevallen)</p>
-
-                        <p>Kato Verstuyft</p>
-                        <p class="suffix">+32 476 30 41 76 (enkel noodgevallen)</p>
-                    </article>
-                    
-                    
+                    <div id="map" class="map"></div>
                 </div>
-
                 <div class="part column last">
-                    <article>
-                        <h1 class="prefix">VZW</h1>
-                        <p>Mick De Valck</p>
-                        <a class="suffix">mick.devalck@telenet.be</a>
-                    </article>
-
-                    <article>
-                        <h1 class="prefix">Oudercomité</h1>
-                        <p>Frederik Van Hecke<br>Dirk Vercauteren</p>
-                        <a class="suffix">oudercomite.sintjan@gmail.com</a>
-                    </article>
-
-                    <article>
-                        <h1 class="prefix">Leiding</h1>
-                        <p>Zie takpagina's</p>
-                    </article>
+                    <h1>Contacteer ons</h1>        
+            
+                    <div class="splitted blocked">
+                        <div class="part column first">
+                            <article>
+                                <h1 class="prefix">Adres</h1>
+                                <p>Groenstraat 33<br>9230 Wetteren</p>
+                            </article>
+                            <article>
+                                <h1 class="prefix">Groepsleiding</h1>
+                                <p>Emailadres</p>
+                                <a class="suffix">groepsleiding@scoutssintjan.be</a>
+        
+                                <p>Jasper Van de Gracht </p>
+                                <p class="suffix">+32 470 62 26 81 (enkel noodgevallen)</p>
+        
+                                <p>Kato Verstuyft</p>
+                                <p class="suffix">+32 476 30 41 76 (enkel noodgevallen)</p>
+                            </article>
+                            
+                            
+                        </div>
+        
+                        <div class="part column last">
+                            <article>
+                                <h1 class="prefix">VZW</h1>
+                                <p>Mick De Valck</p>
+                                <a class="suffix">mick.devalck@telenet.be</a>
+                            </article>
+        
+                            <article>
+                                <h1 class="prefix">Oudercomité</h1>
+                                <p>Frederik Van Hecke<br>Dirk Vercauteren</p>
+                                <a class="suffix">oudercomite.sintjan@gmail.com</a>
+                            </article>
+        
+                            <article>
+                                <h1 class="prefix">Leiding</h1>
+                                <p>Zie takpagina's</p>
+                            </article>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

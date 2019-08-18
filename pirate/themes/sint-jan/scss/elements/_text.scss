@@ -145,16 +145,37 @@ h1:first-of-type {
     }
 }
 .suffix {
-    color: $color-main-alternative-gray;
-    font-size: $size-prefix;
-    margin: 5px 0;
-    font-weight: bold;
-    display: block;
-    line-height: 1.1;
+    &, &:hover, &:visited, &:active, &:link {
+        color: $color-main-gray;
+        font-size: $size-prefix;
+        margin: 5px 0;
+        font-weight: bold;
+        display: block;
+        line-height: 1.1;
+        margin-bottom: 15px;
 
-    @media (max-width: 600px), (max-height: 450px)  {
-        font-size: $size-smartphone-prefix;
-        margin: 2px 0;
+        @media (max-width: 600px), (max-height: 450px)  {
+            font-size: $size-smartphone-prefix;
+            margin: 2px 0;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+        
+    }
+}
+.blue .suffix {
+    color: $color-main-alternative-gray;
+}
+
+a.suffix {
+    opacity: 1;
+    transition: opacity 0.2s;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.5;
     }
 }
 
