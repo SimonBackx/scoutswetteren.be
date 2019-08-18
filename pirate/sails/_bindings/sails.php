@@ -14,7 +14,11 @@ foreach (new DirectoryIterator(__DIR__ . '/../') as $fileInfo) {
         continue;
     }
 
-    if (class_exists('Environment') && in_array($fileInfo->getFilename(), Environment::getSetting('disable_sails', []))) {
+    if (!class_exists('Pirate\Sails\Environment\Classes\Environment')) {
+        require __DIR__ . '/../environment/classes/environment.php';
+    }
+
+    if (in_array($fileInfo->getFilename(), Environment::getSetting('disable_sails', []))) {
         continue;
     }
 
