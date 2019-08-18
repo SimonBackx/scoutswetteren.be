@@ -75,9 +75,21 @@ class Inschrijving extends Model
                 "naam" => "Kabouters",
                 "functie" => "d5f75b320b812440010b812555db03a1",
             ],
+            "kabouters" => [
+                "naam" => "Kabouters",
+                "functie" => "d5f75b320b812440010b812555db03a1",
+            ],
+            "jonggidsen" => [
+                "naam" => "Jong gidsen",
+                "functie" => "d5f75b320b812440010b812555c7039d",
+            ],
             "jonggivers" => [
                 "naam" => "Jong gidsen",
                 "functie" => "d5f75b320b812440010b812555c7039d",
+            ],
+            "gidsen" => [
+                "naam" => "Gidsen",
+                "functie" => "d5f75b320b812440010b812555380380",
             ],
             "givers" => [
                 "naam" => "Gidsen",
@@ -87,14 +99,15 @@ class Inschrijving extends Model
                 "naam" => "Jin",
                 "functie" => "d5f75b320b812440010b812555c1039b",
             ],
+            "akabe" => [
+                "naam" => "Akabe",
+                "functie" => "d5f75b320b812440010b812554790354",
+                "code" => "AKAB",
+            ],
         ];
 
         if ($this->lid->geslacht == "M") {
-            $mapping = [
-                "kapoenen" => [
-                    "naam" => "Kapoenen",
-                    "functie" => "d5f75b320b812440010b812555de03a2",
-                ],
+            $mapping = array_merge($mapping, [
                 "wouters" => [
                     "naam" => "Welpen",
                     "functie" => "d5f75b320b812440010b8125567703cb",
@@ -107,11 +120,7 @@ class Inschrijving extends Model
                     "naam" => "Verkenners",
                     "functie" => "d5f75b320b812440010b8125565203c1",
                 ],
-                "jin" => [
-                    "naam" => "Jin",
-                    "functie" => "d5f75b320b812440010b812555c1039b",
-                ],
-            ];
+            ]);
         }
 
         if (!isset($mapping[$this->tak])) {
