@@ -89,6 +89,7 @@ class Homepage extends Page
                 'formatted_date' => datetimeToDayMonth($album->date_taken),
             ];
         }
+        return $album_images;
     }
 
     public function getContent()
