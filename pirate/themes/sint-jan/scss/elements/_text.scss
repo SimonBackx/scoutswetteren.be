@@ -205,6 +205,10 @@ h2 {
 header {
     h2 {
         font-size: $size-text-bigger;
+
+        @media screen and (max-width: 480px) {
+            font-size: $size-text;
+        }
     }
 }
 
@@ -228,6 +232,10 @@ ol {
         padding-left: 30px;
         position: relative;
 
+        @media screen and (max-width: 480px) {
+            padding-left: 20px;
+        }
+
         &::before {
             content: counter(ol-counter) ". ";
             color: $color-main;
@@ -236,6 +244,10 @@ ol {
             left: 0;
             top: 0;
             font-size: $size-text;
+
+            @media screen and (max-width: 480px) {
+                font-size: $size-smartphone-text;
+            }
         }
     }
 }
@@ -244,9 +256,14 @@ li {
     font-size: $size-text;
     font-weight: normal;
     font-size: $size-text;
-    line-height: 170%;
+    line-height: 1.5;
     margin: 5px 0;
     padding: 0;
+
+    @media screen and (max-width: 480px) {
+        line-height: 1.4;
+        font-size: $size-smartphone-text;
+    }
 }
 
 pre {
@@ -302,6 +319,11 @@ ul.error {
     background: $color-main-shade;
     border-radius: $border-radius;
 
+    @media screen and (max-width: 550px) {
+        margin: 15px 0;
+        padding: 10px 15px;
+    }
+
     li {
         color: $color-error;
         list-style: none;
@@ -310,6 +332,14 @@ ul.error {
         font-size: $size-text-bigger;
         background: url('../'+$theme+'/icons/error.svg') no-repeat left center;
         padding-left: 30px;
+
+        @media screen and (max-width: 550px) {
+            font-size: $size-text;
+        }
+
+        @media screen and (max-width: 480px) {
+            font-size: $size-smartphone-text;
+        }
     }
 }
 
@@ -319,6 +349,11 @@ ul.warning {
     background: rgba(#FFC633, 0.1);
     border-radius: $border-radius;
 
+    @media screen and (max-width: 550px) {
+        margin: 15px 0;
+        padding: 10px 15px;
+    }
+
     li {
         color: #947320;
         list-style: none;
@@ -327,6 +362,14 @@ ul.warning {
         font-size: $size-text-bigger;
         background: url('../'+$theme+'/icons/warning.svg') no-repeat left center;
         padding-left: 30px;
+
+        @media screen and (max-width: 550px) {
+            font-size: $size-text;
+        }
+
+        @media screen and (max-width: 480px) {
+            font-size: $size-smartphone-text;
+        }
     }
 }
 
@@ -389,6 +432,10 @@ ul.warning {
             display: inline-block;
             color: $gray;
             margin-left: 10px;
+
+            @media screen and (max-width: 480px) {
+                font-size: $size-smartphone-text;
+            }
         }
     }
 

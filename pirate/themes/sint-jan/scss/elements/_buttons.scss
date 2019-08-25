@@ -32,10 +32,6 @@ button.more {
     }
 }
 
-.buttons {
-    margin: 20px 0;
-}
-
 a.button, button.button, input[type=submit] {
     text-transform: uppercase;
     font-size: $size-button;
@@ -51,13 +47,16 @@ a.button, button.button, input[type=submit] {
 
     &.main, &.merlot {
         color: $color-main-dark;
-        margin: 18px 5px;
+        margin: 18px 10px;
         padding: (14px - $border-width) (25px - $border-width);
         border-radius: $border-radius;
         border: $border-width solid $color-main-dark;
 
+        @media (max-width: 480px) {
+            margin: 10px;
+        }
+
         &.fill {
-            margin: 18px 10px;
             padding: 14px 25px;
             border: 0;
             @include main-gradient;
