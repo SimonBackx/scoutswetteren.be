@@ -39,7 +39,11 @@
                 <div class="columns">
                     {% for event in maandplanning.first_activities %}
                         <section>
-                            <h1 class="prefix">{{ event.group }}</h1>
+                            {% if event.isTak %}
+                                <a href="/takken/{{ event.group | lower }}#maandplanning"><h1 class="prefix">{{ event.group }}</h1></a>
+                            {% else %}
+                                <h1 class="prefix">{{ event.group }}</h1>
+                            {% endif %}
                             <article>
                                 <h1>{{ event.name }}</h1>
                                 <time class="suffix" datetime="2011-11-18T14:54:39.929">{{ event.getTimeDescriptionHuman() }}</time>
@@ -62,7 +66,11 @@
 
                     {% for event in maandplanning.save_the_date %}
                         <section>
-                            <h1 class="prefix">{{ event.group }}</h1>
+                            {% if event.isTak %}
+                                <a href="/takken/{{ event.group | lower }}#maandplanning"><h1 class="prefix">{{ event.group }}</h1></a>
+                            {% else %}
+                                <h1 class="prefix">{{ event.group }}</h1>
+                            {% endif %}
                             <article>
                                 <h1>{{ event.name }}</h1>
                                 <time class="suffix" datetime="2011-11-18T14:54:39.929">{{ event.getTimeDescriptionHuman() }}</time>

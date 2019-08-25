@@ -48,6 +48,12 @@ class Event extends Model
         return $groups;
     }
 
+    public function isTak()
+    {
+        $takken = Environment::getSetting('scouts.takken');
+        return isset($takken[strtolower($this->group)]);
+    }
+
     public static function getDefaultEndHourList()
     {
         $defaultEndHour = [
@@ -67,10 +73,10 @@ class Event extends Model
     public function getTimeDescriptionHuman($with_time = true)
     {
         if ($this->isSingleDay()) {
-            return $this->getStartDate() . ($with_time ? (', ' . $this->startdate->format('G:i') . ' - ' . $this->enddate->format('G:i')) : '');
+            return ucfirst($this->getStartDate()) . ($with_time ? (', ' . $this->startdate->format('G:i') . ' - ' . $this->enddate->format('G:i')) : '');
         }
 
-        return $this->getStartDate() . ' tot ' . datetimeToDayMonth($this->enddate);
+        return ucfirst($this->getStartDate()) . ' tot ' . datetimeToDayMonth($this->enddate);
 
     }
 
