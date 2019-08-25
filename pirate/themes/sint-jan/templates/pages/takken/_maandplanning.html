@@ -2,7 +2,7 @@
 
 {% if events.0 is defined %}
     <article class="block">
-        <div class="splitted blocked">
+        <div class="splitted blocked bigger">
             <div class="part column first">
             
                 <h1>{{ events[0][0].getMonthString() | capitalize }}</h1>
@@ -29,7 +29,7 @@
 
     {% if events.2 is defined %}
         <article class="block">
-            <div class="splitted blocked">
+            <div class="splitted blocked bigger">
                 <div class="part column first">
                 
                     <h1>{{ events[2][0].getMonthString() | capitalize }}</h1>
