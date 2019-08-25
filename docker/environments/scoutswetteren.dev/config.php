@@ -57,6 +57,11 @@ $config = [
         'mail' => 'website@scoutswetteren.be',
     ],
 
+    'bank' => [
+        'iban' => 'BE60 4441 7118 4170',
+        'bic' => 'KREDBEBB',
+    ],
+
     'scouts' => [
         'inschrijvings_start_maand' => 9,
         'inschrijvings_einde_maand' => 7,

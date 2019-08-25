@@ -1,12 +1,15 @@
 <?php
 namespace Pirate\Sails\Leden\Models;
-use Pirate\Wheel\Model;
-use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Sails\Leden\Models\Gezin;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Inschrijving;
 
-class Afrekening extends Model {
+use Pirate\Sails\Leden\Models\Gezin;
+use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Model;
+use Pirate\Sails\Environment\Classes\Environment;
+
+class Afrekening extends Model
+{
     public $id;
     public $gezin; //id
     public $betaald_cash;
@@ -18,7 +21,8 @@ class Afrekening extends Model {
 
     public $inschrijvingen; // array van inschrijving objecten
 
-    function __construct($row = array()) {
+    public function __construct($row = array())
+    {
         if (count($row) == 0) {
             return;
         }
@@ -35,44 +39,52 @@ class Afrekening extends Model {
         $this->inschrijvingen = array();
     }
 
-    function getTotaal() {
-        return '€ '.money_format('%!.2n', $this->totaal);
+    public function getTotaal()
+    {
+        return '€ ' . money_format('%!.2n', $this->totaal);
     }
-    function getBetaaldScouts() {
-        return '€ '.money_format('%!.2n', $this->betaald_scouts);
-    }
-    
-    function getBetaaldOverschrijving() {
-        return '€ '.money_format('%!.2n', $this->betaald_overschrijving);
+    public function getBetaaldScouts()
+    {
+        return '€ ' . money_format('%!.2n', $this->betaald_scouts);
     }
 
-    function getBetaaldCash() {
-        return '€ '.money_format('%!.2n', $this->betaald_cash);
+    public function getBetaaldOverschrijving()
+    {
+        return '€ ' . money_format('%!.2n', $this->betaald_overschrijving);
     }
 
-    function isBetaald() {
-        $sum =  $this->totaal 
-            - $this->betaald_cash 
-            - $this->betaald_overschrijving 
-            - $this->betaald_scouts;
-        return 
+    public function getBetaaldCash()
+    {
+        return '€ ' . money_format('%!.2n', $this->betaald_cash);
+    }
+
+    public function isBetaald()
+    {
+        $sum = $this->totaal
+         - $this->betaald_cash
+         - $this->betaald_overschrijving
+         - $this->betaald_scouts;
+        return
         $sum < 0.005 && $sum > -0.005;
     }
 
-    function getNogTeBetalenFloat() {
+    public function getNogTeBetalenFloat()
+    {
         return $this->totaal - $this->betaald_cash - $this->betaald_overschrijving - $this->betaald_scouts;
     }
 
-    function getNogTeBetalen() {
+    public function getNogTeBetalen()
+    {
         $nog = $this->getNogTeBetalenFloat();
         if ($nog < 0) {
-           return '- € '.money_format('%!.2n', -$nog); 
+            return '- € ' . money_format('%!.2n', -$nog);
         }
-        return '€ '.money_format('%!.2n', $nog);
+        return '€ ' . money_format('%!.2n', $nog);
     }
 
     // True on success
-    function betaalMetOverschrijving(string &$bedrag, &$message, &$errors, $cash = false) {
+    public function betaalMetOverschrijving(string &$bedrag, &$message, &$errors, $cash = false)
+    {
         $out = 0;
         Validator::validatePrice($bedrag, $out, $errors, true);
 
@@ -88,7 +100,6 @@ class Afrekening extends Model {
             $betaald_totaal = $this->betaald_overschrijving + $this->betaald_scouts + $this->betaald_cash;
             $te_veel = $betaald_totaal - $this->totaal;
 
-
             // terugstorting
             if ($out < 0) {
                 if ($betaald_totaal < 0) {
@@ -96,7 +107,7 @@ class Afrekening extends Model {
                     return false;
                 }
             }
-            
+
             $okay = $this->save();
 
             if (!$okay) {
@@ -106,8 +117,8 @@ class Afrekening extends Model {
 
             if ($te_veel > 0) {
                 $message = 'Er werd in totaal te veel lidgeld betaald door dit gezin. Gelieve dit te corrigeren en terug te storten en de ouders te verwittigen.';
-                
-            } elseif ($te_veel == 0){
+
+            } elseif ($te_veel == 0) {
                 $message = 'Hoera, de afrekening is in orde.';
             } else {
                 $message = 'Het lidgeld is nog niet volledig betaald door de ouders.';
@@ -118,25 +129,28 @@ class Afrekening extends Model {
         return false;
     }
 
-    function setGezin(Gezin $gezin) {
+    public function setGezin(Gezin $gezin)
+    {
         $this->gezin = $gezin->id;
     }
 
-    function addInschrijving(Inschrijving $inschrijving) {
+    public function addInschrijving(Inschrijving $inschrijving)
+    {
         $this->inschrijvingen[] = $inschrijving;
     }
 
-    static function getAfrekening($id) {
+    public static function getAfrekening($id)
+    {
         $id = self::getDb()->escape_string($id);
 
         $query = '
             SELECT a.*, i.*, l.* from afrekeningen a
                 left join inschrijvingen i on i.afrekening = a.afrekening_id
                 left join leden l on i.lid = l.id
-            where a.afrekening_id = "'.$id.'"';
+            where a.afrekening_id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows >= 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows >= 1) {
                 $row = $result->fetch_assoc();
                 $afrekening = new Afrekening($row);
                 $result->data_seek(0);
@@ -150,20 +164,21 @@ class Afrekening extends Model {
     }
 
     // enkel onbetaalde of in huidge scoutsjaar (geordend op onbetaald)
-    static function getAfrekeningen() {
+    public static function getAfrekeningen()
+    {
         $jaar = self::getDb()->escape_string(Inschrijving::getScoutsjaar());
 
         $query = '
             SELECT a.*, i.*, l.* from afrekeningen a
                 left join inschrijvingen i on i.afrekening = a.afrekening_id
                 left join leden l on i.lid = l.id
-             where a.oke = 0 or i.scoutsjaar = "'.$jaar.'"
+             where a.oke = 0 or i.scoutsjaar = "' . $jaar . '"
              order by a.oke, a.afrekening_id';
 
         $afrekeningen = array();
-        
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows >= 1){
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows >= 1) {
                 $last_id = -1;
 
                 while ($row = $result->fetch_assoc()) {
@@ -182,20 +197,21 @@ class Afrekening extends Model {
         return $afrekeningen;
     }
 
-    static function getAfrekeningenForGezin(Gezin $gezin) {
+    public static function getAfrekeningenForGezin(Gezin $gezin)
+    {
         $gezin = self::getDb()->escape_string($gezin->id);
 
         $query = '
             SELECT a.*, i.*, l.* from afrekeningen a
                 left join inschrijvingen i on i.afrekening = a.afrekening_id
                 left join leden l on i.lid = l.id
-            where a.gezin = "'.$gezin.'" 
+            where a.gezin = "' . $gezin . '"
             order by i.scoutsjaar desc, a.afrekening_id';
 
         $afrekeningen = array();
-        
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows >= 1){
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows >= 1) {
                 $last_id = -1;
 
                 while ($row = $result->fetch_assoc()) {
@@ -215,11 +231,13 @@ class Afrekening extends Model {
         return $afrekeningen;
     }
 
-    function getMededeling() {
-        return mb_strtoupper('Lidgeld '.$this->id.' '.$this->mededeling, 'UTF-8');
+    public function getMededeling()
+    {
+        return mb_strtoupper('Lidgeld ' . $this->id . ' ' . $this->mededeling, 'UTF-8');
     }
 
-    static function createForInschrijvingen($inschrijvingen) {
+    public static function createForInschrijvingen($inschrijvingen)
+    {
         $afrekening = new Afrekening();
         $afrekening->inschrijvingen = $inschrijvingen;
 
@@ -231,7 +249,7 @@ class Afrekening extends Model {
         $jaar = -1;
 
         foreach ($inschrijvingen as $inschrijving) {
-            $ids[] = "'".self::getDb()->escape_string($inschrijving->id)."'";
+            $ids[] = "'" . self::getDb()->escape_string($inschrijving->id) . "'";
             $totaal += floatval($inschrijving->prijs);
             if (!in_array($inschrijving->lid->achternaam, $achternamen)) {
                 $achternamen[] = $inschrijving->lid->achternaam;
@@ -260,7 +278,7 @@ class Afrekening extends Model {
         }
 
         if ($gezin->scouting_op_maat) {
-            $betaald_scouts = $totaal;
+            $betaald_scouts = ceil($totaal - Environment::getSetting('scouts.lidgeld_verminderd', 0) * $totaal);
         }
         $afrekening->betaald_scouts = $betaald_scouts;
         $afrekening->gezin = $gezin;
@@ -284,8 +302,8 @@ class Afrekening extends Model {
         $betaald_scouts = self::getDb()->escape_string($betaald_scouts);
         $gezin = self::getDb()->escape_string($gezin->id);
         $totaal = self::getDb()->escape_string($totaal);
-        
-        $query = "INSERT INTO 
+
+        $query = "INSERT INTO
                 afrekeningen (`mededeling`, `betaald_scouts`, `totaal`,  `gezin`, `oke`)
                 VALUES ('$mededeling', '$betaald_scouts', '$totaal', '$gezin', '$oke')";
 
@@ -295,10 +313,9 @@ class Afrekening extends Model {
             $afrekening->id = self::getDb()->insert_id;
             $afrekening_id = self::getDb()->escape_string($afrekening->id);
 
-
             $ids = implode(', ', $ids);
-            $query = "UPDATE inschrijvingen 
-                SET 
+            $query = "UPDATE inschrijvingen
+                SET
                  `afrekening` = '$afrekening_id',
                  `afrekening_oke` = '$oke'
                  where `inschrijving_id` IN ($ids)
@@ -319,15 +336,17 @@ class Afrekening extends Model {
         return null;
     }
 
-    function recalculate() {
+    public function recalculate()
+    {
         $this->totaal = 0;
         foreach ($this->inschrijvingen as $inschrijving) {
-           $this->totaal += floatval($inschrijving->prijs);
+            $this->totaal += floatval($inschrijving->prijs);
         }
         return $this->save();
     }
 
-    function save() {
+    public function save()
+    {
         if (!isset($this->id)) {
             self::getDb()->autocommit(true); // nodig voor aanroep in inschrijving->save()
             return false;
@@ -345,8 +364,8 @@ class Afrekening extends Model {
             $oke = 1;
         }
 
-        $query = "UPDATE afrekeningen 
-                SET 
+        $query = "UPDATE afrekeningen
+                SET
                  `betaald_cash` = '$betaald_cash',
                  `betaald_overschrijving` = '$betaald_overschrijving',
                  `betaald_scouts` = '$betaald_scouts',
@@ -357,13 +376,12 @@ class Afrekening extends Model {
 
         self::getDb()->autocommit(false);
         if (!self::getDb()->query($query)) {
-             self::getDb()->autocommit(true);
+            self::getDb()->autocommit(true);
             return false;
         }
 
-
-        $query = "UPDATE inschrijvingen 
-                SET 
+        $query = "UPDATE inschrijvingen
+                SET
                  `afrekening_oke` = $oke
                  where `afrekening` = '$id'
             ";
