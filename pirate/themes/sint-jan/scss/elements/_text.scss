@@ -210,7 +210,28 @@ p {
 }
 
 ul {
-    padding-left: 20px;
+    padding-left: 30px;
+}
+
+ol {
+    list-style: none;
+    counter-reset: ol-counter;
+
+    li {
+        counter-increment: ol-counter;
+        padding-left: 30px;
+        position: relative;
+
+        &::before {
+            content: counter(ol-counter) ". ";
+            color: $color-main;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: $size-text;
+        }
+    }
 }
 
 li {

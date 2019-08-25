@@ -69,7 +69,7 @@ class Event extends Model
             return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ', ' . $this->startdate->format('H:i') . ' - ' . $this->enddate->format('H:i');
         }
 
-        return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ' (' . $this->startdate->format('H:i') . ') tot ' . datetimeToDayMonth($this->enddate) . ' (' . $this->enddate->format('H:i') . ')';
+        return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ' tot ' . datetimeToDayMonth($this->enddate);
 
     }
 
