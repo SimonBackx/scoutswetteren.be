@@ -212,9 +212,14 @@ class Album extends Model
         return $this->slug;
     }
 
+    public function getUrlSuffix()
+    {
+        return $this->date->format('Y/m/d') . '/' . $this->getSlug();
+    }
+
     public function getUrl()
     {
-        return '/fotos/album/' . $this->date->format('Y/m/d') . '/' . $this->getSlug();
+        return '/fotos/album/' . $this->getUrlSuffix();
     }
 
     public static function getAlbum($id)

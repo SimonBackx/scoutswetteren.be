@@ -42,7 +42,7 @@
             <div class="button-bar">
                 <a class="button main noborder" href="/fotos">Alle albums</a>
                 {% if album.canDownload() %}
-                    <a href="/fotos/download/{{ album.getUrl }}" class="button main noborder" rel="nofollow">Download</a>
+                    <a href="/fotos/download/{{ album.getUrlSuffix() }}" class="button main noborder" rel="nofollow">Download</a>
                 {% endif %}
                 
                 <a href="#" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{http}}{{ album.getUrl }}','{{album.name}}','width=600,height=400'); return false;" class="button main noborder">Deel op facebook</a>

@@ -110,7 +110,7 @@
         }
 
         div:last-child {
-            background: lighten($color-main, 80%);
+            background: lighten($color-main, 40%);
         }
     }
 
@@ -120,7 +120,7 @@
         }
 
         div:last-child {
-            background: lighten($color-main-alternative, 80%);
+            background: lighten($color-main-alternative, 40%);
         }
     }
 }
