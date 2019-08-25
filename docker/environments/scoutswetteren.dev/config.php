@@ -44,8 +44,12 @@ $config = [
         // url defined in private config
     ],
 
+    'groepsadmin' => [
+        // private
+    ],
+
     'mail' => [
-        'name' => null,
+        'name' => 'Scouts Prins Boudewijn Wetteren',
         'mail' => 'website@scoutswetteren.be',
     ],
     'development_mail' => [

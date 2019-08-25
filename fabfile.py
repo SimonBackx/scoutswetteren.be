@@ -66,7 +66,7 @@ def nginx():
     removeCustomMaintenance()
 
     print("[NGINX] Uploading and enabling configuration file /etc/nginx/sites-available/"+config["folder"]+".conf")
-    put("config/nginx.production.conf", "/etc/nginx/sites-available/"+config["folder"]+".conf")
+    put("config/"+config["folder"]+"/nginx.production.conf", "/etc/nginx/sites-available/"+config["folder"]+".conf")
     run("ln -sf /etc/nginx/sites-available/"+config["folder"]+".conf /etc/nginx/sites-enabled/")
     run("service nginx reload")
     print ("[NGINX] Done. Nginx reloaded.")
@@ -79,11 +79,11 @@ def nginxMaintenance():
         run("rm /etc/nginx/sites-enabled/"+config["folder"]+".conf")
 
     print('[NGINX] Adding default maintenance file... (nginx.maintenance.default.conf)')
-    put("config/nginx.maintenance.default.conf", "/etc/nginx/sites-available/maintenance.default.conf")
+    put("config/"+config["folder"]+"/nginx.maintenance.default.conf", "/etc/nginx/sites-available/maintenance.default.conf")
     run("ln -sf /etc/nginx/sites-available/maintenance.default.conf /etc/nginx/sites-enabled/")
     
     print('[NGINX] Adding custom maintenance file...(nginx.maintenance.conf)')
-    put("config/nginx.maintenance.conf", "/etc/nginx/sites-available/"+config["folder"]+".maintenance.conf")
+    put("config/"+config["folder"]+"/nginx.maintenance.conf", "/etc/nginx/sites-available/"+config["folder"]+".maintenance.conf")
     run("ln -sf /etc/nginx/sites-available/"+config["folder"]+".maintenance.conf /etc/nginx/sites-enabled/")
 
     print('[NGINX] Creating maintenance root in /var/www/maintenance')
@@ -137,9 +137,12 @@ def uploadApp():
     
     with settings(hide('warnings', 'running', 'stdout')):
         rsync_project(remote_dir= uploading_directory+"/pirate", local_dir= "pirate/", delete= True)
+        rsync_project(remote_dir= uploading_directory+"/pirate/config.php", local_dir= config["pirate-config-location"]+"/config.php", delete= False)
+        rsync_project(remote_dir= uploading_directory+"/pirate/config.private.php", local_dir= config["pirate-config-location"]+"/config.private.php", delete= False)
         rsync_project(remote_dir= uploading_directory+"/public", local_dir= "public/", delete= True, extra_opts=" --chmod=a=rwx ")
     
     run("chown -R :www-data "+uploading_directory)
+    run("chown -R www-data:www-data "+uploading_directory+"/pirate/tmp")
     print("[UPLOAD] Done.")
 
 def letsencrypt():
@@ -168,7 +171,7 @@ def letsencrypt():
     print("[LETSENCRYPT] Renewing certificates if needed. Serving from "+directory+" for authentication.")
 
     with settings(hide('warnings', 'running')):
-        run("letsencrypt certonly --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --webroot -w "+directory+domains)
+        run("letsencrypt certonly --cert-name "+config["certificate-name"]+" --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --webroot -w "+directory+domains)
 
     print("[LETSENCRYPT] Done.")
 

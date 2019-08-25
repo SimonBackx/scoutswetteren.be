@@ -36,12 +36,21 @@ $config = [
     ],
 
     'mail' => [
-        'name' => null,
+        'name' => 'Scouts Sint-Jan Wetteren',
         'mail' => 'website@scoutssintjan.be',
     ],
     'development_mail' => [
         'name' => null,
         'mail' => 'website@scoutssintjan.be',
+    ],
+
+    'groepsadmin' => [
+        // Todo: move to private when filled
+        'enabled' => false,
+        'dry-run' => true, // goed idee om dry run eerst op true te zetten voor te testen eerste dagen
+        'username' => '',
+        'password' => '',
+        'groep' => '',
     ],
 
     'scouts' => [

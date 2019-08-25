@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Sails\Groepsadmin\Models;
 
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Groepsadmin\Models\GroepsadminLid;
 use Pirate\Wheel\Curl\Curl;
 use Pirate\Wheel\Curl\DataType;
@@ -11,13 +12,6 @@ class Groepsadmin
     private $access_token = '';
     public $logged_in = false;
     public $ledenlijst = null;
-
-    // Todo: voeg dit toe aan de database configuratie!
-    private $username = "simonb";
-    private $password = "o2209g";
-
-    // todo: also replace in code! O2209G
-    private $groepsNummer = "O2209G";
 
     public function __construct()
     {
@@ -53,8 +47,8 @@ class Groepsadmin
     {
         $response = Curl::request(Method::POST, 'https://login.scoutsengidsenvlaanderen.be/auth/realms/scouts/protocol/openid-connect/token', [], DataType::urlencoded, [
             'client_id' => $this->getOAuthClientId(),
-            'username' => $this->username,
-            'password' => $this->password,
+            'username' => Environment::getSetting('groepsadmin.username'),
+            'password' => Environment::getSetting('groepsadmin.password'),
             'grant_type' => 'password',
         ]);
 
@@ -76,14 +70,14 @@ class Groepsadmin
         $columns = GroepsadminLid::getColumns();
         $response = static::authenticatedRequest(Method::PATCH, $this->getURL() . '/ledenlijst/filter/huidige', [], DataType::json, [
             'criteria' => [
-                'groepen' => [$this->groepsNummer],
+                'groepen' => [Environment::getSetting('groepsadmin.groep')],
                 'functies' => ["d5f75b320b812440010b812554790354", "d5f75b320b812440010b812555de03a2", "d5f75b320b812440010b8125567703cb", "d5f75b320b812440010b812555db03a1", "d5f75b320b812440010b812555d603a0", "d5f75b320b812440010b812555c7039d", "d5f75b320b812440010b8125565203c1", "d5f75b320b812440010b812555380380", "d5f75b320b812440010b812555c1039b"],
                 'oudleden' => false,
             ],
             'kolommen' => $columns,
             'sortering' => [$columns[0]],
             "type" => "lid",
-            "groep" => $this->groepsNummer,
+            "groep" => Environment::getSetting('groepsadmin.groep'),
         ]);
 
         return isset($response);
@@ -94,14 +88,14 @@ class Groepsadmin
         $columns = GroepsadminLid::getColumns();
         $response = static::authenticatedRequest(Method::PATCH, $this->getURL() . '/ledenlijst/filter/huidige', [], DataType::json, [
             'criteria' => [
-                'groepen' => [$this->groepsNummer],
+                'groepen' => [Environment::getSetting('groepsadmin.groep')],
                 'functies' => ["d5f75b320b812440010b812554790354", "d5f75b320b812440010b812555de03a2", "d5f75b320b812440010b8125567703cb", "d5f75b320b812440010b812555db03a1", "d5f75b320b812440010b812555d603a0", "d5f75b320b812440010b812555c7039d", "d5f75b320b812440010b8125565203c1", "d5f75b320b812440010b812555380380", "d5f75b320b812440010b812555c1039b"],
                 'oudleden' => true,
             ],
             'kolommen' => $columns,
             'sortering' => [$columns[0]],
             "type" => "lid",
-            "groep" => $this->groepsNummer,
+            "groep" => Environment::getSetting('groepsadmin.groep'),
         ]);
 
         return isset($response);
@@ -149,6 +143,16 @@ class Groepsadmin
     public function uploadLid($data, $id = null)
     {
         if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
+            return true;
+        }
+
+        if (!Environment::getSetting('groepsadmin.enabled', false)) {
+            // Not allowed to make changes
+            return true;
+        }
+
+        if (Environment::getSetting('groepsadmin.dry-run', false)) {
+            // Fake changes
             return true;
         }
 

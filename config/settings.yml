@@ -1,12 +1,13 @@
-folder: "scoutswetteren.be"
-server: "root@scoutswetteren.be"
+folder: "scoutssintjan.be"
+server: "root@nieuw.scoutssintjan.be"
 e-mail: "simon.backx@scoutswetteren.be"
 mysql:
   username: root
   password: root
-  database: scouts
+  database: sint-jan
 letsencrypt:
-  - "scoutswetteren.be"
-  - "www.scoutswetteren.be"
-  - "files.scoutswetteren.be"
+  - "nieuw.scoutssintjan.be"
+  - "files.scoutssintjan.be"
+certificate-name: "scoutssintjan.be-0001"
+pirate-config-location: "docker/environments/scoutssintjan.dev"
 sass: "pirate/themes/prins-boudewijn/scss/main.scss:public/css/prins-boudewijn.css pirate/themes/sint-jan/scss/main.scss:public/css/sint-jan.css"

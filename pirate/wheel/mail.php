@@ -29,7 +29,7 @@ class Mail
             $this->sendgrid_mail->addContent(array('type' => 'text/html', 'value' => $html));
         }
 
-        $this->setFrom(Environment::getSetting('mail.mail'), 'Scouts Prins Boudewijn');
+        $this->setFrom(Environment::getSetting('mail.mail'), Environment::getSetting('mail.name'));
     }
 
     public function setFrom($email, $name = null)

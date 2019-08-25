@@ -1,19 +1,17 @@
 <?php
 namespace Pirate\Sails\Groepsadmin\Cronjobs;
-use Pirate\Wheel\Cronjob;
-use Pirate\Sails\Cache\Classes\CacheHelper;
 
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
+use Pirate\Sails\Cache\Classes\CacheHelper;
 use Pirate\Sails\Groepsadmin\Models\Groepsadmin;
 use Pirate\Sails\Groepsadmin\Models\GroepsadminLid;
 use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Wheel\Cronjob;
 
-class Sync extends Cronjob {
-    function needsRunning() {
+class Sync extends Cronjob
+{
+    public function needsRunning()
+    {
         if (date('G') != '3') {
             return false;
         }
@@ -22,9 +20,16 @@ class Sync extends Cronjob {
         return !isset($synced);
     }
 
-    function run() {
+    public function run()
+    {
+        if (!Environment::getSetting('groepsadmin.enabled', false)) {
+            // Not allowed to make changes
+            Leiding::sendErrorMail("Groepsadministratie sync is uitgeschakeld", "groepsadmin.enabled staat op false", "");
+            return;
+        }
+
         // Opslaan dat we één dag (min 1 minuut) lang niet meer gaan synchroniseren
-        CacheHelper::set("groepsadmin-last-sync", true, 60*60*24 - 60);
+        CacheHelper::set("groepsadmin-last-sync", true, 60 * 60 * 24 - 60);
 
         echo "Syncing groepsadministratie...\n\n";
 
@@ -36,11 +41,10 @@ class Sync extends Cronjob {
             echo "Fetching all members from SGV...\n";
             if ($groepsadmin->getLedenlijst()) {
                 // Leden ophalen
-                
+
                 echo "Fetching all members from database...\n";
                 $leden = Lid::getLedenFull();
                 $ledenlijst = $groepsadmin->ledenlijst;
-
 
                 $not_equal_leden = [];
 
@@ -85,7 +89,7 @@ class Sync extends Cronjob {
                         echo "WARNING: Member $lid->id ($lid->voornaam $lid->achternaam $gstr) has been synced previously, but can not be found again!\n";
                         $not_found[] = $lid;
                     }
-                   
+
                 }
 
                 $leden_to_create = [];
@@ -101,7 +105,7 @@ class Sync extends Cronjob {
                     }
 
                     $oud_ledenlijst = $groepsadmin->ledenlijst;
-    
+
                     foreach ($not_found as $lid) {
                         $found = false;
                         foreach ($oud_ledenlijst as $groepadminLid) {
@@ -116,7 +120,7 @@ class Sync extends Cronjob {
                                 break;
                             }
                         }
-                        
+
                         if ($found) {
                             $gstr = $lid->geboortedatum->format('d/m/Y');
                             echo "Member $lid->id ($lid->voornaam $lid->achternaam $gstr) is found in old members\n";
@@ -125,14 +129,14 @@ class Sync extends Cronjob {
                         }
                     }
                 }
-                
+
                 $geschrapte_leden = [];
                 $aangepaste_leden = [];
                 $toegevoegde_leden = [];
 
                 $schrappen = (intval(date('n')) != 9);
                 $failed = false;
-                
+
                 foreach ($ledenlijst as $groepadminLid) {
                     if (!$groepadminLid->found) {
                         // Datum checken:
@@ -140,7 +144,7 @@ class Sync extends Cronjob {
                         if ($schrappen) {
                             if (!$failed && $groepadminLid->remove($groepsadmin)) {
                                 echo "Member $groepadminLid->voornaam $groepadminLid->achternaam is removed\n";
-                                $geschrapte_leden[] = $groepadminLid->voornaam.' '.$groepadminLid->achternaam;
+                                $geschrapte_leden[] = $groepadminLid->voornaam . ' ' . $groepadminLid->achternaam;
                             } else {
                                 echo "Failed to remove $groepadminLid->voornaam $groepadminLid->achternaam\n";
                                 $failed = true;
@@ -154,7 +158,7 @@ class Sync extends Cronjob {
                         if ($groepadminLid->needsSync()) {
                             if (!$failed && $groepadminLid->sync($groepsadmin)) {
                                 echo "Member $groepadminLid->voornaam $groepadminLid->achternaam has been synced\n";
-                                $aangepaste_leden[] = $groepadminLid->voornaam.' '.$groepadminLid->achternaam;
+                                $aangepaste_leden[] = $groepadminLid->voornaam . ' ' . $groepadminLid->achternaam;
                             } else {
                                 $failed = true;
                                 echo "Failed to sync member $groepadminLid->voornaam $groepadminLid->achternaam\n";
@@ -167,7 +171,7 @@ class Sync extends Cronjob {
                 foreach ($leden_to_create as $lid) {
                     if (!$failed && GroepsadminLid::createNew($lid, $groepsadmin)) {
                         echo "Member $lid->id ($lid->voornaam $lid->achternaam) has been created\n";
-                        $toegevoegde_leden[] = $lid->voornaam.' '.$lid->achternaam;
+                        $toegevoegde_leden[] = $lid->voornaam . ' ' . $lid->achternaam;
                     } else {
                         $failed = true;
                         echo "Failed to create member $lid->id ($lid->voornaam $lid->achternaam)\n";
@@ -196,6 +200,3 @@ class Sync extends Cronjob {
         }
     }
 }
-
-
-?>
