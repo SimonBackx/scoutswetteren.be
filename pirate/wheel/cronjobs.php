@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Wheel;
 
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Migrations\Models\Migration;
 
 class Cronjobs
@@ -26,8 +27,7 @@ class Cronjobs
             $ucfirst_module = ucfirst($module);
 
             foreach ($crons as $name => $interval) {
-                require __DIR__ . "/../sails/$module/cronjobs/$name.php";
-                $classname = "\\Pirate\\Cronjob\\$ucfirst_module\\" . Self::dashesToCamelCase($name, true);
+                $classname = "\\Pirate\\Sails\\$ucfirst_module\\Cronjobs\\" . Self::dashesToCamelCase($name, true);
 
                 $cron = new $classname();
 
