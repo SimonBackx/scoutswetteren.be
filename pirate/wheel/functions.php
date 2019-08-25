@@ -10,7 +10,7 @@ function datetimeToUrl($datetime)
 
 function datetimeToDayMonth($datetime)
 {
-    return $datetime->format('j') . ' ' . Localization::getMonth($datetime->format('n') + 0);
+    return $datetime->format('j') . ' ' . Localization::getMonth($datetime->format('n') + 0);
 }
 
 function clean_special_chars($s, $d = false)
@@ -95,7 +95,7 @@ function datetimeToMonthYear($datetime)
 
 function datetimeToWeekday($datetime)
 {
-    return Localization::getMonth($datetime->format('N') + 0);
+    return Localization::getDay($datetime->format('N') + 0);
 }
 
 function datetimeToShortWeekday($datetime)

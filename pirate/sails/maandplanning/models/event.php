@@ -62,6 +62,37 @@ class Event extends Model
         return $defaultEndHour;
     }
 
+    // bv. zondag 1 augustauts, 1:00 - 12:00
+    public function getTimeDescriptionHuman()
+    {
+        if ($this->startdate->format('Y-m-d') == $this->enddate->format('Y-m-d')) {
+            return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ', ' . $this->startdate->format('H:i') . ' - ' . $this->enddate->format('H:i');
+        }
+
+        return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ' (' . $this->startdate->format('H:i') . ') tot ' . datetimeToDayMonth($this->enddate) . ' (' . $this->enddate->format('H:i') . ')';
+
+    }
+
+    public function isImportantActivity()
+    {
+        if ($this->startdate->format('Y-m-d') != $this->enddate->format('Y-m-d')) {
+            return true;
+        }
+        if ($this->group == "Familie en vrienden") {
+            return true;
+        }
+        if ($this->group == "Oudercomité") {
+            return true;
+        }
+        if ($this->group == "VZW") {
+            return true;
+        }
+        if ($this->group == "Leiding") {
+            return true;
+        }
+        return false;
+    }
+
     public function __construct($row = array())
     {
         if (count($row) == 0) {

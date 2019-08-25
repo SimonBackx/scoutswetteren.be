@@ -15,4 +15,9 @@ class Localization
     {
         return static::$months[$index - 1] ?? '?';
     }
+
+    public static function getDay(int $index)
+    {
+        return static::$days[$index - 1] ?? '?';
+    }
 }

@@ -35,77 +35,21 @@
                 <h1>Aankomende vergaderingen</h1>
 
                 <div class="columns">
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam op meerdere lijnen omdat de leiding iets zot wou doen</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
+                    {% for event in maandplanning.first_activities %}
+                        <section>
+                            <h1 class="prefix">{{ event.group }}</h1>
+                            <article>
+                                <h1>{{ event.name }}</h1>
+                                <time class="suffix" datetime="2011-11-18T14:54:39.929">{{ event.getTimeDescriptionHuman() }}</time>
+                            </article>
+                        </section>
+                    {% else %}
+                        <section>
+                            <article>
+                                <h1>Er zijn nog geen activiteiten gepland</h1>
+                            </article>
+                        </section>
+                    {% endfor %}
                 </div>
             </section>
 
@@ -113,37 +57,22 @@
                 <h1>Save the date</h1>
 
                 <div class="columns">
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
 
-                    <section>
-                        <h1 class="prefix">Kapoenen</h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Familie en vrienden<button class="more">Inschrijven</button></h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
-
-                    <section>
-                        <h1 class="prefix">Iedereen<button class="more">Meer info</button></h1>
-                        <article>
-                            <h1>Gekke activiteitnaam</h1>
-                            <time class="suffix" datetime="2011-11-18T14:54:39.929">Zondag 24 mei, 12:00 - 14:00</time>
-                        </article>
-                    </section>
+                    {% for event in maandplanning.save_the_date %}
+                        <section>
+                            <h1 class="prefix">{{ event.group }}</h1>
+                            <article>
+                                <h1>{{ event.name }}</h1>
+                                <time class="suffix" datetime="2011-11-18T14:54:39.929">{{ event.getTimeDescriptionHuman() }}</time>
+                            </article>
+                        </section>
+                    {% else %}
+                        <section>
+                            <article>
+                                <h1>Er zijn nog geen belangrijke activiteiten gepland</h1>
+                            </article>
+                        </section>
+                    {% endfor %}
                 </div>
             </section>
         </section>
