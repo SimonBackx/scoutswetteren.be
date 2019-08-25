@@ -1,22 +1,23 @@
 <?php
 namespace Pirate\Sails\Leden\Pages;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Ouder;
+
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Gezin;
-use Pirate\Wheel\Database;
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Leden\Models\Ouder;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
 // Deze pagina mag enkel getoond worden als de ouder (tijdelijk) ingelogd is
-class GezinNakijken extends Page {
+class GezinNakijken extends Page
+{
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         if (!Ouder::isLoggedIn()) {
             return 'Error!';
         }
@@ -36,27 +37,28 @@ class GezinNakijken extends Page {
             $data['gezinssituatie'] = $_POST['gezinssituatie'];
 
             if (isset($_POST['scouting_op_maat'])) {
-                $data['scouting_op_maat'] = true;  
+                $data['scouting_op_maat'] = true;
             } else {
-                $data['scouting_op_maat'] = false;  
+                $data['scouting_op_maat'] = false;
             }
 
             $errors = $gezin->setProperties($data);
             if (count($errors) == 0) {
                 if ($gezin->save()) {
                     $success = true;
-                    header("Location: https://".$_SERVER['SERVER_NAME']."/ouders");
-                    return "Doorverwijzen naar https://".$_SERVER['SERVER_NAME']."/ouders";
+                    header("Location: https://" . $_SERVER['SERVER_NAME'] . "/ouders");
+                    return "Doorverwijzen naar https://" . $_SERVER['SERVER_NAME'] . "/ouders";
                 } else {
                     $errors[] = 'Fout bij opslaan. Contacteer de webmaster.';
                 }
             }
         }
-        
+
         return Template::render('pages/leden/gezin-nakijken', array(
             'success' => $success,
             'errors' => $errors,
-            'gezin' => $data
+            'gezin' => $data,
+            'scouting_op_maat_tekst' => Environment::getSetting('scouting_op_maat.checkbox', 'Bedankt, onze takleiding bespreekt dit graag persoonlijk en discreet op een huisbezoek.'),
         ));
     }
 }

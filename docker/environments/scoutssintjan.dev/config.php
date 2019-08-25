@@ -48,6 +48,10 @@ $config = [
         // private
     ],
 
+    'scouting_op_maat' => [
+        'checkbox' => 'Bedankt, de groeps- en/of takleiding neemt contact met u op om samen te bekijken wat mogelijk is.'
+    ], 
+
     'scouts' => [
         'inschrijvings_start_maand' => 9 - 1,
         'inschrijvings_einde_maand' => 7 - 1,
