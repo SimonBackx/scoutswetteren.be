@@ -21,7 +21,7 @@ class Ship
         error_reporting(E_ALL);*/
 
         date_default_timezone_set('Europe/Brussels');
-        setlocale(LC_MONETARY, 'nl_BE.UTF-8', 'nl_BE');
+        setlocale(LC_MONETARY, 'nl_BE');
 
         // Load procedural files (todo: replace them with classes)
         require __DIR__ . '/config.php';

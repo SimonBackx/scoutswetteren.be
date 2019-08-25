@@ -54,7 +54,7 @@ $config = [
 
     'bank' => [
         'iban' => 'BE87 6528 1030 0494',
-        'bic' => 'KREDBEBB',
+        'bic' => 'BBRUBEBB',
     ],
 
     'scouts' => [

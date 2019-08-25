@@ -14,4 +14,7 @@ RUN apt-get update && \
         zlib1g-dev \ 
     && docker-php-ext-install zip
 
+RUN apt-get clean && apt-get update && apt-get install -y locales
+RUN locale-gen nl_BE.utf8
+
 cmd php-fpm
