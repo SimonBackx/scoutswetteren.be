@@ -139,7 +139,7 @@ def uploadApp():
         rsync_project(remote_dir= uploading_directory+"/pirate", local_dir= "pirate/", delete= True)
         rsync_project(remote_dir= uploading_directory+"/pirate/config.php", local_dir= config["pirate-config-location"]+"/config.php", delete= False)
         rsync_project(remote_dir= uploading_directory+"/pirate/config.private.php", local_dir= config["pirate-config-location"]+"/config.private.php", delete= False)
-        rsync_project(remote_dir= uploading_directory+"/public", local_dir= "public/", delete= True, extra_opts=" --chmod=a=rwx ")
+        rsync_project(remote_dir= uploading_directory+"/public", local_dir= "public/", delete= True)
     
     run("chown -R :www-data "+uploading_directory)
     run("chown -R www-data:www-data "+uploading_directory+"/pirate/tmp")

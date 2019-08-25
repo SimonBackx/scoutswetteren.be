@@ -90,6 +90,9 @@ class Event extends Model
         if ($this->group == "Leiding") {
             return true;
         }
+        if ($this->group == "Alle takken") {
+            return true;
+        }
         return false;
     }
 

@@ -318,7 +318,7 @@ class File extends Model
             return "https://" . $this->object_storage_host . "/" . $this->object_storage_path;
         }
 
-        return "https://" . str_replace('www.', 'files.', $_SERVER['SERVER_NAME']) . "/" . $this->getKey();
+        return "https://files." . str_replace('nieuw.', '', str_replace('www.', '', $_SERVER['SERVER_NAME'])) . "/" . $this->getKey();
     }
 
     public function getKey()

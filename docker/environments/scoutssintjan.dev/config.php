@@ -45,12 +45,7 @@ $config = [
     ],
 
     'groepsadmin' => [
-        // Todo: move to private when filled
-        'enabled' => false,
-        'dry-run' => true, // goed idee om dry run eerst op true te zetten voor te testen eerste dagen
-        'username' => '',
-        'password' => '',
-        'groep' => '',
+        // private
     ],
 
     'scouts' => [

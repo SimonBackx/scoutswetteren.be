@@ -31,9 +31,20 @@ class Homepage extends Page
         $events = Event::getEvents(date('Y-m-d'), date('Y-m-d', time() + 60 * 60 * 24 * 31 * 6));
 
         foreach ($events as $event) {
-            if (array_key_exists(strtolower($event->group), $takken)) {
-                if (!isset($first_activities[$event->group])) {
-                    $first_activities[$event->group] = $event;
+            if ($event->group == 'Alle takken') {
+                foreach ($takken as $taknaam => $takinfo) {
+                    if (!isset($first_activities[$taknaam])) {
+                        $event_copy = clone $event;
+                        $event_copy->group = ucfirst($taknaam);
+                        $first_activities[$taknaam] = $event_copy;
+                    }
+                }
+
+            } else {
+                if (array_key_exists(strtolower($event->group), $takken)) {
+                    if (!isset($first_activities[strtolower($event->group)])) {
+                        $first_activities[strtolower($event->group)] = $event;
+                    }
                 }
             }
 

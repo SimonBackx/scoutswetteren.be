@@ -16,6 +16,10 @@
             padding-right: 20px;
         }
 
+        &:last-child {
+            flex-shrink: 4;
+        }
+
 
         &> h1 {
             padding-bottom: 20px;
