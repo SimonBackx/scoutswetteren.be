@@ -79,14 +79,14 @@ Type=oneshot
 ExecStart=$dir";
 
         // Opslaan in /etc/systemd/system
-        file_put_contents('/etc/systemd/system/pirate.service', $service);
-        file_put_contents('/etc/systemd/system/pirate.timer', $timer);
+        file_put_contents('/etc/systemd/system/pirate.' . Environment::getSetting('domain') . '.service', $service);
+        file_put_contents('/etc/systemd/system/pirate.' . Environment::getSetting('domain') . '.timer', $timer);
 
         exec("systemctl daemon-reload");
 
-        exec("systemctl enable pirate.timer");
+        exec('systemctl enable pirate.' . Environment::getSetting('domain') . '.timer');
 
-        exec("systemctl start pirate.timer");
+        exec('systemctl start pirate.' . Environment::getSetting('domain') . '.timer');
 
         return true;
     }

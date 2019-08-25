@@ -123,7 +123,7 @@ class Ship
         }
 
         echo "Cronjobs started\n";
-        $cronjobs = new Cronjob\Cronjobs();
+        $cronjobs = new Cronjobs();
 
         try {
             $cronjobs->run();
