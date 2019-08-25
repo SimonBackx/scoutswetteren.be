@@ -39,7 +39,7 @@ class Takken extends Page
             'taknaam' => $this->tak,
             'description' => Environment::getSetting('scouts.takken.' . $this->tak . '.description'),
             'takken' => Inschrijving::getTakken(),
-            'leiding_verborgen' => Leiding::isLeidingZichtbaar(),
+            'leiding_verborgen' => !Leiding::isLeidingZichtbaar(),
             'leiding' => Leiding::getLeiding(null, $this->tak),
             'events' => $event_groups,
         ]);
