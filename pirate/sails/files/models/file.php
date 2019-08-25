@@ -335,12 +335,14 @@ class File extends Model
 
     public function deleteFromServer(&$errors)
     {
-        if (unlink(realpath($this->getPath())) === false) {
-            $errors[] = 'Deleting file failed.';
-            return false;
-        }
         clearstatcache();
-
+        if (file_exists(realpath($this->getPath()))) {
+            if (unlink(realpath($this->getPath())) === false) {
+                $errors[] = 'Deleting file failed.';
+                return false;
+            }
+        }
+       
         $this->saved_on_server = false;
 
         $album = Album::getAlbumForFile($this->id);
