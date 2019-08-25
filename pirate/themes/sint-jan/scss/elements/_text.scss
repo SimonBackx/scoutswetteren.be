@@ -270,7 +270,7 @@ a {
     }
 }
 
-p a {
+p a, li a {
     &, &:hover, &:visited, &:active, &:link {
         text-decoration: underline;
     }
