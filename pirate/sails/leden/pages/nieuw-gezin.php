@@ -1,11 +1,12 @@
 <?php
 namespace Pirate\Sails\Leden\Pages;
 
-use Pirate\Wheel\Database;
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Users\Models\User;
+use Pirate\Wheel\Database;
+use Pirate\Wheel\Mail;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 
@@ -205,13 +206,14 @@ class NieuwGezin extends Page
             }
         }
 
-        return Template::render('pages/leden/nieuw-lid', array(
+        return Template::render('pages/leden/nieuw-gezin', array(
             'ouders' => $ouders,
             'gezin' => $gezin_data,
             'titels' => Ouder::$titels,
             'fail' => $fail,
             'success' => $success,
             'errors' => $errors,
+            'scouting_op_maat_tekst' => Environment::getSetting('scouting_op_maat.checkbox', 'Bedankt, onze takleiding bespreekt dit graag persoonlijk en discreet op een huisbezoek.'),
         ));
     }
 }
