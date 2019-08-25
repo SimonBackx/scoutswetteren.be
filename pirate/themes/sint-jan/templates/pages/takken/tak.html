@@ -1,0 +1,29 @@
+{% set title = taknaam | capitalize %}
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="block white with-menu">
+            <nav>
+                {% include 'pages/takken/_menu.html' %}
+            </nav>
+            <div>
+                <a class="h1-prefix" href="mailto:{{ taknaam }}@scoutssintjan.be">{{ taknaam }}@scoutssintjan.be</a>
+                <h1>{{ taknaam | capitalize }}</h1>
+                <img src="/sint-jan/images/{{ taknaam }}.jpg">
+
+                {% include 'pages/takken/' ~ taknaam ~ '.html' %}
+
+                {% include 'pages/takken/_leiding.html' %}
+
+                {% include 'pages/takken/_maandplanning.html' %}
+            </div>
+        </section>
+    </main>
+{% endblock %}

@@ -2,6 +2,7 @@
 namespace Pirate\Sails\Maandplanning\Models;
 
 use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Environment\Classes\Localization;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Sails\Webshop\Models\OrderSheet;
 use Pirate\Wheel\Model;
@@ -71,6 +72,11 @@ class Event extends Model
 
         return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ' tot ' . datetimeToDayMonth($this->enddate);
 
+    }
+
+    public function getMonthString()
+    {
+        return Localization::getMonth($this->startdate->format('n') + 0);
     }
 
     public function isImportantActivity()

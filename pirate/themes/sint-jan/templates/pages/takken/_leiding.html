@@ -1,0 +1,31 @@
+
+
+{% if not leiding_verborgen %}
+    {% if leiding | length > 0 %}
+        <article class="block blue">
+                <h1>De leiding</h1>
+            <p>Deze enthausiaste leidingsploeg staat elke week in voor de {{ taknaam }}</p>
+            
+            <div class="splitted blocked auto">
+                {% for leider in leiding %}
+                    <article class="person">
+                        <figure style="background-image: url(/sint-jan/images/originelen/leiding/portretten/Aline.JPG)"></figure>
+                        <div>
+                            <h1 class="prefix">{{ leider.user.firstname }} {{ leider.user.lastname }}</h1>
+                            <p>{{ leider.totem }}</p>
+                            <p class="suffix">{{ leider.user.phone }}</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <footer>
+                <a href="/gebruikers/login" class="button fill main">Inloggen</a><span>Log in om de contactgegevens van de leiding te bekijken.</span>
+            </footer>
+        </article>
+    {% else %}
+        <ul class="warning"><li>De leiding is nog niet bekend</li></ul>
+    {% endif %}
+{% else %}
+    <ul class="warning"><li>De leidingsverdeling is nog niet bekend gemaakt en blijft nog even geheim.</li></ul>
+{% endif %}

@@ -1,0 +1,60 @@
+
+
+{% if events.0 is defined %}
+    <article class="block">
+        <div class="splitted blocked">
+            <div class="part column first">
+            
+                <h1>{{ events[0][0].getMonthString() | capitalize }}</h1>
+                {% for event in events.0 %}
+                    <article>
+                        <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
+                        <p>{{ event.name }}</p>
+                    </article>
+                {% endfor %}
+            </div>
+            <div class="part column last">
+                {% if events.1 is defined %}
+                    <h1>{{ events[1][0].getMonthString() | capitalize }}</h1>
+                    {% for event in events.1%}
+                        <article>
+                            <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
+                            <p>{{ event.name }}</p>
+                        </article>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </article>
+
+    {% if events.2 is defined %}
+        <article class="block">
+            <div class="splitted blocked">
+                <div class="part column first">
+                
+                    <h1>{{ events[2][0].getMonthString() | capitalize }}</h1>
+                    {% for event in events.2 %}
+                        <article>
+                            <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
+                            <p>{{ event.name }}</p>
+                        </article>
+                    {% endfor %}
+                </div>
+                <div class="part column last">
+                    {% if events.3 is defined %}
+                        <h1>{{ events[3][0].getMonthString() | capitalize }}</h1>
+                        {% for event in events.3%}
+                            <article>
+                                <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
+                                <p>{{ event.name }}</p>
+                            </article>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+    {% endif %}
+{% else %}
+    <ul class="warning"><li>De maandplanning is nog niet bekend</li></ul>
+{% endif %}
+
