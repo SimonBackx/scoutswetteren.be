@@ -14,6 +14,11 @@ class SintJanRouter extends Route
             return true;
         }
 
+        if ($result = $this->match($parts, '/privacy', [])) {
+            $this->setPage(new Pages\Privacy());
+            return true;
+        }
+
         if ($result = $this->match($parts, '/info', [])) {
             $this->setPage(new Pages\Info\Algemeen());
             return true;

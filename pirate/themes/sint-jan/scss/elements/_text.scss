@@ -121,7 +121,7 @@ h1:first-of-type {
     }
 }
 
-.prefix {
+.prefix, h3 {
     text-transform: uppercase;
     color: $color-main;
     text-transform: uppercase;
@@ -144,6 +144,12 @@ h1:first-of-type {
         text-transform: none;
     }
 }
+
+h3 {
+    margin: 15px 0 10px 0;
+}
+
+
 .suffix {
     &, &:hover, &:visited, &:active, &:link {
         color: $color-main-gray;
