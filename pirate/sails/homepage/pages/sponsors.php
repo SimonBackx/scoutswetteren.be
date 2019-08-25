@@ -1,7 +1,6 @@
 <?php
 namespace Pirate\Sails\Homepage\Pages;
 
-use Pirate\Wheel\Block;
 use Pirate\Sails\Sponsors\Models\Sponsor;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
@@ -17,10 +16,6 @@ class Sponsors extends Page
     public function getContent()
     {
         // Block ophalen van maandplanning sail
-
-        $maandplanning = Block::getBlock('Maandplanning', 'Kalender')->getContent();
-        $blog = Block::getBlock('Blog', 'Overview')->getContent();
-
         $sponsors = Sponsor::getSponsors();
         $sponsors_data = array();
 

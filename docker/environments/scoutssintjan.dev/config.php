@@ -7,7 +7,7 @@ $config = [
     'name' => 'Scouts Sint-Jan Wetteren',
     'force_www' => true,
     'theme' => 'sint-jan',
-    'disable_sails' => ['info'],
+    'disable_sails' => ['info', 'homepage'],
 
     'mysql' => [
         // no need to put in private. only localhost connections allowed

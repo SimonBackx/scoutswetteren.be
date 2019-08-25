@@ -13,30 +13,22 @@
     <main class="transparent">
         <section class="block white" id="blog">
             <article>
-                <div class="h1-prefix">15 september 2019</div>
-                <h1>Blog will get added here</h1>
-                <p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p><p>Todo: blog will get added here</p>
+                <div class="h1-prefix">Geplaatst op {{ blog.0.date }}</div>
+                <h1>{{ blog.0.title }}</h1>
+                {{ blog.0.html |raw }}
             </article>
 
             <div class="article-snippets">
-                <article>
-                    <div class="h1-prefix">15 september 2019</div>
-                    <h1>Schrijf je nu in voor ons eetfestijn! <a href="" class="go">Lezen</a></h1>
-                </article>
-                <article>
-                        <div class="h1-prefix">15 september 2019</div>
-                        <h1>Schrijf je nu in voor ons eetfestijn! <a href="" class="go">Lezen</a></h1>
-                </article>
-                <article>
-                        <div class="h1-prefix">15 september 2019</div>
-                        <h1>Schrijf je nu in voor ons eetfestijn! <a href="" class="go">Lezen</a></h1>
-                </article>
-                <article>
-                    <div class="h1-prefix">15 september 2019</div>
-                    <h1>Schrijf je nu in voor ons eetfestijn! <a href="" class="go">Lezen</a></h1>
-                </article>
+                {% for article in blog %}
+                    {% if not loop.first%}
+                        <article>
+                            <div class="h1-prefix">Geplaatst op {{ article.date }}</div>
+                            <h1>{{ article.title }} <a href="{{ article.url }}" class="go">Lezen</a></h1>
+                        </article>
+                    {% endif %}
+                {% endfor %}
             </div>
-           </section>
+        </section>
 
         <section class="block blue" id="home-calendar">
             <section>

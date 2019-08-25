@@ -9,6 +9,11 @@ class SintJanRouter extends Route
 
     public function doMatch($url, $parts)
     {
+        if ($result = $this->match($parts, '', [])) {
+            $this->setPage(new Pages\Homepage());
+            return true;
+        }
+
         if ($result = $this->match($parts, '/info', [])) {
             $this->setPage(new Pages\Info\Algemeen());
             return true;

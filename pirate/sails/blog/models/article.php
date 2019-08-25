@@ -1,8 +1,10 @@
 <?php
 namespace Pirate\Sails\Blog\Models;
+
 use Pirate\Wheel\Model;
 
-class Article extends Model {
+class Article extends Model
+{
     public $id;
     public $title;
     public $published;
@@ -15,7 +17,8 @@ class Article extends Model {
     public $author;
     public $editor;
 
-    function __construct($row) {
+    public function __construct($row)
+    {
         $this->id = $row['id'];
         $this->title = $row['title'];
         $this->published = new \DateTime($row['published']);
@@ -34,17 +37,19 @@ class Article extends Model {
         $this->editor = $row['editor'];
     }
 
-    function getUrl() {
-        return '/blog/'.datetimeToUrl($this->published).'/'.$this->slug;
+    public function getUrl()
+    {
+        return '/blog/' . datetimeToUrl($this->published) . '/' . $this->slug;
     }
 
-    static function getArticle($date, $slug) {
+    public static function getArticle($date, $slug)
+    {
         $date = self::getDb()->escape_string($date);
         $slug = self::getDb()->escape_string($slug);
 
         $query = "SELECT * from articles where `published` = '$date' and `slug` = '$slug'";
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 if ($row = $result->fetch_assoc()) {
                     return new Article($row);
                 }
@@ -54,21 +59,22 @@ class Article extends Model {
         return null;
     }
 
-    // Maximaal 5 artikels, pagina grootte = 4 
+    // Maximaal 5 artikels, pagina grootte = 4
     // Detectie of volgende pagina bestaat is dus gewoon nagaan of er 5 zijn meegegeven
     // Als pagina = 0 => laatste 150 artikels tonen (= archief)
-    static function getArticles($page = 1) {
+    public static function getArticles($page = 1, $page_size = 4)
+    {
         $page = intval($page);
 
-        $limit = 'LIMIT '.(($page-1)*4).', 5';
+        $limit = 'LIMIT ' . (($page - 1) * $page_size) . ', ' . ($page_size + 1);
         if ($page < 1) {
             $limit = 'limit 150';
         }
 
         $articles = array();
-        $query = 'SELECT * from articles order by published desc, edited desc '.$limit;
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        $query = 'SELECT * from articles order by published desc, edited desc ' . $limit;
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $articles[] = new Article($row);
                 }
@@ -77,15 +83,16 @@ class Article extends Model {
         return $articles;
     }
 
-    // Maximaal 5 artikels, pagina grootte = 4 
+    // Maximaal 5 artikels, pagina grootte = 4
     // Detectie of volgende pagina bestaat is dus gewoon nagaan of er 5 zijn meegegeven
-    static function searchArticles($needle) {
+    public static function searchArticles($needle)
+    {
         $needle = self::getDb()->escape_string($needle);
 
         $articles = array();
-        $query = 'SELECT * from articles  WHERE MATCH (title,`text`) AGAINST ("'.$needle.'" IN NATURAL LANGUAGE MODE);';
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        $query = 'SELECT * from articles  WHERE MATCH (title,`text`) AGAINST ("' . $needle . '" IN NATURAL LANGUAGE MODE);';
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $articles[] = new Article($row);
                 }
