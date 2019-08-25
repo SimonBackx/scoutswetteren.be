@@ -575,7 +575,7 @@ class User extends Model
         } elseif (Leiding::isLoggedIn()) {
             return "https://" . $_SERVER['SERVER_NAME'] . "/admin";
         }
-        return "https://" . $_SERVER['SERVER_NAME'];
+        return "https://" . $_SERVER['SERVER_NAME'] . "/inschrijven";
     }
 
     public static function getUser()
