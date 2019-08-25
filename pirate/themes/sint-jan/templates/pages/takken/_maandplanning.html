@@ -4,24 +4,12 @@
     <article class="block">
         <div class="splitted blocked bigger">
             <div class="part column first">
-            
-                <h1>{{ events[0][0].getMonthString() | capitalize }}</h1>
-                {% for event in events.0 %}
-                    <article>
-                        <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
-                        <p>{{ event.name }}</p>
-                    </article>
-                {% endfor %}
+        
+                {% include 'pages/takken/_maandplanning.maand.html' with {events: events.0 } %}
             </div>
             <div class="part column last">
                 {% if events.1 is defined %}
-                    <h1>{{ events[1][0].getMonthString() | capitalize }}</h1>
-                    {% for event in events.1%}
-                        <article>
-                            <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
-                            <p>{{ event.name }}</p>
-                        </article>
-                    {% endfor %}
+                    {% include 'pages/takken/_maandplanning.maand.html' with {events: events.1 } %}
                 {% endif %}
             </div>
         </div>
@@ -31,30 +19,17 @@
         <article class="block">
             <div class="splitted blocked bigger">
                 <div class="part column first">
-                
-                    <h1>{{ events[2][0].getMonthString() | capitalize }}</h1>
-                    {% for event in events.2 %}
-                        <article>
-                            <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
-                            <p>{{ event.name }}</p>
-                        </article>
-                    {% endfor %}
+                    {% include 'pages/takken/_maandplanning.maand.html' with {events: events.2 } %}
                 </div>
                 <div class="part column last">
                     {% if events.3 is defined %}
-                        <h1>{{ events[3][0].getMonthString() | capitalize }}</h1>
-                        {% for event in events.3%}
-                            <article>
-                                <h1 class="prefix">{{ event.getTimeDescriptionHuman }}</h1>
-                                <p>{{ event.name }}</p>
-                            </article>
-                        {% endfor %}
+                    {% include 'pages/takken/_maandplanning.maand.html' with {events: events.3 } %}
                     {% endif %}
                 </div>
             </div>
         </article>
     {% endif %}
 {% else %}
-    <ul class="warning"><li>De maandplanning is nog niet bekend</li></ul>
+    <ul class="warning"><li>De maandplanning is nog niet beschikbaar</li></ul>
 {% endif %}
 

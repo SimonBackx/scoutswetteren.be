@@ -1,0 +1,20 @@
+<h1>{{ events.0.getMonthString() | capitalize }}</h1>
+{% for event in events %}
+    <article>
+        <h1 class="prefix">{{ event.getStartDate() | capitalize }}<span>{{ event.getTimeString }}{% if event.location is not empty and not event.isSingleDay %}
+                ({{ event.location }})
+            {% endif %}</span></h1>
+        <p>{{ event.name }}</p>
+        {% if not event.isSingleDay %}
+            <p class="suffix">Tot {{ event.getEndDate() }} om {{ event.enddate |date ('H:i') }}
+                {% if event.endlocation is not empty %}
+                    ({{ event.endlocation }})
+                {% endif %}
+            </p>
+        {% else %}
+            <p class="suffix">{% if event.location is not empty %}
+                    {{ event.location }}
+                {% endif %} </p>
+        {% endif %}
+    </article>
+{% endfor %}

@@ -64,14 +64,39 @@ class Event extends Model
     }
 
     // bv. zondag 1 augustauts, 1:00 - 12:00
-    public function getTimeDescriptionHuman()
+    public function getTimeDescriptionHuman($with_time = true)
     {
-        if ($this->startdate->format('Y-m-d') == $this->enddate->format('Y-m-d')) {
-            return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ', ' . $this->startdate->format('H:i') . ' - ' . $this->enddate->format('H:i');
+        if ($this->isSingleDay()) {
+            return $this->getStartDate() . ($with_time ? (', ' . $this->startdate->format('G:i') . ' - ' . $this->enddate->format('G:i')) : '');
         }
 
-        return ucfirst(datetimeToWeekday($this->startdate)) . ' ' . datetimeToDayMonth($this->startdate) . ' tot ' . datetimeToDayMonth($this->enddate);
+        return $this->getStartDate() . ' tot ' . datetimeToDayMonth($this->enddate);
 
+    }
+
+    public function getStartDate()
+    {
+        return datetimeToWeekday($this->startdate) . ' ' . datetimeToDayMonth($this->startdate);
+    }
+
+    public function getEndDate()
+    {
+        return datetimeToWeekday($this->enddate) . ' ' . datetimeToDayMonth($this->enddate);
+    }
+
+    // bv. zondag 1 augustauts, 1:00 - 12:00
+    public function getTimeString()
+    {
+        if ($this->isSingleDay()) {
+            return ', ' . $this->startdate->format('G:i') . ' - ' . $this->enddate->format('G:i');
+        }
+
+        return ' om ' . $this->startdate->format('G:i');
+    }
+
+    public function isSingleDay()
+    {
+        return $this->startdate->format('Y-m-d') == $this->enddate->format('Y-m-d');
     }
 
     public function getMonthString()
