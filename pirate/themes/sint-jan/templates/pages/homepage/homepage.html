@@ -18,16 +18,18 @@
                 {{ blog.0.html |raw }}
             </article>
 
-            <div class="article-snippets">
-                {% for article in blog %}
-                    {% if not loop.first%}
-                        <article>
-                            <div class="h1-prefix">Geplaatst op {{ article.date }}</div>
-                            <h1>{{ article.title }} <a href="{{ article.url }}" class="go">Lezen</a></h1>
-                        </article>
-                    {% endif %}
-                {% endfor %}
-            </div>
+            {% if blog|length > 1 %}
+                <div class="article-snippets">
+                    {% for article in blog %}
+                        {% if not loop.first%}
+                            <article>
+                                <div class="h1-prefix">Geplaatst op {{ article.date }}</div>
+                                <h1>{{ article.title }} <a href="{{ article.url }}" class="go">Lezen</a></h1>
+                            </article>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </section>
 
         <section class="block blue" id="home-calendar">

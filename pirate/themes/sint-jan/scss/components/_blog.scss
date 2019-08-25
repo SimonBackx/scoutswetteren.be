@@ -7,7 +7,9 @@
     align-items: flex-start;
 
     &> article {
-
+        &:only-child {
+            max-width: 800px;
+        }
     }
 
     .article-snippets {
