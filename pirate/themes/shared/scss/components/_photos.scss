@@ -87,8 +87,8 @@
 
 #upload-progress, .progress {
     width: auto;
-    height: 2px;
-    border-radius: 2px;
+    height: $border-width;
+    border-radius: $border-width/2;
     position: relative;
     overflow: hidden;
     background: $gray;
@@ -106,21 +106,21 @@
 
     &.red {
         div:first-child {
-            background: #FF6A87;
+            background: lighten($color-main, 20%);
         }
 
         div:last-child {
-            background: #FFEBEF;
+            background: lighten($color-main, 80%);
         }
     }
 
     &.purple {
         div:first-child {
-            background: #966AFF;
+            background: $color-main-alternative;
         }
 
         div:last-child {
-            background: #F2ECFF;
+            background: lighten($color-main-alternative, 80%);
         }
     }
 }
