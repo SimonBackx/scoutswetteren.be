@@ -99,7 +99,7 @@ main > .block {
         flex-direction: row;
         align-items: flex-start;
 
-        @media (max-width: 800px) {
+        @media (max-width: 800px), print {
             flex-direction: column-reverse;
             align-items: stretch;
         }
@@ -119,7 +119,7 @@ main > .block {
                 top: $menu-height + 10px;
             }
 
-            @media (max-width: 800px) {
+            @media (max-width: 800px), print {
                 border-top: $border-width solid $color-main-shade;
                 position: static;
                 flex-basis: auto;
@@ -160,7 +160,7 @@ main > .block {
         &> div {
             flex-grow: 1;
 
-            @media (min-width: 801px) {
+            @media screen and (min-width: 801px) {
                 max-width: calc(100% - 240px);
             }
 
