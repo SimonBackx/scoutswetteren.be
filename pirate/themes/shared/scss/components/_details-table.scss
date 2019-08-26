@@ -2,6 +2,14 @@ table.details {
     font-size: $size-text-bigger;
     margin: 30px 0;
 
+    @media (max-width: 550px) {
+        font-size: $size-text;
+    }
+
+    @media (max-width: 480px), print {
+        font-size: $size-smartphone-text;
+    }
+
     tfoot {
         tr {
             td {
@@ -20,7 +28,7 @@ table.details {
             }
             td:first-child {
 
-                @media screen and (max-width: $page-width-stop-splitted), print {
+                @media (max-width: $page-width-stop-splitted), print {
                     text-align: left;
                 }
             }

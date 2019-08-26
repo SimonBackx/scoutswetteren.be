@@ -96,7 +96,7 @@ ul.error {
 }
 
 // Resize font sizes on small screens
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 480px), print {
 
     body, html, p {
         font-size: $size-smartphone-text;

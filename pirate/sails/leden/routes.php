@@ -6,8 +6,8 @@ use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Users\Models\User;
-use Pirate\Wheel\Route;
 use Pirate\Sails\Users\Pages\Login;
+use Pirate\Wheel\Route;
 
 class LedenRouter extends Route
 {

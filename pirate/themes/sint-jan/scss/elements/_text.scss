@@ -206,7 +206,7 @@ header {
     h2 {
         font-size: $size-text-bigger;
 
-        @media screen and (max-width: 480px) {
+        @media screen and (max-width: 480px), print {
             font-size: $size-text;
         }
     }
@@ -232,7 +232,7 @@ ol {
         padding-left: 30px;
         position: relative;
 
-        @media screen and (max-width: 480px) {
+        @media screen and (max-width: 480px), print {
             padding-left: 20px;
         }
 
@@ -245,7 +245,7 @@ ol {
             top: 0;
             font-size: $size-text;
 
-            @media screen and (max-width: 480px) {
+            @media screen and (max-width: 480px), print {
                 font-size: $size-smartphone-text;
             }
         }
@@ -260,7 +260,7 @@ li {
     margin: 5px 0;
     padding: 0;
 
-    @media screen and (max-width: 480px) {
+    @media screen and (max-width: 480px), print {
         line-height: 1.4;
         font-size: $size-smartphone-text;
     }
@@ -337,7 +337,7 @@ ul.error {
             font-size: $size-text;
         }
 
-        @media screen and (max-width: 480px) {
+        @media screen and (max-width: 480px), print {
             font-size: $size-smartphone-text;
         }
     }
@@ -367,7 +367,7 @@ ul.warning {
             font-size: $size-text;
         }
 
-        @media screen and (max-width: 480px) {
+        @media screen and (max-width: 480px), print {
             font-size: $size-smartphone-text;
         }
     }
@@ -380,7 +380,7 @@ ul.warning {
 }
 
 // Resize font sizes on small screens
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 480px), print {
 
     body, html, p {
         font-size: $size-smartphone-text;
@@ -433,7 +433,7 @@ ul.warning {
             color: $gray;
             margin-left: 10px;
 
-            @media screen and (max-width: 480px) {
+            @media screen and (max-width: 480px), print {
                 font-size: $size-smartphone-text;
             }
         }

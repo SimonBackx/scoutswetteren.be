@@ -3,7 +3,7 @@ main {
         max-width: $page-width;
         margin: 40px auto;
 
-        @media screen and (max-width: $page-width-reduce-padding) {
+        @media (max-width: $page-width-reduce-padding) {
             margin: 20px auto;
         }
 
@@ -33,7 +33,7 @@ main {
             }
             margin-bottom: 30px;
 
-            @media screen and (max-width: $page-width-reduce-padding) {
+            @media (max-width: $page-width-reduce-padding) {
                 margin-bottom: 10px;
             }
         }
@@ -48,7 +48,7 @@ main {
         height: 60vh;
         position: relative;
 
-        @media screen and (max-width: $page-width-reduce-padding) {
+        @media (max-width: $page-width-reduce-padding) {
             display: none;
         }
     }
@@ -62,7 +62,7 @@ main {
             margin: 0 -30px 20px -50px;
         }
 
-        @media screen and (max-width: $page-width-stop-splitted) {
+        @media (max-width: $page-width-stop-splitted) {
           padding: 60px 20px;
 
           .list-bundle { 
@@ -110,7 +110,7 @@ main {
         padding: 60px 60px;
         color: $color-text;
 
-        @media screen and (max-width: $page-width-stop-splitted) {
+        @media (max-width: $page-width-stop-splitted) {
           padding: 80px $smartphone-padding;
 
           &.part {
@@ -139,7 +139,7 @@ main {
     }
 
     // Small height screens: make boxes less long
-    @media screen and (max-width: $page-width-reduce-padding) {
+    @media (max-width: $page-width-reduce-padding) {
         .text {
             padding: 40px $smartphone-padding;
 
