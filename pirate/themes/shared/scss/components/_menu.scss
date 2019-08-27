@@ -78,16 +78,6 @@
     left: 0;
     right: 0;
     
-    &.fixed {
-        background: $color-menu-background;
-        position: fixed;
-        top: 0;
-
-        @media (max-height: 300px) {
-            position: absolute;
-        }
-    }
-
     height: $menu-height;
 
     .overflow-bar {

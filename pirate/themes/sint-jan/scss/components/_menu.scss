@@ -6,9 +6,9 @@ main {
     &> .block:first-child {
         padding-top: $menu-height + 20px;
 
-        @media (max-height: 600px), (max-width: 500px) {
+        /*@media (max-height: 600px), (max-width: 500px) {
             padding-top: 20px;
-        }
+        }*/
     }
 
     &.transparent {
@@ -36,10 +36,29 @@ main {
     }
 }
 
+#menu {
+    position: fixed;
+    top: 0;
+    background: transparent;
+    transition: background-color 0.2s;
+
+    &.fixed, &[data-scrolled='true'] {
+        background: $color-menu-background;
+    }
+
+    @media (max-height: 300px) {
+        position: absolute;
+    }
+}
+
+
 #menu .logo {
     height: $menu-height;
     width: 150px;
     position: relative;
+    transform-origin: top left;
+    transition: transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
 
     // Split white background and logo image for hover effect
     &::before {
@@ -74,29 +93,27 @@ main {
         }
     }
 
-    &:hover::after {
+    &:hover::after, &:active::after {
         opacity: 0.6;
     }
 
-    &:hover {
+    &:hover, &:active {
         &::after, &::before {
             transform: translate(0, 7px);
         }
     }
 
-    @media (max-height: 600px), (max-width: 500px) {
-        width: 85px;
-
-        &::before {
-            height: 95px;
-        }
-        &::after {
-            height: 85px;
-            background-size: 64px 64px;
-        }
+    @media (max-height: 400px), (max-width: 250px) {
+        transform: scale(0.7);
     }
 }
 
+@media (max-height: 600px), (max-width: 500px) {
+    #menu[data-scrolled='true'] .logo {
+        transform: scale(0.7);
+    }
+
+}
 // The menu items style
 // They are used twice: once in the invisible space div
 // and once in a visible form, forcing to stick to the bottom of that invisible one

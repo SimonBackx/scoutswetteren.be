@@ -24,6 +24,16 @@ main {
     }
 }
 
+#menu.fixed {
+    background: $color-menu-background;
+    position: fixed;
+    top: 0;
+
+    @media (max-height: 300px) {
+        position: absolute;
+    }
+}
+
 #menu > div {
     padding: 0 30px 0 30px;
 }

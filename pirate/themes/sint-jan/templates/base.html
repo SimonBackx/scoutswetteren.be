@@ -46,6 +46,26 @@
         <p class="ie-only">Javascript is uitgeschakeld op uw browser, hierdoor zijn veel functies niet beschikbaar.</p>
     </noscript>
 
+    <script>
+        function updateMenuStyle() {
+            var position = document.documentElement.scrollTop || document.body.scrollTop;
+            var menu = document.getElementById('menu');
+            if (!menu) {
+                return;
+            }
+            if (position > 50) {
+                menu.setAttribute('data-scrolled', 'true');
+            } else {
+                menu.setAttribute('data-scrolled', 'false');
+            }
+        }
+        document.addEventListener('scroll', updateMenuStyle, { passive: true });
+
+        // iOS fix
+        document.addEventListener("touchstart", function(){}, true);
+    
+    </script>
+
     <script type="text/javascript" src="/js/pickadate.js"></script>
     <script type="text/javascript" src="/js/pickadate.date.js"></script>
     <script type="text/javascript" src="/js/forms.js"></script>
