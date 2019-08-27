@@ -10,4 +10,4 @@ letsencrypt:
   - "files.scoutssintjan.be"
 certificate-name: "scoutssintjan.be-0001"
 pirate-config-location: "docker/environments/scoutssintjan.dev"
-sass: "pirate/themes/prins-boudewijn/scss/main.scss:public/css/prins-boudewijn.css pirate/themes/sint-jan/scss/main.scss:public/css/sint-jan.css pirate/themes/sint-jan/scss/print/print.scss:public/css/sint-jan.print.css pirate/themes/prins-boudewijn/scss/print/print.scss:public/css/prins-boudewijn.print.css"
+sass: "pirate/themes/prins-boudewijn/scss/main.scss:public/css/prins-boudewijn.css pirate/themes/sint-jan/scss/main.scss:public/css/sint-jan.css pirate/themes/sint-jan/scss/print/print.scss:public/css/sint-jan.print.css pirate/themes/prins-boudewijn/scss/print/print.scss:public/css/prins-boudewijn.print.css pirate/themes/sint-jan/scss/letter/letter.scss:public/css/sint-jan.letter.css pirate/themes/prins-boudewijn/scss/letter/letter.scss:public/css/prins-boudewijn.letter.css"

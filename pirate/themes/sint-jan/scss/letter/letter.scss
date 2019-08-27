@@ -1,0 +1,246 @@
+/*
+    Stijl voor het drukken van brieven
+    Komt overeen met de templates voor leiding
+ */
+
+// Color variables
+// Color variables
+$color-main-dark: #3E0007;
+$color-main: #FF3333;
+$color-main-shade: #FFECEC;
+$color-main-gray: rgba($color-main-dark, 0.4);
+$color-main-gradient-destination: #FF3370;
+
+
+$color-main-alternative: #0062F4;
+$color-main-alternative-shade: #ECF4FF;
+$color-main-alternative-dark: #001640;
+$color-main-alternative-gray: rgba($color-main-alternative-dark, 0.4);
+$color-main-alternative-gradient-destination: #1400F4;
+$border-width: 3px;
+$border-radius: 4px;
+
+@mixin main-gradient() {
+    @include main-alternative-gradient($color-main, $color-main-gradient-destination);
+}
+
+@mixin main-alternative-gradient($color-main, $color-main-gradient-destination) {
+    background: $color-main;
+    background: linear-gradient(90deg, $color-main, $color-main-gradient-destination);
+    position: relative;
+    z-index: 0;
+}
+
+body {
+    font-family: Helvetica, Calibri, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+p {
+    line-height: 130%;
+    font-size: 10pt;
+    color: black;
+    margin: 0 0 16pt 0; // Niet zeker
+}
+
+h1 {
+    font-family: Ubuntu;
+    font-size: 15pt;
+    font-weight: bold;
+    color: $color-main-dark;
+    line-height: 110%;
+    margin: 0 0 12pt 0;
+}
+
+h2 {
+    font-family: Ubuntu;
+    font-size: 13pt;
+    font-weight: normal;
+    color: $color-main-dark;
+    line-height: 110%;
+    margin: 0 0 8pt 0;
+}
+
+header {
+    background-size: 7.16cm 1.9cm;
+    text-align: right;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+
+    .left {
+        position: absolute;
+        left: 0;
+        top: 0;
+
+        img {
+            height: 2.5cm;
+        }
+    }
+
+    .right {
+        display: inline-block;
+        width: 7.67cm;
+        height: 3cm;
+
+        h1 {
+            font-size: 22pt;
+            line-height: normal;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            color: $color-main;
+            font-size: 12pt;
+            line-height: 120%;
+            margin: 0;
+        }
+    }
+
+    #lines {
+        padding-bottom: 1cm;
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+@page { 
+    size: auto;
+    margin: 1cm;  
+} 
+
+
+@media print {
+    body, html {
+        margin: 0;
+        padding: 0;
+    }
+
+    main {
+        padding: 1cm;
+        overflow: hidden;
+    }
+}
+
+@media screen {
+    // Op schermen geven we een maximum breedte
+    body {
+        zoom: 125%;
+        padding-top: 30px;
+    }
+
+    main {
+        width: 170mm;
+        display: block;
+        margin: 2cm auto;
+    }
+}
+
+.table {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+
+    .row {
+        display: table-row;
+        page-break-inside: avoid;
+        width: 50%;
+        page-break-inside: avoid;
+        page-break-before:auto;
+
+        > div {
+            display: table-cell;
+            vertical-align: top;
+            page-break-inside: avoid;
+            page-break-before:auto;
+
+            &:last-child{
+                 padding: 0 0 0 0.5cm;
+            }
+
+            &:first-child{
+                padding: 0 0.5cm 0 0;
+            }
+        }
+    }
+}
+
+table {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-spacing: 0;
+    margin-bottom: 16pt;
+
+    tr {
+        margin: 0;
+        padding: 0;
+
+        td {
+            margin: 0;
+            padding: 0;
+            padding-bottom: 3px;
+            vertical-align: top;
+
+            &:first-child {
+                padding-right: 20px;
+            }
+        }
+    }
+}
+
+a {
+    &, &:hover, &:visited, &:active, &:link {
+        color: inherit;
+        text-decoration: none;
+        outline: none;
+        border: 0;
+    }
+}
+
+#button-box {
+    position: fixed;
+    background: white;
+    z-index: 10000;
+    right: 0;
+    top: 0;
+    left: 0;
+    padding: 10px 0 10px 10px;
+    border-bottom: $border-width solid #EAEAEA;
+    text-align: right;
+    zoom: 80%;
+}
+
+
+a.button, button.button, input[type=submit] {
+    text-transform: uppercase;
+    font-size: 12pt;
+    display: inline-block;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    margin: 0 10px 0 0;
+    display: inline-block;
+
+    color: $color-main-dark;
+    padding: (14px - $border-width) (25px - $border-width);
+    border-radius: $border-radius;
+    border: $border-width solid $color-main-dark;
+    font-family: Ubuntu;
+
+    &.fill {
+        padding: 14px 25px;
+        border: 0;
+        @include main-gradient;
+        color: white;
+    }
+}
+
+
+@media print {
+    #button-box {
+        display: none;
+    }
+}
