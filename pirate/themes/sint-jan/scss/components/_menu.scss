@@ -128,8 +128,9 @@ main {
 
         opacity: 1;
         transition: opacity 0.2s;
+        -webkit-tap-highlight-color: transparent;
 
-        &:hover {
+        &:hover, &:active {
             opacity: 0.6;
         }
 
@@ -146,8 +147,9 @@ main {
             border-radius: $border-radius;
             @include main-gradient;
             margin-right: 0;
+            -webkit-tap-highlight-color: transparent;
 
-            &:hover {
+            &:hover, &:active {
                 opacity: 1;
 
                 &::before {
@@ -165,10 +167,8 @@ main {
         box-shadow: 0px 5px 30px rgba(0, 0, 0, 0.25);
         border-radius: $border-radius;
         padding: 15px 20px;
-        max-height: calc(100vh - #{$menu-height + 40px});
-        overflow-y: auto;
         color: $color-main-alternative-dark;
-        
+
         .box {
 
             &::after {
@@ -212,8 +212,9 @@ main {
             border-radius: $border-radius;
             transition: background-color 0.2s;
             background-color: transparent;
+            -webkit-tap-highlight-color: transparent;
 
-            &:hover {
+            &:hover, &:active {
                 background-color: $color-main-alternative-shade;
             }
         }
@@ -242,48 +243,23 @@ main {
 
     button.dropdown {
         padding-right: 20px;
-        background: url('../'+$theme+'/icons/dark-alternative/arrow-down.svg') no-repeat right 15px;
+        background: url('../'+$theme+'/icons/dark-alternative/arrow-down.svg') no-repeat right 10px center;
         position: relative;
-    }
+        transition: background-position 0.2s;
 
-    a {
-        background: transparent;
-        transition: background-color 0.2s;
-
-        &:hover {
-            background: $color-main-alternative-shade;
+        &:hover, &:active {
+            background-position: right 10px bottom 10px;
         }
     }
 
-    .dropdown-menu {
-        a {
-            color: $color-main-alternative-gray;
-            font-size: $size-text;
-            margin: 5px 0;
-            padding-left: 25px;
+    a, .dropdown-group > button {
+        background-color: transparent;
+        transition: background-color 0.2s, background-position 0.2s;
+        -webkit-tap-highlight-color: transparent;
 
-            &:first-child {
-                margin-top: 10px;
-            }
-        }
-
-        position: absolute;
-        left: 0;
-        right: 0;
-        background: white;
-        z-index: 1;
-      
-        transform: translate(0, -40px);
-        opacity: 0;
-        visibility: hidden;
-        transition: transform 0.2s, opacity 0.2s, visibility 0.2s step-end;
-        border-bottom: 3px solid $color-border;
-
-        &.open {
-            visibility: visible;
-            transition: transform 0.2s, opacity 0.2s, visibility 0.3s step-start;
-            transform: translate(0, 0);
-            opacity: 1;
+        &:hover, &:active {
+            background-color: $color-main-alternative-shade;
         }
     }
+
 }

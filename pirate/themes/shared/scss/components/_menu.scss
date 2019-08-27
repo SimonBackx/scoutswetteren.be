@@ -198,9 +198,12 @@
     .dropdown-menu {
         left: 0;
         top: $menu-height - 10px;
+        max-height: calc(100vh - #{$menu-height + 40px});
         position: absolute;
         width: 300px;
         line-height: 1;
+        overflow-y: auto;
+        z-index: 10;
 
         background: white;
         text-align: left;
@@ -222,4 +225,11 @@
         left: auto;
         right: 0;
     }
+}
+
+#smartphone-menu-items .dropdown-group .dropdown-menu  {
+    width: auto;
+    right: 0;
+    max-height: none;
+    top: $menu-height - 20px;
 }
