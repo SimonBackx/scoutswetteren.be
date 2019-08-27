@@ -144,18 +144,9 @@ main {
             height: $menu-height - 36px;
             padding: 10px 25px;
             line-height: $menu-height - 56px;
-            border-radius: $border-radius;
+            
             @include main-gradient;
             margin-right: 0;
-            -webkit-tap-highlight-color: transparent;
-
-            &:hover, &:active {
-                opacity: 1;
-
-                &::before {
-                    opacity: 1;
-                }
-            }
         }
     }
 }
@@ -222,7 +213,28 @@ main {
 }
 
 
+#menu .call-to-action {
+    @include main-gradient;
+    border-radius: $border-radius;
+    
+    &.user {
+        position: relative;
+        padding-right: 20px;
 
+        &::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-image: url('../'+$theme+'/icons/white/user-small.svg');
+        }
+        
+        padding-left: 45px !important;
+    }
+}
 
 #smartphone-menu-items {
     a, button {
@@ -250,6 +262,10 @@ main {
         &:hover, &:active {
             background-position: right 10px bottom 10px;
         }
+
+        &.call-to-action {
+            @include main-gradient;
+        }
     }
 
     a, .dropdown-group > button {
@@ -259,6 +275,17 @@ main {
 
         &:hover, &:active {
             background-color: $color-main-alternative-shade;
+        }
+
+        &.call-to-action {
+            color: white;
+            @include main-gradient;
+            opacity: 1;
+            transition: opacity 0.2s;
+
+            &:hover, &:active {
+                opacity: 0.6;
+            }
         }
     }
 
