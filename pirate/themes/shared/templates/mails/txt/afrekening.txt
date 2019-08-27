@@ -10,5 +10,4 @@ Klik op de bovenstaande link of kopieer hem in je adresbalk.
 
 
 Bedankt voor het vertrouwen in onze scouts,
-
-Leiding Scouts Prins Boudewijn
+{{ environment.name }}
