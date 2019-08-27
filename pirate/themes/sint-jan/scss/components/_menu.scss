@@ -6,9 +6,9 @@ main {
     &> .block:first-child {
         padding-top: $menu-height + 20px;
 
-        /*@media (max-height: 600px), (max-width: 500px) {
-            padding-top: 20px;
-        }*/
+        @media (max-height: 400px), (max-width: 250px) {
+            padding-top: 50px;
+        }
     }
 
     &.transparent {
