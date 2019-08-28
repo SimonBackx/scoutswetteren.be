@@ -22,13 +22,13 @@ class Mail
         $text = Template::render('mails/txt/' . $template, $data, 'txt');
         $this->sendgrid_mail->addContent(array('type' => 'text/plain', 'value' => $text));
 
-        $file = __DIR__ . '/../templates/mails/html/' . $template . '.html';
+        $file = __DIR__ . '/../themes/' . Environment::getSetting('theme', 'shared') . '/templates/mails/html/' . $template . '.html';
+        $file_alt = __DIR__ . '/../themes/' . 'shared' . '/templates/mails/html/' . $template . '.html';
 
-        if (file_exists($file)) {
+        if (file_exists($file) || file_exists($file_alt)) {
             $html = Template::render('mails/html/' . $template, $data, 'html');
             $this->sendgrid_mail->addContent(array('type' => 'text/html', 'value' => $html));
         }
-
         $this->setFrom(Environment::getSetting('mail.mail'), Environment::getSetting('mail.name'));
     }
 

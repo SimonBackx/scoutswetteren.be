@@ -1,0 +1,31 @@
+{% extends "mails/template.html" %}
+
+{% block main %}
+    {{ message | nl2br}}
+    %reason%
+{% endblock %}
+
+{% block extra %}
+    {% if magic_url %}
+        <tr style="margin: 0;padding: 0;">
+            <td id="login-footer" style="margin: 0;padding: 0 40px;">
+                <p style="margin: 0;padding: 0;font-size: 12pt;font-style: italic;color: #3E0007;">Gebruik de knop hieronder om de gegevens van ingeschreven leden aan te passen en leden in te schrijven.</p>
+            </td>
+        </tr>
+        <tr style="margin: 0;padding: 0;">
+            <td style="margin: 0;padding: 20px 40px;">
+
+                <table border="0" cellspacing="0" cellpadding="0" class="button-table" style="padding: 0; margin: 0;">
+                    <tr cellspacing="0" cellpadding="0" style="margin: 0;padding: 0;">
+                        <td class="button-box" align="center" bgcolor="#FF3333" cellspacing="0" cellpadding="0" style="margin: 0;padding: 0;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;">
+                            <a class="button" href="%magic_url%" style="font-family: Helvetica, Arial, sans-serif;color: #ffffff;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;padding: 14px 25px; margin: 0; background: #FF3333;background: linear-gradient(90deg, #FF3333, #FF3370);text-transform: uppercase;font-size: 15px;cursor: pointer;text-decoration: none;display: inline-block;">
+                                Ga naar website
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    {% endif %}
+{% endblock %}

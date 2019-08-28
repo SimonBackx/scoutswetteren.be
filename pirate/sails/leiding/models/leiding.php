@@ -120,7 +120,7 @@ class Leiding extends Model
             foreach ($leiding as $leider) {
                 $list[] = (object) [
                     'mail' => $leider->user->mail,
-                    'mail' => $leider->user->firstname . ' ' . $leider->user->lastname,
+                    'name' => $leider->user->firstname . ' ' . $leider->user->lastname,
                     'send_from' => false,
                 ];
             }
@@ -136,7 +136,7 @@ class Leiding extends Model
         } else {
             $list[] = (object) [
                 'mail' => $contact_data['mail'],
-                'mail' => $contact_data['name'],
+                'name' => $contact_data['name'],
                 'send_from' => true,
             ];
         }

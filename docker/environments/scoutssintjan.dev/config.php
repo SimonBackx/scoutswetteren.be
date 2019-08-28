@@ -193,45 +193,39 @@ $config = [
             'mail' => 'groepsleiding@scoutswetteren.be',
         ),
         'kapoenen' => array(
-            'name' => 'Kapoenleiding',
-            'mail' => 'kapoenen@scoutswetteren.be',
+            'name' => 'Kapoenen leiding',
+            'mail' => 'kapoenen@scoutssintjan.be',
         ),
-        'wouters' => array(
-            'name' => 'Wouterleiding',
-            'mail' => 'wouters@scoutswetteren.be',
+        'kabouters' => array(
+            'name' => 'Kabouters leiding',
+            'mail' => 'kabouters@scoutssintjan.be',
         ),
-        'jonggivers' => array(
-            'name' => 'Jonggiverleiding',
-            'mail' => 'jonggivers@scoutswetteren.be',
+        'welpen' => array(
+            'name' => 'Welpen leiding',
+            'mail' => 'welpen@scoutssintjan.be',
         ),
-        'givers' => array(
-            'name' => 'Giverleiding',
-            'mail' => 'givers@scoutswetteren.be',
+        'jonggidsen' => array(
+            'name' => 'Jonggidsen leiding',
+            'mail' => 'jonggidsen@scoutssintjan.be',
         ),
+        'jongverkenners' => array(
+            'name' => 'Jongverkenners leiding',
+            'mail' => 'kapoenen@scoutssintjan.be',
+        ),
+        'gidsen' => array(
+            'name' => 'Gidsen leiding',
+            'mail' => 'gidsen@scoutssintjan.be',
+        ),
+        'akabe' => array(
+            'name' => 'Akabeleiding',
+            'mail' => 'akabe@scoutssintjan.be',
+        ),
+
         'jin' => array(
             'name' => 'Jinleiding',
-            'mail' => 'jin@scoutswetteren.be',
+            'mail' => 'jin@scoutssintjan.be',
         ),
-        'kerstactiviteit' => array(
-            'name' => 'Kerstactiviteit',
-            'mail' => 'kerstactiviteit@scoutswetteren.be',
-        ),
-        'winterfeest' => [
-            "name" => 'Winterfeest',
-            'mail' => "winterfeest@scoutswetteren.be",
-        ],
-        'wafelbak' => array(
-            'name' => 'Wafelbak',
-            'mail' => 'wafels@scoutswetteren.be',
-        ),
-        'webmaster' => array(
-            'name' => 'Webmaster',
-            'mail' => 'website@scoutswetteren.be',
-        ),
-        'materiaal' => array(
-            'name' => 'Materiaalmeesters',
-            'mail' => 'materiaal@scoutswetteren.be',
-        ),
+       
         'verhuur' => array(
             'name' => 'Verhuur verantwoordelijke',
             'permission' => 'verhuur',
@@ -239,6 +233,10 @@ $config = [
         'oudercomite' => array(
             'name' => 'Oudercomité',
             'permission' => 'contactpersoon_oudercomite',
+        ),
+        'vzw' => array(
+            'name' => 'VZW',
+            'permission' => 'contactpersoon_vzw',
         ),
     ],
 ];
