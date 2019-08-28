@@ -58,8 +58,8 @@ $config = [
     ],
 
     'scouts' => [
-        'inschrijvings_start_maand' => 9 - 1,
-        'inschrijvings_einde_maand' => 7,
+        'inschrijvings_start_maand' => 8,
+        'inschrijvings_einde_maand' => 6,
         'inschrijvings_halfjaar_maand' => 3,
         'lidgeld_verminderd' => 1 / 3,
 
@@ -225,7 +225,7 @@ $config = [
             'name' => 'Jinleiding',
             'mail' => 'jin@scoutssintjan.be',
         ),
-       
+
         'verhuur' => array(
             'name' => 'Verhuur verantwoordelijke',
             'permission' => 'verhuur',

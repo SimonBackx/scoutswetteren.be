@@ -2,6 +2,7 @@
 namespace Pirate\Sails\Groepsadmin\Cronjobs;
 
 use Pirate\Sails\Cache\Classes\CacheHelper;
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Groepsadmin\Models\Groepsadmin;
 use Pirate\Sails\Groepsadmin\Models\GroepsadminLid;
 use Pirate\Sails\Leden\Models\Lid;
