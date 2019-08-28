@@ -23,14 +23,14 @@ class Sync extends Cronjob
 
     public function run()
     {
+        // Opslaan dat we één dag (min 1 minuut) lang niet meer gaan synchroniseren
+        CacheHelper::set("groepsadmin-last-sync", true, 60 * 60 * 24 - 60);
+
         if (!Environment::getSetting('groepsadmin.enabled', false)) {
             // Not allowed to make changes
             Leiding::sendErrorMail("Groepsadministratie sync is uitgeschakeld", "groepsadmin.enabled staat op false", "");
             return;
         }
-
-        // Opslaan dat we één dag (min 1 minuut) lang niet meer gaan synchroniseren
-        CacheHelper::set("groepsadmin-last-sync", true, 60 * 60 * 24 - 60);
 
         echo "Syncing groepsadministratie...\n\n";
 
@@ -135,7 +135,8 @@ class Sync extends Cronjob
                 $aangepaste_leden = [];
                 $toegevoegde_leden = [];
 
-                $schrappen = (intval(date('n')) != 9);
+                // Todo: check new scoutsjaar begin + 1 month
+                $schrappen = (intval(date('n')) != 9 && intval(date('n')) != 8);
                 $failed = false;
 
                 foreach ($ledenlijst as $groepadminLid) {

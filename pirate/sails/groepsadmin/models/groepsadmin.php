@@ -148,12 +148,12 @@ class Groepsadmin
 
         if (!Environment::getSetting('groepsadmin.enabled', false)) {
             // Not allowed to make changes
-            return true;
+            return false;
         }
 
         if (Environment::getSetting('groepsadmin.dry-run', false)) {
             // Fake changes
-            return true;
+            return false;
         }
 
         $response = static::authenticatedRequest(isset($id) ? Method::PATCH : Method::POST, isset($id) ? $this->getURL() . '/lid/' . $id . '?bevestig=true' : $this->getURL() . '/lid', [], DataType::json, $data);
