@@ -2,3 +2,5 @@
 {% for tak in takken %}
     <a href="/takken/{{ tak }}" {% if tak == taknaam %}class="selected"{% endif %}>{{ tak | capitalize }}</a>
 {% endfor %}
+<hr>
+<a href="/takken/stam" {% if taknaam == "stam" %}class="selected"{% endif %}>Stam</a>

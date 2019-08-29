@@ -83,9 +83,11 @@ class Homepage extends Page
         $album_images = [];
 
         foreach ($albums as $album) {
+            $images = Image::getImagesFromAlbum($album->id);
+            shuffle($images);
             $album_images[] = [
                 'album' => $album,
-                'images' => Image::getImagesFromAlbum($album->id),
+                'images' => $images,
                 'formatted_date' => datetimeToDayMonth($album->date_taken),
             ];
         }

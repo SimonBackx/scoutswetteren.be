@@ -37,6 +37,7 @@ class Event extends Model
 
         if (Environment::getSetting('theme') == 'sint-jan') {
             $groups[] = 'VZW';
+            $groups[] = 'Stam';
         }
 
         $groups[] = 'Alle takken';
@@ -230,7 +231,7 @@ class Event extends Model
         $query = 'SELECT e.*, o.*, b.* FROM events e
         left join order_sheets o on e.order_sheet_id = o.sheet_id
         left join bank_accounts b on b.account_id = o.sheet_bank_account
-        WHERE startdate >= CURDATE() AND (`group` = "' . ucfirst($tak) . '" OR `group` = "Familie en vrienden" OR `group` = "Alle takken" OR `group` = "(Jong)givers") ORDER BY startdate LIMIT 30';
+        WHERE startdate >= CURDATE() AND (`group` = "' . ucfirst($tak) . '" OR `group` = "Familie en vrienden" OR `group` = "Alle takken"' . ($tak == 'givers' || $tak == 'jonggivers' ? 'OR `group` = "(Jong)givers"' : '') . ') ORDER BY startdate LIMIT 30';
 
         if ($result = self::getDb()->query($query)) {
             if ($result->num_rows > 0) {

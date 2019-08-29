@@ -223,6 +223,15 @@ ul {
     padding-left: 30px;
 }
 
+hr {
+    background: $form-border-color;
+    height: $border-width;
+    border-radius: $border-width/2;
+    border: 0;
+    outline: 0;
+    margin: 10px 0;
+}
+
 ol {
     list-style: none;
     counter-reset: ol-counter;

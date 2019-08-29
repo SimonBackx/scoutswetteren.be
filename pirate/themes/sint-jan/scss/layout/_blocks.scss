@@ -105,8 +105,8 @@ main > .block {
         }
 
         &> nav {
-            flex-basis: 220px;
-            padding-right: 20px;
+            flex-basis: 240px;
+            padding-right: 40px;
             padding-top: 0;
             position: -webkit-sticky;
             position: sticky;
@@ -120,10 +120,11 @@ main > .block {
             }
 
             @media (max-width: 800px), print {
-                border-top: $border-width solid $color-main-shade;
+                border-top: $border-width solid $form-border-color;
                 position: static;
                 flex-basis: auto;
                 padding-top: 20px;
+                padding-right: 0;
             }
 
             &> a, .box > a {
@@ -132,24 +133,42 @@ main > .block {
                 font-size: $size-button;
                 color: $color-main-dark;
                 border-radius: $border-radius;
-
                 display: block;
                 padding: 12px 15px;
                 margin: 0;
-                border-radius: $border-radius;
-                transition: background-color 0.2s;
-                background-color: transparent;
+                
                 position: relative;
-                left: -15px;
+                padding-left: 0;
+                position: relative;
+
+                &::after {
+                    position: absolute;
+                    content: '';
+                    left: -15px;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    border-radius: $border-radius;
+                    transition: background-color 0.2s;
+                    background-color: transparent;
+                    opacity: 1;
+                    z-index: -1;
+                }
 
                 @media (max-width: 800px) {
-                    left: 0;
+                    padding-left: 15px;
+
+                    &::after {
+                        left: 0;
+                    }
                 }
-                opacity: 1;
+                
                 
                 &:hover {
-                    opacity: 1;
-                    background-color: $color-main-shade;
+                    &::after { 
+                        opacity: 1;
+                        background-color: $color-main-shade;
+                    }
                 }
 
                 &.selected {
@@ -170,6 +189,10 @@ main > .block {
                 width: calc(100% + 60px);
                 display: block;
                 border-radius: $border-radius;
+                height: 60vw;
+                max-height: 40vh;
+                object-fit: cover;
+                background: $color-main-shade;
 
                 @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
                     margin: 20px -20px;

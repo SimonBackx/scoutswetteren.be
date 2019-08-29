@@ -37,7 +37,7 @@ class Takken extends Page
 
         return Template::render('pages/takken/tak', [
             'taknaam' => $this->tak,
-            'description' => Environment::getSetting('scouts.takken.' . $this->tak . '.description'),
+            'description' => Inschrijving::isGeldigeTak($this->tak) ? Environment::getSetting('scouts.takken.' . $this->tak . '.description') : '',
             'takken' => Inschrijving::getTakken(),
             'leiding_verborgen' => !Leiding::isLeidingZichtbaar(),
             'leiding' => Leiding::getLeiding(null, $this->tak),

@@ -11,7 +11,7 @@
 }
 
 .splitted.blocked {
-    &> .part article, &.auto > article {
+    &> .part article, &.auto > article, &.auto > a > article{
         margin: 30px 0;
 
         @media (max-width: 600px), print {
@@ -27,13 +27,13 @@
         margin-top: 15px;
     }
 
-    &> article:first-child {
+    &> article:first-child, &> a:first-child > article {
         margin-top: 0;
     }
 }
 
 .splitted.blocked.bigger {
-    &> .part article, &.auto > article {
+    &> .part article, &.auto > article, &.auto > a > article {
         margin: 30px 0;
 
         &> p:first-of-type, &> .suffix + p {

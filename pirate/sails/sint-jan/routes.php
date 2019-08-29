@@ -25,7 +25,7 @@ class SintJanRouter extends Route
             return true;
         }
         if ($result = $this->match($parts, '/takken/@tak', ['tak' => 'string'])) {
-            if (!in_array($result->params->tak, Inschrijving::getTakken())) {
+            if (!Inschrijving::isGeldigeTak($result->params->tak) && $result->params->tak != 'stam') {
                 return false;
             }
             $this->setPage(new Pages\Takken($result->params->tak));
