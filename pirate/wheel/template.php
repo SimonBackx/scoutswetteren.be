@@ -54,7 +54,10 @@ class Template
             'development_mail' => Environment::getSetting('development_mail'),
         ];
 
+        $url = strtok($_SERVER["REQUEST_URI"], '?');
+
         $data['general'] = array(
+            'url' => $url,
             'logged_in' => User::isLoggedIn(),
             'logged_in_leiding' => Leiding::isLoggedIn(),
             'logged_in_leiding_redacteur' => Leiding::hasPermission('redacteur'),

@@ -1,0 +1,28 @@
+{% set title = 'Algemeen' %}
+{% set description = 'Informatie over onze locatie, inschrijven, op kamp gaan en de takkenverdeling.' %}
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% use "pages/info/_map.html" %}
+
+{% block main %}
+    <main>
+        <section class="block white with-menu">
+            <nav>
+                {% include 'pages/info/_menu.html' %}
+            </nav>
+            <div>
+                <h1>VZW</h1>
+                <img src="/sint-jan/images/vzw.jpg">
+                <p>Het lokaal en de terreinen zijn eigendom van de VZW beschermcomité scouts en gidsen Sint Jan. Die VZW is in de beginjaren van de groep opgericht om te zorgen dat ook toekomstige generaties aan scouting kunnen blijven doen, ook in minder goede tijden.</p>
+            
+                <p>
+                    Naast het onderhoud en de verhuur is er de permanente zorg voor de financiën. De volgende jaren moet nog een groot deel van de lotenlening terugbetaald worden die we hebben uitgegeven voor de financiering van de tweede fase van de bouw. En ook het dagelijkse onderhoud kost geld. We hopen dus ook de volgende jaren op jullie steun te kunnen blijven rekenen bij de verschillende financiële acties van de groep en van de VZW. De eerstvolgende afspraak is ons eetfestijn op zaterdag 16 november in Scheppers. Hopelijk tot dan!
+                </p>
+                
+            </div>
+        </section>
+    </main>
+{% endblock %}

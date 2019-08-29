@@ -24,6 +24,14 @@ class SintJanRouter extends Route
             $this->setPage(new Pages\Info\Algemeen());
             return true;
         }
+        if ($result = $this->match($parts, '/info/vzw', [])) {
+            $this->setPage(new Pages\Info\VZW());
+            return true;
+        }
+        if ($result = $this->match($parts, '/info/oudercomite', [])) {
+            $this->setPage(new Pages\Info\Oudercomite());
+            return true;
+        }
         if ($result = $this->match($parts, '/takken/@tak', ['tak' => 'string'])) {
             if (!Inschrijving::isGeldigeTak($result->params->tak) && $result->params->tak != 'stam') {
                 return false;

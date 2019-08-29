@@ -1,0 +1,50 @@
+{% set title = 'Algemeen' %}
+{% set description = 'Informatie over onze locatie, inschrijven, op kamp gaan en de takkenverdeling.' %}
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% use "pages/info/_map.html" %}
+
+{% block main %}
+    <main>
+        <section class="block white with-menu">
+            <nav>
+                {% include 'pages/info/_menu.html' %}
+            </nav>
+            <div>
+                <a class="h1-prefix" href="mailto:oudercomite.sintjan@gmail.com">oudercomite.sintjan@gmail.com</a>
+                <h1>Oudercomité</h1>
+                <!--<img src="/sint-jan/images/vzw.jpg">-->
+                
+                <ul>
+                    <li>een 20-tal enthousiaste ouders met kinderen in verschillende takken bij Sint-Jan</li>
+                    <li>mensen met een warm hart voor jeugd en jeugdwerking</li>
+                    <li>(wereld)kampioenen in afwassen, opdienen en luisteren</li>
+                </ul>
+
+                <article class="block blue">
+                    <h1>Wat doen we?</h1>
+                    <ul>
+                        <li>we vormen de brug tussen de groep/leidingsploeg en de ouders met raad en daad</li>
+                        <li>geven tips aan de groep rond onderwerpen die de kinderen aanbelangen (bv. veiligheid, ledenwerking…)</li>
+                        <li>nemen minstens eenmaal per scoutsjaar deel aan de groepsraad</li>
+                        <li>overleggen een aantal keer per jaar met de groepsleiding, kijken waar we kunnen helpen</li>
+                        <li>op kampvuuravond verzorgen we de toog </li>
+                        <li>steun aan de VZW (vb. bij werken aan het lokaal, wijnverkoop…)</li>
+                        <li>steken serieus de handen uit de mouwen op het jaarlijkse eetfestijn</li>
+                        <li>verzorgen een aantal specifieke activiteiten enkel voor OC en leiding (dropping, spaghettiavond...)</li>
+                        <li>voor het OC zelf richten we een paar eigen activiteiten in (weekend met partners, BBQ…)</li>
+                    </ul>
+                </article>
+
+                <article class="block">
+                    <h1>Meer informatie?</h1>
+                    <p>Spreek gerust iemand aan van het oudercomité of de leiding, contacteer een van de oudercomité voorzitters (Steven Heindryckx of Frederik Van Hecke) of stuur gewoon een mailtje naar oudercomite.sintjan@gmail.com!</p>
+                </article>
+                
+            </div>
+        </section>
+    </main>
+{% endblock %}

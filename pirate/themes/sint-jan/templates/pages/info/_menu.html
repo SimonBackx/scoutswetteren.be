@@ -1,4 +1,3 @@
-<a href="/info" class="selected">Algemeen</a>
-<a href="/info/oudercomite">Oudercomite</a>
-<a href="/info/vzw">VZW</a>
-<a href="/info/geschiedenis">Geschiedenis</a>
+<a href="/info" {% if general.url == "/info" %}class="selected"{% endif %}>Algemeen</a>
+<a href="/info/oudercomite" {% if general.url == "/info/oudercomite" %}class="selected"{% endif %}>Oudercomite</a>
+<a href="/info/vzw" {% if general.url == "/info/vzw" %}class="selected"{% endif %}>VZW</a>
