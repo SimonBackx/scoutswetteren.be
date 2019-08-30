@@ -9,6 +9,9 @@
         break-inside: avoid-column;
     }
 }
+.splitted .splitted.auto {
+    columns: 200px 2;
+}
 
 .splitted.blocked {
     &> .part article, &.auto > article, &.auto > a > article{
@@ -36,7 +39,7 @@
     &> .part article, &.auto > article, &.auto > a > article {
         margin: 30px 0;
 
-        &> p:first-of-type, &> .suffix + p {
+        &> p:first-of-type, &> .suffix + p:not(.suffix) {
             font-size: $size-text-bigger;
             line-height: 1.5;
             margin: 4px 0;

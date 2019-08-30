@@ -163,6 +163,7 @@ h3 {
         @media (max-width: 600px), (max-height: 450px)  {
             font-size: $size-smartphone-prefix;
             margin: 2px 0;
+            margin-bottom: 15px;
         }
 
         &:last-child {
@@ -171,6 +172,10 @@ h3 {
         
     }
 }
+.suffix + .suffix {
+    margin-top: -10px;
+}
+
 .blue .suffix {
     color: $color-main-alternative-gray;
 }
