@@ -1,0 +1,215 @@
+{% set title = 'Verhuur' %}
+{% set description = 'Wij verhuren onze lokalen en terrein aan jeugdverenigingen, doorheen het jaar maar ook in de zomervakantie.' %}
+{% extends "base.html" %}
+
+{% use "pages/info/_map.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+    <script src="/js/photoswipe.min.js"></script> 
+    <script type="text/javascript">
+        function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten) {
+            {{ calculate_huurprijs | raw }}
+            return '/';
+        }
+        function calculateBorg(startdate, enddate, diffDays, persons, persons_tenten) {
+            {{ calculate_borg | raw }}
+            return '/';
+        }
+
+    </script>
+    <script src="/js/photos.js"></script>
+
+    <script type="text/javascript">
+        var grid = new photos.Grid({});
+        grid.trackWidth(document.getElementById('album_container'));
+        grid.margin = 5;
+        grid.max_height = 170;
+
+        var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
+
+        {% for image in images %}
+            var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+            photo.title = "{{image.title | e('js')}}";
+            photo.sources = {{ image.getSourcesJSON | raw }};
+            grid.add(photo);
+        {% endfor %}
+        
+        var element = grid.toDOM();
+        document.getElementById('album_container').appendChild(element);
+        grid.updateVisiblePhotos();
+
+        grid.enablePhotoSwipe();
+    </script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <section class="block white">
+            <div class="splitted blocked bigger">
+                <div class="part column first">
+                    <a href="mailto:verhuursintjan@gmail.com" class="h1-prefix">verhuursintjan@gmail.com</a>
+                    <h1>Lokalenverhuur</h1>        
+            
+                    <p>Groenstraat 33, 9230 Wetteren</p>
+
+                    <p>
+                        De terreinen liggen midden in het groen. Het eerste huis is op enkele honderden meters. Het lokaal is volledig vernieuwd sinds juni 2013, inclusief moderne keuken en sanitair met douches. Er zijn geen bedden.
+                    </p>
+
+                    <p>
+                        De maximum capaciteit is 60 slapers. (Meer kan/mag niet omwille van verzekeringen; extra mensen in tenten laten slapen is wel mogelijk)
+                    </p>
+
+                    <p>
+                        Naast keuken en sanitair zijn er 5 tak-lokalen die in elkaar overlopen, of via schuifwanden van elkaar kunnen worden gescheiden. Er is ook een gescheiden sanitair met inrij-douche voor minder-validen. De lokalen zijn aangepast voor minder-validen.
+                    </p>
+
+                    <p>
+                        Voor de eerste 25 personen betaal je 120€/nacht. Voor elke extra persoon betaal je 4€/nacht/persoon in het lokaal, en 2€/nacht/persoon in tenten. Daar komen kosten bij aan marktprijs van elektriciteit, gas (centrale verwarming en warm water) en water.
+                    </p>
+
+                    <div class="buttons">
+                        <a href="#reserveren" class="button main fill">Reservatie aanvragen</a>
+                    </div>
+                </div>
+                <div class="part column first">
+                    <div id="map" class="map"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="block blue checklist-block">
+            <h1>Samenvatting</h1>
+            <div>
+                <div>
+                    <h1 class="prefix">Capaciteit</h1>
+                    <div class="check">
+                        <p>Max. aantal personen</p>
+                        <p>60</p>
+                    </div>
+                    <div class="check">
+                        <p>Rolstoeltoegankelijk</p>
+                        <p class="yes">Ja</p>
+                    </div>
+                </div>
+            
+                <div>
+                    <h1 class="prefix">Ruimtes</h1>
+                    <div class="check">
+                        <p>Aantal slaapzalen</p>
+                        <p>5</p>
+                    </div>
+                
+                    <div class="check">
+                        <p>Aantal dagzalen</p>
+                        <p>3</p>
+                    </div>
+                    <div class="check">
+                        <p>Oppervlakte eetzaal</p>
+                        <p>50 m²</p>
+                    </div>
+                    <div class="check">
+                        <p>Slaapzalen verwarmd</p>
+                        <p class="yes">Ja</p>
+                    </div>
+
+                    <div class="check">
+                        <p>Bedden</p>
+                        <p class="no">Nee</p>
+                    </div>
+                    <div class="check">
+                        <p>Wifi beschikbaar</p>
+                        <p class="no">Nee</p>
+                    </div>
+                </div>
+
+
+                <div>
+                    <h1 class="prefix">Keuken</h1>
+                    <div class="check">
+                        <p>Potten en pannen aanwezig</p>
+                        <p class="yes">Ja</p>
+                    </div>
+                    <div class="check">
+                        <p>Bestek aanwezig</p>
+                        <p class="yes">Ja</p>
+                    </div>
+                    <div class="check">
+                        <p>Borden aanwezig</p>
+                        <p class="yes">Ja</p>
+                    </div>
+                    <div class="check">
+                        <p>Oven aanwezig</p>
+                        <p class="yes">Ja</p>
+                    </div>
+                    <div class="check">
+                        <p>Microgolf aanwezig</p>
+                        <p class="yes">Ja</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h1 class="prefix">Sanitair</h1>
+                    <div class="check">
+                        <p>Aantal toiletten</p>
+                        <p>4</p>
+                    </div>
+                    <div class="check">
+                        <p>Aantal waskranen</p>
+                        <p>5</p>
+                    </div>
+                    <div class="check">
+                        <p>Aantal douchekoppen</p>
+                        <p>4</p>
+                    </div>
+                </div>
+
+
+                <div>
+                    <h1 class="prefix">Terrein</h1>
+                    <div class="check">
+                        <p>Oppervlakte terrein</p>
+                        <p>1500 m²</p>
+                    </div>
+                    <div class="check">
+                        <p>Kampvuur mogelijk</p>
+                        <p class="yes">Ja</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="block" id="fotos">
+            <h1>Foto's</h1>
+            <div id="album_container"></div>
+            <noscript>Je moet javascript aanzetten om de foto's te kunnen zien, herlaad daarna de pagina.</noscript>
+            {% if general.logged_in_leiding %}
+                <div class="button-bar">
+                    <a href="/admin/photos/edit/{{ album.id }}" class="button main noborder">Foto's toevoegen</a>
+                </div>
+            {% endif %}
+        </section>
+
+
+        <section class="block white" id="reserveren">
+            <div class="splitted blocked bigger">
+                <div class="part column first">
+                        <iframe style="border-width: 0;" src="https://www.google.com/calendar/embed?title=%20&amp;showCalendars=0&amp;showTz=0&amp;height=600&amp;wkst=2&amp;bgcolor=%23FFFFFF&amp;src=verhuursintjan%40gmail.com&amp;color=%232952A3&amp;ctz=Europe%2FBrussels"></iframe>
+
+                </div>
+
+                <div class="part column last">
+                        <h1>Reservatie aanvragen</h1>
+                        <p>Om de lokalen te huren kan u terecht bij verhuursintjan@gmail.com. Bekijk de kalender om te weten of het lokaal nog beschikbaar is op de gewenste datum.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {% include 'libs/photoswipe.html' %}
+
+{% endblock %}
