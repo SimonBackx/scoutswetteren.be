@@ -1,23 +1,26 @@
 .splitted {
-    display: table;
-    table-layout: fixed;
+    display: flex;
+    flex-direction: row;
     width: 100%;
+    align-items: center;
 
     @media screen and (max-width: $page-width-stop-splitted) {
-      display: block;
+        flex-direction: column;
+        align-items: stretch;
+
+        &.swap-smartphone {
+            flex-direction: column-reverse;
+        }
+
+        .part { 
+            width: 100%;
+        }
     }
 
     .part {
-        display: table-cell;
-
-        @media screen and (max-width: $page-width-stop-splitted) {
-          display: block;
-        }
-
-        vertical-align: middle;
 
         &.column {
-            vertical-align: top;
+            align-self: flex-start;
 
             &.first {
                 padding-right: 20px;
@@ -33,15 +36,17 @@
                     padding-left: 0;
                 }
             }
+
+            &.center {
+                align-self: center;
+            }
         }
         &.map {
-             width: 45%;
-             position: relative;
-                overflow: hidden;
+            flex-basis: 45%;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
 
-             @media screen and (max-width: $page-width-stop-splitted) {
-                display: none;
-            }
         }
 
         &.image {
@@ -90,7 +95,7 @@
             }
         }
         &.calendar, &.activities {
-            vertical-align: top;
+            align-self: flex-start;
         }
 
         &:first-child {

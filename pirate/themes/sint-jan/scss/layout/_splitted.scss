@@ -55,4 +55,8 @@
             margin: 15px 0;
         }
     }
+
+    &> article:first-child, &> a:first-child > article {
+        margin-top: 0;
+    }
 }
