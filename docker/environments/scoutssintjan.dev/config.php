@@ -30,6 +30,8 @@ $config = [
         ],
     ],
 
+    'drive' => null,
+
     'sendgrid' => [
         // key defined in private
     ],
