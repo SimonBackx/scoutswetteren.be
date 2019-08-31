@@ -25,7 +25,9 @@ $config = [
     ],
 
     'router' => [
-        'redirects' => [],
+        'redirects' => [
+            'lokaalverhuur' => '/verhuur',
+        ],
     ],
 
     'sendgrid' => [
