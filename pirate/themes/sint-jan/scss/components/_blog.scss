@@ -17,6 +17,9 @@
         max-width: 550px;
         padding-left: 30px;
         flex-shrink: 0;
+        position: -webkit-sticky;
+        position: sticky;
+        top: $menu-height + 20px;
 
         &> article {
             margin-bottom: 15px;
@@ -68,6 +71,7 @@
             max-width: none;
             padding-top: 30px;
             padding-left: 0;
+            position: static;
 
             &> article {
                 padding: 20px 15px;

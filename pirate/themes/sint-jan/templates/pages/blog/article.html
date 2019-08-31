@@ -2,15 +2,15 @@
 
 {% block main %}
 <main>
-        <article class="white block">
-            <div class="text article">
-                <header>
-                    <div class="h1-prefix">Geplaatst op {{ article.date }}</div>
-                    <h1>{{ article.title }}</h1>
-                </header>
-                
-                {{ article.html | raw }}
-            </div>
-        </article>
+    <article class="white block">
+        <div class="text article">
+            <header>
+                <div class="h1-prefix">Geplaatst op {{ article.date }}</div>
+                <h1>{{ article.title }}</h1>
+            </header>
+            
+            {{ article.html | raw }}
+        </div>
+    </article>
 </main>
 {% endblock %}
