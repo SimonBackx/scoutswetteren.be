@@ -360,6 +360,9 @@ class Ouder extends Model
                         }
                     }
                 }
+                if (!empty($where)) {
+                    $where = "($where)";
+                }
             } elseif (isset(self::$filters[$filter])) {
                 // Filter op premade selectors
 
