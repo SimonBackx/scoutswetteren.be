@@ -1,14 +1,15 @@
 <?php
 namespace Pirate\Sails\Leden\Models;
-use Pirate\Wheel\Model;
-use Pirate\Sails\Validating\Models\Validator;
+
 use Pirate\Sails\Leden\Models\Gezin;
-use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Leden\Models\Inschrijving;
+use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Wheel\Mail;
+use Pirate\Wheel\Model;
 
-class Ouder extends Model {
+class Ouder extends Model
+{
     public $id;
     public $gezin; // object
     public $titel;
@@ -25,15 +26,16 @@ class Ouder extends Model {
     //private $set_password_key;
 
     static $titels = array('Mama', 'Papa', 'Voogd', 'Stiefmoeder', 'Stiefvader');
-    
-    static function titelToGroepsadmin($functie) {
+
+    public static function titelToGroepsadmin($functie)
+    {
         $functie = strtolower($functie);
         $map = array(
-            'mama' => 'moeder', 
-            'papa' => 'vader', 
-            'voogd' => 'voogd', 
-            'stiefmoeder' => 'moeder', 
-            'stiefvader' => 'vader'
+            'mama' => 'moeder',
+            'papa' => 'vader',
+            'voogd' => 'voogd',
+            'stiefmoeder' => 'moeder',
+            'stiefvader' => 'vader',
         );
 
         if (!isset($map[$functie])) {
@@ -43,35 +45,34 @@ class Ouder extends Model {
         return $map[$functie];
     }
 
-    
-
-    function getGroepsadminRol() {
+    public function getGroepsadminRol()
+    {
         return static::titelToGroepsadmin($this->titel);
     }
 
     public static $filters = array(
         'all' => array(
             'name' => 'Alle ouders',
-            'where' => ''
+            'where' => '',
         ),
         'inschrijving_onvolledig' => array(
             'name' => 'Inschrijving niet voltooid of niet betaald',
-            'where' => 'i.afrekening is null or s.laatst_nagekeken is null or i.afrekening_oke = 0'
+            'where' => 'i.afrekening is null or s.laatst_nagekeken is null or i.afrekening_oke = 0',
         ),
         'verminderd_lidgeld' => array(
             'name' => 'Leden met verminderd lidgeld',
-            'where' => 'g.scouting_op_maat = 1'
+            'where' => 'g.scouting_op_maat = 1',
         ),
         'in_orde' => array(
             'name' => 'Inschrijving volledig in orde',
-            'where' => 's.laatst_nagekeken is not null and i.afrekening_oke = 1 and i.afrekening is not null'
-        )
+            'where' => 's.laatst_nagekeken is not null and i.afrekening_oke = 1 and i.afrekening is not null',
+        ),
     );
 
     private $temporaryMagicToken = null;
 
-
-    function __construct($row = array()) {
+    public function __construct($row = array())
+    {
         if (count($row) == 0) {
             $this->user = new User();
             return;
@@ -96,7 +97,8 @@ class Ouder extends Model {
 
     }
 
-    function getAdres() {
+    public function getAdres()
+    {
         if (!isset($this->adres)) {
             return '';
         }
@@ -105,7 +107,8 @@ class Ouder extends Model {
 
     // empty array on success
     // array of errors on failure
-    function setProperties(&$data) {
+    public function setProperties(&$data)
+    {
         $errors = $this->user->setProperties($data, false);
 
         if (!in_array($data['titel'], self::$titels)) {
@@ -116,7 +119,7 @@ class Ouder extends Model {
 
         $model = Adres::find($data['adres'], $data['gemeente'], $data['postcode'], $data['telefoon'], $errors);
         if (isset($model)) {
-            $this->adres = $model; 
+            $this->adres = $model;
         } else {
             if (strlen($data['adres']) < 2) {
                 $data['adres'] = '';
@@ -126,7 +129,8 @@ class Ouder extends Model {
         return $errors;
     }
 
-    static function oudersToFieldArray($original) {
+    public static function oudersToFieldArray($original)
+    {
         $arr = array();
         foreach ($original as $key => $value) {
             $arr[] = $value->getProperties();
@@ -134,7 +138,8 @@ class Ouder extends Model {
         return $arr;
     }
 
-    function getProperties() {
+    public function getProperties()
+    {
         return array(
             'titel' => $this->titel,
             'firstname' => $this->user->firstname,
@@ -144,31 +149,35 @@ class Ouder extends Model {
             'postcode' => isset($this->adres) ? $this->adres->postcode : "",
             'telefoon' => isset($this->adres->telefoon) ? $this->adres->telefoon : "",
             'phone' => $this->user->phone,
-            'mail' => $this->user->mail
+            'mail' => $this->user->mail,
         );
     }
 
-    function setGezin(Gezin $gezin) {
+    public function setGezin(Gezin $gezin)
+    {
         $this->gezin = $gezin;
     }
 
     /*function getSetPasswordUrl() {
-        if ($this->hasPassword()) {
-            return "https://".$_SERVER['SERVER_NAME']."/ouders/wachtwoord-vergeten/".$this->set_password_key;
-        }
-        return "https://".$_SERVER['SERVER_NAME']."/ouders/account-aanmaken/".$this->set_password_key;
+    if ($this->hasPassword()) {
+    return "https://".$_SERVER['SERVER_NAME']."/ouders/wachtwoord-vergeten/".$this->set_password_key;
+    }
+    return "https://".$_SERVER['SERVER_NAME']."/ouders/account-aanmaken/".$this->set_password_key;
     }*/
 
-    function hasPassword() {
+    public function hasPassword()
+    {
         return !empty($this->password);
     }
 
-    function generatePasswordRecoveryKey() {
+    public function generatePasswordRecoveryKey()
+    {
         // Generate and put in $this->set_password_key
         return $this->user->generatePasswordRecoveryKey();
     }
 
-    function save() {
+    public function save()
+    {
         if (!isset($this->adres)) {
             return false;
         }
@@ -187,19 +196,19 @@ class Ouder extends Model {
 
         if (empty($this->id)) {
 
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 ouders (`user_id`, `gezin`, `titel`, `adres`)
                 VALUES ('$user_id','$gezin', '$titel','$adres')";
         } else {
-            
+
             $id = self::getDb()->escape_string($this->id);
-            $query = "UPDATE ouders 
-                SET 
+            $query = "UPDATE ouders
+                SET
                  `user_id` = '$user_id',
                  `gezin` = '$gezin',
                  `titel` = '$titel',
                  `adres` = '$adres'
-                 where id = '$id' 
+                 where id = '$id'
             ";
         }
 
@@ -212,9 +221,10 @@ class Ouder extends Model {
         return false;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 ouders WHERE id = '$id' ";
 
         if (self::getDb()->query($query)) {
@@ -225,10 +235,11 @@ class Ouder extends Model {
         return false;
     }
 
-    static function temporaryLoginWithPasswordKey($key) {
+    public static function temporaryLoginWithPasswordKey($key)
+    {
         if (User::temporaryLoginWithPasswordKey($key)) {
             return Self::isLoggedIn();
-        } 
+        }
 
         return false;
     }
@@ -236,22 +247,24 @@ class Ouder extends Model {
     // Returns true on success
     // Sets cookies if succeeded
     // isLoggedIn() etc kan gebruikt worden hierna
-    static function login($mail, $password) {
+    public static function login($mail, $password)
+    {
         if (User::login($mail, $password)) {
             return Self::isLoggedIn();
         }
         return false;
     }
 
-
-    static function loginWithMagicToken($mail, $magicToken) {
+    public static function loginWithMagicToken($mail, $magicToken)
+    {
         if (User::loginWithMagicToken($mail, $magicToken)) {
             return Self::isLoggedIn();
         }
         return false;
     }
 
-    static function getOuderForId($id) {
+    public static function getOuderForId($id)
+    {
         $id = self::getDb()->escape_string($id);
 
         $query = '
@@ -259,10 +272,10 @@ class Ouder extends Model {
                 left join gezinnen g on g.gezin_id = o.gezin
                 left join adressen a on a.adres_id = o.adres
                 join users u on o.user_id = u.user_id
-            where o.id = "'.$id.'"';
+            where o.id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new Ouder($row);
             }
@@ -270,7 +283,8 @@ class Ouder extends Model {
         return null;
     }
 
-    static function getByUserId($id) {
+    public static function getByUserId($id)
+    {
         $id = self::getDb()->escape_string($id);
 
         $query = '
@@ -278,10 +292,10 @@ class Ouder extends Model {
                 left join gezinnen g on g.gezin_id = o.gezin
                 left join adressen a on a.adres_id = o.adres
                 join users u on o.user_id = u.user_id
-            where u.user_id = "'.$id.'"';
+            where u.user_id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows == 1){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
                 $row = $result->fetch_assoc();
                 return new Ouder($row);
             }
@@ -289,7 +303,8 @@ class Ouder extends Model {
         return null;
     }
 
-    static function getOudersForGezin($gezin_id) {
+    public static function getOudersForGezin($gezin_id)
+    {
         $gezin = self::getDb()->escape_string($gezin_id);
 
         $ouders = array();
@@ -298,10 +313,10 @@ class Ouder extends Model {
                 left join gezinnen g on g.gezin_id = o.gezin
                 left join adressen a on a.adres_id = o.adres
                 join users u on o.user_id = u.user_id
-            where o.gezin = "'.$gezin.'"';
+            where o.gezin = "' . $gezin . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $ouders[] = new Ouder($row);
                 }
@@ -311,7 +326,8 @@ class Ouder extends Model {
     }
 
     /// True als er leden zijn ingeschreven voor huidig scoutsjaar, ookal is er nog geen afrekenign gemaakt
-    function isStillActive() {
+    public function isStillActive()
+    {
         $leden = Lid::getLedenForOuder($this);
         foreach ($leden as $lid) {
             if ($lid->isIngeschreven()) {
@@ -321,7 +337,8 @@ class Ouder extends Model {
         return false;
     }
 
-    static function getOuders($filter = null, $tak = null, $return_leden = false, $scoutsjaar = null) {
+    public static function getOuders($filter = null, $tak = null, $return_leden = false, $scoutsjaar = null)
+    {
         $where = '';
 
         if (!is_null($filter)) {
@@ -334,33 +351,39 @@ class Ouder extends Model {
                             $filter[$field] = array($filter[$field]);
                         }
                         foreach ($filter[$field] as $value) {
-                            if (strlen($where) > 0)
+                            if (strlen($where) > 0) {
                                 $where .= ' OR ';
-                            $where .= 'u.'.$field.' = "'.self::getDb()->escape_string($value).'"';
-                    
+                            }
+
+                            $where .= 'u.' . $field . ' = "' . self::getDb()->escape_string($value) . '"';
+
                         }
                     }
                 }
-            }
-            elseif (isset(self::$filters[$filter])) {
+            } elseif (isset(self::$filters[$filter])) {
                 // Filter op premade selectors
-                
+
                 $filter = self::$filters[$filter];
-                $where = $filter['where'];
+                $where = '(' . $filter['where'] . ')';
             }
         }
         if (!is_null($tak)) {
-            if (strlen($where) > 0)
+            if (strlen($where) > 0) {
                 $where .= ' AND ';
-            $where .= 'i.tak = "'.self::getDb()->escape_string($tak).'"';
+            }
+
+            $where .= 'i.tak = "' . self::getDb()->escape_string($tak) . '"';
         }
 
-        if (strlen($where) > 0)
+        if (strlen($where) > 0) {
             $where .= ' AND ';
+        }
+
         $where .= 'i.datum_uitschrijving is null';
 
-        if (strlen($where) > 0)
-            $where = 'WHERE '.$where;
+        if (strlen($where) > 0) {
+            $where = 'WHERE ' . $where;
+        }
 
         if (!isset($scoutsjaar)) {
             $scoutsjaar = intval(Inschrijving::getScoutsjaar());
@@ -376,9 +399,9 @@ class Ouder extends Model {
                 left join gezinnen g on g.gezin_id = l.gezin
                 join ouders o on l.gezin = o.gezin
                 join users u on o.user_id = u.user_id
-                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.' and i.tak != ""
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = ' . $scoutsjaar . ' and i.tak != ""
                 left join steekkaarten s on s.lid = l.id
-            '.$where.'
+            ' . $where . '
             GROUP BY l.id, g.gezin_id, i.inschrijving_id, s.steekkaart_id
             order by year(l.geboortedatum) desc, l.voornaam;';
         } else {
@@ -388,15 +411,14 @@ class Ouder extends Model {
                 left join adressen a on a.adres_id = o.adres
                 join users u on o.user_id = u.user_id
                 join leden l on l.gezin = o.gezin
-                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = '.$scoutsjaar.'
+                join inschrijvingen i on i.lid = l.id and i.scoutsjaar = ' . $scoutsjaar . '
                 left join steekkaarten s on s.lid = l.id
-            '.$where.'
+            ' . $where . '
             GROUP BY o.id, g.gezin_id';
         }
-        
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
                 if (!$return_leden) {
                     while ($row = $result->fetch_assoc()) {
                         $ouders[] = new Ouder($row);
@@ -415,12 +437,13 @@ class Ouder extends Model {
      * Controleert of de huidige bezoeker ingelogd is
      * @return Leiding Geeft leiding object van bezoeker terug indien de gebruiker ingelogd is. NULL indien niet ingelogd
      */
-    private static function checkLogin() {
+    private static function checkLogin()
+    {
         $user = User::getUser();
         if (isset($user)) {
             // We zijn ingelogd.
             // Zijn we ook een leider?
-            
+
             // Eerst cache checken
             $didCheckOuder = false;
 
@@ -452,33 +475,38 @@ class Ouder extends Model {
         return null;
     }
 
-    static function isLoggedIn() {
+    public static function isLoggedIn()
+    {
         return !is_null(Self::checkLogin());
     }
 
-    static function getUser() {
+    public static function getUser()
+    {
         return self::checkLogin();
     }
 
-    function sendCreatedMail(User $created_by) {
+    public function sendCreatedMail(User $created_by)
+    {
         $mail = new Mail('Account scoutswebsite', 'user-new-gezin', array('user' => $this->user, 'creator' => $created_by));
         $mail->addTo(
-            $this->user->mail, 
+            $this->user->mail,
             array(),
-            $this->user->firstname.' '.$this->user->lastname
+            $this->user->firstname . ' ' . $this->user->lastname
         );
         return $mail->send();
     }
 
     /// Return true when users are probably the same
-    function isProbablyEqual($ouder) {
+    public function isProbablyEqual($ouder)
+    {
         return $this->user->isProbablyEqual($ouder->user);
     }
 
     /// Voeg alle data van een ouder bij een andere ouder. Meegegeven ouder moet de oudste versie zijn
-    function merge($ouder) {
+    public function merge($ouder)
+    {
         // Voorlopig is er geen data dat overgezet moet worden
         return $ouder->delete();
     }
-    
+
 }
