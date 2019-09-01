@@ -56,8 +56,20 @@ class Ouder extends Model
             'where' => '',
         ),
         'inschrijving_onvolledig' => array(
-            'name' => 'Inschrijving niet voltooid of niet betaald',
+            'name' => 'Inschrijving niet voltooid, niet betaald of steekkaart niet ingevuld',
             'where' => 'i.afrekening is null or s.laatst_nagekeken is null or i.afrekening_oke = 0',
+        ),
+        'steekkaart_leeg' => array(
+            'name' => 'Steekkaart niet ingevuld',
+            'where' => 's.laatst_nagekeken is null',
+        ),
+        'niet_betaald' => array(
+            'name' => 'Nog niet betaald of inschrijving niet voltooid',
+            'where' => 'i.afrekening is null or i.afrekening_oke = 0',
+        ),
+        'niet_voltooid' => array(
+            'name' => 'Inschrijving niet voltooid (= geen afrekening aangemaakt)',
+            'where' => 'i.afrekening is null',
         ),
         'verminderd_lidgeld' => array(
             'name' => 'Leden met verminderd lidgeld',
