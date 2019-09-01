@@ -20,7 +20,9 @@
 
                 {% include 'pages/takken/' ~ taknaam ~ '.html' %}
 
-                {% include 'pages/takken/_leiding.html' %}
+                {% if taknaam != 'stam' %}
+                    {% include 'pages/takken/_leiding.html' %}
+                {% endif %}
 
                 {% include 'pages/takken/_maandplanning.html' %}
             </div>
