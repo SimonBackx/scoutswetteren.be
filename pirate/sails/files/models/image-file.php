@@ -1,22 +1,23 @@
 <?php
 namespace Pirate\Sails\Files\Models;
-use Pirate\Wheel\Model;
-use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Sails\Files\Models\File;
-use Pirate\Sails\Files\Models\Image;
-use Pirate\Sails\Files\Models\GDImage;
-use Pirate\Sails\Files\Models\Album;
 
-class ImageFile extends Model {
+use Pirate\Sails\Files\Models\File;
+use Pirate\Sails\Files\Models\GDImage;
+use Pirate\Sails\Files\Models\Image;
+use Pirate\Wheel\Model;
+
+class ImageFile extends Model
+{
     public $id;
     public $file; // object
-    public $image; // id 
+    public $image; // id
     public $width;
     public $height;
 
     public $is_source;
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (!isset($row)) {
             return;
         }
@@ -30,22 +31,25 @@ class ImageFile extends Model {
         $this->is_source = (intval($row['imagefile_is_source']) == 1);
     }
 
-    function isLessThan(ImageFile $imagefile) {
+    public function isLessThan(ImageFile $imagefile)
+    {
         if ($imagefile->width > $this->width || $imagefile->height > $this->height) {
             return true;
         }
         return false;
     }
 
-    function isGreaterThan(ImageFile $imagefile) {
+    public function isGreaterThan(ImageFile $imagefile)
+    {
         return !$this->isLessThan($imagefile);
     }
 
     // Nieuwe aanmaken vanaf gdImage
     // False on failure, object on success
-    static function createFromGDImage(Image $image, GDImage $gdImage, &$errors, $path = 'images/', $should_be_saved_in_object_storage = true) {
-        $path .= $gdImage->getWidth().'x'.$gdImage->getHeight().'/';
-        $path .= $image->id.'.'.$gdImage->getExtension();
+    public static function createFromGDImage(Image $image, GDImage $gdImage, &$errors, $path = 'images/', $should_be_saved_in_object_storage = true)
+    {
+        $path .= $gdImage->getWidth() . 'x' . $gdImage->getHeight() . '/';
+        $path .= $image->id . '.' . $gdImage->getExtension();
 
         if (!$gdImage->save($path, $errors)) {
             $errors[] = 'Fout bij opslaan verkleinde afbeelding.';
@@ -53,7 +57,7 @@ class ImageFile extends Model {
         }
 
         $name = basename($path);
-        $location = dirname($path).'/';
+        $location = dirname($path) . '/';
 
         $file = File::createFromFile($location, $name, $errors);
         $file->should_be_saved_in_object_storage = $should_be_saved_in_object_storage;
@@ -87,7 +91,8 @@ class ImageFile extends Model {
 
     // Nieuwe aanmaken vanaf file (dus het originele bestand)
     // False on failure, object on success
-    static function createFromFile(Image $image, File $file, &$errors) {
+    public static function createFromFile(Image $image, File $file, &$errors)
+    {
         $imageFile = new ImageFile();
         $imageFile->file = $file;
         $imageFile->image = $image->id;
@@ -110,7 +115,8 @@ class ImageFile extends Model {
         return false;
     }
 
-    function save() {
+    public function save()
+    {
         if (isset($this->id)) {
             return false;
         }
@@ -124,7 +130,7 @@ class ImageFile extends Model {
             $is_source = 1;
         }
 
-        $query = "INSERT INTO 
+        $query = "INSERT INTO
                 image_files (`imagefile_file`, `imagefile_image`, `imagefile_width`, `imagefile_height`, `imagefile_is_source`)
                 VALUES ('$file', '$image', '$width', '$height', '$is_source')";
 
@@ -136,5 +142,22 @@ class ImageFile extends Model {
         }
 
         return false;
+    }
+
+    public function delete()
+    {
+        if (!isset($this->id)) {
+            return false;
+        }
+
+        $id = self::getDb()->escape_string($this->id);
+        $query = "DELETE FROM image_files WHERE image_files.imagefile_id = '$id'";
+
+        if (!self::getDb()->query($query)) {
+            return false;
+        }
+
+        return $this->file->delete();
+
     }
 }
