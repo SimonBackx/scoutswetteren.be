@@ -109,7 +109,7 @@ main {
 // They are used twice: once in the invisible space div
 // and once in a visible form, forcing to stick to the bottom of that invisible one
 // to hide it when it starts to wrap
-#menu .items a {
+/*#menu .items a {
     margin: 0 15px;
     text-transform: uppercase;
 
@@ -128,4 +128,192 @@ main {
         border-radius: $border-radius;
         line-height: $menu-height - 20px - $border-width*2;
     }
+}
+*/
+
+// The menu items style
+// They are used twice: once in the invisible space div
+// and once in a visible form, forcing to stick to the bottom of that invisible one
+// to hide it when it starts to wrap
+#menu .items > div, #menu .items > div .dropdown-group {
+    &> a, &> button {
+        margin: 0 15px;
+        text-transform: uppercase;
+
+        font-size: $size-button;
+        display: inline-block;
+
+        opacity: 1;
+        transition: opacity 0.2s;
+        -webkit-tap-highlight-color: transparent;
+
+        &:hover, &:active {
+            opacity: 0.6;
+        }
+
+        &, &:hover, &:visited, &:active, &:link {
+            color: white;
+            text-decoration: none;
+        }
+
+        &.call-to-action {
+            padding: 10px 25px;
+            line-height: $menu-height - 38px - $border-width*2;
+            height: $menu-height - 18px;
+
+
+            /*margin: 18px 15px;
+            height: $menu-height - 36px;
+            padding: 10px 25px;
+            line-height: $menu-height - 56px;
+            
+            @include main-gradient;*/
+            margin-right: 0;
+        }
+    }
+}
+
+.dropdown-group {
+
+    .dropdown-menu {
+        background: white;
+        box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.50);
+        border-radius: 4px;
+        padding: 15px 10px;
+        width: 350px;
+        color: $color-main-dark;
+
+        .box {
+
+            &::after {
+                content: '';
+                height: $border-width;
+                width: 100%;
+                padding: 0;
+                margin: 10px 0px;
+                background: $color-border;
+                border-radius: $border-width/2;
+                display: block;
+            }
+
+            &:last-child {
+                &::after {
+                    display: none;
+                }
+            }
+
+            &.logout {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+
+                a {
+                    color: $color-main;
+                }
+            }
+        }
+
+        p {
+            padding: 15px 20px;
+            margin: 0;
+        }
+
+        a {
+            display: block;
+            padding: 15px 20px;
+            text-transform: uppercase;
+            font-size: $size-button;
+            color: $color-main-dark;
+            border-radius: $border-radius;
+            transition: background-color 0.2s;
+            background-color: transparent;
+            -webkit-tap-highlight-color: transparent;
+
+            &:hover, &:active {
+                background-color: $color-background-shade;
+            }
+        }
+    }
+}
+
+
+#menu .call-to-action {
+    border: $border-width solid white;
+    border-radius: $border-radius;
+
+    &.user {
+        position: relative;
+        padding-right: 20px;
+
+        &::before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-image: url('../'+$theme+'/icons/white/user-small.svg');
+        }
+        
+        padding-left: 45px !important;
+    }
+}
+
+#smartphone-menu-items {
+    a, button {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: $size-button;
+        color: $color-main-dark;
+        border-radius: $border-radius;
+        display: block;
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+        display: block;
+        padding: 15px;
+        margin: 5px 0;
+        font-size: $size-button;
+    }
+
+    button.dropdown {
+        padding-right: 20px;
+        background: url('../'+$theme+'/icons/dark-alternative/arrow-down.svg') no-repeat right 10px center;
+        position: relative;
+        transition: background-position 0.2s;
+
+        &:hover, &:active {
+            background-position: right 10px bottom 10px;
+        }
+
+        &.call-to-action {
+            border: $border-width solid $color-main;
+            border-radius: $border-radius;
+        }
+    }
+
+    a, .dropdown-group > button {
+        background-color: transparent;
+        transition: background-color 0.2s, background-position 0.2s;
+        -webkit-tap-highlight-color: transparent;
+
+        &:hover, &:active {
+            background-color: $color-background-shade;
+        }
+
+        &.call-to-action {
+            border: $border-width solid $color-main;
+            border-radius: $border-radius;
+            opacity: 1;
+            transition: opacity 0.2s;
+
+            &:hover, &:active {
+                opacity: 0.6;
+            }
+        }
+    }
+
 }

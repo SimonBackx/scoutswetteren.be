@@ -197,7 +197,7 @@
 
     .dropdown-menu {
         left: 0;
-        top: $menu-height - 10px;
+        top: $menu-height - 5px;
         max-height: calc(100vh - #{$menu-height + 40px});
         position: absolute;
         width: 300px;
