@@ -75,6 +75,8 @@ WantedBy=timers.target";
 Description=Pirate CMS Cronjobs
 
 [Service]
+User=www-data
+Group=www-data
 Type=oneshot
 ExecStart=$dir";
 

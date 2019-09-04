@@ -143,11 +143,13 @@
     }
 
     &.calendar {
-        width: 320px;
+        width: 500px;
+        flex-basis: 500px;
         padding: 40px 50px;
         @include bg-gradient-t2b(#530F1A, #7D1628);
         color: white;
         position: relative;
+        align-self: stretch;
 
         @media screen and (max-width: 1000px) {
             padding: 40px 20px;
@@ -165,7 +167,7 @@
                 top: 0;
                 z-index: 1000;
                 width: 100%;
-                max-width: 400px;
+                max-width: 500px;
                 bottom: 0;
                 width: auto;
                 overflow: hidden;
@@ -222,7 +224,6 @@
         .row {
             clear: both;
             padding: 5px 2px;
-            max-width: 287px;
             margin: -5px auto;
             font-size: $size-text-bigger;
 
@@ -234,15 +235,14 @@
 
 
             &.selected {
-                background: $color-main-dark url(../prins-boudewijn/images/calendar-arrow.png) no-repeat left center;
+                background: $color-main-dark;
                 margin: -5px -50px;
-                padding: 5px 66px;
+                padding: 5px 52px;
             }
 
             .column {
                 float: left;
                 width: 14.2857% ; //45px;
-                max-width: 41px;
                 margin: 0px;
                 height: 41px;
                 line-height: 41px;
@@ -279,7 +279,7 @@
                 &:hover {
                     background: $color-main-dark;
                     margin: -5px -50px;
-                    padding: 5px 66px;
+                    padding: 5px 52px;
                 }
             }
         }
