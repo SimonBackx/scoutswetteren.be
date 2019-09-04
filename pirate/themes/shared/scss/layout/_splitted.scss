@@ -55,8 +55,7 @@
         }
 
         &.image {
-            width: 45%;
-            
+            flex-basis: 45%;
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
