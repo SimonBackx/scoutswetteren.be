@@ -1,15 +1,13 @@
 <?php
 namespace Pirate\Sails\Groepsadmin\Models;
-use Pirate\Wheel\Model;
-use Pirate\Wheel\Curl\Curl;
-use Pirate\Wheel\Curl\Method;
-use Pirate\Wheel\Curl\DataType;
-use Pirate\Sails\Leden\Models\Lid;
-use Pirate\Sails\Leden\Models\Ouder;
-use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Sails\Groepsadmin\Models\Groepsadmin;
 
-class GroepsadminLid {
+use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Groepsadmin\Models\Groepsadmin;
+use Pirate\Sails\Leden\Models\Lid;
+use Pirate\Sails\Leiding\Models\Leiding;
+
+class GroepsadminLid
+{
     public $id;
     public $voornaam;
     public $achternaam;
@@ -22,7 +20,8 @@ class GroepsadminLid {
     public $found = false;
     public $needsManualSync = false;
 
-    function __construct($data = null) {
+    public function __construct($data = null)
+    {
         if (!isset($data)) {
             return;
         }
@@ -34,12 +33,13 @@ class GroepsadminLid {
         $this->voornaam = $waarden['be.vvksm.groepsadmin.model.column.VoornaamColumn'];
         $this->geboortedatum = $waarden['be.vvksm.groepsadmin.model.column.GeboorteDatumColumn']; // DD/MM/YYYY
         $this->lidnummer = $waarden['be.vvksm.groepsadmin.model.column.LidNummerColumn'];
-        $this->hash = $waarden['39a96d046403c4b10164248c1f2e071a'];
+        $this->hash = $waarden[Environment::getSetting('groepsadmin.hash')];
 
         $this->linkedLid = null;
     }
 
-    function isEqual(Lid $lid) {
+    public function isEqual(Lid $lid)
+    {
         if (!empty($lid->lidnummer) && $lid->lidnummer != $this->lidnummer) {
             // Lid werd wel al gesynct en verschilt
             return false;
@@ -70,7 +70,8 @@ class GroepsadminLid {
     // Returnt true als ze waarschijnlijk gelijk zijn, maar niet met zekerheid
     // Voer dit enkel uit als er geen andere matches gevonden werden
     // Bedoeling is dat er bij mogelijke equals enkel manuele interactie is om veiligheidsproblemen te voorkomen
-    function isProbablyEqual(Lid $lid) {
+    public function isProbablyEqual(Lid $lid)
+    {
         $geboortedatum_string = $lid->geboortedatum->format('d/m/Y');
         $count = 0;
         if (trim(clean_special_chars($lid->voornaam)) == trim(clean_special_chars($this->voornaam))) {
@@ -93,7 +94,8 @@ class GroepsadminLid {
         return false;
     }
 
-    function markFound($lid) {
+    public function markFound($lid)
+    {
         if ((empty($lid->lidnummer) || $lid->lidnummer != $this->lidnummer) && !empty($this->lidnummer)) {
             $lid->lidnummer = $this->lidnummer;
             $lid->save();
@@ -104,7 +106,8 @@ class GroepsadminLid {
         $this->linkedLid = $lid;
     }
 
-    function needsSync() {
+    public function needsSync()
+    {
         // Als de groepsadmin hash leeg is
         if (empty($this->hash) || (empty($this->linkedLid->lidnummer) && !empty($this->lidnummer))) {
             return true;
@@ -119,23 +122,23 @@ class GroepsadminLid {
         return $this->hash != $this->calculateHash($this->linkedLid);
     }
 
-    function remove($groepsadmin) {
-        
+    public function remove($groepsadmin)
+    {
+
         // Stap 1: huidige data ophalen van de groepsadmin
         $fetchedData = $groepsadmin->downloadLid($this->id);
-
 
         if (!isset($fetchedData)) {
             Leiding::sendErrorMail("Downloaden van lid gefaald", "Het downloaden van het lid is gefaald (bij remove)", "id = $this->id");
             return false;
         }
 
-        $log = 'Lid opgehaald: '.json_encode($fetchedData, JSON_PRETTY_PRINT)."\n\n";
+        $log = 'Lid opgehaald: ' . json_encode($fetchedData, JSON_PRETTY_PRINT) . "\n\n";
 
         // Stap 2: Alle functies beïndigen
         $functies = [];
         foreach ($fetchedData['functies'] as $functie) {
-            $functie['einde'] = date('Y-m-d').'T'.date('H:i:s').'.000+02:00';
+            $functie['einde'] = date('Y-m-d') . 'T' . date('H:i:s') . '.000+02:00';
             unset($functie['links']);
             $functies[] = $functie;
         }
@@ -144,8 +147,8 @@ class GroepsadminLid {
             'functies' => $functies,
         ];
 
-        $log .= 'Lid data dat zal worden doorgestuurd (voor schrappen): '.json_encode($newData, JSON_PRETTY_PRINT)."\n\n";
-        
+        $log .= 'Lid data dat zal worden doorgestuurd (voor schrappen): ' . json_encode($newData, JSON_PRETTY_PRINT) . "\n\n";
+
         $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
         if (!isset($fetchedData)) {
             Leiding::sendErrorMail("Schrappen van lid is gefaald", "Het schrappen van het lid is gefaald", $log);
@@ -155,7 +158,8 @@ class GroepsadminLid {
         return true;
     }
 
-    function sync($groepsadmin) {
+    public function sync($groepsadmin)
+    {
         // Niet toegestaan atm
         if (!isset($this->linkedLid)) {
             return false;
@@ -164,18 +168,16 @@ class GroepsadminLid {
         // Stap 1: huidige data ophalen van de groepsadmin
         $fetchedData = $groepsadmin->downloadLid($this->id);
 
-
         if (!isset($fetchedData)) {
             Leiding::sendErrorMail("Downloaden van lid gefaald", "Het downloaden van het lid is gefaald", "id = $this->id");
             return false;
         }
 
-        $log = 'Lid opgehaald: '.json_encode($fetchedData, JSON_PRETTY_PRINT)."\n\n";
+        $log = 'Lid opgehaald: ' . json_encode($fetchedData, JSON_PRETTY_PRINT) . "\n\n";
 
         // Stap 2: data versturen, maar contacten weglaten als niet alle adresId velden gegeven zijn
         $newData = static::getDataFor($this->linkedLid, $fetchedData);
 
-        
         $adressenOk = true;
         foreach ($newData['contacten'] as $contact) {
             if (!isset($contact['adres'])) {
@@ -188,21 +190,21 @@ class GroepsadminLid {
             unset($newData['contacten']);
         }
 
-        $log .= 'Lid data dat zal worden doorgestuurd: '.json_encode($newData, JSON_PRETTY_PRINT)."\n\n";
-        
+        $log .= 'Lid data dat zal worden doorgestuurd: ' . json_encode($newData, JSON_PRETTY_PRINT) . "\n\n";
+
         $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
         if (!isset($fetchedData)) {
             Leiding::sendErrorMail("Aanpassen van lid gefaald", "Het aanpassen van het lid is gefaald", $log);
             return false;
         }
 
-        $log .= 'Lid na aanpassing: '.json_encode($fetchedData, JSON_PRETTY_PRINT)."\n\n";
-        
+        $log .= 'Lid na aanpassing: ' . json_encode($fetchedData, JSON_PRETTY_PRINT) . "\n\n";
+
         if (!$adressenOk) {
             // Stap 3: als contacten weggelaten werden => data opnieuw berekenen met returnwaarde van vorige stap
             // en nu nog eens opslaan
             $newData = static::getDataFor($this->linkedLid, $fetchedData);
-            $log .= 'Lid data dat zal worden doorgestuurd (met contacten): '.json_encode($newData, JSON_PRETTY_PRINT)."\n\n";
+            $log .= 'Lid data dat zal worden doorgestuurd (met contacten): ' . json_encode($newData, JSON_PRETTY_PRINT) . "\n\n";
 
             $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
 
@@ -215,12 +217,13 @@ class GroepsadminLid {
         return true;
     }
 
-    static function createNew($lid, $groepsadmin) {
+    public static function createNew($lid, $groepsadmin)
+    {
         // Stap 1: lid aanmaken, maar contacten weglaten
         $newData = static::getDataFor($lid);
         unset($newData['contacten']);
 
-        $log = 'Create lid (zonder contacten): '.json_encode($newData, JSON_PRETTY_PRINT)."\n\n";
+        $log = 'Create lid (zonder contacten): ' . json_encode($newData, JSON_PRETTY_PRINT) . "\n\n";
 
         $fetchedData = $groepsadmin->uploadLid($newData);
         if (!isset($fetchedData)) {
@@ -228,11 +231,11 @@ class GroepsadminLid {
             return false;
         }
 
-        $log .= 'Antwoord: '.json_encode($fetchedData, JSON_PRETTY_PRINT)."\n\n";
+        $log .= 'Antwoord: ' . json_encode($fetchedData, JSON_PRETTY_PRINT) . "\n\n";
 
         // Stap 2: contacten nu ook sturen (nu we alle adressen hebben en id's kunnen correleren)
         $newData = static::getDataFor($lid, $fetchedData);
-        $log .= 'Contacten nu ook versturen: '.json_encode($newData, JSON_PRETTY_PRINT)."\n\n";
+        $log .= 'Contacten nu ook versturen: ' . json_encode($newData, JSON_PRETTY_PRINT) . "\n\n";
 
         $fetchedData = $groepsadmin->uploadLid($newData, $fetchedData['id']);
         if (!isset($fetchedData)) {
@@ -242,16 +245,17 @@ class GroepsadminLid {
 
         // Successvol aangemaakt
         return true;
-    } 
+    }
 
-    static function getDataFor($lid, $fetchedData = null) {
+    public static function getDataFor($lid, $fetchedData = null)
+    {
         // Use fetchedData to corelate Id's
         // Zonder fetchedData wordt deze functie gebruikt om een hash te genereren én om een nieuw lid aan te maken
         $data = [
             "persoonsgegevens" => [
                 "geslacht" => ($lid->geslacht == 'M' ? 'man' : 'vrouw'),
                 "gsm" => isset($lid->gsm) ? str_replace(' ', ' ', $lid->gsm) : "",
-               
+
                 //"rekeningnummer" => "BE68 5390 0754 7034"
             ],
             "email" => $lid->ouders[0]->user->mail,
@@ -266,7 +270,7 @@ class GroepsadminLid {
             "adressen" => [],
 
             "contacten" => [],
-            
+
             // Todo: functies
         ];
 
@@ -293,19 +297,17 @@ class GroepsadminLid {
                 "bus" => isset($ouder->adres->busnummer) ? $ouder->adres->busnummer : "",
                 "telefoon" => str_replace(' ', ' ', $ouder->adres->telefoon),
                 "postadres" => false, // Er mag maar 1 postadres zijn!
-                "omschrijving" => "Adres van ".$ouder->titel,
+                "omschrijving" => "Adres van " . $ouder->titel,
                 /*"positie" =>  [
-                    "lat" => 51.166969,
-                    "lng" => 4.462271
-                ]*/
+            "lat" => 51.166969,
+            "lng" => 4.462271
+            ]*/
             ];
-
-            
 
             if (isset($fetchedData["adressen"])) {
                 $id = null;
                 // Adres opzoeken
-                foreach($fetchedData["adressen"] as $a) {
+                foreach ($fetchedData["adressen"] as $a) {
                     if ($a['postcode'] == $adres['postcode'] && $a['straat'] == $adres['straat'] && $a['nummer'] == $adres['nummer'] && $a['bus'] == $adres['bus']) {
                         $id = $a['id'];
 
@@ -341,13 +343,13 @@ class GroepsadminLid {
                 "achternaam" => $ouder->user->lastname,
                 "rol" => $ouder->getGroepsadminRol(),
                 "gsm" => str_replace(' ', ' ', $ouder->user->phone),
-                "email" => $ouder->user->mail
+                "email" => $ouder->user->mail,
             ];
 
             if (isset($fetchedData["contacten"])) {
                 $id = null;
                 // Adres opzoeken
-                foreach($fetchedData["contacten"] as $c) {
+                foreach ($fetchedData["contacten"] as $c) {
                     if ($c['voornaam'] == $contact['voornaam'] && $c['achternaam'] == $contact['achternaam']) {
                         $id = $c['id'];
                         break;
@@ -368,12 +370,12 @@ class GroepsadminLid {
         // Extra velden
         if (isset($fetchedData)) {
             $data["groepseigenVelden"] = [
-                "O2209G" => [
+                Environment::getSetting('groepsadmin.groep') => [
                     "waarden" => [
                         // Hash opslaan hier, enkel als fetchedData != null
-                        "39a96d046403c4b10164248c1f2e071a" => static::calculateHash($lid)
-                    ]
-                ]
+                        Environment::getSetting('groepsadmin.hash') => static::calculateHash($lid),
+                    ],
+                ],
             ];
 
             if (isset($fetchedData['gebruikersnaam'])) {
@@ -387,7 +389,7 @@ class GroepsadminLid {
         $functie = $lid->inschrijving->getVerbondTak()['functie'];
         if (isset($fetchedData['functies'])) {
             // Staat de gezochte tak nog in de lijst?
-            
+
             $found = false;
             foreach ($fetchedData['functies'] as $f) {
                 if ($f['functie'] == $functie && empty($f['einde'])) {
@@ -399,7 +401,7 @@ class GroepsadminLid {
             if (!$found) {
                 // Tak terug toevoegen
                 $data['functies'][] = [
-                    "groep" => "O2209G",
+                    "groep" => Environment::getSetting('groepsadmin.groep'),
                     "functie" => $functie,
                     "begin" => $lid->inschrijving->datum->format("Y-m-d"),
                     "einde" => null,
@@ -411,7 +413,7 @@ class GroepsadminLid {
             // Nu alle andere functies wissen (we staan dit niet toe bij gewone leden)
             foreach ($fetchedData['functies'] as $f) {
                 if ($f['functie'] != $functie) {
-                    $f['einde'] = date('Y-m-d').'T'.date('H:i:s').'.000+02:00';
+                    $f['einde'] = date('Y-m-d') . 'T' . date('H:i:s') . '.000+02:00';
                     unset($f['links']);
                     $data['functies'][] = $f;
                 }
@@ -419,84 +421,85 @@ class GroepsadminLid {
         } else {
             // We willen enkel de huidige functie toevoegen (= nieuwe leden)
             $data['functies'][] = [
-                "groep" => "O2209G",
+                "groep" => Environment::getSetting('groepsadmin.groep'),
                 "functie" => $functie,
                 "begin" => $lid->inschrijving->datum->format("Y-m-d"),
                 "einde" => null,
             ];
         }
-        
 
         /*"functies": [
-            {
-              "groep": "A3143G",
-              "functie": "d5f75e23385c5e6e0139493b8546035e",
-              "begin": "2014-01-01",
-              "einde": "2014-03-02"
-              "links": [
-                {
-                  "href": "/groepsadmin/rest-ga/groep/A3143G",
-                  "rel": "groep",
-                  "method": "GET"
-                }, {
-                  "href": "/groepsadmin/rest-ga/functie/d5f75e23385c5e6e0139493b8546035e",
-                  "rel": "functie",
-                  "method": "GET"
-                }
-              ]
-            }
+        {
+        "groep": "A3143G",
+        "functie": "d5f75e23385c5e6e0139493b8546035e",
+        "begin": "2014-01-01",
+        "einde": "2014-03-02"
+        "links": [
+        {
+        "href": "/groepsadmin/rest-ga/groep/A3143G",
+        "rel": "groep",
+        "method": "GET"
+        }, {
+        "href": "/groepsadmin/rest-ga/functie/d5f75e23385c5e6e0139493b8546035e",
+        "rel": "functie",
+        "method": "GET"
+        }
+        ]
+        }
         ],*/
 
         return $data;
     }
 
-    static function calculateHash($lid) {
+    public static function calculateHash($lid)
+    {
         $data = static::getDataFor($lid);
         $hash = hash('sha256', json_encode($data));
         return $hash;
     }
 
-    // All data we 
-    static function getColumns() {
+    // All data we
+    public static function getColumns()
+    {
         return [
             'be.vvksm.groepsadmin.model.column.LidNummerColumn',
             'be.vvksm.groepsadmin.model.column.VoornaamColumn',
             'be.vvksm.groepsadmin.model.column.AchternaamColumn',
-            'be.vvksm.groepsadmin.model.column.GeboorteDatumColumn',  // DD/MM/YYYY
+            'be.vvksm.groepsadmin.model.column.GeboorteDatumColumn', // DD/MM/YYYY
             "be.vvksm.groepsadmin.model.column.GeslachtColumn",
 
             // Groepseigen (Hash)
-            "39a96d046403c4b10164248c1f2e071a",
+            Environment::getSetting('groepsadmin.hash'),
         ];
 
         /*
-        "be.vvksm.groepsadmin.model.column.LidNummerColumn",
-        "be.vvksm.groepsadmin.model.column.VoornaamColumn",
-        "be.vvksm.groepsadmin.model.column.AchternaamColumn",
-        "be.vvksm.groepsadmin.model.column.AdresColumn",
-        "be.vvksm.groepsadmin.model.column.EmailColumn",
-        "be.vvksm.groepsadmin.model.column.ContactEmailColumn",
-        "be.vvksm.groepsadmin.model.column.Contact2GsmColumn",
-        "be.vvksm.groepsadmin.model.column.VolledigeNaamColumn",
-        "be.vvksm.groepsadmin.model.column.GsmColumn",
-        "be.vvksm.groepsadmin.model.column.LeeftijdColumn",
-        "be.vvksm.groepsadmin.model.column.GeboorteDatumColumn",
-        "be.vvksm.groepsadmin.model.column.GeslachtColumn",
-        "be.vvksm.groepsadmin.model.column.RekeningnummerColumn",
-        "be.vvksm.groepsadmin.model.column.StraatnaamColumn",
-        "be.vvksm.groepsadmin.model.column.StraatColumn",
-        "be.vvksm.groepsadmin.model.column.StraatnummerColumn",
-        "be.vvksm.groepsadmin.model.column.BusColumn",
-        "be.vvksm.groepsadmin.model.column.GemeenteColumn",
-        "be.vvksm.groepsadmin.model.column.GemeentenaamColumn",
-        "be.vvksm.groepsadmin.model.column.PostcodeColumn",
-        "be.vvksm.groepsadmin.model.column.TelefoonColumn",
-        "be.vvksm.groepsadmin.model.column.PerAdresColumn",
-        "be.vvksm.groepsadmin.model.column.ContactGsmColumn",
-        "be.vvksm.groepsadmin.model.column.ContactNaamColumn",
-        "be.vvksm.groepsadmin.model.column.Contact2NaamColumn",
-        "be.vvksm.groepsadmin.model.column.Contact2EmailColumn"
+    "be.vvksm.groepsadmin.model.column.LidNummerColumn",
+    "be.vvksm.groepsadmin.model.column.VoornaamColumn",
+    "be.vvksm.groepsadmin.model.column.AchternaamColumn",
+    "be.vvksm.groepsadmin.model.column.AdresColumn",
+    "be.vvksm.groepsadmin.model.column.EmailColumn",
+    "be.vvksm.groepsadmin.model.column.ContactEmailColumn",
+    "be.vvksm.groepsadmin.model.column.Contact2GsmColumn",
+    "be.vvksm.groepsadmin.model.column.VolledigeNaamColumn",
+    "be.vvksm.groepsadmin.model.column.GsmColumn",
+    "be.vvksm.groepsadmin.model.column.LeeftijdColumn",
+    "be.vvksm.groepsadmin.model.column.GeboorteDatumColumn",
+    "be.vvksm.groepsadmin.model.column.GeslachtColumn",
+    "be.vvksm.groepsadmin.model.column.RekeningnummerColumn",
+    "be.vvksm.groepsadmin.model.column.StraatnaamColumn",
+    "be.vvksm.groepsadmin.model.column.StraatColumn",
+    "be.vvksm.groepsadmin.model.column.StraatnummerColumn",
+    "be.vvksm.groepsadmin.model.column.BusColumn",
+    "be.vvksm.groepsadmin.model.column.GemeenteColumn",
+    "be.vvksm.groepsadmin.model.column.GemeentenaamColumn",
+    "be.vvksm.groepsadmin.model.column.PostcodeColumn",
+    "be.vvksm.groepsadmin.model.column.TelefoonColumn",
+    "be.vvksm.groepsadmin.model.column.PerAdresColumn",
+    "be.vvksm.groepsadmin.model.column.ContactGsmColumn",
+    "be.vvksm.groepsadmin.model.column.ContactNaamColumn",
+    "be.vvksm.groepsadmin.model.column.Contact2NaamColumn",
+    "be.vvksm.groepsadmin.model.column.Contact2EmailColumn"
     ],
-        */
+     */
     }
 }
