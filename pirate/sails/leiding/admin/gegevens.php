@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Sails\Leiding\Admin;
 
+use Pirate\Sails\Files\Models\Image;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Wheel\Page;
@@ -75,14 +76,30 @@ class Gegevens extends Page
             $errors = $user->setProperties($data, $edit);
 
             if (count($errors) == 0) {
-                if ($user->save()) {
-                    $success = true;
+                // Check image
 
-                    if ($edit) {
-                        header("Location: https://" . $_SERVER['SERVER_NAME'] . "/admin/leiding");
+                if (isset($_FILES['avatar_photo'])) {
+                    $photo = new Image();
+                    $photo->upload('avatar_photo', [
+                        ['width' => 120, 'height' => 120],
+                        ['width' => 500, 'height' => 500],
+                    ], $errors);
+
+                    if (count($errors) == 0) {
+                        $user->setPhoto($photo);
                     }
-                } else {
-                    $errors[] = 'Probleem bij opslaan';
+                }
+
+                if (count($errors) == 0) {
+                    if ($user->save()) {
+                        $success = true;
+
+                        if ($edit) {
+                            header("Location: https://" . $_SERVER['SERVER_NAME'] . "/admin/leiding");
+                        }
+                    } else {
+                        $errors[] = 'Probleem bij opslaan';
+                    }
                 }
             }
         }
@@ -122,6 +139,7 @@ class Gegevens extends Page
             'takken' => Inschrijving::getTakken(),
             'success' => $success,
             'id' => $user->id,
+            'photo' => !is_null($user->getPhoto()) ? $user->getPhoto()->getBestFit(120, 120)->file : null,
         ));
     }
 }

@@ -1,1 +1,1 @@
-docker exec -it "scoutssintjan-php-container" php /var/www/scoutssintjan.dev/pirate/run/update.php
+docker exec -it "scoutswetteren-php-container" php /var/www/scoutswetteren.dev/pirate/run/update.php

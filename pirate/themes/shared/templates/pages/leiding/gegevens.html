@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="text">
         <header>
             <h1>{% if new %}Nieuw account toevoegen{% else %}{% if edit %}Gegevens van {{ leiding.firstname }}{% else %}Mijn gegevens{% endif %}{% endif %}</h1>
@@ -18,6 +18,23 @@
                 <label>Totem</label>
                 <input type="text" name="totem" value="{{ leiding.totem }}" placeholder="Optioneel">
             
+                <label>Foto</label>
+                
+                <input type="file" name="avatar_photo" id="file" class="file_upload" data-show-image="#image-preview">
+                {% if photo is not empty %}
+                    <label for="file" class="image-file-preview" data-upload-text="Nieuwe foto" style="background-image: url({{ photo.getPublicPath() }})"></label>
+                {% else %}
+                    <label for="file">
+                        <svg width="12px" height="12px" viewBox="1502 -655 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <g id="plus" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(1503.000000, -654.000000)" stroke-linecap="round">
+                                <path d="M5,0.5 L5,10" id="Path-3" stroke="#FFFFFF" stroke-width="2"></path>
+                                <path d="M9.75,5.25 L0.25,5.25" id="Path-3-Copy" stroke="#FFFFFF" stroke-width="2"></path>
+                            </g>
+                        </svg>
+                        Foto selecteren
+                    </label>
+                {% endif %}
+
                 {% if errors|length > 0 %}
                     <ul class="error">
                         {% for error in errors %}
@@ -35,27 +52,26 @@
                 <input type="text" name="phone" value="{{ leiding.phone }}" placeholder="Vul uw GSM-nummer in">
 
                 {% if not edit %}
-                <label>Functies</label>
+                    <label>Functies</label>
 
-                    <ul>
-                        {% for functie in functies %}
-                            <li>{{ functie }}</li>
-                        {% else %}
-                           <li>Nog geen speciale functies gekregen</li> 
-                        {% endfor %}
-                    </ul>
-                {% else %}
+                        <ul>
+                            {% for functie in functies %}
+                                <li>{{ functie }}</li>
+                            {% else %}
+                            <li>Nog geen speciale functies gekregen</li> 
+                            {% endfor %}
+                        </ul>
+                    {% else %}
 
-                <label>Tak</label>
-                <label class="select-box">
-                    <select name="tak">
-                        <option value="">Geen leiding</option>
-                        {% for tak in takken %}
-                            <option value="{{ tak }}"{% if tak == leiding.tak %} selected{% endif %}>{{ tak | capitalize }}</option>
-                        {% endfor %}
-                    </select>
-                </label>
-
+                    <label>Tak</label>
+                    <label class="select-box">
+                        <select name="tak">
+                            <option value="">Geen leiding</option>
+                            {% for tak in takken %}
+                                <option value="{{ tak }}"{% if tak == leiding.tak %} selected{% endif %}>{{ tak | capitalize }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
                 {% endif %}
             </div>
 

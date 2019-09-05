@@ -2,26 +2,33 @@
 
 {% if not leiding_verborgen %}
     {% if leiding | length > 0 %}
+
         <article class="block blue">
-                <h1>De leiding</h1>
+            <h1>De leiding</h1>
             <p>Deze enthausiaste leidingsploeg staat elke week in voor de {{ taknaam }}</p>
             
             <div class="splitted blocked auto">
                 {% for leider in leiding %}
                     <article class="person">
-                        <figure style="background-image: url(/sint-jan/images/originelen/leiding/portretten/Aline.JPG)"></figure>
+                        {% if leider.getPhoto %}
+                            <figure style="background-image: url({{ leider.getPhoto.getBestFit(80, 80).file.getPublicPath }})"></figure>
+                        {% endif %}
                         <div>
                             <h1 class="prefix">{{ leider.user.firstname }} {{ leider.user.lastname }}</h1>
                             <p>{{ leider.totem }}</p>
-                            <p class="suffix">{{ leider.user.phone }}</p>
+                            {% if leider.user.phone and (general.logged_in_leiding or general.logged_in_ouders) %}
+                                <p class="suffix">{{ leider.user.phone }}</p>
+                            {% endif %}
                         </div>
                     </article>
                 {% endfor %}
             </div>
 
-            <footer>
-                <a href="/gebruikers/login" class="button fill main">Inloggen</a><span>Log in om de contactgegevens van de leiding te bekijken.</span>
-            </footer>
+            {% if not general.logged_in_leiding and not general.logged_in_ouders %}
+                <footer>
+                    <a href="/gebruikers/login" class="button fill main">Inloggen</a><span>Log in om de contactgegevens van de leiding te bekijken.</span>
+                </footer>
+            {% endif %}
         </article>
     {% else %}
         <ul class="warning"><li>De leiding is nog niet bekend</li></ul>

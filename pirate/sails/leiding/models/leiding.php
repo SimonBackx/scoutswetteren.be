@@ -2,6 +2,7 @@
 namespace Pirate\Sails\Leiding\Models;
 
 use Pirate\Sails\Environment\Classes\Environment;
+use Pirate\Sails\Files\Models\Image;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Settings\Models\Setting;
 use Pirate\Sails\Users\Models\User;
@@ -16,6 +17,11 @@ class Leiding extends Model
     public $totem;
     public $tak;
     public $permissions = array();
+
+    // Autoloaded property $photo: on usage -> will load
+    // public $photo;
+    private $_photo;
+    public $photo_id = null;
 
     // als didCheckLogin == false, dan hebben we nog niet gecontrolleerd of de huidige gebruiker een leider is
     /*private static $didCheckLogin = false;
@@ -35,11 +41,35 @@ class Leiding extends Model
         $this->user = new User($row);
         $this->totem = $row['totem'];
         $this->tak = $row['tak'];
+        $this->photo_id = $row['photo_id'];
         $this->permissions = explode('±', $row['permissions']);
 
         if (count($this->permissions) == 1 && $this->permissions[0] == '') {
             $this->permissions = array();
         }
+    }
+
+    public function getPhoto()
+    {
+        if (isset($this->_photo)) {
+            return $this->_photo;
+        }
+        if (is_null($this->photo_id)) {
+            return;
+        }
+        $this->_photo = Image::getImage($this->photo_id);
+        return $this->_photo;
+    }
+
+    // Set photo without saving (old will get deleted with saving)
+    public function setPhoto($new)
+    {
+        $old = $this->getPhoto();
+        if (isset($old)) {
+            $old->delete();
+        }
+        $this->photo_id = $new->id;
+        $this->_photo = $new;
     }
 
     public static function getLeidingsverdeling()
@@ -533,6 +563,12 @@ class Leiding extends Model
             $totem = "'" . self::getDb()->escape_string($this->totem) . "'";
         }
 
+        if (!isset($this->photo_id)) {
+            $photo_id = 'NULL';
+        } else {
+            $photo_id = "'" . self::getDb()->escape_string($this->photo_id) . "'";
+        }
+
         self::getDb()->autocommit(false);
 
         // Permissions
@@ -544,13 +580,14 @@ class Leiding extends Model
                 SET
                  `user_id` = '$user_id',
                  totem = $totem,
+                 photo_id = $photo_id,
                  tak = $tak
                  where id = '$id'
             ";
         } else {
             $query = "INSERT INTO
-                leiding (`user_id`, `totem`, `tak`)
-                VALUES ('$user_id', $totem, $tak)";
+                leiding (`user_id`, `totem`, `tak`, `photo_id`)
+                VALUES ('$user_id', $totem, $tak, $photo_id)";
         }
 
         $result = self::getDb()->query($query);

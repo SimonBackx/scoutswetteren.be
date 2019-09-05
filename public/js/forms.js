@@ -181,26 +181,38 @@ $( document ).ready(function() {
 
         var label = $(this).next();
 
-        if (!label.attr('data-default-text')) {
-            label.attr('data-default-text', label.text());
+        if (!label.hasClass('image-file-preview')) {
+            if (!label.attr('data-default-text')) {
+                label.attr('data-default-text', label.text());
+            }
+    
+            var info = $(this).nextAll(".file_info:first");
+            if (files.length == 0) {
+                info.text("");
+                label.text(label.attr('data-default-text'));
+                label.removeClass('selected');
+            } 
+            if (files.length == 1) {
+                info.text("Eén bestand geselecteerd: "+names);
+                label.text(names);
+                label.addClass('selected');
+            } 
+            if (files.length > 1) {
+                info.text(files.length+" bestanden geselecteerd: "+names);
+                label.text(files.length+" bestanden");
+                label.addClass('selected');
+            } 
+        } else {
+            if (files.length > 0) {
+                var image = label[0];
+    
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    image.style.backgroundImage = 'url(' + e.target.result+')';
+                };
+                reader.readAsDataURL(files[0]);
+            }
         }
-
-        var info = $(this).nextAll(".file_info:first");
-        if (files.length == 0) {
-            info.text("");
-            label.text(label.attr('data-default-text'));
-            label.removeClass('selected');
-        } 
-        if (files.length == 1) {
-            info.text("Eén bestand geselecteerd: "+names);
-            label.text(names);
-            label.addClass('selected');
-        } 
-        if (files.length > 1) {
-            info.text(files.length+" bestanden geselecteerd: "+names);
-            label.text(files.length+" bestanden");
-            label.addClass('selected');
-        } 
 
         var next = $(this).nextAll(".show-on-file-selected");
         if (files.length == 0) {
@@ -208,6 +220,8 @@ $( document ).ready(function() {
         } else {
             next.css("display", "inline-block");
         }
+
+       
 
         return false;
     });

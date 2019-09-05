@@ -1,0 +1,1 @@
+docker exec -it "scoutssintjan-php-container" php /var/www/scoutssintjan.dev/pirate/run/update.php
