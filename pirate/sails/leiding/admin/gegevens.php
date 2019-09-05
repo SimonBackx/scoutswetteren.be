@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Sails\Leiding\Admin;
 
+use Pirate\Sails\Files\Models\File;
 use Pirate\Sails\Files\Models\Image;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leiding\Models\Leiding;
@@ -45,16 +46,18 @@ class Gegevens extends Page
             'firstname' => $user->user->firstname,
             'lastname' => $user->user->lastname,
             'totem' => $user->totem,
+            'roepnaam' => $user->roepnaam,
             'mail' => $user->user->mail,
             'phone' => $user->user->phone,
             'tak' => $user->tak,
         );
 
         $allPermissions = Leiding::getPossiblePermissions();
-        if (isset($_POST['firstname'], $_POST['lastname'], $_POST['totem'], $_POST['mail'], $_POST['phone'])) {
+        if (isset($_POST['firstname'], $_POST['lastname'], $_POST['totem'], $_POST['roepnaam'], $_POST['mail'], $_POST['phone'])) {
             $data['firstname'] = $_POST['firstname'];
             $data['lastname'] = $_POST['lastname'];
             $data['totem'] = $_POST['totem'];
+            $data['roepnaam'] = $_POST['roepnaam'];
             $data['mail'] = $_POST['mail'];
             $data['phone'] = $_POST['phone'];
 
@@ -78,7 +81,7 @@ class Gegevens extends Page
             if (count($errors) == 0) {
                 // Check image
 
-                if (isset($_FILES['avatar_photo'])) {
+                if (File::isFileSelected('avatar_photo')) {
                     $photo = new Image();
                     $photo->upload('avatar_photo', [
                         ['width' => 120, 'height' => 120],

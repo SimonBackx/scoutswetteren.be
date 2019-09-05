@@ -15,6 +15,7 @@ class Leiding extends Model
     public $id;
     public $user; // object
     public $totem;
+    public $roepnaam;
     public $tak;
     public $permissions = array();
 
@@ -40,6 +41,7 @@ class Leiding extends Model
         $this->id = $row['id'];
         $this->user = new User($row);
         $this->totem = $row['totem'];
+        $this->roepnaam = $row['roepnaam'];
         $this->tak = $row['tak'];
         $this->photo_id = $row['photo_id'];
         $this->permissions = explode('±', $row['permissions']);
@@ -486,6 +488,15 @@ class Leiding extends Model
             $errors[] = 'Ongeldige totem';
         }
 
+        if (strlen($data['roepnaam']) == 0) {
+            $this->roepnaam = null;
+        } elseif (Validator::isValidTotem($data['roepnaam'])) {
+            $this->roepnaam = ucfirst(strtolower($data['roepnaam']));
+            $data['roepnaam'] = $this->roepnaam;
+        } else {
+            $errors[] = 'Ongeldige roepnaam';
+        }
+
         // Pas de permissions aan van de leiding (enkel als de huidige user groepsleiding is, niet de user die aangepast wordt)
         if (self::hasPermission('groepsleiding')) {
             if (isset($data['tak'])) {
@@ -563,6 +574,12 @@ class Leiding extends Model
             $totem = "'" . self::getDb()->escape_string($this->totem) . "'";
         }
 
+        if (!isset($this->roepnaam)) {
+            $roepnaam = 'NULL';
+        } else {
+            $roepnaam = "'" . self::getDb()->escape_string($this->roepnaam) . "'";
+        }
+
         if (!isset($this->photo_id)) {
             $photo_id = 'NULL';
         } else {
@@ -580,14 +597,15 @@ class Leiding extends Model
                 SET
                  `user_id` = '$user_id',
                  totem = $totem,
+                 roepnaam = $roepnaam,
                  photo_id = $photo_id,
                  tak = $tak
                  where id = '$id'
             ";
         } else {
             $query = "INSERT INTO
-                leiding (`user_id`, `totem`, `tak`, `photo_id`)
-                VALUES ('$user_id', $totem, $tak, $photo_id)";
+                leiding (`user_id`, `totem`, `roepnaam`, `tak`, `photo_id`)
+                VALUES ('$user_id', $totem, $tak, $roepnaam, $photo_id)";
         }
 
         $result = self::getDb()->query($query);

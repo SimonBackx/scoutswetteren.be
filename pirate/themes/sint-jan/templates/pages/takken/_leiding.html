@@ -14,7 +14,7 @@
                             <figure style="background-image: url({{ leider.getPhoto.getBestFit(80, 80).file.getPublicPath }})"></figure>
                         {% endif %}
                         <div>
-                            <h1 class="prefix">{{ leider.user.firstname }} {{ leider.user.lastname }}</h1>
+                            <h1 class="prefix">{% if leider.roepnaam is not empty %}{{ leider.roepnaam }}{% else %}{{ leider.user.firstname }} {{ leider.user.lastname }}{% endif %}</h1>
                             <p>{{ leider.totem }}</p>
                             {% if leider.user.phone and (general.logged_in_leiding or general.logged_in_ouders) %}
                                 <p class="suffix">{{ leider.user.phone }}</p>
