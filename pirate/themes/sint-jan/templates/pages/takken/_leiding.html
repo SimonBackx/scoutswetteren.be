@@ -1,6 +1,10 @@
 
+{% if  leiding_verborgen  %}
+    <ul class="warning"><li>De leidingsverdeling is nog niet bekend gemaakt en blijft nog even geheim.</li></ul>
+{% endif %}
 
-{% if not leiding_verborgen %}
+{% if not leiding_verborgen or general.logged_in_leiding %}
+
     {% if leiding | length > 0 %}
 
         <article class="block blue">
@@ -33,6 +37,4 @@
     {% else %}
         <ul class="warning"><li>De leiding is nog niet bekend</li></ul>
     {% endif %}
-{% else %}
-    <ul class="warning"><li>De leidingsverdeling is nog niet bekend gemaakt en blijft nog even geheim.</li></ul>
 {% endif %}
