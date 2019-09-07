@@ -379,7 +379,10 @@ class Ouder extends Model
                 // Filter op premade selectors
 
                 $filter = self::$filters[$filter];
-                $where = '(' . $filter['where'] . ')';
+
+                if (!empty($filter['where'])) {
+                    $where = '(' . $filter['where'] . ')';
+                }
             }
         }
         if (!is_null($tak)) {
