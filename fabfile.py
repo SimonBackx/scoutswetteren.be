@@ -144,6 +144,8 @@ def uploadApp():
     
     run("chown -R :www-data "+uploading_directory)
     run("chown -R www-data:www-data "+uploading_directory+"/pirate/tmp")
+    run("chown -R www-data:www-data "+uploading_directory+"/pirate/sails/cache/tmp")
+    run("rm -rf "+uploading_directory+"/pirate/sails/cache/tmp/*")
     print("[UPLOAD] Done.")
 
 def letsencrypt():
