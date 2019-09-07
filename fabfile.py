@@ -196,7 +196,7 @@ def deploy():
     updatePirate()
 
     print('--')
-    letsencrypt()
+    #letsencrypt()
     #print('--')
     #mysql()
     print('--')
