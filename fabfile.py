@@ -52,7 +52,7 @@ def watchSass():
 def compileSass():
     if sass_enabled:
         print("[SASS] Compiling sass...")
-        local("sass "+config["sass"]+" --no-source-map")
+        local("sass "+config["sass"]+" --no-source-map --style=compressed")
         local("npx postcss public/css/*.css --use autoprefixer --no-map --replace")
         print("[SASS] Done.")
 
