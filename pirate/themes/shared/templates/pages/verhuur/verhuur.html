@@ -22,8 +22,6 @@
 {% endblock %}
 
 {% block javascript %}
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
-
     <script src="/js/photoswipe.min.js"></script> 
     <script type="text/javascript">
         function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten) {
@@ -60,6 +58,7 @@
 
         grid.enablePhotoSwipe();
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBSSiozqIkWEJbN1cZO3HMUJS88q6i78BA&amp;callback=initMap"></script>
 {% endblock %}
 
 {% block main %}

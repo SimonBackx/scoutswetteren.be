@@ -25,7 +25,11 @@ $color-background-shade: rgba(black, 0.03);
 // Not used outside admin (default to other colors)
 $color-text: $color-main-dark;
 $gray: $color-main-gray;
+
 $color-error: $color-main;
+$color-error-shade: $color-main-shade;
+$color-warning: #FFC633;
+$color-warning-text: #947320;
 
 // Should get moved to scoutswetteren
 $color-background-shade-darker: #F8F8F8;

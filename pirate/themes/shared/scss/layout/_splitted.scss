@@ -45,6 +45,7 @@
         &.map {
             flex-basis: 45%;
             flex-shrink: 0;
+            align-self: stretch;
             position: relative;
             overflow: hidden;
 

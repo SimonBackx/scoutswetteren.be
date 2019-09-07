@@ -338,7 +338,7 @@ strong {
 ul.error {
     padding: 15px 20px;
     margin: 20px 0;
-    background: $color-main-shade;
+    background: $color-error-shade;
     border-radius: $border-radius;
 
     @media screen and (max-width: 550px) {
@@ -368,7 +368,7 @@ ul.error {
 ul.warning {
     padding: 15px 20px;
     margin: 20px 0;
-    background: rgba(#FFC633, 0.1);
+    background: rgba($color-warning, 0.1);
     border-radius: $border-radius;
 
     @media screen and (max-width: 550px) {
@@ -377,7 +377,7 @@ ul.warning {
     }
 
     li {
-        color: #947320;
+        color: $color-warning-text;
         list-style: none;
         padding: 0;
         margin: 0;

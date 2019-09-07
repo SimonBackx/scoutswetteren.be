@@ -6,7 +6,7 @@ $theme: 'prins-boudewijn';
 @import "../../shared/scss/base/mixins";
 
 @import "../../shared/scss/elements/html";
-@import "../../shared/scss/elements/text";
+@import "elements/text";
 @import "../../shared/scss/elements/buttons";
 @import "elements/forms";
 
@@ -28,9 +28,9 @@ $theme: 'prins-boudewijn';
 @import "../../shared/scss/components/sponsors";
 @import "../../shared/scss/components/questions";
 
-@import "../../shared/scss/components/footer";
+@import "components/footer";
 
-@import "../../shared/scss/components/blog";
+@import "components/blog";
 @import "../../shared/scss/components/calendar";
 @import "../../shared/scss/components/cta";
 @import "../../shared/scss/pages/login";

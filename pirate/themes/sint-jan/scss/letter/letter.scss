@@ -26,7 +26,7 @@ $border-radius: 4px;
 
 @mixin main-alternative-gradient($color-main, $color-main-gradient-destination) {
     background: $color-main;
-    background: linear-gradient(90deg, $color-main, $color-main-gradient-destination);
+    background: linear-gradient(to right, $color-main, $color-main-gradient-destination);
     position: relative;
     z-index: 0;
 }

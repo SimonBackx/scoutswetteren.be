@@ -45,14 +45,15 @@ def mysql():
 
 def watchSass():
     if sass_enabled:
-        local("sass --watch "+config["sass"]+" --scss --sourcemap=none --style=compressed")
+        local("sass --watch "+config["sass"]+" --no-source-map --style=compressed")
     else:
         print("[SASS] SASS is not enabled, check settings.yml")
 
 def compileSass():
     if sass_enabled:
         print("[SASS] Compiling sass...")
-        local("sass "+config["sass"]+" --scss --sourcemap=none --style=compressed")
+        local("sass "+config["sass"]+" --no-source-map --style=compressed")
+        local("npx postcss public/css/*.css --use autoprefixer --replace --no-map")
         print("[SASS] Done.")
 
 def removeCustomMaintenance():

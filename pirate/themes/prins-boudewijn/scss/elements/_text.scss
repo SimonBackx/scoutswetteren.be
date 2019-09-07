@@ -78,23 +78,6 @@ blockquote {
     margin: 0;
 }
 
-
-ul.error {
-    padding: 0;
-    margin: 20px 0;
-
-
-    li {
-        color: $color-error;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        font-size: $size-text-bigger;
-        background: url(../prins-boudewijn/images/error.svg) no-repeat left center;
-        padding-left: 30px;
-    }
-}
-
 // Resize font sizes on small screens
 @media screen and (max-width: 480px), print {
 
@@ -123,5 +106,62 @@ ul.error {
     h1 {
         font-size: $size-smaller-smartphone-title;
         margin: 15px 0;
+    }
+}
+
+ul.error {
+    padding: 15px 20px;
+    margin: 20px 0;
+    background: $color-error-shade;
+
+    @media screen and (max-width: 550px) {
+        margin: 15px 0;
+        padding: 10px 15px;
+    }
+
+    li {
+        color: $color-error;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: $size-text-bigger;
+        background: url('../'+$theme+'/icons/error.svg') no-repeat left center;
+        padding-left: 30px;
+
+        @media screen and (max-width: 550px) {
+            font-size: $size-text;
+        }
+
+        @media screen and (max-width: 480px), print {
+            font-size: $size-smartphone-text;
+        }
+    }
+}
+ul.warning {
+    padding: 15px 20px;
+    margin: 20px 0;
+    background: rgba($color-warning, 0.1);
+
+    @media screen and (max-width: 550px) {
+        margin: 15px 0;
+        padding: 10px 15px;
+    }
+
+    li {
+        color: $color-warning-text;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: $size-text-bigger;
+        background: url('../'+$theme+'/icons/warning.svg') no-repeat left center;
+        padding-left: 30px;
+
+        @media screen and (max-width: 550px) {
+            font-size: $size-text;
+        }
+
+        @media screen and (max-width: 480px), print {
+            font-size: $size-smartphone-text;
+        }
     }
 }

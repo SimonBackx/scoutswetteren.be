@@ -1,12 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
-    <title>error</title>
-    <desc>Created with Sketch.</desc>
-    <g id="error" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
-        <g id="Group-2" transform="translate(1.000000, 1.000000)" stroke="#E02545" stroke-width="2">
-            <path d="M4.99999993,0.0502525041 L4.99999993,9.94974763" id="Path-3" transform="translate(5.000000, 5.000000) rotate(45.000000) translate(-5.000000, -5.000000) "></path>
-            <path d="M9.94974763,5.00000007 L0.0502525041,5.00000007" id="Path-3-Copy" transform="translate(5.000000, 5.000000) rotate(45.000000) translate(-5.000000, -5.000000) "></path>
-        </g>
-    </g>
+<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.5 2.5L10.5 10.5" stroke="#E02545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10.5 2.5L2.5 10.5" stroke="#E02545" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

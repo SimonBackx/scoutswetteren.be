@@ -24,7 +24,7 @@ main > .block, main > .block.with-menu .block {
             top: 0;
             height: 100%;
             max-height: 350px;
-            background: linear-gradient(rgba(black, 0.03), rgba(black, 0));
+            background: linear-gradient(to bottom, rgba(black, 0.03), rgba(black, 0));
             border-top-left-radius: $border-radius;
             border-top-right-radius: $border-radius;
         }
