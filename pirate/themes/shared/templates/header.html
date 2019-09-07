@@ -23,6 +23,15 @@
                 <div class="floater">
                     <div class="smartphone-menu">
                         <div id="smartphone-menu-button"></div>
+
+                        {% if general.logged_in_leiding or general.logged_in_ouders %}
+                            <div class="dropdown-group">
+                                <button class="dropdown user"></button>
+                                <div class="dropdown-menu">
+                                    {% include '_user_menu.html' %}
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

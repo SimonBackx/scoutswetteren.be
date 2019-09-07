@@ -119,9 +119,13 @@
                 right: 0;
                 left: 0;
                 z-index: 2;
-                text-align: right;
+                line-height: $menu-height;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                align-items: center;
 
-                div {
+                #smartphone-menu-button {
                     // No a - tag for SEO
                     // Google can't do antyhing with this button
                     width: 30px;
@@ -193,6 +197,7 @@
         background: url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right center;
         position: relative;
         text-align: left;
+        display: block;
     }
 
     .dropdown-menu {
@@ -225,6 +230,10 @@
         left: auto;
         right: 0;
     }
+
+    &:last-child > button:not(.call-to-action) {
+        margin-right: 0;
+    }
 }
 
 #smartphone-menu-items .dropdown-group .dropdown-menu  {
@@ -232,4 +241,9 @@
     right: 0;
     max-height: none;
     top: $menu-height - 20px;
+}
+
+
+.smartphone-menu .dropdown-group > button {
+    height: $menu-height;
 }

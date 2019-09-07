@@ -36,6 +36,10 @@ main {
 
 #menu > div {
     padding: 0 30px 0 30px;
+
+    @media (max-width: 600px) {
+        padding: 0 10px 0 15px;
+    }
 }
 
 #menu .admin-menu .content {
@@ -141,7 +145,6 @@ main {
         text-transform: uppercase;
 
         font-size: $size-button;
-        display: inline-block;
 
         opacity: 1;
         transition: opacity 0.2s;
@@ -160,6 +163,7 @@ main {
             padding: 10px 25px;
             line-height: $menu-height - 38px - $border-width*2;
             height: $menu-height - 18px;
+            margin: 9px 15px;
 
 
             /*margin: 18px 15px;
@@ -169,7 +173,18 @@ main {
             
             @include main-gradient;*/
             margin-right: 0;
+
+            &.dropdown {
+                background-position: right 15px center;
+                padding-right: 30px;
+            }
         }
+    }
+}
+
+#menu .items > div .dropdown-group:last-child {
+    &> a, &> button {
+        margin-right: 0;
     }
 }
 
@@ -181,6 +196,7 @@ main {
         border-radius: 4px;
         padding: 15px 10px;
         width: 350px;
+        max-width: calc(100vw - 45px);
         color: $color-main-dark;
 
         .box {
@@ -242,31 +258,42 @@ main {
 #menu .call-to-action {
     border: $border-width solid white;
     border-radius: $border-radius;
+}
 
-    &.user {
-        position: relative;
-        padding-right: 20px;
+#menu {
+    a, button {
+        &.user {
+            position: relative;
+            padding-right: 20px;
+    
+            &::before {
+                content: '';
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                left: 0px;
+                top: 50%;
+                transform: translateY(-50%);
+                background-image: url('../'+$theme+'/icons/white/user-small.svg');
+            }
+            
+            padding-left: 35px !important;
 
-        &::before {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-image: url('../'+$theme+'/icons/white/user-small.svg');
+            &.call-to-action {
+                padding-left: 45px !important;
+
+                &::before {
+                    left: 10px;
+                }
+            }
         }
-        
-        padding-left: 45px !important;
     }
+    
 }
 
 #smartphone-menu-items {
     a, button {
         text-transform: uppercase;
-        font-weight: bold;
-        font-size: $size-button;
         color: $color-main-dark;
         border-radius: $border-radius;
         display: block;
@@ -281,17 +308,12 @@ main {
 
     button.dropdown {
         padding-right: 20px;
-        background: url('../'+$theme+'/icons/dark-alternative/arrow-down.svg') no-repeat right 10px center;
+        background: url('../'+$theme+'/icons/dark/arrow-down.svg') no-repeat right 10px center;
         position: relative;
         transition: background-position 0.2s;
 
         &:hover, &:active {
             background-position: right 10px bottom 10px;
-        }
-
-        &.call-to-action {
-            border: $border-width solid $color-main;
-            border-radius: $border-radius;
         }
     }
 
@@ -305,7 +327,8 @@ main {
         }
 
         &.call-to-action {
-            border: $border-width solid $color-main;
+            background: $color-main-dark url('../'+$theme+'/icons/white/arrow-down.svg') no-repeat right 25px center;
+            color: white;
             border-radius: $border-radius;
             opacity: 1;
             transition: opacity 0.2s;
