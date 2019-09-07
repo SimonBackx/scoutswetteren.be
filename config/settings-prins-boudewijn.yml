@@ -1,5 +1,5 @@
 folder: "scoutswetteren.be"
-server: "root@scoutswetteren.be"
+server: "root@scamander.droplet"
 e-mail: "simon.backx@scoutswetteren.be"
 mysql:
   username: root

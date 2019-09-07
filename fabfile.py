@@ -8,7 +8,7 @@ import yaml
 output['running'] = False
 
 try:
-    stream = file('config/settings.yml', 'r')    # 'document.yaml' contains a single YAML document.
+    stream = file('config/settings-prins-boudewijn.yml', 'r')    # 'document.yaml' contains a single YAML document.
 except IOError:
     print("Configfile settings.yml doesn\'t exist.")
     exit()
