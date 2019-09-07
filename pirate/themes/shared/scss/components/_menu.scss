@@ -206,6 +206,7 @@
         max-height: calc(100vh - #{$menu-height + 40px});
         position: absolute;
         width: 300px;
+        max-width: calc(100vw - 60px);
         line-height: 1;
         overflow-y: auto;
         z-index: 10;
@@ -230,8 +231,10 @@
         left: auto;
         right: 0;
     }
+}
 
-    &:last-child > button:not(.call-to-action) {
+#menu .items > div .dropdown-group:last-child {
+    &> a, &> button {
         margin-right: 0;
     }
 }
@@ -246,4 +249,36 @@
 
 .smartphone-menu .dropdown-group > button {
     height: $menu-height;
+}
+
+
+#menu {
+    a, button {
+        &.user {
+            position: relative;
+            padding-right: 20px;
+    
+            &::before {
+                content: '';
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                left: 0px;
+                top: 50%;
+                transform: translateY(-50%);
+                background-image: url('../'+$theme+'/icons/white/user-small.svg');
+            }
+            
+            padding-left: 30px !important;
+
+            &.call-to-action {
+                padding-left: 45px !important;
+
+                &::before {
+                    left: 10px;
+                }
+            }
+        }
+    }
+    
 }

@@ -182,12 +182,6 @@ main {
     }
 }
 
-#menu .items > div .dropdown-group:last-child {
-    &> a, &> button {
-        margin-right: 0;
-    }
-}
-
 .dropdown-group {
 
     .dropdown-menu {
@@ -196,7 +190,6 @@ main {
         border-radius: 4px;
         padding: 15px 10px;
         width: 350px;
-        max-width: calc(100vw - 45px);
         color: $color-main-dark;
 
         .box {
@@ -258,37 +251,6 @@ main {
 #menu .call-to-action {
     border: $border-width solid white;
     border-radius: $border-radius;
-}
-
-#menu {
-    a, button {
-        &.user {
-            position: relative;
-            padding-right: 20px;
-    
-            &::before {
-                content: '';
-                position: absolute;
-                width: 30px;
-                height: 30px;
-                left: 0px;
-                top: 50%;
-                transform: translateY(-50%);
-                background-image: url('../'+$theme+'/icons/white/user-small.svg');
-            }
-            
-            padding-left: 35px !important;
-
-            &.call-to-action {
-                padding-left: 45px !important;
-
-                &::before {
-                    left: 10px;
-                }
-            }
-        }
-    }
-    
 }
 
 #smartphone-menu-items {

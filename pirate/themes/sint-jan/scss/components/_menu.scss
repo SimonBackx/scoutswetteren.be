@@ -28,11 +28,11 @@ main {
     position: relative;
 
     @media (max-width: $page-width - ($page-width - $page-width-reduce-padding) /2 ) {
-        padding: 0 20px;
+        padding: 0 10px 0 20px;
     }
 
     @media (max-width: $page-width-reduce-padding) {
-        padding: 0 15px;
+        padding: 0 10px 0 15px;
     }
 }
 
@@ -124,7 +124,6 @@ main {
         text-transform: uppercase;
         font-weight: bold;
         font-size: $size-button;
-        display: inline-block;
 
         opacity: 1;
         transition: opacity 0.2s;
@@ -209,30 +208,6 @@ main {
                 background-color: $color-main-alternative-shade;
             }
         }
-    }
-}
-
-
-#menu .call-to-action {
-    @include main-gradient;
-    border-radius: $border-radius;
-    
-    &.user {
-        position: relative;
-        padding-right: 20px;
-
-        &::before {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-image: url('../'+$theme+'/icons/white/user-small.svg');
-        }
-        
-        padding-left: 45px !important;
     }
 }
 
