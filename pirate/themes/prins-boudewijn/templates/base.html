@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
-    <link href='{{ http }}/css/{{ environment.theme }}.css' rel='stylesheet' type='text/css'>
+    <link href='{{ http }}/css/{{ environment.theme }}.css?v=2' rel='stylesheet' type='text/css'>
     <link href='{{ http }}/css/pickadate.css' rel='stylesheet' type='text/css'>
-    <link href='/css/{{ environment.theme }}.print.css' media="print" rel='stylesheet' type='text/css'>
+    <link href='/css/{{ environment.theme }}.print.css?v=2' media="print" rel='stylesheet' type='text/css'>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="{{ description }}">
@@ -53,10 +53,10 @@
 
     <script type="text/javascript" src="/js/pickadate.js"></script>
     <script type="text/javascript" src="/js/pickadate.date.js"></script>
-    <script type="text/javascript" src="/js/forms.js"></script>
+    <script type="text/javascript" src="/js/forms.js?v=2"></script>
     {% block javascript %}{% endblock %}
-    <script type="text/javascript" src="{{ http }}/js/search.js"></script>
-    <script type="text/javascript" src="{{ http }}/js/ajax.js"></script>
-    <script type="text/javascript" src="{{ http }}/js/twig.min.js"></script>
+    <script type="text/javascript" src="{{ http }}/js/search.js?v=2"></script>
+    <script type="text/javascript" src="{{ http }}/js/ajax.js?v=2"></script>
+    <script type="text/javascript" src="{{ http }}/js/twig.min.js?v=2"></script>
 </body>
 </html>
