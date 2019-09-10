@@ -11,6 +11,10 @@
         &.swap-smartphone {
             flex-direction: column-reverse;
         }
+
+        .part {
+            align-self: stretch !important;
+        }
     }
 
     .part {

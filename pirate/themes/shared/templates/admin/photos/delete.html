@@ -5,7 +5,7 @@
                 <h1>Verwijderen mislukt!</h1>
                 <footer>
                     <input type="submit" class="main fill" name="confirm-delete" value="Opnieuw proberen">
-                    <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+                    <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button main">Annuleren</a>
                 </footer>
             </header>
         {% else %}
@@ -21,7 +21,7 @@
 
                 <footer>
                     <input type="submit" class="main fill" name="confirm-delete" value="Ja, verwijderen">
-                    <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button merlot">Annuleren</a>
+                    <a href="/admin/photos/edit/{{ album.id | e('html_attr') }}" class="button main">Annuleren</a>
                 </footer>
             {% endif %}
         {% endif %}

@@ -94,8 +94,9 @@
     .items {
         // trigger BFC: take all remaining width
         flex-grow: 1;
-        width: auto;
-        padding: 0 10px 0 20px;
+        flex-basis: 0;
+        flex-shrink: 10000000;
+        padding: 0 10px 0 10px;
         position: relative;
         font-size: 16px;
        
@@ -134,7 +135,6 @@
                     padding: 0 10px;
                     cursor: pointer;
                     position: relative;
-                    right: -10px;
                     background: url('../' + $theme + '/icons/white/hamburger.svg') no-repeat center center;
 
                     opacity: 1;
@@ -159,6 +159,11 @@
                 height: $menu-height;
                 // Height of an item should always be equal to $menu-height; Add padding or margin if you want a smaller background
                 box-sizing: border-box;
+            }
+
+            @media (max-width: 370px) {
+                overflow: hidden;
+                width: 10px;
             }
 
         }
