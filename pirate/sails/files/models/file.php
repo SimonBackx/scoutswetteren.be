@@ -336,6 +336,7 @@ class File extends Model
     public function deleteFromServer(&$errors)
     {
         clearstatcache();
+
         if (file_exists(realpath($this->getPath()))) {
             if (unlink(realpath($this->getPath())) === false) {
                 $errors[] = 'Deleting file failed.';

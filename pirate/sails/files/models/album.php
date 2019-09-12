@@ -411,7 +411,7 @@ class Album extends Model
 
                 left join files zip_file on zip_file.file_id = a.album_zip_file
 
-                where a.album_sources_available = '.($sources_available ? '1' : '0').' and album_id != ' . Self::$QUEUE_ID . '
+                where a.album_sources_available = ' . ($sources_available ? '1' : '0') . ' and album_id != ' . Self::$QUEUE_ID . '
                 group by a.album_id
                 having zip_file.file_upload_date is null or album_zip_last_updated < album_latest_upload_date
                 limit ' . $limit;
@@ -906,6 +906,7 @@ class Album extends Model
             if ($this->updateZip()) {
                 $file = File::getFile($this->zip_file);
 
+                // Prevent deletion of file by setting that it doesn't have a object storage file
                 $file->saved_on_server = true;
                 $file->object_storage_date = null;
                 $file->object_storage_host = null;
