@@ -342,7 +342,7 @@ class File extends Model
                 return false;
             }
         }
-       
+
         $this->saved_on_server = false;
 
         $album = Album::getAlbumForFile($this->id);
@@ -396,6 +396,7 @@ class File extends Model
 
     public function uploadToSpace(&$errors)
     {
+        clearstatcache();
         if (!file_exists($this->getPath())) {
             $errors[] = 'Bestand ' . $this->id . ' staat niet meer op de server opgeslagen!';
             $this->saved_on_server = false;

@@ -397,7 +397,7 @@ class Album extends Model
         return $albums;
     }
 
-    public static function getZippableAlbums($limit = 5)
+    public static function getZippableAlbums($limit = 5, $sources_available = true)
     {
         // Get albums with zip files that can and should be updated
         // + is not the queue -> never zip!
@@ -411,7 +411,7 @@ class Album extends Model
 
                 left join files zip_file on zip_file.file_id = a.album_zip_file
 
-                where a.album_sources_available = 1 and album_id != ' . Self::$QUEUE_ID . '
+                where a.album_sources_available = '.($sources_available ? '1' : '0').' and album_id != ' . Self::$QUEUE_ID . '
                 group by a.album_id
                 having zip_file.file_upload_date is null or album_zip_last_updated < album_latest_upload_date
                 limit ' . $limit;
