@@ -9,6 +9,15 @@ main {
 
         &.white {
             background: white;
+            box-shadow: 0px 8px 15px rgba($color-main-dark, 0.05);
+        }
+
+        &.transparent {
+            margin-top: 50px;
+
+            @media screen and (max-width: $page-width-reduce-padding) {
+                padding: 0 10px;
+            }
         }
 
     }
@@ -54,10 +63,7 @@ main {
     }
     .text {
         padding: 70px 30px 70px 50px;
-        color: $color-text;
-
         
-
         .list-bundle {
             margin: 0 -30px 20px -50px;
         }
@@ -68,37 +74,6 @@ main {
           .list-bundle { 
             margin: 0 -20px 20px -20px;
           }
-        }
-
-        h1, h2 {
-            color: $color-main-dark;
-        }
-        h2 {
-            color: $color-main;
-        }
-
-        &> header {
-            h1 {
-                padding: 0;
-                margin: 0;
-            }
-            h2 {
-                padding: 0;
-                margin: 0;
-                color: $color-main;
-            }
-            margin-bottom: 40px
-        }
-
-        footer {
-            margin-top: 30px;
-
-            a, input[type=submit] {
-                margin: 7px;
-            }
-            a:first-child, input[type=submit]:first-child {
-                margin-left: 0;
-            }
         }
     }
 

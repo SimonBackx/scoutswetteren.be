@@ -90,11 +90,53 @@
 
     <main class="transparent">
         {{ maandplanning | raw }}
+        
+        <script src="/js/photos.js"></script>
+        <script src="/js/photoswipe.min.js"></script> 
+
+       
+        {% for data in album_images %}
+            <section class="block transparent text">
+                <header style="margin-top: 60px;">
+                    <h1>{{ data.album.name }}</h1>
+                    <h2>Nieuwste album • {{ data.album.group | capitalize }} • {{ data.formatted_date }}</h2>
+                </header>
+                <div id="album_{{ data.album.id }}"></div>
+    
+                <footer class="buttons">
+                    <a class="button fill main" href="{{ data.album.getUrl() }}">Toon alles</a>
+                </footer>
+            </section>
+
+            <script type="text/javascript">
+                var grid = new photos.Grid({});
+                grid.trackWidth(document.getElementById('album_{{ data.album.id }}'));
+                grid.margin = 5;
+                grid.max_height = 200;
+                grid.max_lines = 2;
+        
+                var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
+        
+                {% for image in data.images %}
+                    var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+                    photo.title = "{{image.title | e('js')}}";
+                    photo.sources = {{ image.getSourcesJSON | raw }};
+                    grid.add(photo);
+                {% endfor %}
+                
+                var element = grid.toDOM();
+                document.getElementById('album_{{ data.album.id }}').appendChild(element);
+                grid.updateVisiblePhotos();
+        
+                grid.enablePhotoSwipe();
+            </script>
+        {% endfor %}
+                
 
         <article class="white block">
             <div class="splitted">
                 <figure class="part image" id="over-image">
-                    <figcaption>Groepskamp 2015</figcaption>
+                    <figcaption>Startdag 2019</figcaption>
                 </figure>
                 <div class="part text">
                     <header>
@@ -120,4 +162,6 @@
         {{ include('pages/homepage/call_to_action.html') }}
 
     </main>
+
+    {% include 'libs/photoswipe.html' %}
 {% endblock %}
