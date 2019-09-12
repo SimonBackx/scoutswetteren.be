@@ -86,9 +86,9 @@ class Inschrijving extends Model
                 "naam" => "Gidsen",
                 "functie" => "d5f75b320b812440010b812555380380",
             ],
-            "givers" => [
-                "naam" => "Gidsen",
-                "functie" => "d5f75b320b812440010b812555380380",
+            "verkenners" => [
+                "naam" => "Verkenners",
+                "functie" => "d5f75b320b812440010b8125565203c1",
             ],
             "jin" => [
                 "naam" => "Jin",
