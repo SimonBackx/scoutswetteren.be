@@ -10,7 +10,10 @@
 {% endblock %}
 
 {% block javascript %}
+    <link rel="stylesheet" href="/css/photoswipe.css"> 
     <script type="text/javascript" src="{{ http }}/js/homepage.js?v=2"></script>
+    <script src="/js/photos.js"></script>
+    <script src="/js/photoswipe.min.js"></script> 
 
     <script type="text/javascript">
          $( document ).ready(function() {
@@ -62,6 +65,31 @@
             });
         }
     </script>
+
+    {% for data in album_images %}
+        <script type="text/javascript">
+            var grid = new photos.Grid({});
+            grid.trackWidth(document.getElementById('album_{{ data.album.id }}'));
+            grid.margin = 5;
+            grid.max_height = 200;
+            grid.max_lines = 2;
+
+            var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
+
+            {% for image in data.images %}
+                var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
+                photo.title = "{{image.title | e('js')}}";
+                photo.sources = {{ image.getSourcesJSON | raw }};
+                grid.add(photo);
+            {% endfor %}
+            
+            var element = grid.toDOM();
+            document.getElementById('album_{{ data.album.id }}').appendChild(element);
+            grid.updateVisiblePhotos();
+
+            grid.enablePhotoSwipe();
+        </script>
+    {% endfor %}
 {% endblock %}
 
 {% block main %}
@@ -90,11 +118,7 @@
 
     <main class="transparent">
         {{ maandplanning | raw }}
-        
-        <script src="/js/photos.js"></script>
-        <script src="/js/photoswipe.min.js"></script> 
-
-       
+               
         {% for data in album_images %}
             <section class="block transparent text">
                 <header style="margin-top: 60px;">
@@ -107,29 +131,6 @@
                     <a class="button fill main" href="{{ data.album.getUrl() }}">Toon alles</a>
                 </footer>
             </section>
-
-            <script type="text/javascript">
-                var grid = new photos.Grid({});
-                grid.trackWidth(document.getElementById('album_{{ data.album.id }}'));
-                grid.margin = 5;
-                grid.max_height = 200;
-                grid.max_lines = 2;
-        
-                var is_admin = {% if general.logged_in_leiding %}true{% else %}false{% endif %};
-        
-                {% for image in data.images %}
-                    var photo = new photos.Photo({{image.getSource().width | e('js')}}, {{image.getSource().height | e('js')}}, {{image.id  | e('js')}});
-                    photo.title = "{{image.title | e('js')}}";
-                    photo.sources = {{ image.getSourcesJSON | raw }};
-                    grid.add(photo);
-                {% endfor %}
-                
-                var element = grid.toDOM();
-                document.getElementById('album_{{ data.album.id }}').appendChild(element);
-                grid.updateVisiblePhotos();
-        
-                grid.enablePhotoSwipe();
-            </script>
         {% endfor %}
                 
 
