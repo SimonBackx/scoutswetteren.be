@@ -903,6 +903,7 @@ class Album extends Model
             }
 
             // Niet up to date
+            $upd = new \DateTime();
             if ($this->updateZip()) {
                 $file = File::getFile($this->zip_file);
 
@@ -910,10 +911,10 @@ class Album extends Model
                 $file->saved_on_server = true;
                 $file->object_storage_date = null;
                 $file->object_storage_host = null;
-                $file->upload_date = new \DateTime();
+                $file->upload_date = $upd;
 
                 if ($file->save()) {
-                    $this->zip_last_updated = new \DateTime();
+                    $this->zip_last_updated = $upd;
                     $this->setSourcesShouldBeSavedOnServer(false);
                     $this->delayDeletionOfImages();
                     return true;
