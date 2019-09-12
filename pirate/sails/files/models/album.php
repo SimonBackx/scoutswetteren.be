@@ -904,12 +904,14 @@ class Album extends Model
 
             // Niet up to date
             if ($this->updateZip()) {
-                $this->zip_file->saved_on_server = true;
-                $this->zip_file->object_storage_date = null;
-                $this->zip_file->object_storage_host = null;
-                $this->zip_file->upload_date = new \DateTime();
+                $file = File::getFile($this->zip_file);
 
-                if ($this->zip_file->save()) {
+                $file->saved_on_server = true;
+                $file->object_storage_date = null;
+                $file->object_storage_host = null;
+                $file->upload_date = new \DateTime();
+
+                if ($file->save()) {
                     $this->zip_last_updated = new \DateTime();
                     $this->setSourcesShouldBeSavedOnServer(false);
                     $this->delayDeletionOfImages();

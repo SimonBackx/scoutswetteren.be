@@ -55,7 +55,7 @@ class Template
             'drive' => Environment::getSetting('drive'),
         ];
 
-        $url = strtok($_SERVER["REQUEST_URI"], '?');
+        $url = isset($_SERVER["REQUEST_URI"]) ? strtok($_SERVER["REQUEST_URI"], '?') : '/';
 
         $data['general'] = array(
             'url' => $url,

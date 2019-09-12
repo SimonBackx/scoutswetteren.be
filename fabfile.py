@@ -143,6 +143,7 @@ def uploadApp():
         rsync_project(remote_dir= uploading_directory+"/public", local_dir= "public/", delete= True)
     
     run("chown -R :www-data "+uploading_directory)
+    run("chown -R www-data:www-data "+uploading_directory+"/files")
     run("chown -R www-data:www-data "+uploading_directory+"/pirate/tmp")
     run("chown -R www-data:www-data "+uploading_directory+"/pirate/sails/cache/tmp")
     run("rm -rf "+uploading_directory+"/pirate/sails/cache/tmp/*")
