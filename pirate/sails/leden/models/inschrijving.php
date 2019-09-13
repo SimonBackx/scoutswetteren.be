@@ -66,19 +66,11 @@ class Inschrijving extends Model
                 "naam" => "Kapoenen",
                 "functie" => "d5f75b320b812440010b812555de03a2",
             ],
-            "wouters" => [
-                "naam" => "Kabouters",
-                "functie" => "d5f75b320b812440010b812555db03a1",
-            ],
             "kabouters" => [
                 "naam" => "Kabouters",
                 "functie" => "d5f75b320b812440010b812555db03a1",
             ],
             "jonggidsen" => [
-                "naam" => "Jong gidsen",
-                "functie" => "d5f75b320b812440010b812555c7039d",
-            ],
-            "jonggivers" => [
                 "naam" => "Jong gidsen",
                 "functie" => "d5f75b320b812440010b812555c7039d",
             ],
@@ -114,6 +106,23 @@ class Inschrijving extends Model
                 "givers" => [
                     "naam" => "Verkenners",
                     "functie" => "d5f75b320b812440010b8125565203c1",
+                ],
+            ]);
+        }
+
+        if ($this->lid->geslacht == "V") {
+            $mapping = array_merge($mapping, [
+                "wouters" => [
+                    "naam" => "Kabouters",
+                    "functie" => "d5f75b320b812440010b812555db03a1",
+                ],
+                "jonggivers" => [
+                    "naam" => "Jong gidsen",
+                    "functie" => "d5f75b320b812440010b812555c7039d",
+                ],
+                "gidsen" => [
+                    "naam" => "Gidsen",
+                    "functie" => "d5f75b320b812440010b812555380380",
                 ],
             ]);
         }
