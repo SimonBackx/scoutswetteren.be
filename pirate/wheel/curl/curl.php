@@ -1,6 +1,8 @@
 <?php
 namespace Pirate\Wheel\Curl;
 
+use Pirate\Sails\Leiding\Models\Leiding;
+
 class Curl
 {
     // Doe een request en return de Json encoded object als response of null bij een failure
@@ -62,6 +64,10 @@ class Curl
 
             if ($status >= 200 && $status < 300) {
                 $data = @json_decode($result, true);
+
+                if (!isset($data)) {
+                    Leiding::sendErrorMail("Ongeldig antwoord", "Volgend antwoord ontvangen van " . $method . ' ' . $url, json_encode($data) . "\n\nResponse: " . $result);
+                }
                 return $data;
             } else {
                 // Er ging iets mis
