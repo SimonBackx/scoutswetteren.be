@@ -103,7 +103,7 @@ class Inschrijving extends Model
                     "naam" => "Jong verkenners",
                     "functie" => "d5f75b320b812440010b812555d603a0",
                 ],
-                "givers" => [
+                "verkenners" => [
                     "naam" => "Verkenners",
                     "functie" => "d5f75b320b812440010b8125565203c1",
                 ],
@@ -120,7 +120,7 @@ class Inschrijving extends Model
                     "naam" => "Jong gidsen",
                     "functie" => "d5f75b320b812440010b812555c7039d",
                 ],
-                "gidsen" => [
+                "givers" => [
                     "naam" => "Gidsen",
                     "functie" => "d5f75b320b812440010b812555380380",
                 ],
