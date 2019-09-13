@@ -70,6 +70,8 @@ class Curl
                 }
                 return $data;
             } else {
+
+                Leiding::sendErrorMail("Ongeldig antwoord", "Volgend antwoord ontvangen van " . $method . ' ' . $url, json_encode($data) . "\n\nResponse: " . $result);
                 // Er ging iets mis
             }
             return null;
