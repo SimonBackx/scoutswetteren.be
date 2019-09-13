@@ -66,6 +66,10 @@ class Inschrijving extends Model
                 "naam" => "Kapoenen",
                 "functie" => "d5f75b320b812440010b812555de03a2",
             ],
+            "welpen" => [
+                "naam" => "Welpen",
+                "functie" => "d5f75b320b812440010b8125567703cb",
+            ],
             "kabouters" => [
                 "naam" => "Kabouters",
                 "functie" => "d5f75b320b812440010b812555db03a1",
