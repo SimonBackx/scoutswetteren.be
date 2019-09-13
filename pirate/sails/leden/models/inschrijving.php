@@ -103,7 +103,7 @@ class Inschrijving extends Model
                     "naam" => "Jong verkenners",
                     "functie" => "d5f75b320b812440010b812555d603a0",
                 ],
-                "verkenners" => [
+                "givers" => [
                     "naam" => "Verkenners",
                     "functie" => "d5f75b320b812440010b8125565203c1",
                 ],
