@@ -70,6 +70,10 @@ class Inschrijving extends Model
                 "naam" => "Kabouters",
                 "functie" => "d5f75b320b812440010b812555db03a1",
             ],
+            "jongverkenners" => [
+                "naam" => "Jong verkenners",
+                "functie" => "d5f75b320b812440010b812555d603a0",
+            ],
             "jonggidsen" => [
                 "naam" => "Jong gidsen",
                 "functie" => "d5f75b320b812440010b812555c7039d",
