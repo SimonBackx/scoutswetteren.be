@@ -178,6 +178,7 @@ class GroepsadminLid
         // Stap 2: data versturen, maar contacten weglaten als niet alle adresId velden gegeven zijn
         $newData = static::getDataFor($this->linkedLid, $fetchedData);
 
+        $sendmail = true;
         $adressenOk = true;
         foreach ($newData['contacten'] as $contact) {
             if (!isset($contact['adres'])) {
@@ -194,8 +195,20 @@ class GroepsadminLid
 
         $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
         if (!isset($fetchedData)) {
-            Leiding::sendErrorMail("Aanpassen van lid gefaald", "Het aanpassen van het lid is gefaald", $log);
-            return false;
+            // Retry without email
+            if (isset($newData["email"])) {
+                unset($newData["email"]);
+                $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
+
+            }
+
+            if (!isset($fetchedData)) {
+                Leiding::sendErrorMail("Aanpassen van lid gefaald", "Het aanpassen van het lid is gefaald", $log);
+                return false;
+            }
+
+            $sendmail = false;
+
         }
 
         $log .= 'Lid na aanpassing: ' . json_encode($fetchedData, JSON_PRETTY_PRINT) . "\n\n";
@@ -204,6 +217,10 @@ class GroepsadminLid
             // Stap 3: als contacten weggelaten werden => data opnieuw berekenen met returnwaarde van vorige stap
             // en nu nog eens opslaan
             $newData = static::getDataFor($this->linkedLid, $fetchedData);
+
+            if (!$sendmail) {
+                unset($newData["email"]);
+            }
             $log .= 'Lid data dat zal worden doorgestuurd (met contacten): ' . json_encode($newData, JSON_PRETTY_PRINT) . "\n\n";
 
             $fetchedData = $groepsadmin->uploadLid($newData, $this->id);
