@@ -218,7 +218,7 @@ class GroepsadminLid
             // en nu nog eens opslaan
             $newData = static::getDataFor($this->linkedLid, $fetchedData);
 
-            if (!$sendmail) {
+            if (isset($newData["email"]) && !$sendmail) {
                 unset($newData["email"]);
             }
             $log .= 'Lid data dat zal worden doorgestuurd (met contacten): ' . json_encode($newData, JSON_PRETTY_PRINT) . "\n\n";
@@ -290,6 +290,16 @@ class GroepsadminLid
 
             // Todo: functies
         ];
+
+        if (isset($fetchedData) && isset($fetchedData['email'])) {
+            if ($lid->ouders[0]->user->mail == $fetchedData['email']) {
+                // Never send email if it is the same
+                unset($data['email']);
+            } else if (isset($lid->ouders[1]) && $lid->ouders[1]->user->mail == $fetchedData['email']) {
+                // Never send email if it is the same
+                unset($data['email']);
+            }
+        }
 
         // Adressen
         $addedAdressen = [];
