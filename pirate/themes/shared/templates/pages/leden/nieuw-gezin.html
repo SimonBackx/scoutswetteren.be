@@ -39,7 +39,6 @@
                             {% set multiple = '[0]' %}
                             {% if ouder.errors|length > 0 %}
                                 <ul class="error">
-                                    <li>Jouw gegevens werden niet correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
                                     {% for error in ouder.errors %}
                                         <li>{{ error }}</li>
                                     {% endfor %}
@@ -54,7 +53,6 @@
                                 {% set multiple = '[1]' %}
                                 {% if ouder.errors|length > 0 %}
                                     <ul class="error">
-                                        <li>De gegevens van de andere ouder werden niet correct ingevuld. Kijk de foutmeldingen hieronder even na.</li>
                                         {% for error in ouder.errors %}
                                             <li>{{ error }}</li>
                                         {% endfor %}

@@ -27,7 +27,6 @@
 
                     {% if errors|length > 0 %}
                         <ul class="error">
-                                <li>Niet alles werd correct ingevuld, kijk onderstaande foutmeldingen na en controleer goed of je niet per ongeluk speciale symbolen hebt ingetypt.</li>
                             {% for error in errors %}
                                 <li>{{ error }}</li>
                             {% endfor %}
