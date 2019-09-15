@@ -181,7 +181,7 @@ class GroepsadminLid
         $sendmail = true;
         $adressenOk = true;
         foreach ($newData['contacten'] as $contact) {
-            if (!isset($contact['adresId'])) {
+            if (!isset($contact['adres'])) {
                 $adressenOk = false;
                 break;
             }
@@ -389,7 +389,7 @@ class GroepsadminLid
             }
 
             if (isset($addedAdressen[$ouder->adres->id]) && $addedAdressen[$ouder->adres->id] !== true) {
-                $contact['adresId'] = $addedAdressen[$ouder->adres->id];
+                $contact['adres'] = $addedAdressen[$ouder->adres->id];
             }
             $data["contacten"][] = $contact;
         }
