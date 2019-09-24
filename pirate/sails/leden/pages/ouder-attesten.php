@@ -28,6 +28,7 @@ class OuderAttesten extends Page
 
             foreach ($files as $file) {
                 $filename = basename($file);
+                $ext = substr($filename, -3);
                 $withoutExt = substr($filename, 0, -4);
                 $matches = [];
 
@@ -41,12 +42,17 @@ class OuderAttesten extends Page
 
                 $url = "attesten/" . rawurlencode($dirname) . "/" . rawurlencode($filename);
 
-                $group['attesten'][] = [
-                    'name' => $name,
-                    'ziekenfonds' => $ziekenfonds,
-                    'url' => "https://" . str_replace('www.', 'files.', $_SERVER['SERVER_NAME']) . "/" . $url,
-                ];
-
+                if (isset($group['attesten'][$withoutExt])) {
+                    $group['attesten'][$withoutExt]['url'][$ext] = "https://" . str_replace('www.', 'files.', $_SERVER['SERVER_NAME']) . "/" . $url;
+                } else {
+                    $group['attesten'][$withoutExt] = [
+                        'name' => $name,
+                        'ziekenfonds' => $ziekenfonds,
+                        'url' => [
+                            $ext => "https://" . str_replace('www.', 'files.', $_SERVER['SERVER_NAME']) . "/" . $url,
+                        ],
+                    ];
+                }
             }
 
             $attesten[] = $group;

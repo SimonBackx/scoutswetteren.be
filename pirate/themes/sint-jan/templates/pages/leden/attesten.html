@@ -9,6 +9,7 @@
             <div>
                 <h1>Attesten</h1>
                 <p>Op deze pagina vinden jullie een reeks documenten en attesten die jullie kunnen afdrukken. Hiermee kunnen jullie mogelijks geld terugkrijgen van je ziekenfonds of deze kunnen jullie inbrengen in jullie belastingen. Dit op voorwaarde dat de ingeschreven leden deelnamen en betaalden voor de activiteiten die recht geven op deze verminderingen of terugbetalingen.</p>
+                <p>Bij bepaalde attesten moet je het voorblad apart downloaden.</p>
                 
                 {% for group in attesten %}
                     <h2>{{ group.name }}</h2>
@@ -21,9 +22,11 @@
                                     {{ attest.ziekenfonds }}
                                 </div>
                                 <div class="last column right">
-                                    <a href="{{ attest.url }}" class="icon-button" target="_blank" download>
-                                        Downloaden
-                                    </a>
+                                    {% for ext, url in attest.url %}
+                                        <a href="{{ url }}" class="icon-button" target="_blank" download>
+                                            Download {{ext}}
+                                        </a>
+                                    {% endfor %}
                                 </div>
                             </article>
                         {% endfor %}

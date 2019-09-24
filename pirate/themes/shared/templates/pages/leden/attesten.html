@@ -30,9 +30,11 @@
                                     {{ attest.ziekenfonds }}
                                 </div>
                                 <div class="last column right">
-                                    <a href="{{ attest.url }}" class="icon-button" target="_blank" download>
-                                        Downloaden
-                                    </a>
+                                    {% for ext, url in attest.url %}
+                                        <a href="{{ url }}" class="icon-button" target="_blank" download>
+                                            Download {{ext}}
+                                        </a>
+                                    {% endfor %}
                                 </div>
                             </article>
                         {% endfor %}
