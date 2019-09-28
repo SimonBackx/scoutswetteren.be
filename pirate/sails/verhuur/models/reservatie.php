@@ -1,11 +1,12 @@
 <?php
 namespace Pirate\Sails\Verhuur\Models;
 
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Adres;
 use Pirate\Sails\Leiding\Models\Leiding;
-use Pirate\Wheel\Model;
 use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Mail;
+use Pirate\Wheel\Model;
 
 class Reservatie extends Model
 {
@@ -42,52 +43,51 @@ class Reservatie extends Model
 
     public $aanvraag_datum;
 
-    public static $max_gebouw = 35;
+    /*public static $max_gebouw = 35;
     public static $max_tenten = 20;
 
     public static $prijzen = array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102, 2020 => 105, 2021 => 110);
     public static $waarborg_weekend = 400;
     public static $waarborg_kamp = 750;
-    public static $prijs_tent_dag = 20;
-    public static $prijs_tent_persoon = 2;
+    public static $prijs_tent_nacht = 20;
+    public static $prijs_tent_persoon = 2;*/
 
     private $no_mail = false;
 
-    public function calculateWaarborg()
+    public static function getPrijzenPerJaar()
     {
-        $difference = $this->startdatum->diff($this->einddatum);
-        $days = $difference->d;
-
-        if ($days <= 2) {
-            return self::$waarborg_weekend;
-        }
-        return self::$waarborg_kamp;
+        return Environment::getSetting('verhuur.prijzen', []);
     }
 
     public static function getPrijzenString()
     {
         $year = date("Y");
-        if (!isset(self::$prijzen[$year])) {
+        $prijzen = self::getPrijzenPerJaar();
+        if (!isset($prijzen[$year])) {
             return 'De huurprijs is onbekend door een technische fout';
         }
-        $current_price = '€ ' . money_format('%!.2n', self::$prijzen[$year]);
+        $current_price = '€ ' . $prijzen[$year];
 
         $other = '';
         $i = $year + 1;
-        while (isset(self::$prijzen[$i])) {
+        while (isset($prijzen[$i])) {
+            if ($prijzen[$i] == $prijzen[$year]) {
+                $i++;
+                continue;
+            }
             if ($other != '') {
                 $other .= ', ';
             } else {
                 $other .= ' (';
             }
-            $other .= $i . ': € ' . money_format('%!.2n', self::$prijzen[$i]);
+            $other .= $i . ': € ' . $prijzen[$i];
             $i++;
         }
         if ($other != '') {
             $other .= ')';
         }
 
-        return "De huurprijs bedraagt  $current_price / nacht voor verblijven in $year$other";
+        return "$current_price / nacht voor verblijven in $year$other";
     }
 
     public function getExcelSafeTelephone()
@@ -118,12 +118,16 @@ class Reservatie extends Model
 
         $plus = 0;
         if ($this->personen_tenten > 0) {
-            $plus += self::$prijs_tent_dag * $days + self::$prijs_tent_persoon * $this->personen_tenten * $days;
+            $plus += Environment::getSetting('verhuur.prijs_tent_nacht', 0) * $days + Environment::getSetting('verhuur.prijs_tent_persoon', 0) * $this->personen_tenten * $days;
         }
 
+        $plus += $days * Environment::getSetting('verhuur.prijs_extra_persoon_gebouw', 0) * max(0, $this->personen - Environment::getSetting('verhuur.prijs_inbegrepen_personen', 0));
+
         $jaar = $this->startdatum->format('Y');
-        if (isset(self::$prijzen[$jaar])) {
-            return self::$prijzen[$jaar] * $days + $plus;
+        $prijzen = self::getPrijzenPerJaar();
+
+        if (isset($prijzen[$jaar])) {
+            return $prijzen[$jaar] * $days + $plus;
         }
 
         return $plus;
@@ -133,23 +137,39 @@ class Reservatie extends Model
     {
         // function calculateHuurPrijs(startdate, enddate, diffDays, persons, persons_tenten)
         return '
-        var prices = ' . json_encode(self::$prijzen) . ';
+        var prices = ' . json_encode(self::getPrijzenPerJaar()) . ';
+        var inbegrepen = ' . json_encode(Environment::getSetting('verhuur.prijs_inbegrepen_personen', 0)) . ';
+        var prijs_extra_persoon_gebouw = ' . json_encode(Environment::getSetting('verhuur.prijs_extra_persoon_gebouw', 0)) . ';
 
         var base_price = diffDays * prices[startdate.getFullYear()];
         if (persons_tenten > 0) {
-            base_price += persons_tenten*' . self::$prijs_tent_dag . '*diffDays + ' . self::$prijs_tent_persoon . '*diffDays;
+            base_price += persons_tenten * ' . Environment::getSetting('verhuur.prijs_tent_persoon', 0) . ' * diffDays + ' . Environment::getSetting('verhuur.prijs_tent_nacht', 0) . ' * diffDays;
+        }
+        if (persons > inbegrepen) {
+            base_price += diffDays * (persons - inbegrepen) * prijs_extra_persoon_gebouw;
         }
         return base_price;';
+    }
+
+    public function calculateWaarborg()
+    {
+        $difference = $this->startdatum->diff($this->einddatum);
+        $days = $difference->d;
+
+        if ($days <= 2) {
+            return Environment::getSetting('verhuur.waarborg_weekend', 0);
+        }
+        return Environment::getSetting('verhuur.waarborg_kamp', 0);
     }
 
     public static function js_calculateBorg()
     {
         // function calculateBorg(startdate, enddate, diffDays, persons, persons_tenten)
         return '
-        var borg = ' . self::$waarborg_weekend . ';
+        var borg = ' . Environment::getSetting('verhuur.waarborg_weekend', 0) . ';
 
         if (diffDays > 2) {
-            borg = ' . self::$waarborg_kamp . ';
+            borg = ' . Environment::getSetting('verhuur.waarborg_kamp', 0) . ';
         }
         return borg;';
     }
@@ -335,7 +355,7 @@ class Reservatie extends Model
         // hier ligt_vast setten etc
 
         $personen = intval($data['personen']);
-        if ($personen < 1 || $personen > self::$max_gebouw) {
+        if ($personen < 1 || $personen > Environment::getSetting('verhuur.max_gebouw', 0)) {
             $errors[] = 'Ongeldig aantal personen';
         } else {
             $data['personen'] = $personen;
@@ -343,7 +363,7 @@ class Reservatie extends Model
         }
 
         $personen_tenten = intval($data['personen_tenten']);
-        if ($personen_tenten < 0 || $personen_tenten > self::$max_tenten) {
+        if ($personen_tenten < 0 || $personen_tenten > Environment::getSetting('verhuur.max_tenten', 0)) {
             $errors[] = 'Ongeldig aantal personen in tenten';
         } else {
             $ok = true;
@@ -351,9 +371,9 @@ class Reservatie extends Model
                 $difference = $this->startdatum->diff($this->einddatum);
                 $days = $difference->d;
 
-                if ($days <= 2) {
+                if ($days < Environment::getSetting('verhuur.tenten_min_nachten', 0)) {
                     if ($admin && $personen_tenten > 0) {
-                        $errors[] = 'Het is niet mogelijk om tenten te zetten bij overnachtingen van 2 nachten of minder.';
+                        $errors[] = 'Het is niet mogelijk om tenten te zetten bij verhuur van minder dan ' . Environment::getSetting('verhuur.tenten_min_nachten', 0) . ' nachten.';
                     }
 
                     $data['personen_tenten'] = 0;

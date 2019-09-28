@@ -45,6 +45,7 @@
 
         grid.enablePhotoSwipe();
     </script>
+    <script src="/js/verhuur.js"></script>
 {% endblock %}
 
 {% block main %}
@@ -54,10 +55,6 @@
                 <div class="part column first center">
                     <a href="mailto:verhuur@scoutssintjan.be" class="h1-prefix">verhuur@scoutssintjan.be</a>
                     <h1>Lokalenverhuur</h1>      
-                    
-                    <ul class="warning">
-                        <li>We werken nog verder aan deze pagina. Je kan voorlopig de verhuurkalender raadplegen via Google Calendar onderaan deze pagina.</li>
-                    </ul>
             
                     <p>Groenstraat 33, 9230 Wetteren</p>
 
@@ -66,7 +63,7 @@
                     </p>
 
                     <p>
-                        De maximum capaciteit is 60 slapers. (Meer kan/mag niet omwille van verzekeringen; extra mensen in tenten laten slapen is wel mogelijk)
+                        De maximum capaciteit is {{ max_gebouw }} slapers. (Meer kan/mag niet omwille van verzekeringen; extra mensen in tenten laten slapen is wel mogelijk)
                     </p>
 
                     <p>
@@ -74,7 +71,7 @@
                     </p>
 
                     <p>
-                        Voor de eerste 25 personen betaal je 120€/nacht. Voor elke extra persoon betaal je 4€/nacht/persoon in het lokaal, en 2€/nacht/persoon in tenten. Daar komen kosten bij aan marktprijs van elektriciteit, gas (centrale verwarming en warm water) en water.
+                        Voor de eerste {{ prijs_inbegrepen_personen }} personen betaal je {{ prijzen }}. Voor elke extra persoon betaal je €{{prijs_extra_persoon_gebouw}}/nacht/persoon in het lokaal, en €{{prijs_tent_persoon}}/nacht/persoon in tenten. Daar komen kosten bij aan marktprijs van elektriciteit, gas (centrale verwarming en warm water) en water.
                     </p>
 
                     <div class="buttons">
@@ -94,7 +91,7 @@
                     <h1 class="prefix">Capaciteit</h1>
                     <div class="check">
                         <p>Max. aantal personen</p>
-                        <p>60</p>
+                        <p>{{ max_gebouw }}</p>
                     </div>
                     <div class="check">
                         <p>Rolstoeltoegankelijk</p>
@@ -206,13 +203,94 @@
 
         <section class="block white" id="reserveren">
             <div class="splitted blocked bigger swap-smartphone">
-                <div class="part column first">
-                    <iframe style="border-width: 0;" src="https://www.google.com/calendar/embed?title=%20&amp;showCalendars=0&amp;showTz=0&amp;height=600&amp;wkst=2&amp;bgcolor=%23FFFFFF&amp;src=verhuursintjan%40gmail.com&amp;color=%232952A3&amp;ctz=Europe%2FBrussels"></iframe>
+                <div class="part calendar">
+                    <div class="selection-hint">Selecteer een datum</div>
+                    <header>
+                        <button class="previous"></button>
+                        <time class="month" data-year="{{ calendar.data_year }}" data-month="{{ calendar.data_month }}">{{ calendar.month }} {{ calendar.data_year }}</time>
+                        <button class="next"></button>
+                    </header>
+                    <div class="weekdays row">
+                        <div class="column">Ma</div>
+                        <div class="column">Di</div>
+                        <div class="column">Wo</div>
+                        <div class="column">Do</div>
+                        <div class="column">Vr</div>
+                        <div class="column">Za</div>
+                        <div class="column">Zo</div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div id="verhuur-calendar-weeks">
+                        {{ kalender | raw }}
+                    </div>
+
+                    <p class="legend-disabled">Bezet</p>
+                    <p class="legend-available">Beschikbaar</p>
                 </div>
 
                 <div class="part column last center">
-                    <h1>Reservatie aanvragen</h1>
-                    <p>Om de lokalen te huren kan u terecht bij verhuur@scoutssintjan.be. Bekijk de kalender om te weten of het lokaal nog beschikbaar is op de gewenste datum.</p>
+                    <header>
+                        <h1>Reservatie aanvragen</h1>
+                    </header>
+
+                    <form method="post" action="/verhuur/reserveren">
+                        <div class="splitted">
+                            <div class="part column first">
+                                <label>Aankomst</label>
+                                <input type="text" name="startdatum" placeholder="Aankomstdatum" class="calendar_input" data-id="aankomst-selected" data-text="Kies een aankomstdatum" data-next-id="vertrek-datum" id="aankomst-datum">
+                            </div>
+                            <div class="part column last">
+                                <label>Vertrek</label>
+                                <input type="text" name="einddatum" placeholder="Vertrekdatum" class="calendar_input" data-id="vertrek-selected" data-text="Kies een vertrekdatum" id="vertrek-datum">
+                            </div>
+                        </div>
+                        <div class="splitted">
+                            <div class="part column first">
+                                <label>Aantal personen in hoofdgebouw</label>
+                                <div class="slider" data-max="{{ max_gebouw }}" data-min="1">
+                                    <input type="hidden" name="personen" value="1" id="aantal-personen">
+                                    <div class="bar">
+                                        <div class="progress"></div>
+                                    </div>
+                                    <div class="slide">
+                                        <div class="circle"></div>
+                                        <span class="value">1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="part column last">
+                                <div id="aantal-personen-tenten-box" data-tenten-min-nachten="{{ tenten_min_nachten }}">
+                                    <label>Aantal personen in tenten</label>
+                                    <div class="slider" data-max="{{ max_tenten }}" data-min="0">
+                                        <input type="hidden" name="personen_tenten" value="0" id="aantal-personen-tenten">
+                                        <div class="bar">
+                                            <div class="progress"></div>
+                                        </div>
+                                        <div class="slide">
+                                            <div class="circle"></div>
+                                            <span class="value">0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <footer>
+                            <div class="price-floater">
+                                <div>
+                                    Totaal
+                                    <span id="price">€ 0</span>
+                                </div>
+                                <div id="borg"></div>
+                            </div>
+
+                            <input type="submit" name="submit" value="Verder" class="fill main">
+                            <a href="/contact" class="button main">Contact</a>
+                        </footer>
+                        <p>Voorlopige prijs op basis van opgegeven aantal dagen en personen. Exclusief elektriciteit, gas en water. Definitieve prijs zal in huurcontract staan.</p>
+
+                    </form>
                 </div>
             </div>
         </section>

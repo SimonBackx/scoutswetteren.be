@@ -191,6 +191,24 @@ $config = [
         ],
     ],
 
+    'verhuur' => [
+        'max_gebouw' => 60,
+        'max_tenten' => 30,
+
+        'prijzen' => array(2019 => 120, 2020 => 120, 2021 => 120, 2022 => 120, 2023 => 120),
+        'prijs_extra_persoon_gebouw' => 4,
+        'prijs_inbegrepen_personen' => 25,
+
+        'waarborg_weekend' => 400,
+        'waarborg_kamp' => 750,
+
+        'prijs_tent_nacht' => 0,
+        'prijs_tent_persoon' => 2,
+
+        // Minimaal aantal overnachtingen waarbij tenten toegestaan izjn
+        'tenten_min_nachten' => 0,
+    ],
+
     'contacts' => [
         'groepsleiding' => array(
             'name' => 'Groepsleiding',

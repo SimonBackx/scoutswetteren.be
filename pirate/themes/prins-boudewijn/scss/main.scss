@@ -31,7 +31,9 @@ $theme: 'prins-boudewijn';
 @import "components/footer";
 
 @import "components/blog";
-@import "../../shared/scss/components/calendar";
+@import "components/activities";
+@import "components/calendar";
+
 @import "../../shared/scss/components/cta";
 @import "../../shared/scss/pages/login";
 @import "../../shared/scss/components/photos";

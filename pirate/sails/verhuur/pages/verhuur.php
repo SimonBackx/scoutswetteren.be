@@ -1,11 +1,12 @@
 <?php
 namespace Pirate\Sails\Verhuur\Pages;
 
-use Pirate\Wheel\Block;
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Environment\Classes\Localization;
 use Pirate\Sails\Files\Models\Album;
 use Pirate\Sails\Files\Models\Image;
 use Pirate\Sails\Verhuur\Models\Reservatie;
+use Pirate\Wheel\Block;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 
@@ -35,13 +36,16 @@ class Verhuur extends Page
             ),
             'calculate_huurprijs' => Reservatie::js_calculateHuur(),
             'calculate_borg' => Reservatie::js_calculateBorg(),
-            'max_gebouw' => Reservatie::$max_gebouw,
-            'max_tenten' => Reservatie::$max_tenten,
+            'max_gebouw' => Environment::getSetting('verhuur.max_gebouw', 0),
+            'max_tenten' => Environment::getSetting('verhuur.max_tenten', 0),
             'prijzen' => Reservatie::getPrijzenString(),
-            'waarborg_weekend' => Reservatie::$waarborg_weekend,
-            'waarborg_kamp' => Reservatie::$waarborg_kamp,
-            'prijs_tent_dag' => Reservatie::$prijs_tent_dag,
-            'prijs_tent_persoon' => Reservatie::$prijs_tent_persoon,
+            'waarborg_weekend' => Environment::getSetting('verhuur.waarborg_weekend', 0),
+            'waarborg_kamp' => Environment::getSetting('verhuur.waarborg_kamp', 0),
+            'prijs_tent_nacht' => Environment::getSetting('verhuur.prijs_tent_nacht', 0),
+            'prijs_tent_persoon' => Environment::getSetting('verhuur.prijs_tent_persoon', 0),
+            'tenten_min_nachten' => Environment::getSetting('verhuur.tenten_min_nachten', 0),
+            'prijs_inbegrepen_personen' => Environment::getSetting('verhuur.prijs_inbegrepen_personen', 0),
+            'prijs_extra_persoon_gebouw' => Environment::getSetting('verhuur.prijs_extra_persoon_gebouw', 0),
             'kalender' => $kalender,
             'images' => $images,
             'album' => $album,

@@ -1,0 +1,144 @@
+@import "../../../shared/scss/components/calendar";
+
+.splitted .part {
+    &.calendar {
+        width: 640px;
+        flex-basis: 640px;
+
+        background: $color-main-dark;
+        border-radius: $border-radius;
+        padding: 40px 25px;
+
+        @media screen and (max-width: 1000px) {
+            flex-basis: auto;
+            width: auto;
+            padding: 20px;
+            display: block;
+            max-width: 450px;
+        }
+
+        @media screen and (max-width: 500px) {
+            padding: 20px 15px;
+        }
+
+        header {
+            padding: 20px 0;
+
+            time {
+                font-size: $size-smaller-smartphone-title;
+                font-weight: bold;
+
+                @media screen and (max-width: 480px), print {
+                    font-size: $size-text-bigger;
+                }
+            }
+        }
+
+        .row {
+            padding-top: 9px;
+        }
+
+        .row.weekdays {
+            text-transform: uppercase;
+            color: white;
+            font-weight: bold;
+            font-size: $size-prefix;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        #verhuur-calendar-weeks {
+            .column{
+                font-size: $size-text;
+                background: $color-main-alternative-shade;
+                color: $color-main-alternative-dark;
+                font-weight: bold;
+               
+                width: 45px;
+                height: 45px;
+                line-height: 45px;
+
+                @media screen and (max-width: 500px) {
+                    width: 35px;
+                    height: 35px;
+                    line-height: 35px;
+                }
+
+                @media screen and (max-width: 350px) {
+                    width: 30px;
+                    height: 30px;
+                    line-height: 30px;
+                }
+
+                @media screen and (max-width: 300px) {
+                    width: 25px;
+                    height: 25px;
+                    line-height: 25px;
+                }
+
+
+                &.today {
+                    color: $color-main-alternative;
+                }
+    
+                &.disabled {
+                    background: $color-main;
+                    color: white;
+                }
+
+                &.hidden {
+                    opacity: 0.2;
+                }
+
+                &.aankomst-selected, &.vertrek-selected, &.in-between {
+                    background: $color-main-alternative;
+                    color: white;
+                }
+            }
+        }
+
+        .legend-disabled {
+            margin: 3px 0;
+            margin-top: 20px;
+            color: $color-main;
+            font-weight: bold;
+
+            &::before {
+                content: "";
+                display: inline-block;
+                vertical-align: middle;
+                height: 10px;
+                width: 10px;
+                border-radius: 2px;
+                background: $color-main;
+                margin-right: 8px;
+            }
+        }
+
+        .legend-available {
+            margin: 3px 0;
+            color: $color-main-alternative-shade;
+            font-weight: bold;
+
+            &::before {
+                content: "";
+                display: inline-block;
+                vertical-align: middle;
+                height: 10px;
+                width: 10px;
+                border-radius: 2px;
+                background: $color-main-alternative-shade;
+                margin-right: 8px;
+            }
+        }
+
+        .selection-hint {
+            background: $color-main;
+            padding: 20px;
+            font-size: $size-text-bigger;
+            display: none;
+            border-radius: $border-radius;
+        }
+        
+    }
+}

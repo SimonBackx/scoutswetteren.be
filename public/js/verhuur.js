@@ -335,6 +335,16 @@ function resetVertrek() {
     vertrek.removeClass('vertrek-selected');
 }
 
+function updateTentenSelection(diffDays) {
+    var el = $('#aantal-personen-tenten-box');
+    var min_nachten = parseInt(el.attr('data-tenten-min-nachten'));
+    if (diffDays >= min_nachten) {
+        el.show();
+    } else {
+        el.hide();
+    }
+}
+
 function calculatePrice() {
     // Loopen van begin tot einde:
     var startdate_str = $('#aankomst-datum').val();
@@ -343,7 +353,7 @@ function calculatePrice() {
     if (!startdate_str || !enddate_str || startdate_str == '' || enddate_str == '') {
         $('#price').text('€ 0');
         $('#borg').text('');
-        $('#aantal-personen-tenten-box').hide();
+        updateTentenSelection(0);
         return;
     }
 
@@ -354,7 +364,7 @@ function calculatePrice() {
         resetVertrek();
         $('#price').text('€ 0');
         $('#borg').text('');
-        $('#aantal-personen-tenten-box').hide();
+        updateTentenSelection(0);
         
         return;
     }
@@ -362,12 +372,7 @@ function calculatePrice() {
     var timeDiff = Math.abs(startdate.getTime() - enddate.getTime());
     var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
 
-    if (diffDays <= 2) {
-        $('#aantal-personen-tenten-box').hide();
-    } else {
-        $('#aantal-personen-tenten-box').show();
-    }
-
+    updateTentenSelection(diffDays);
 
     var persons_tenten = $('#aantal-personen-tenten').val();
     var persons = $('#aantal-personen').val();

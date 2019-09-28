@@ -14,10 +14,6 @@
         #huurprijs-image {
             background-image: url(/prins-boudewijn/images/part/huurprijs.jpg);
         }
-        #price {
-            font-size: 28pt;
-            font-weight: bold;
-        }
     </style>
 {% endblock %}
 
@@ -142,7 +138,7 @@
 
                     <p>Het hoofdgebouw (maximaal {{ max_gebouw }} personen) wordt samen met één chalet verhuurd. In de chalet mag niet geslapen worden en deze is enkel beschikbaar voor kampen in de zomervakantie. Deze worden enkel verhuurd aan jeugdbewegingen, scholen, sportclubs en socio-culturele organisaties, geen fuifverhuur. </p>
 
-                    <p>{{ prijzen }}. Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € {{ prijs_tent_dag }} / nacht + € {{ prijs_tent_persoon }} / persoon / nacht (max. {{ max_tenten }} personen in tenten).  </p>
+                    <p>De huurprijs bedraagt {{ prijzen }}. Deze huurprijzen zijn exclusief de verbruikskosten voor water, elektriciteit en aardgas. Tenten kunnen bijgezet worden bij overnachting van meer dan 2 nachten aan een meerkost van € {{ prijs_tent_nacht }} / nacht + € {{ prijs_tent_persoon }} / persoon / nacht (max. {{ max_tenten }} personen in tenten).  </p>
 
                     <p>De waarborg bedraagt {{ waarborg_weekend }} euro voor een verblijf van 2 nachten of minder en {{ waarborg_kamp }} euro vanaf 3 overnachtingen.</p>
 
@@ -182,7 +178,7 @@
                 </div>
 
                 <div class="part text">
-                     <header>
+                    <header>
                         <h1>Reservatie aanvragen</h1>
                     </header>
 
@@ -212,7 +208,7 @@
                                 </div>
                             </div>
                             <div class="part column last">
-                                <div id="aantal-personen-tenten-box" style="display: none;">
+                                <div id="aantal-personen-tenten-box" style="display: none;" data-tenten-min-nachten="{{ tenten_min_nachten }}">
                                     <label>Aantal personen in tenten</label>
                                     <div class="slider" data-max="{{ max_tenten }}" data-min="0">
                                         <input type="hidden" name="personen_tenten" value="0" id="aantal-personen-tenten">
