@@ -37,6 +37,10 @@
                 <div class="columns">
                     {% for event in maandplanning.first_activities %}
                         <section>
+                            {% if event.order_sheet_id is not null %}
+                                <a href="{{ event.order_sheet.getUrl() }}" style="float:right; margin: 0;" class="small main fill button">{{ event.order_sheet.getButtonName() }}</a>
+                            {% endif %}
+
                             {% if event.isTak %}
                                 <a href="/takken/{{ event.group | lower }}#maandplanning"><h1 class="prefix">{{ event.group }}</h1></a>
                             {% else %}

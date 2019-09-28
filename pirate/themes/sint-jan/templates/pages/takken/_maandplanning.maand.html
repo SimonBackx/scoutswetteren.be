@@ -1,6 +1,10 @@
 <h1>{{ events.0.getMonthString() | capitalize }}</h1>
 {% for event in events %}
     <article>
+        {% if event.order_sheet_id is not null %}
+            <a href="{{ event.order_sheet.getUrl() }}" style="float:right; margin: 0;" class="small main fill button">{{ event.order_sheet.getButtonName() }}</a>
+        {% endif %}
+
         <h1 class="prefix">{{ event.getStartDate() | capitalize }}<span>{{ event.getTimeString }}{% if event.location is not empty and not event.isSingleDay %}
                 ({{ event.location }})
             {% endif %}</span></h1>
