@@ -31,8 +31,13 @@
                         
                     </form>
                     <header>
+                        {% if environment.theme == "sint-jan" %}
+                            <div class="h1-prefix">{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</div>
+                        {% endif %}
                         <h1>{{ order_sheet.name }}</h1>
-                        <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
+                        {% if environment.theme != "sint-jan" %}
+                            <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
+                        {% endif %}
                         <p>Je hebt al personen ingeschreven. Je kan de inschrijvingen hieronder raadplegen. Je kan indien nodig nog extra personen inschrijven via de knop onderaan.</p>
                     </header>
 
@@ -88,8 +93,15 @@
                 <div class="text">
                     <header>
                         <button v-if="orders.length > 0" type="button" class="button main noborder arrow-left" v-on:click="step = 0;">Terug</button>
+
+                        {% if environment.theme == "sint-jan" %}
+                            <div class="h1-prefix">{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</div>
+                        {% endif %}
                         <h1>{{ order_sheet.name }}</h1>
-                        <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
+                        {% if environment.theme != "sint-jan" %}
+                            <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
+                        {% endif %}
+
                         <p style="white-space: pre-line;">{{ order_sheet.description }}</p>
                     </header>
 
@@ -156,7 +168,7 @@
                                 </div>
                                 
                                 <div class="smallest">
-                                    <button type="button" v-on:click="deleteCartItem(product, index);">Verwijderen</button>
+                                    <button type="button" class="button" v-on:click="deleteCartItem(product, index);">Verwijderen</button>
                                 </div>
                             </div>
                         </div>

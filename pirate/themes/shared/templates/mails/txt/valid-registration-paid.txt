@@ -14,4 +14,4 @@ Bij vragen of problemen kan je terecht op {% if order_sheet.phone is not empty %
 {% endif %}
 
 Bedankt,
-Scouts Prins Boudewijn
+{{ environment.name }}
