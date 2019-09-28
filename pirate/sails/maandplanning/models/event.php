@@ -228,11 +228,14 @@ class Event extends Model
     {
         $tak = self::getDb()->escape_string($tak);
 
+        $first_day_month = date('Y-m') . '-01 00:00:00';
+        echo $first_day_month;
+
         $events = array();
         $query = 'SELECT e.*, o.*, b.* FROM events e
         left join order_sheets o on e.order_sheet_id = o.sheet_id
         left join bank_accounts b on b.account_id = o.sheet_bank_account
-        WHERE startdate >= CURDATE() AND (`group` = "' . ucfirst($tak) . '" OR `group` = "Familie en vrienden" ' . (Inschrijving::isGeldigeTak($tak) ? 'OR `group` = "Alle takken"' : '') . ($tak == 'givers' || $tak == 'jonggivers' ? 'OR `group` = "(Jong)givers"' : '') . ') ORDER BY startdate LIMIT 30';
+        WHERE startdate >= "' . $first_day_month . '" AND (`group` = "' . ucfirst($tak) . '" OR `group` = "Familie en vrienden" ' . (Inschrijving::isGeldigeTak($tak) ? 'OR `group` = "Alle takken"' : '') . ($tak == 'givers' || $tak == 'jonggivers' ? 'OR `group` = "(Jong)givers"' : '') . ') ORDER BY startdate LIMIT 50';
 
         if ($result = self::getDb()->query($query)) {
             if ($result->num_rows > 0) {
