@@ -346,7 +346,7 @@ class Reservatie extends Model
             $this->groep = ucfirst($data['door_leiding_reden']);
 
             $data['door_leiding_reden'] = $this->groep;
-            return;
+            return $errors;
         } else {
             $this->door_leiding = null;
         }
