@@ -173,7 +173,7 @@ class Event extends Model
         left join order_sheets o on e.order_sheet_id = o.sheet_id
         left join bank_accounts b on b.account_id = o.sheet_bank_account
 
-        WHERE (startdate >= "' . $startdate . '" AND startdate < "' . $enddate . '") OR (enddate >= "' . $startdate . '" AND enddate < "' . $enddate . '") OR (startdate <= "' . $startdate . '" AND enddate >= "' . $enddate . '") ORDER BY startdate, group_order LIMIT 30';
+        WHERE (startdate >= "' . $startdate . '" AND startdate < "' . $enddate . '") OR (enddate >= "' . $startdate . '" AND enddate < "' . $enddate . '") OR (startdate <= "' . $startdate . '" AND enddate >= "' . $enddate . '") ORDER BY startdate, group_order LIMIT 50';
 
         if ($result = self::getDb()->query($query)) {
             if ($result->num_rows > 0) {
