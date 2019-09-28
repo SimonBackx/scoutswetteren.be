@@ -1,11 +1,13 @@
 <?php
 namespace Pirate\Sails\Webshop\Models;
-use Pirate\Wheel\Model;
-use Pirate\Sails\Validating\Classes\ValidationError;
-use Pirate\Sails\Validating\Classes\ValidationErrors;
-use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 
-class Product extends Model implements \JsonSerializable {
+use Pirate\Sails\Validating\Classes\ValidationError;
+use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
+use Pirate\Sails\Validating\Classes\ValidationErrors;
+use Pirate\Wheel\Model;
+
+class Product extends Model implements \JsonSerializable
+{
     public $id;
     public $name;
     public $description;
@@ -13,8 +15,8 @@ class Product extends Model implements \JsonSerializable {
     public $price_name;
 
     static $types = [
-        'unit' => 'Per stuk', 
-        'person' => 'Per persoon', 
+        'unit' => 'Per stuk',
+        'person' => 'Per persoon',
         'name' => 'Inschrijving',
     ];
 
@@ -26,7 +28,8 @@ class Product extends Model implements \JsonSerializable {
     private $_delete_prices = [];
     private $_delete_optionsets = [];
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (is_null($row)) {
             $this->prices = [];
             $this->optionsets = [];
@@ -40,17 +43,18 @@ class Product extends Model implements \JsonSerializable {
         $this->price_name = $row['product_price_name'];
 
         // Todo: loop product prices and product options
-       
+
     }
 
-    static function getById($id) {
+    public static function getById($id)
+    {
         $id = self::getDb()->escape_string($id);
         $query = 'SELECT p.*, pp.* FROM products p
         left join product_prices pp on pp.price_product = p.product_id
-        WHERE p.product_id = "'.$id.'" order by pp.price_id asc';
+        WHERE p.product_id = "' . $id . '" order by pp.price_id asc';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
 
                 $prices = [];
                 $product = null;
@@ -66,7 +70,7 @@ class Product extends Model implements \JsonSerializable {
                 }
 
                 $product->prices = $prices;
-                $product->optionsets = Optionset::getForProduct($product);
+                $product->optionsets = OptionSet::getForProduct($product);
                 return $product;
             }
         }
@@ -74,7 +78,8 @@ class Product extends Model implements \JsonSerializable {
         return null;
     }
 
-    function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -87,7 +92,8 @@ class Product extends Model implements \JsonSerializable {
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid
-    function setProperties(&$data) {
+    public function setProperties(&$data)
+    {
         $errors = new ValidationErrors();
         if (isset($data['name'])) {
             $this->name = $data['name'];
@@ -105,7 +111,7 @@ class Product extends Model implements \JsonSerializable {
             if (isset(static::$types[$data['type']])) {
                 $this->type = $data['type'];
             } else {
-                $errors->extend(new ValidationError("Je hebt geen product type geselecteerd", "type")); 
+                $errors->extend(new ValidationError("Je hebt geen product type geselecteerd", "type"));
             }
         }
 
@@ -116,14 +122,14 @@ class Product extends Model implements \JsonSerializable {
                 // Allow product changes
                 foreach ($data['prices'] as $price_data) {
                     if (!empty($price_data['id'])) {
-                        foreach($this->prices as $price) {
+                        foreach ($this->prices as $price) {
                             if ($price->id == $price_data['id']) {
                                 $price_model = $price;
                                 break;
                             }
                         }
                         if (!isset($price_model)) {
-                            $errors->extend(new ValidationError("De product prijs die je wilt aanpassen bestaat niet meer. Kijk na of niet iemand anders ook dit product aan het bewerken is.", "prices")); 
+                            $errors->extend(new ValidationError("De product prijs die je wilt aanpassen bestaat niet meer. Kijk na of niet iemand anders ook dit product aan het bewerken is.", "prices"));
                             break;
                         }
                     } else {
@@ -139,7 +145,7 @@ class Product extends Model implements \JsonSerializable {
                     }
                 }
 
-                foreach($this->prices as $price) {
+                foreach ($this->prices as $price) {
                     if (!in_array($price, $new_prices)) {
                         $this->_delete_prices[] = $price;
                     }
@@ -148,10 +154,10 @@ class Product extends Model implements \JsonSerializable {
                 $this->prices = $new_prices;
 
                 if (count($this->prices) < 1) {
-                    $errors->extend(new ValidationError("Minimaal één prijs nodig", "prices")); 
-                } 
+                    $errors->extend(new ValidationError("Minimaal één prijs nodig", "prices"));
+                }
             }
-           
+
         } else {
             if (isset($data['prices'])) {
                 $errors->extend(new ValidationError("Aanpassingen aan prijzen niet mogelijk", "prices"));
@@ -165,14 +171,14 @@ class Product extends Model implements \JsonSerializable {
                 // Allow product changes
                 foreach ($data['optionsets'] as $optionset_data) {
                     if (!empty($optionset_data['id'])) {
-                        foreach($this->optionsets as $optionset) {
+                        foreach ($this->optionsets as $optionset) {
                             if ($optionset->id == $optionset_data['id']) {
                                 $optionset_model = $optionset;
                                 break;
                             }
                         }
                         if (!isset($optionset_model)) {
-                            $errors->extend(new ValidationError("Het keuzemenu dat je wilt aanpassen bestaat niet meer. Kijk na of niet iemand anders ook dit product aan het bewerken is.", "optionsets")); 
+                            $errors->extend(new ValidationError("Het keuzemenu dat je wilt aanpassen bestaat niet meer. Kijk na of niet iemand anders ook dit product aan het bewerken is.", "optionsets"));
                             break;
                         }
                     } else {
@@ -188,7 +194,7 @@ class Product extends Model implements \JsonSerializable {
                     }
                 }
 
-                foreach($this->optionsets as $optionset) {
+                foreach ($this->optionsets as $optionset) {
                     if (!in_array($optionset, $new_optionsets)) {
                         $this->_delete_optionsets[] = $optionset;
                     }
@@ -196,13 +202,12 @@ class Product extends Model implements \JsonSerializable {
 
                 $this->optionsets = $new_optionsets;
             }
-           
+
         } else {
             if (isset($data['optionsets'])) {
                 $errors->extend(new ValidationError("Aanpassingen aan keuzemenu's niet mogelijk", "prices"));
             }
         }
-
 
         if (count($errors->getErrors()) > 0) {
             throw $errors;
@@ -210,36 +215,37 @@ class Product extends Model implements \JsonSerializable {
 
     }
 
-    function save() {
+    public function save()
+    {
         $name = self::getDb()->escape_string($this->name);
         $type = self::getDb()->escape_string($this->type);
 
         if (empty($this->description)) {
             $description = 'NULL';
         } else {
-            $description = "'".self::getDb()->escape_string($this->description)."'";
+            $description = "'" . self::getDb()->escape_string($this->description) . "'";
         }
 
         if (!isset($this->price_name)) {
             $price_name = 'NULL';
         } else {
-            $price_name = "'".self::getDb()->escape_string($this->price_name)."'";
+            $price_name = "'" . self::getDb()->escape_string($this->price_name) . "'";
         }
 
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
-            
-            $query = "UPDATE products 
-                SET 
+
+            $query = "UPDATE products
+                SET
                 product_name = '$name',
                 product_type = '$type',
                 product_price_name = $price_name,
                 product_description = $description
-                 where `product_id` = '$id' 
+                 where `product_id` = '$id'
             ";
         } else {
 
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 products (`product_name`, `product_type`, `product_price_name`, `product_description`)
                 VALUES ('$name', '$type', $price_name, $description)";
         }
@@ -252,27 +258,27 @@ class Product extends Model implements \JsonSerializable {
             }
 
             // Todo: add rollback behaviour
-            foreach($this->prices as $price) {
+            foreach ($this->prices as $price) {
                 if (!$price->save()) {
                     return false;
                 }
             }
 
             if (isset($this->optionsets)) {
-                foreach($this->optionsets as $optionset) {
+                foreach ($this->optionsets as $optionset) {
                     if (!$optionset->save()) {
                         return false;
                     }
-                }    
+                }
             }
 
-            foreach($this->_delete_prices as $price) {
+            foreach ($this->_delete_prices as $price) {
                 if (!$price->delete()) {
                     return false;
                 }
             }
 
-            foreach($this->_delete_optionsets as $optionset) {
+            foreach ($this->_delete_optionsets as $optionset) {
                 if (!$optionset->delete()) {
                     return false;
                 }
@@ -284,9 +290,10 @@ class Product extends Model implements \JsonSerializable {
         return false;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 products WHERE `product_id` = '$id' ";
 
         // Linked tables will get deleted automatically + restricted when orders exist with this product

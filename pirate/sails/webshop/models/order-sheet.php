@@ -1,12 +1,13 @@
 <?php
 namespace Pirate\Sails\Webshop\Models;
-use Pirate\Wheel\Model;
+
 use Pirate\Sails\Validating\Classes\ValidationError;
 use Pirate\Sails\Validating\Classes\ValidationErrors;
-use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 use Pirate\Sails\Validating\Models\Validator;
+use Pirate\Wheel\Model;
 
-class OrderSheet extends Model implements \JsonSerializable {
+class OrderSheet extends Model implements \JsonSerializable
+{
     public $id;
     public $name;
     public $subtitle;
@@ -16,18 +17,20 @@ class OrderSheet extends Model implements \JsonSerializable {
     public $bank_account; // object
 
     // Not always filled
-    public $products = []; 
+    public $products = [];
 
     static $types = [
         'registrations' => 'Inschrijvingen',
         'orders' => 'Bestellingen',
     ];
 
-    function getButtonName() {
+    public function getButtonName()
+    {
         return static::$types[$this->type];
     }
 
-    function __construct($row = null) {
+    public function __construct($row = null)
+    {
         if (is_null($row)) {
             return;
         }
@@ -46,7 +49,8 @@ class OrderSheet extends Model implements \JsonSerializable {
         $this->bank_account = new BankAccount($row);
     }
 
-    function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -60,22 +64,23 @@ class OrderSheet extends Model implements \JsonSerializable {
         ];
     }
 
-    static function getById($id) {
+    public static function getById($id)
+    {
         $id = self::getDb()->escape_string($id);
         $query = 'SELECT o.*, b.*, p.* FROM order_sheets o
         left join bank_accounts b on b.account_id = o.sheet_bank_account
         left join _order_sheet_products _o_p on _o_p.order_sheet_id = o.sheet_id
         left join products p on _o_p.product_id = p.product_id
-        WHERE o.sheet_id = "'.$id.'"';
+        WHERE o.sheet_id = "' . $id . '"';
 
-        if ($result = self::getDb()->query($query)){
-            if ($result->num_rows>0){
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
 
                 $products = [];
                 $order_sheet = null;
                 while ($row = $result->fetch_assoc()) {
                     if (isset($row['product_id'])) {
-                        $product = Product::getById($row['product_id']);//new Product($row);
+                        $product = Product::getById($row['product_id']); //new Product($row);
                         $products[] = $product;
                     }
 
@@ -93,13 +98,14 @@ class OrderSheet extends Model implements \JsonSerializable {
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid
-    function setProperties(&$data) {
+    public function setProperties(&$data)
+    {
         $errors = new ValidationErrors();
 
         if (isset($data['order_sheet_account'])) {
             $bank_account = BankAccount::getById($data['order_sheet_account']);
             if (!isset($bank_account)) {
-                throw new \Exception("Ongeldige bankrekening"); 
+                throw new \Exception("Ongeldige bankrekening");
             }
             $this->bank_account = $bank_account;
         }
@@ -112,7 +118,7 @@ class OrderSheet extends Model implements \JsonSerializable {
             if (isset(static::$types[$data['order_sheet_type']])) {
                 $this->type = $data['order_sheet_type'];
             } else {
-                $errors->extend(new ValidationError("Je hebt geen formuliertype geselecteerd", "type")); 
+                $errors->extend(new ValidationError("Je hebt geen formuliertype geselecteerd", "type"));
             }
         }
 
@@ -126,7 +132,7 @@ class OrderSheet extends Model implements \JsonSerializable {
                 } else {
                     $errors->extend(new ValidationError('Ongeldige deadline voor aankopen'));
                 }
-            } 
+            }
         }
 
         if (isset($data['order_sheet_mail']) && !empty($data['order_sheet_mail'])) {
@@ -156,7 +162,8 @@ class OrderSheet extends Model implements \JsonSerializable {
         }
     }
 
-    function isDue() {
+    public function isDue()
+    {
         if (!isset($this->due_date)) {
             return false;
         }
@@ -166,7 +173,8 @@ class OrderSheet extends Model implements \JsonSerializable {
         return $due < $today;
     }
 
-    function getDueText() {
+    public function getDueText()
+    {
         if (!isset($this->due_date)) {
             return '';
         }
@@ -179,26 +187,27 @@ class OrderSheet extends Model implements \JsonSerializable {
         }
     }
 
-    function save() {
+    public function save()
+    {
         $name = self::getDb()->escape_string($this->name);
         $type = self::getDb()->escape_string($this->type);
 
         if (!isset($this->due_date)) {
             $due_date = 'NULL';
         } else {
-            $due_date = "'".self::getDb()->escape_string($this->due_date->format('Y-m-d'))."'";
+            $due_date = "'" . self::getDb()->escape_string($this->due_date->format('Y-m-d')) . "'";
         }
 
         if (!isset($this->description)) {
             $description = 'NULL';
         } else {
-            $description = "'".self::getDb()->escape_string($this->description)."'";
+            $description = "'" . self::getDb()->escape_string($this->description) . "'";
         }
 
         if (!isset($this->subtitle)) {
             $subtitle = 'NULL';
         } else {
-            $subtitle = "'".self::getDb()->escape_string($this->subtitle)."'";
+            $subtitle = "'" . self::getDb()->escape_string($this->subtitle) . "'";
         }
 
         if (!isset($this->bank_account)) {
@@ -210,21 +219,20 @@ class OrderSheet extends Model implements \JsonSerializable {
         if (!isset($this->phone)) {
             $phone = 'NULL';
         } else {
-            $phone = "'".self::getDb()->escape_string($this->phone)."'";
+            $phone = "'" . self::getDb()->escape_string($this->phone) . "'";
         }
 
         if (!isset($this->mail)) {
             $mail = 'NULL';
         } else {
-            $mail = "'".self::getDb()->escape_string($this->mail)."'";
+            $mail = "'" . self::getDb()->escape_string($this->mail) . "'";
         }
-
 
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
-            
+
             $query = "UPDATE order_sheets
-                SET 
+                SET
                 sheet_name = '$name',
                 sheet_type = '$type',
                 sheet_subtitle = $subtitle,
@@ -233,11 +241,11 @@ class OrderSheet extends Model implements \JsonSerializable {
                 sheet_due_date = $due_date,
                 sheet_phone = $phone,
                 sheet_mail = $mail
-                 where `sheet_id` = '$id' 
+                 where `sheet_id` = '$id'
             ";
         } else {
 
-            $query = "INSERT INTO 
+            $query = "INSERT INTO
                 order_sheets (`sheet_name`, `sheet_type`, `sheet_subtitle`, `sheet_description`, `sheet_bank_account`, `sheet_due_date`, `sheet_phone`, `sheet_mail`)
                 VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $phone, $mail)";
         }
@@ -251,22 +259,24 @@ class OrderSheet extends Model implements \JsonSerializable {
             return true;
         }
 
-       // throw new \Exception($query.': '.self::getDb()->error);
+        // throw new \Exception($query.': '.self::getDb()->error);
 
         return false;
     }
 
-    function getUrl() {
+    public function getUrl()
+    {
         $type_url = strtolower(static::$types[$this->type]);
         $slug = sluggify($this->name);
         return "/$type_url/$this->id/$slug";
     }
 
-    function linkProduct($product) {
+    public function linkProduct($product)
+    {
         $order_sheet_id = self::getDb()->escape_string($this->id);
         $product_id = self::getDb()->escape_string($product->id);
-        
-        $query = "INSERT INTO 
+
+        $query = "INSERT INTO
                 _order_sheet_products (`product_id`, `order_sheet_id`)
                 VALUES ('$product_id', '$order_sheet_id')";
 
@@ -280,9 +290,10 @@ class OrderSheet extends Model implements \JsonSerializable {
         return false;
     }
 
-    function delete() {
+    public function delete()
+    {
         $id = self::getDb()->escape_string($this->id);
-        $query = "DELETE FROM 
+        $query = "DELETE FROM
                 order_sheets WHERE `sheet_id` = '$id' ";
 
         return self::getDb()->query($query);

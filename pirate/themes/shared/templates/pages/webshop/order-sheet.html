@@ -24,10 +24,12 @@
             </section>
         </main>
     {% else %}
-    <main>
-        <form id="order-sheet" v-cloak>
-            <section class="white block" v-if="step == 0">
+    <main id="order-sheet" v-cloak>
+        <section class="white block" v-if="step == 0">
+            <form>
                 <div class="text">
+                        
+                    </form>
                     <header>
                         <h1>{{ order_sheet.name }}</h1>
                         <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
@@ -56,16 +58,16 @@
                                 [[ order.date ]]
                             </div>
                             <div class="max column">
-                               <template v-if="order.persons.length > 0">
+                                <template v-if="order.persons.length > 0">
                                     <template v-for="person in order.persons">
                                         <strong>Ingeschreven: </strong>[[ person ]]<br>
                                     </template>
-                               </template>
-                               <template v-if="order.items.length > 0">
+                                </template>
+                                <template v-if="order.items.length > 0">
                                     <template v-for="item in order.items">
                                         <strong>Besteld: </strong>[[ item ]]<br>
                                     </template>
-                               </template>
+                                </template>
                             </div>
                             <div class="last column right">
                                 <a :href="order.url" class="icon-button">
@@ -79,8 +81,10 @@
                         <button type="button" class="icon-button plus" v-on:click="nextStep(0);">Nog personen inschrijven</button>
                     </footer>
                 </div>
-            </section>
-            <section class="white block" v-if="step == 1">
+            </form>
+        </section>
+        <section class="white block" v-if="step == 1">
+            <form>
                 <div class="text">
                     <header>
                         <button v-if="orders.length > 0" type="button" class="button main noborder arrow-left" v-on:click="step = 0;">Terug</button>
@@ -178,9 +182,11 @@
                     </footer>
 
                 </div>
-            </section>
+            </form>
+        </section>
 
-            <section class="white block" v-if="step == 2">
+        <section class="white block" v-if="step == 2">
+            <form>
                 <div class="text">
                     <header>
                         <button type="button" class="button main noborder arrow-left" v-on:click="step = 1;">Terug</button>
@@ -192,13 +198,13 @@
                     <template v-if="!user.id">
                         <label>Voornaam</label>
                         <input type="text" v-model="user.firstname" placeholder="Vul je voornaam hier in" autocomplete="given-name">
-    
+
                         <label>Achternaam</label>
                         <input type="text" v-model="user.lastname" placeholder="Vul je achternaam hier in" autocomplete="family-name">
                     
                         <label>E-mailadres</label>
                         <input type="text" v-model="user.mail" placeholder="Vul je e-mailadres hier in" autocomplete="email">
-    
+
                         <label>GSM-nummer</label>
                         <input type="text" v-model="user.phone" placeholder="Typ je GSM-nummer in" autocomplete="tel">
                     </template>
@@ -212,9 +218,11 @@
                     </footer>
 
                 </div>
-            </section>
+            </form>
+        </section>
 
-            <section class="white block" v-show="step == 3">
+        <section class="white block" v-show="step == 3">
+            <form>
                 <div class="text">
                     <header>
                         <button type="button" class="button main noborder arrow-left" v-on:click="step = 2;">Terug</button>
@@ -265,8 +273,8 @@
                     {% endif %}
 
                 </div>
-            </section>
-        </form>
+            </form>
+        </section>
     </main>
     {% endif %}
 
@@ -297,7 +305,6 @@
                 };
             }
         </script>
-        <script src="https://js.stripe.com/v3/"></script>
         <script type="text/javascript">
             var order_sheet = {{ (order_sheet|json_encode|raw) }};
             var items = {};
@@ -320,7 +327,9 @@
 
             // Payment methods:
             var payment_methods = [];
-            {% if order_sheet.bank_account.stripe_public is defined %}
+            {% if order_sheet.bank_account.stripe_public is not empty %}
+                <script src="https://js.stripe.com/v3/"></script>
+
                 var stripe = Stripe('{{ order_sheet.bank_account.stripe_public }}');
                 var elements = stripe.elements();
 
