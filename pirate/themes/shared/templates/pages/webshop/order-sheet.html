@@ -327,11 +327,13 @@
 
             // Payment methods:
             var payment_methods = [];
-            {% if order_sheet.bank_account.stripe_public is not empty %}
+
+            
+            {% if 'stripe' in order_sheet.bank_account.getPaymentMethods() %}
                 <script src="https://js.stripe.com/v3/"></script>
 
                 var stripe = Stripe('{{ order_sheet.bank_account.stripe_public }}');
-                var elements = stripe.elements();
+                var stripe_elements = stripe.elements();
 
                 // Create an instance of the card Element.
                 var card = null; //
@@ -362,6 +364,14 @@
                     },
                     name: "Bankoverschrijving"
                 }*/];
+            {% endif %}
+
+            {% if 'transfer' in order_sheet.bank_account.getPaymentMethods() %}
+                payment_methods.push({
+                    type: "transfer",
+                    data: {},
+                    name: "Bankoverschrijving"
+                });
             {% endif %}
 
             function formatPrice(price) {
@@ -416,8 +426,8 @@
                     isSubmitting: false,
                 },
                 mounted: function() {
-                    if (elements) {
-                        card = elements.create('card');
+                    if (window.stripe_elements) {
+                        card = stripe_elements.create('card');
                         card.addEventListener('change', function(event) {
                             if (app) {
                                 if (event.error) {

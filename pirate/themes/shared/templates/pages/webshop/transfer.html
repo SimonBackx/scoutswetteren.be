@@ -1,0 +1,23 @@
+
+<p>Overschrijven kan naar volgend rekeningsnummer, zeker MET vermelding van "{{ payment.reference }}" (neem deze volledig over) voor onze interne administratie. </p>
+
+
+<table class="details">
+    <tr>
+        <td>IBAN</td>
+        <td>{{ payment.bank_account.iban }}</td>
+    </tr>
+    <tr>
+        <td>Naam</td>
+        <td>{{ payment.bank_account.name }}</td>
+    </tr>
+
+    <tr>
+        <td>Mededeling</td>
+        <td>"{{ payment.reference }}"</td>
+    </tr>
+    <tr>
+        <td>Bedrag</td>
+        <td>{{ payment.order.getPrice() }}</td>
+    </tr>
+</table>

@@ -19,17 +19,32 @@
 
                     {% if order.order_sheet is defined %}
                     <footer>
-                            <a href="{{ order.order_sheet.getUrl() }}" class="button main fill">Opnieuw proberen</a>
+                        <a href="{{ order.order_sheet.getUrl() }}" class="button main fill">Opnieuw proberen</a>
                     </footer>
                     {% endif %}
                 
                 {% else %}
                     {% if not order.isValid() %}
-                        <header>
-                            <h1>Wachten op betaling...</h1>
-                            <h2>Zodra we van de bank het signaal krijgen dat de betaling is gelukt wordt je bestelling geplaatst. Als dit langer duurt dan 15 minuten is de betaling waarschijnlijk mislukt. Neem contact op met {{ environment.development_mail.mail }} in geval van problemen.</h2>
-                        </header>
+                        {% if order.payment_method == 'transfer' %}
+                            <header>
+                                <h1>Betalen via overschrijven</h1>
+                            </header>
+                            {% include 'pages/webshop/transfer.html' with {'payment': order.payment} %}
 
+                            <ul class="warning">
+                                <li>Gelieve het bovenstaande bedrag over te schrijven en de inschrijving daarna te bevestigen.</li>
+                            </ul>
+
+                            <footer>
+                                <a href="{{ order.payment.getConfirmUrl() }}" class="button fill main">Inschrijving bevestigen</a>
+                                <a href="{{ order.payment.getCancelUrl() }}" class="button main">Annuleren</a>
+                            </footer>
+                        {% else %}
+                            <header>
+                                <h1>Wachten op betaling...</h1>
+                                <h2>Zodra we van de bank het signaal krijgen dat de betaling is gelukt wordt je bestelling geplaatst. Als dit langer duurt dan 15 minuten is de betaling waarschijnlijk mislukt. Neem contact op met {{ environment.development_mail.mail }} in geval van problemen.</h2>
+                            </header>
+                        {% endif %}
                     {% else %}
                         <header>
                             {% if order.isRegistration() %}
@@ -39,6 +54,10 @@
                             {% endif %}
                             <h2>Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</h2>
                         </header>
+
+                        {% if order.payment_method == 'transfer' %}
+                            {% include 'pages/webshop/transfer.html' with {'payment': order.payment} %}
+                        {% endif %}
 
                         <div class="list-bundle">
                             {% for item in order.items %}
@@ -115,7 +134,7 @@
             localStorage.removeItem('order-sheet.{{ order.order_sheet_id }}');
         </script>
     {% else %}
-        {% if not order.isValid() and not order.isFailed() %}
+        {% if not order.isValid() and not order.isFailed() and order.payment_method != 'transfer' %}
             <script type="text/javascript">
                 window.setTimeout(function() {
                     console.log("reload");

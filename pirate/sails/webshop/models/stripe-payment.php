@@ -275,7 +275,7 @@ class StripePayment extends Payment
         $bank_account = self::getDb()->escape_string($this->bank_account->id);
         $status = self::getDb()->escape_string($this->status);
 
-        if (!isset($this->id)) {
+        if (!isset($this->charge)) {
             $charge = 'NULL';
 
         } else {
