@@ -232,7 +232,7 @@ $config = [
         ),
         'jongverkenners' => array(
             'name' => 'Jongverkenners leiding',
-            'mail' => 'kapoenen@scoutssintjan.be',
+            'mail' => 'jongverkenners@scoutssintjan.be',
         ),
         'gidsen' => array(
             'name' => 'Gidsen leiding',

@@ -47,16 +47,26 @@
                         {% endif %}
                     {% else %}
                         <header>
+                            {% if environment.theme == "sint-jan" %}
+                                <div class="h1-prefix">Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</div>
+                            {% endif %}
+
                             {% if order.isRegistration() %}
                                 <h1>Jouw inschrijving is geplaatst!</h1>
                             {% else %}
                                 <h1>Jouw bestelling is geplaatst!</h1>
                             {% endif %}
-                            <h2>Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</h2>
+
+                            {% if environment.theme != "sint-jan" %}
+                                <h2>Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</h2>
+                            {% endif %}
                         </header>
 
                         {% if order.payment_method == 'transfer' %}
+                            <h2>Overschrijven</h2>
                             {% include 'pages/webshop/transfer.html' with {'payment': order.payment} %}
+
+                            <h2>Overzicht</h2>
                         {% endif %}
 
                         <div class="list-bundle">

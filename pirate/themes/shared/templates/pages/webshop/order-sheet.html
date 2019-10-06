@@ -26,265 +26,254 @@
     {% else %}
     <main id="order-sheet" v-cloak>
         <section class="white block" v-if="step == 0">
-            <form>
-                <div class="text">
-                        
-                    </form>
-                    <header>
-                        {% if environment.theme == "sint-jan" %}
-                            <div class="h1-prefix">{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</div>
-                        {% endif %}
-                        <h1>{{ order_sheet.name }}</h1>
-                        {% if environment.theme != "sint-jan" %}
-                            <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
-                        {% endif %}
-                        <p>Je hebt al personen ingeschreven. Je kan de inschrijvingen hieronder raadplegen. Je kan indien nodig nog extra personen inschrijven via de knop onderaan.</p>
-                    </header>
-
-                    {% if order_sheet.phone is not empty or order_sheet.mail is not empty %}
-                        <h2>Contactgegevens</h2>
-                        {% if order_sheet.phone is not empty %}
-                            <p><strong>Tel. </strong>{{ order_sheet.phone }}</p>
-                        {% endif %}
-                        {% if order_sheet.mail is not empty %}
-                            <p><strong>Mail: </strong>{{ order_sheet.mail }}</p>
-                        {% endif %}
+            <form class="text">
+                <header>
+                    {% if environment.theme == "sint-jan" %}
+                        <div class="h1-prefix">{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</div>
                     {% endif %}
-
-                    {% if order_sheet.type == 'registrations' %}
-                        <h2>Inschrijvingen</h2>
-                    {% else %}
-                        <h2>Bestellingen</h2>
+                    <h1>{{ order_sheet.name }}</h1>
+                    {% if environment.theme != "sint-jan" %}
+                        <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
                     {% endif %}
+                    <p>Je hebt al personen ingeschreven. Je kan de inschrijvingen hieronder raadplegen. Je kan indien nodig nog extra personen inschrijven via de knop onderaan.</p>
+                </header>
 
-                    <div class="list-bundle">
-                        <article class="list" v-for="order in orders">
-                            <div class="medium merlot column">
-                                [[ order.date ]]
-                            </div>
-                            <div class="max column">
-                                <template v-if="order.persons.length > 0">
-                                    <template v-for="person in order.persons">
-                                        <strong>Ingeschreven: </strong>[[ person ]]<br>
-                                    </template>
-                                </template>
-                                <template v-if="order.items.length > 0">
-                                    <template v-for="item in order.items">
-                                        <strong>Besteld: </strong>[[ item ]]<br>
-                                    </template>
-                                </template>
-                            </div>
-                            <div class="last column right">
-                                <a :href="order.url" class="icon-button">
-                                    Bekijken
-                                </a>
-                            </div>
-                        </article>
-                    </div>
+                {% if order_sheet.phone is not empty or order_sheet.mail is not empty %}
+                    <h2>Contactgegevens</h2>
+                    {% if order_sheet.phone is not empty %}
+                        <p><strong>Tel. </strong>{{ order_sheet.phone }}</p>
+                    {% endif %}
+                    {% if order_sheet.mail is not empty %}
+                        <p><strong>Mail: </strong>{{ order_sheet.mail }}</p>
+                    {% endif %}
+                {% endif %}
 
-                    <footer>
-                        <button type="button" class="icon-button plus" v-on:click="nextStep(0);">Nog personen inschrijven</button>
-                    </footer>
+                {% if order_sheet.type == 'registrations' %}
+                    <h2>Inschrijvingen</h2>
+                {% else %}
+                    <h2>Bestellingen</h2>
+                {% endif %}
+
+                <div class="list-bundle">
+                    <article class="list" v-for="order in orders">
+                        <div class="medium merlot column">
+                            [[ order.date ]]
+                        </div>
+                        <div class="max column">
+                            <template v-if="order.persons.length > 0">
+                                <template v-for="person in order.persons">
+                                    <strong>Ingeschreven: </strong>[[ person ]]<br>
+                                </template>
+                            </template>
+                            <template v-if="order.items.length > 0">
+                                <template v-for="item in order.items">
+                                    <strong>Besteld: </strong>[[ item ]]<br>
+                                </template>
+                            </template>
+                        </div>
+                        <div class="last column right">
+                            <a :href="order.url" class="icon-button">
+                                Bekijken
+                            </a>
+                        </div>
+                    </article>
                 </div>
+
+                <footer>
+                    <button type="button" class="icon-button plus" v-on:click="nextStep(0);">Nog personen inschrijven</button>
+                </footer>
             </form>
         </section>
         <section class="white block" v-if="step == 1">
             <form>
-                <div class="text">
-                    <header>
-                        <button v-if="orders.length > 0" type="button" class="button main noborder arrow-left" v-on:click="step = 0;">Terug</button>
+                <header>
+                    <button v-if="orders.length > 0" type="button" class="button main noborder arrow-left" v-on:click="step = 0;">Terug</button>
 
-                        {% if environment.theme == "sint-jan" %}
-                            <div class="h1-prefix">{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</div>
-                        {% endif %}
-                        <h1>{{ order_sheet.name }}</h1>
-                        {% if environment.theme != "sint-jan" %}
-                            <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
-                        {% endif %}
+                    {% if environment.theme == "sint-jan" %}
+                        <div class="h1-prefix">{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</div>
+                    {% endif %}
+                    <h1>{{ order_sheet.name }}</h1>
+                    {% if environment.theme != "sint-jan" %}
+                        <h2>{{ order_sheet.subtitle }} {% if order_sheet.getDueText() is not empty %} - {{ order_sheet.getDueText() }}{% endif %}</h2>
+                    {% endif %}
 
-                        <p style="white-space: pre-line;">{{ order_sheet.description }}</p>
-                    </header>
+                    <p style="white-space: pre-line;">{{ order_sheet.description }}</p>
+                </header>
 
-                    <template v-for="product in order_sheet.products">
-                        <h2>[[ product.name ]]</h2>
-                        <p style="white-space: pre-line;">[[ product.description ]]</p>
+                <template v-for="product in order_sheet.products">
+                    <h2>[[ product.name ]]</h2>
+                    <p style="white-space: pre-line;">[[ product.description ]]</p>
 
-                        <div class="table-form wide">
-                            <header v-if="cart.items[product.id].length > 0">
-                                <div v-if="product.type == 'name'"><label>Naam</label></div>
-                                <div v-if="product.prices.length > 1"><label>[[ product.price_name ]]</label></div>
-                                <div v-for="optionset in product.optionsets"><label>[[ optionset.name ]]</label></div>
+                    <div class="table-form wide">
+                        <header v-if="cart.items[product.id].length > 0">
+                            <div v-if="product.type == 'name'"><label>Naam</label></div>
+                            <div v-if="product.prices.length > 1"><label>[[ product.price_name ]]</label></div>
+                            <div v-for="optionset in product.optionsets"><label>[[ optionset.name ]]</label></div>
 
-                                <div><label>Prijs</label></div>
-                                <div v-if="product.type == 'unit'"><label>Aantal</label></div>
-                                <div v-if="product.type == 'person'"><label>Aantal personen</label></div>
+                            <div><label>Prijs</label></div>
+                            <div v-if="product.type == 'unit'"><label>Aantal</label></div>
+                            <div v-if="product.type == 'person'"><label>Aantal personen</label></div>
 
-                                <div v-if="product.type != 'name'"><label>Totaal</label></div>
+                            <div v-if="product.type != 'name'"><label>Totaal</label></div>
 
-                                <div><label></label></div>
-                            </header>
-                
-                            <div v-for="(cartitem, index) in cart.items[product.id]">    
-                                <div v-if="product.type == 'name'" data-title="Naam">
-                                    <input type="text" v-model="cartitem.person_name" placeholder="Wie schrijf je in?">
-                                </div>
+                            <div><label></label></div>
+                        </header>
+            
+                        <div v-for="(cartitem, index) in cart.items[product.id]">    
+                            <div v-if="product.type == 'name'" data-title="Naam">
+                                <input type="text" v-model="cartitem.person_name" placeholder="Wie schrijf je in?">
+                            </div>
 
-                                <div v-if="product.prices.length > 1" :data-title="product.price_name">
-                                    <label class="select-box">
-                                        <select v-model="cartitem.price">
-                                            <option :value="null">Maak een keuze</option>
-                                            <option :value="price" v-for="price in product.prices">
-                                                [[ price.name ]]
-                                            </option>
-                                        </select>
-                                    </label>
-                                </div>
+                            <div v-if="product.prices.length > 1" :data-title="product.price_name">
+                                <label class="select-box">
+                                    <select v-model="cartitem.price">
+                                        <option :value="null">Maak een keuze</option>
+                                        <option :value="price" v-for="price in product.prices">
+                                            [[ price.name ]]
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
 
-                                <div v-for="optionset in product.optionsets" :data-title="optionset.name">
-                                    <label class="select-box">
-                                        <select v-model="cartitem.options[optionset.id]">
-                                            <option :value="null">Maak een keuze</option>
-                                            <option :value="option" v-for="option in optionset.options">
-                                                [[ option.name ]]
-                                            </option>
-                                        </select>
-                                    </label>
-                                </div>
+                            <div v-for="optionset in product.optionsets" :data-title="optionset.name">
+                                <label class="select-box">
+                                    <select v-model="cartitem.options[optionset.id]">
+                                        <option :value="null">Maak een keuze</option>
+                                        <option :value="option" v-for="option in optionset.options">
+                                            [[ option.name ]]
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
 
-                                <div data-title="Prijs">
-                                    <span>[[ getItemPriceString(cartitem, false) ]]</span>
-                                </div>
+                            <div data-title="Prijs">
+                                <span>[[ getItemPriceString(cartitem, false) ]]</span>
+                            </div>
 
-                                <div v-if="product.type == 'unit'" data-title="Aantal">
-                                    <input type="text" v-model.number="cartitem.amount" placeholder="Aantal stuks">
-                                </div>
+                            <div v-if="product.type == 'unit'" data-title="Aantal">
+                                <input type="text" v-model.number="cartitem.amount" placeholder="Aantal stuks">
+                            </div>
 
-                                <div v-if="product.type == 'person'" data-title="Personen">
-                                    <input type="text" v-model.number="cartitem.amount" placeholder="Aantal personen">
-                                </div>
+                            <div v-if="product.type == 'person'" data-title="Personen">
+                                <input type="text" v-model.number="cartitem.amount" placeholder="Aantal personen">
+                            </div>
 
-                                <div v-if="product.type != 'name'" data-title="Totaal">
-                                    <span>[[ getItemPriceString(cartitem, true) ]]</span>
-                                </div>
-                                
-                                <div class="smallest">
-                                    <button type="button" class="button" v-on:click="deleteCartItem(product, index);">Verwijderen</button>
-                                </div>
+                            <div v-if="product.type != 'name'" data-title="Totaal">
+                                <span>[[ getItemPriceString(cartitem, true) ]]</span>
+                            </div>
+                            
+                            <div class="smallest">
+                                <button type="button" class="button" v-on:click="deleteCartItem(product, index);">Verwijderen</button>
                             </div>
                         </div>
+                    </div>
 
-                        <button type="button" class="icon-button plus" v-on:click="addItemForProduct(product);">
-                            [[ product.type == 'unit' ? 'Toevoegen' : 'Persoon toevoegen' ]]
-                        </button>
-                    </template>
+                    <button type="button" class="icon-button plus" v-on:click="addItemForProduct(product);">
+                        [[ product.type == 'unit' ? 'Toevoegen' : 'Persoon toevoegen' ]]
+                    </button>
+                </template>
 
-                    <ul class="error" v-if="errors.step1.length > 0">
-                        <li v-for="error in errors.step1">[[ error.message ]]</li>
-                    </ul>
+                <ul class="error" v-if="errors.step1.length > 0">
+                    <li v-for="error in errors.step1">[[ error.message ]]</li>
+                </ul>
 
-                    <footer>
-                        <div class="price-floater">
-                            <div>
-                                Totaal
-                                <span>[[ getTotalDescription() ]]</span>
-                            </div>
-                            <div>[[ getTotalString() ]]</div>
+                <footer>
+                    <div class="price-floater">
+                        <div>
+                            Totaal
+                            <span>[[ getTotalDescription() ]]</span>
                         </div>
-                        <button type="button" class="button main" :class="{'fill': isValid(1)}" v-on:click="nextStep(1);">Volgende</button>
-                    </footer>
+                        <div>[[ getTotalString() ]]</div>
+                    </div>
+                    <button type="button" class="button main" :class="{'fill': isValid(1)}" v-on:click="nextStep(1);">Volgende</button>
+                </footer>
 
-                </div>
             </form>
         </section>
 
         <section class="white block" v-if="step == 2">
-            <form>
-                <div class="text">
-                    <header>
-                        <button type="button" class="button main noborder arrow-left" v-on:click="step = 1;">Terug</button>
-                        <h1>Jouw gegevens</h1>
-                        <p v-if="user.id">Je bent momenteel ingelogd en je bestelling zal op naam van [[ user.firstname ]] [[ user.lastname ]] geplaatst worden. Je ontvangt een bevestiging op [[ user.mail ]]. <a href="/gebruikers/logout">Uitloggen</a></p>
-                        <p v-else>Je ontvangt een bevestiging via e-mail na het plaatsen van de bestelling.</p>
-                    </header>
+            <form class="text">
+                <header>
+                    <button type="button" class="button main noborder arrow-left" v-on:click="step = 1;">Terug</button>
+                    <h1>Jouw gegevens</h1>
+                    <p v-if="user.id">Je bent momenteel ingelogd en je bestelling zal op naam van [[ user.firstname ]] [[ user.lastname ]] geplaatst worden. Je ontvangt een bevestiging op [[ user.mail ]]. <a href="/gebruikers/logout">Uitloggen</a></p>
+                    <p v-else>Je ontvangt een bevestiging via e-mail na het plaatsen van de bestelling.</p>
+                </header>
 
-                    <template v-if="!user.id">
-                        <label>Voornaam</label>
-                        <input type="text" v-model="user.firstname" placeholder="Vul je voornaam hier in" autocomplete="given-name">
+                <template v-if="!user.id">
+                    <label>Voornaam</label>
+                    <input type="text" v-model="user.firstname" placeholder="Vul je voornaam hier in" autocomplete="given-name">
 
-                        <label>Achternaam</label>
-                        <input type="text" v-model="user.lastname" placeholder="Vul je achternaam hier in" autocomplete="family-name">
-                    
-                        <label>E-mailadres</label>
-                        <input type="text" v-model="user.mail" placeholder="Vul je e-mailadres hier in" autocomplete="email">
+                    <label>Achternaam</label>
+                    <input type="text" v-model="user.lastname" placeholder="Vul je achternaam hier in" autocomplete="family-name">
+                
+                    <label>E-mailadres</label>
+                    <input type="text" v-model="user.mail" placeholder="Vul je e-mailadres hier in" autocomplete="email">
 
-                        <label>GSM-nummer</label>
-                        <input type="text" v-model="user.phone" placeholder="Typ je GSM-nummer in" autocomplete="tel">
-                    </template>
+                    <label>GSM-nummer</label>
+                    <input type="text" v-model="user.phone" placeholder="Typ je GSM-nummer in" autocomplete="tel">
+                </template>
 
-                    <ul class="error" v-if="errors.step2.length > 0">
-                        <li v-for="error in errors.step2">[[ error.message ]]</li>
-                    </ul>                    
+                <ul class="error" v-if="errors.step2.length > 0">
+                    <li v-for="error in errors.step2">[[ error.message ]]</li>
+                </ul>                    
 
-                    <footer>
-                        <button type="button" class="button main" :class="{'fill': isValid(2)}" v-on:click="nextStep(2);">Volgende</button>
-                    </footer>
+                <footer>
+                    <button type="button" class="button main" :class="{'fill': isValid(2)}" v-on:click="nextStep(2);">Volgende</button>
+                </footer>
 
-                </div>
             </form>
         </section>
 
         <section class="white block" v-show="step == 3">
-            <form>
-                <div class="text">
-                    <header>
-                        <button type="button" class="button main noborder arrow-left" v-on:click="step = 2;">Terug</button>
-                        <h1>Betaalmethode</h1>
-                    </header>
+            <form class="text">
+                <header>
+                    <button type="button" class="button main noborder arrow-left" v-on:click="step = 2;">Terug</button>
+                    <h1>Betaalmethode</h1>
+                </header>
 
-                    <template v-for="(_payment_method, index) in payment_methods">
-                        <input type="radio" :id="'payment_method_'+index" name="payment_method" :value="_payment_method" v-model="payment_method">
-                        <label :for="'payment_method_'+index">[[ _payment_method.name ]]</label>
-                    </template>
+                <template v-for="(_payment_method, index) in payment_methods">
+                    <input type="radio" :id="'payment_method_'+index" name="payment_method" :value="_payment_method" v-model="payment_method">
+                    <label :for="'payment_method_'+index">[[ _payment_method.name ]]</label>
+                </template>
 
-                    <div v-show="payment_method && payment_method.type == 'stripe' && payment_method.data.method == 'card'">
-                        <label>Kredietkaart</label>
-                        <div id="card-element" v-once>
-                            <!-- A Stripe Element will be inserted here. -->
-                        </div>
-
-                        <ul class="error" v-if="cardError">
-                            <li>[[ cardError ]]</li>
-                        </ul>
+                <div v-show="payment_method && payment_method.type == 'stripe' && payment_method.data.method == 'card'">
+                    <label>Kredietkaart</label>
+                    <div id="card-element" v-once>
+                        <!-- A Stripe Element will be inserted here. -->
                     </div>
 
-                    <ul class="error" v-if="errors.step3.length > 0">
-                        <li v-for="error in errors.step3">[[ error.message ]]</li>
+                    <ul class="error" v-if="cardError">
+                        <li>[[ cardError ]]</li>
                     </ul>
-
-                    <footer>
-                        <div class="price-floater">
-                            <div>
-                                Totaal
-                                <span>[[ getTotalDescription() ]]</span>
-                            </div>
-                            <div>[[ getTotalString() ]]</div>
-                        </div>
-
-                        <button type="button" v-on:click="submit();" class="button main fill">Betalen</button>
-                        <span v-if="isSubmitting">Laden...</span>
-                    </footer>
-
-                    {% if order_sheet.phone is not empty or order_sheet.mail is not empty %}
-                        <h2>Problemen?</h2>
-                        {% if order_sheet.phone is not empty %}
-                            <p><strong>Tel. </strong>{{ order_sheet.phone }}</p>
-                        {% endif %}
-                        {% if order_sheet.mail is not empty %}
-                            <p><strong>Mail: </strong>{{ order_sheet.mail }}</p>
-                        {% endif %}
-                    {% endif %}
-
                 </div>
+
+                <ul class="error" v-if="errors.step3.length > 0">
+                    <li v-for="error in errors.step3">[[ error.message ]]</li>
+                </ul>
+
+                <footer>
+                    <div class="price-floater">
+                        <div>
+                            Totaal
+                            <span>[[ getTotalDescription() ]]</span>
+                        </div>
+                        <div>[[ getTotalString() ]]</div>
+                    </div>
+
+                    <button type="button" v-on:click="submit();" class="button main fill">Betalen</button>
+                    <span v-if="isSubmitting">Laden...</span>
+                </footer>
+
+                {% if order_sheet.phone is not empty or order_sheet.mail is not empty %}
+                    <h2>Problemen?</h2>
+                    {% if order_sheet.phone is not empty %}
+                        <p><strong>Tel. </strong>{{ order_sheet.phone }}</p>
+                    {% endif %}
+                    {% if order_sheet.mail is not empty %}
+                        <p><strong>Mail: </strong>{{ order_sheet.mail }}</p>
+                    {% endif %}
+                {% endif %}
             </form>
         </section>
     </main>
