@@ -1,17 +1,21 @@
 <?php
 namespace Pirate\Sails\Users\Pages;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
+
+use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Wheel\Mail;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
 
-class WachtwoordVergeten extends Page {
-    function getStatusCode() {
+class WachtwoordVergeten extends Page
+{
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $errors = array();
         $success = false;
         $email = "";
@@ -27,15 +31,15 @@ class WachtwoordVergeten extends Page {
                     // Mail versturen enzo
                     // TODO
                     $mail = new Mail(
-                        'Wachtwoord opnieuw instellen - Scouts Prins Boudewijn', 
-                        'wachtwoord-vergeten', 
+                        'Wachtwoord opnieuw instellen - ' . Environment::getSetting('name'),
+                        'wachtwoord-vergeten',
                         array('url' => $user->getSetPasswordUrl(), 'naam' => $user->firstname)
                     );
 
                     $mail->addTo(
-                        $user->mail, 
+                        $user->mail,
                         array(),
-                        $user->firstname.' '.$user->lastname
+                        $user->firstname . ' ' . $user->lastname
                     );
 
                     if ($mail->send()) {
@@ -47,7 +51,7 @@ class WachtwoordVergeten extends Page {
                 } else {
                     $errors[] = "Er ging iets mis bij het aanmaken van de e-mail. Neem contact met ons op.";
                 }
-                
+
             }
 
         }
@@ -55,7 +59,7 @@ class WachtwoordVergeten extends Page {
         return Template::render('pages/users/wachtwoord-vergeten', array(
             'errors' => $errors,
             'email' => $email,
-            'success' => $success
+            'success' => $success,
         ));
     }
 }
