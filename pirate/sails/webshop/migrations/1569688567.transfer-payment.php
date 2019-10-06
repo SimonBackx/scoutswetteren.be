@@ -12,14 +12,14 @@ class TransferPayment1569688567 extends Migration
             `transfer_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
             `transfer_order` int(11) unsigned NOT NULL,
             `transfer_bank_account` int(11) unsigned NOT NULL,
-            `transfer_reference` varchar(80) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
-            `transfer_status` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'pending',
+            `transfer_reference` varchar(80) CHARACTER SET utf8mb4 NOT NULL DEFAULT '',
+            `transfer_status` varchar(40) CHARACTER SET utf8mb4 NOT NULL DEFAULT 'pending',
             PRIMARY KEY (`transfer_id`),
             KEY `transfer_order` (`transfer_order`),
             KEY `transfer_bank_account` (`transfer_bank_account`),
             CONSTRAINT `payment_transfer_ibfk_1` FOREIGN KEY (`transfer_order`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE CASCADE,
             CONSTRAINT `payment_transfer_ibfk_2` FOREIGN KEY (`transfer_bank_account`) REFERENCES `bank_accounts` (`account_id`) ON UPDATE CASCADE
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
         if (!self::getDb()->multi_query($query)) {
             throw new \Exception(self::getDb()->error);
