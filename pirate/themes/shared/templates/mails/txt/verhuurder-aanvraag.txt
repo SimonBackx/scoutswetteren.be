@@ -15,6 +15,9 @@ Naam verantwoordelijke: {{ reservatie.contact_naam }}
 GSM verantwoordelijke: {{ reservatie.contact_gsm }}
 E-mailadres verantwoordelijke: {{ reservatie.contact_email }}
 Adres verantwoordelijke: {{ reservatie.contact_adres }}, {{ reservatie.contact_postcode }} {{ reservatie.contact_gemeente }} ({{ reservatie.contact_land }})
+{% if reservatie.leidingsweekend %}
+    ! Aanvraag voor leidingsweekend / groep zonder leden !
+{% endif %}
 
 Info: 
 {{ reservatie.info }}

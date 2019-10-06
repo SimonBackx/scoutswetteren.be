@@ -1,23 +1,27 @@
 <?php
 namespace Pirate\Sails\Verhuur\Admin;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
-use Pirate\Sails\Verhuur\Models\Reservatie;
-use Pirate\Sails\Leiding\Models\Leiding;
 
-class Edit extends Page {
+use Pirate\Sails\Leiding\Models\Leiding;
+use Pirate\Sails\Verhuur\Models\Reservatie;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+
+class Edit extends Page
+{
     private $id = null;
 
-    function __construct($id = null) {
+    public function __construct($id = null)
+    {
         $this->id = $id;
     }
 
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         // Geen geldig id = nieuw event toevoegen
         $new = true;
         $errors = array();
@@ -42,14 +46,15 @@ class Edit extends Page {
             'opmerkingen' => '',
             'waarborg' => '',
             'huur' => '',
-            'door_leiding_reden' => ''
+            'door_leiding_reden' => '',
         );
 
         $data_checkbox = array(
             'ligt_vast' => false,
             'waarborg_betaald' => false,
             'huur_betaald' => false,
-            'door_leiding' => false
+            'door_leiding' => false,
+            'leidingsweekend' => false,
         );
 
         if (isset($_GET['scouts'])) {
@@ -80,37 +85,37 @@ class Edit extends Page {
                     'opmerkingen' => $reservatie->opmerkingen,
                     'waarborg' => $reservatie->getWaarborg(),
                     'huur' => $reservatie->getHuur(),
-                    'door_leiding_reden' => $reservatie->groep
+                    'door_leiding_reden' => $reservatie->groep,
                 );
 
                 $data_checkbox = array(
                     'ligt_vast' => $reservatie->ligt_vast,
                     'waarborg_betaald' => $reservatie->waarborg_betaald,
                     'huur_betaald' => $reservatie->huur_betaald,
-                    'door_leiding' => (isset($reservatie->door_leiding) && $reservatie->door_leiding === true)
-
+                    'leidingsweekend' => $reservatie->leidingsweekend,
+                    'door_leiding' => (isset($reservatie->door_leiding) && $reservatie->door_leiding === true),
                 );
 
                 //$data['id'] = $reservatie->id; // irnogen ook toevoegen heirna!
-
 
             } else {
                 $reservatie = new Reservatie();
             }
         } else {
-           $reservatie = new Reservatie();
+            $reservatie = new Reservatie();
         }
 
         $allset = true;
         foreach ($data as $key => $value) {
             if (!isset($_POST[$key])) {
-                if ($key == 'contract_nummer')
+                if ($key == 'contract_nummer') {
                     continue;
+                }
 
                 $allset = false;
                 break;
             }
-            
+
             $data[$key] = $_POST[$key];
         }
 
@@ -134,16 +139,16 @@ class Edit extends Page {
                 if (count($errors) == 0) {
                     if ($reservatie->save()) {
                         $success = true;
-                        header("Location: https://".$_SERVER['SERVER_NAME']."/admin/verhuur");
-                    }
-                    else
+                        header("Location: https://" . $_SERVER['SERVER_NAME'] . "/admin/verhuur");
+                    } else {
                         $errors[] = 'Probleem bij opslaan';
+                    }
+
                 }
             } else {
                 $errors[] = 'Je hebt geen toestemming om reservaties te wijzigen, contacteer de verhuur verantwoordelijke';
             }
 
-            
         } else {
             if ($new) {
                 if (!Leiding::hasPermission('verhuur') && !Leiding::hasPermission('oudercomite') && !Leiding::hasPermission('groepsleiding')) {
@@ -156,12 +161,11 @@ class Edit extends Page {
             $data['id'] = $this->id;
         }
 
-
         return Template::render('admin/verhuur/edit', array(
             'new' => $new,
             'data' => $data,
             'errors' => $errors,
-            'success' => $success
+            'success' => $success,
         ));
     }
 }

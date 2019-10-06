@@ -79,7 +79,19 @@
                         </div>
                     </div>
 
-                    <p>Na goedkeuren ontvang je een e-mail met het huurcontract. Zodra de waarborg gestort is, leggen we de reservatie vast.</p>
+                    <input id="leidingsweekend" type="checkbox" name="leidingsweekend" value="1" {% if data.leidingsweekend %} checked{% endif %}>
+                    <label for="leidingsweekend">Huren voor leidingsweekend of groep zonder leden</label>
+
+                    <div class="checkbox-controllable">
+                        <div class="visible-when-checked">
+                            <ul class="warning">
+                                <li>Een leidingsweekend wordt niet noodzakelijk geweigerd. Toch vragen we om met respect om te gaan met het lokaal, de omgeving en de buren. Een deel van of volledig de waarborg kan worden ingehouden bij het niet naleven van deze voorwaarden.</li>
+                            </ul>
+                        </div>
+                    </div>
+            
+
+                    <p>Na goedkeuring ontvang je een e-mail met het huurcontract.</p>
                   
                     <footer>
                         <input type="submit" name="submit" value="Indienen" class="fill main">

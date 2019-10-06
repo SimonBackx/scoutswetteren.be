@@ -1,16 +1,20 @@
 <?php
 namespace Pirate\Sails\Verhuur\Pages;
-use Pirate\Wheel\Page;
-use Pirate\Wheel\Block;
-use Pirate\Wheel\Template;
-use Pirate\Sails\Verhuur\Models\Reservatie;
-class VerhuurReserveren extends Page {
 
-    function getStatusCode() {
+use Pirate\Sails\Verhuur\Models\Reservatie;
+use Pirate\Wheel\Page;
+use Pirate\Wheel\Template;
+
+class VerhuurReserveren extends Page
+{
+
+    public function getStatusCode()
+    {
         return 200;
     }
 
-    function getContent() {
+    public function getContent()
+    {
         $error = false;
         $errors = array();
         $data = array('contact_land' => 'België');
@@ -23,7 +27,7 @@ class VerhuurReserveren extends Page {
                 'startdatum' => $_POST['startdatum'],
                 'einddatum' => $_POST['einddatum'],
                 'personen' => intval($_POST['personen']),
-                'personen_tenten' => intval($_POST['personen_tenten'])
+                'personen_tenten' => intval($_POST['personen_tenten']),
             );
 
             $reservatie = new Reservatie();
@@ -40,7 +44,8 @@ class VerhuurReserveren extends Page {
                 $data['contact_gemeente'] = $_POST['contact_gemeente'];
                 $data['contact_postcode'] = $_POST['contact_postcode'];
                 $data['contact_land'] = $_POST['contact_land'];
-                
+                $data['leidingsweekend'] = isset($_POST['leidingsweekend']);
+
                 $errors = $reservatie->setProperties($data); // basic controle zonder naam, gsm etc...
                 if (count($errors) == 0) {
                     // Opslaan
@@ -57,7 +62,7 @@ class VerhuurReserveren extends Page {
         return Template::render('pages/verhuur/verhuur-reserveren', array(
             'error' => $error,
             'errors' => $errors,
-            'data' => $data
+            'data' => $data,
         ));
     }
 }

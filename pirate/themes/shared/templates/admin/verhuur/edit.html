@@ -39,7 +39,17 @@
                 <input type="text" name="door_leiding_reden" value="{{ data.door_leiding_reden | e('html_attr') }}" placeholder="Bv. leefweek givers">
             </div>
             <div class="hidden-when-checked">
+                <input id="leidingsweekend" type="checkbox" name="leidingsweekend" value="1" {% if data.leidingsweekend %} checked{% endif %}>
+                <label for="leidingsweekend">Aanvraag voor leidingsweekend / groep zonder leden</label>
 
+                <div class="checkbox-controllable">
+                    <div class="visible-when-checked">
+                        <ul class="warning">
+                            <li>Opgelet: aanvraag voor leidingsweekend of groep zonder leden</li>
+                        </ul>
+                    </div>
+                </div>
+        
                 <h2>Huurder</h2>
                 <div class="splitted">
                     <div class="part column first">
