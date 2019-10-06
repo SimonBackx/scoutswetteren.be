@@ -62,10 +62,6 @@ class GroepsadminLid
             return true;
         }
 
-        if (!empty($this->hash) && static::calculateHash($lid) == $this->hash) {
-            return true;
-        }
-
         return false;
     }
 
@@ -121,7 +117,7 @@ class GroepsadminLid
     public function needsSync()
     {
         // Als de groepsadmin hash leeg is
-        if (empty($this->hash) || empty($this->linkedLid->groepsadmin_hash) || (empty($this->linkedLid->lidnummer) && !empty($this->lidnummer))) {
+        if (empty($this->linkedLid->groepsadmin_hash) || (empty($this->linkedLid->lidnummer) && !empty($this->lidnummer))) {
             return true;
         }
 
