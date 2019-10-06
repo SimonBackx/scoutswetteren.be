@@ -250,7 +250,7 @@ $config = [
 
         'verhuur' => array(
             'name' => 'Verhuur verantwoordelijke',
-            'permission' => 'verhuur',
+            'mail' => 'verhuur@scoutssintjan.be',
         ),
         'oudercomite' => array(
             'name' => 'Oudercomité',
