@@ -13,7 +13,7 @@ class Sync extends Cronjob
 {
     public function needsRunning()
     {
-        if (date('G') != '14') {
+        if (date('G') != '15') {
             return false;
         }
         // 's nachts tussen 3:00 en 3:59 uitvoeren
@@ -77,7 +77,7 @@ class Sync extends Cronjob
                             $groepadminLid->markFound($lid);
                             $found = true;
                             $fff = $groepadminLid;
-                            
+
                             break;
                         }
                     }

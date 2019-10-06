@@ -20,6 +20,7 @@ class Lid extends Model
     public $geslacht; // M / V
     public $geboortedatum;
     public $gsm;
+    public $groepsadmin_hash; // nullable
 
     public $inschrijving; // Inschrijving object
     public $steekkaart; // Steekkaart object
@@ -48,6 +49,7 @@ class Lid extends Model
         $this->geslacht = $row['geslacht'];
         $this->geboortedatum = new \DateTime($row['geboortedatum']);
         $this->gsm = $row['gsm'];
+        $this->groepsadmin_hash = $row['groepsadmin_hash'];
 
         if (!is_null($inschrijving_object)) {
             $this->inschrijving = $inschrijving_object;
@@ -679,6 +681,12 @@ class Lid extends Model
             $lidnummer = "'" . self::getDb()->escape_string($this->lidnummer) . "'";
         }
 
+        if (!isset($this->groepsadmin_hash)) {
+            $groepsadmin_hash = "NULL";
+        } else {
+            $groepsadmin_hash = "'" . self::getDb()->escape_string($this->groepsadmin_hash) . "'";
+        }
+
         if (!isset($this->gezin)) {
             return false;
         }
@@ -692,8 +700,8 @@ class Lid extends Model
         if (!isset($this->id)) {
 
             $query = "INSERT INTO
-                leden (`gezin`, `lidnummer`, `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`)
-                VALUES ('$gezin', $lidnummer, '$voornaam', '$achternaam', '$geslacht', '$geboortedatum', $gsm)";
+                leden (`gezin`, `lidnummer`, `voornaam`, `achternaam`, `geslacht`, `geboortedatum`, `gsm`, `groepsadmin_hash`)
+                VALUES ('$gezin', $lidnummer, '$voornaam', '$achternaam', '$geslacht', '$geboortedatum', $gsm, $groepsadmin_hash)";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE leden
@@ -704,7 +712,8 @@ class Lid extends Model
                  `geslacht` = '$geslacht',
                  `geboortedatum` = '$geboortedatum',
                  `gsm` = $gsm,
-                 `lidnummer` = $lidnummer
+                 `lidnummer` = $lidnummer,
+                 `groepsadmin_hash` = $groepsadmin_hash
                  where id = '$id'
             ";
         }

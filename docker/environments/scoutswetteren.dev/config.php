@@ -122,7 +122,7 @@ $config = [
             "jin" => [
                 /// Age is expressed as in the age everyone is at the end of december.
                 'age_start' => 17,
-                'age_end' => 18, // Special case, should be 17
+                'age_end' => 17, // Special case, should be 17
                 'gender' => null,
                 'lidgeld' => 40,
                 'lidgeld_halfjaar' => 20,

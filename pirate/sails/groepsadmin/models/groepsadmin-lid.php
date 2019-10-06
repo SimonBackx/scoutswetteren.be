@@ -33,7 +33,7 @@ class GroepsadminLid
         $this->voornaam = $waarden['be.vvksm.groepsadmin.model.column.VoornaamColumn'];
         $this->geboortedatum = $waarden['be.vvksm.groepsadmin.model.column.GeboorteDatumColumn']; // DD/MM/YYYY
         $this->lidnummer = $waarden['be.vvksm.groepsadmin.model.column.LidNummerColumn'];
-        $this->hash = $waarden[Environment::getSetting('groepsadmin.hash')];
+        //$this->hash = $waarden[Environment::getSetting('groepsadmin.hash')];
 
         $this->linkedLid = null;
     }
@@ -121,7 +121,7 @@ class GroepsadminLid
     public function needsSync()
     {
         // Als de groepsadmin hash leeg is
-        if (empty($this->hash) || (empty($this->linkedLid->lidnummer) && !empty($this->lidnummer))) {
+        if (empty($this->hash) || empty($this->linkedLid->groepsadmin_hash) || (empty($this->linkedLid->lidnummer) && !empty($this->lidnummer))) {
             return true;
         }
 
@@ -131,7 +131,7 @@ class GroepsadminLid
 
         // Todo: misschien ook gewoon syncen als hash gelijk is, maar de velden toch aangepast zijn (= aanpassing in groepsadministratie :o)
 
-        return $this->hash != $this->calculateHash($this->linkedLid);
+        return $this->linkedLid->groepsadmin_hash != static::calculateHash($this->linkedLid);
     }
 
     public function remove($groepsadmin)
@@ -243,6 +243,10 @@ class GroepsadminLid
             }
         }
 
+        // Save hash in our own database
+        $this->linkedLid->groepsadmin_hash = static::calculateHash($this->linkedLid);
+        $this->linkedLid->save();
+
         return true;
     }
 
@@ -273,6 +277,10 @@ class GroepsadminLid
         }
 
         // Successvol aangemaakt
+        // Save hash in our own database
+        $lid->groepsadmin_hash = static::calculateHash($lid);
+        $lid->save();
+
         return true;
     }
 
@@ -408,14 +416,14 @@ class GroepsadminLid
 
         // Extra velden
         if (isset($fetchedData)) {
-            $data["groepseigenVelden"] = [
-                Environment::getSetting('groepsadmin.groep') => [
-                    "waarden" => [
-                        // Hash opslaan hier, enkel als fetchedData != null
-                        Environment::getSetting('groepsadmin.hash') => static::calculateHash($lid),
-                    ],
-                ],
-            ];
+            /*$data["groepseigenVelden"] = [
+            Environment::getSetting('groepsadmin.groep') => [
+            "waarden" => [
+            // Hash opslaan hier, enkel als fetchedData != null
+            Environment::getSetting('groepsadmin.hash') => static::calculateHash($lid),
+            ],
+            ],
+            ];*/
 
             if (isset($fetchedData['gebruikersnaam'])) {
                 // Als het lid een gebruikersnama heeft => VGA mag e-mailadres niet wijzigen
@@ -508,7 +516,7 @@ class GroepsadminLid
             "be.vvksm.groepsadmin.model.column.GeslachtColumn",
 
             // Groepseigen (Hash)
-            Environment::getSetting('groepsadmin.hash'),
+            //Environment::getSetting('groepsadmin.hash'),
         ];
 
         /*
