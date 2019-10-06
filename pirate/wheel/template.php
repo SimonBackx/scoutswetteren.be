@@ -94,7 +94,8 @@ class Template
         $config = [];
 
         if (!isset($_ENV["DEBUG"]) || $_ENV["DEBUG"] != 1) {
-            $config['cache'] = __DIR__ . '/../tmp/twig/';
+            //$config['cache'] = __DIR__ . '/../tmp/twig/';
+            // disable twig cache.
         }
 
         Template::$twig = new \Twig\Environment($loader, $config);
