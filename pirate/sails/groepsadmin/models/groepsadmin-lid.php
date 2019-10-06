@@ -38,14 +38,16 @@ class GroepsadminLid
         $this->linkedLid = null;
     }
 
-    public function isEqual(Lid $lid)
+    public function isEqual(Lid $lid, $requireLidnummerMatch = false)
     {
-        if (!empty($lid->lidnummer) && $lid->lidnummer != $this->lidnummer) {
-            // Lid werd wel al gesynct en verschilt
+        if ($requireLidnummerMatch && !empty($lid->lidnummer) && $lid->lidnummer != $this->lidnummer) {
+            // Lid werd wel al gesynct en het lidnummer verschilt.
+            // Enkel hier afbreken als lidnummer match verplicht is
             return false;
         }
 
         if (!empty($lid->lidnummer) && $lid->lidnummer == $this->lidnummer) {
+            // Lidnummer is gelijk.
             return true;
         }
 
@@ -72,6 +74,11 @@ class GroepsadminLid
     // Bedoeling is dat er bij mogelijke equals enkel manuele interactie is om veiligheidsproblemen te voorkomen
     public function isProbablyEqual(Lid $lid)
     {
+        if ($this->isEqual($lid, false)) {
+            // Exact gelijk als we lidnummer negeren
+            return true;
+        }
+
         $geboortedatum_string = $lid->geboortedatum->format('d/m/Y');
         $count = 0;
         if (trim(clean_special_chars($lid->voornaam)) == trim(clean_special_chars($this->voornaam))) {

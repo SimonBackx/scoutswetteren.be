@@ -13,7 +13,7 @@ class Sync extends Cronjob
 {
     public function needsRunning()
     {
-        if (date('G') != '3') {
+        if (date('G') != '14') {
             return false;
         }
         // 's nachts tussen 3:00 en 3:59 uitvoeren
@@ -56,6 +56,8 @@ class Sync extends Cronjob
                         if (!$groepadminLid->found && $groepadminLid->isEqual($lid)) {
                             $groepadminLid->markFound($lid);
                             $found = true;
+
+                            // Break is belangrijk voor dubbele leden te voorkomen
                             break;
                         }
                     }
@@ -67,30 +69,25 @@ class Sync extends Cronjob
                 $not_found = [];
 
                 foreach ($not_equal_leden as $lid) {
-                    if (empty($lid->lidnummer)) {
-                        // Enkel probably equals toelaten als we geen lidnummer kunnen vergelijken
-                        $found = false;
-                        $fff = null;
-                        foreach ($ledenlijst as $groepadminLid) {
-                            if (!$groepadminLid->found && $groepadminLid->isProbablyEqual($lid)) {
-                                $groepadminLid->markFound($lid);
-                                $found = true;
-                                $fff = $groepadminLid;
-                                break;
-                            }
+                    // Ook probably equals toelaten als er een lidnummer gekend is => kan aangepast zijn en in dat geval krijgen we een rare bug dat we leden dubbel gaan aanmaken in de groepsadmin
+                    $found = false;
+                    $fff = null;
+                    foreach ($ledenlijst as $groepadminLid) {
+                        if (!$groepadminLid->found && $groepadminLid->isProbablyEqual($lid)) {
+                            $groepadminLid->markFound($lid);
+                            $found = true;
+                            $fff = $groepadminLid;
+
+                            // Break is belangrijk voor dubbele leden te voorkomen
+                            break;
                         }
-                        if ($found) {
-                            $gstr = $lid->geboortedatum->format('d/m/Y');
-                            echo "WARNING: Member $lid->id ($lid->voornaam $lid->achternaam $gstr) does not exactly match <=> $fff->voornaam $fff->achternaam $fff->geboortedatum\n";
-                        } else {
-                            $not_found[] = $lid;
-                        }
-                    } else {
+                    }
+                    if ($found) {
                         $gstr = $lid->geboortedatum->format('d/m/Y');
-                        echo "WARNING: Member $lid->id ($lid->voornaam $lid->achternaam $gstr) has been synced previously, but can not be found again!\n";
+                        echo "WARNING: Member $lid->id ($lid->voornaam $lid->achternaam $gstr) does not exactly match <=> $fff->voornaam $fff->achternaam $fff->geboortedatum\n";
+                    } else {
                         $not_found[] = $lid;
                     }
-
                 }
 
                 $leden_to_create = [];
@@ -110,7 +107,8 @@ class Sync extends Cronjob
                     foreach ($not_found as $lid) {
                         $found = false;
                         foreach ($oud_ledenlijst as $groepadminLid) {
-                            if (!$groepadminLid->found && $groepadminLid->isEqual($lid)) {
+                            // Require lidnummer match = false (lden hebben wrs geen lidnummer, en lidnummer in onze database kan out of date zijn)
+                            if (!$groepadminLid->found && $groepadminLid->isEqual($lid, false)) {
                                 $groepadminLid->markFound($lid);
 
                                 // Forceer herinschrijven
