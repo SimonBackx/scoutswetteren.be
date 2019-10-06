@@ -77,8 +77,7 @@ class Sync extends Cronjob
                             $groepadminLid->markFound($lid);
                             $found = true;
                             $fff = $groepadminLid;
-
-                            // Break is belangrijk voor dubbele leden te voorkomen
+                            
                             break;
                         }
                     }

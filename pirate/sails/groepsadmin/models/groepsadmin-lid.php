@@ -108,7 +108,12 @@ class GroepsadminLid
             $lid->save();
 
             echo "- Saved lidnummer of $lid->voornaam as $this->lidnummer\n";
+        } elseif (!empty($lid->lidnummer) && empty($this->lidnummer)) {
+            // Remove lidnummer. It is wrong
+            $lid->lidnummer = null;
+            $lid->save();
         }
+
         $this->found = true;
         $this->linkedLid = $lid;
     }
