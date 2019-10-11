@@ -8,7 +8,7 @@ import yaml
 output['running'] = False
 
 try:
-    stream = file('config/settings-sintjan.yml', 'r')    # 'document.yaml' contains a single YAML document.
+    stream = file('config/settings-prins-boudewijn.yml', 'r')    # 'document.yaml' contains a single YAML document.
 except IOError:
     print("Configfile settings.yml doesn\'t exist.")
     exit()
@@ -175,7 +175,7 @@ def letsencrypt():
     print("[LETSENCRYPT] Renewing certificates if needed. Serving from "+directory+" for authentication.")
 
     with settings(hide('warnings', 'running')):
-        run("letsencrypt certonly --cert-name "+config["certificate-name"]+" --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --webroot -w "+directory+domains)
+        run("certbot certonly --cert-name "+config["certificate-name"]+" --keep-until-expiring --agree-tos --email "+config["e-mail"]+" --nginx "+domains)
 
     print("[LETSENCRYPT] Done.")
 
@@ -199,6 +199,7 @@ def deploy():
     updatePirate()
 
     print('--')
+    # Do not use this anymore: use renew!
     #letsencrypt()
     #print('--')
     #mysql()
