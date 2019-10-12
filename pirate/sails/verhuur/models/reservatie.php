@@ -41,6 +41,7 @@ class Reservatie extends Model
     public $waarborg_betaald = false; // true / false
     public $huur_betaald = false; // true / false
     public $leidingsweekend = false; // true / false
+    public $contract_oke = false; // true / false
 
     public $aanvraag_datum;
 
@@ -214,6 +215,7 @@ class Reservatie extends Model
         $this->waarborg_betaald = ($row['waarborg_betaald'] == 1);
         $this->huur_betaald = ($row['huur_betaald'] == 1);
         $this->leidingsweekend = ($row['leidingsweekend'] == 1);
+        $this->contract_oke = ($row['contract_oke'] == 1);
 
         $this->aanvraag_datum = new \DateTime($row['aanvraag_datum']);
 
@@ -424,14 +426,20 @@ class Reservatie extends Model
             } else {
                 $this->ligt_vast = true;
             }
+
+            if (!isset($data['contract_oke']) || !$data['contract_oke']) {
+                $this->contract_oke = false;
+            } else {
+                $this->contract_oke = true;
+            }
         }
 
         // Als nieuw: controleren of er al niet vaststaande verhuren zijn op deze datums
         if ((empty($this->id) || $this->ligt_vast) && $startdatum !== false && $einddatum !== false) {
             if (!empty($this->id)) {
-                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, $this->id, Environment::getSetting('verhuur.overlapping_grenzen_toelaten'));
+                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, $this->id, $admin || Environment::getSetting('verhuur.overlapping_grenzen_toelaten'));
             } else {
-                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, null, Environment::getSetting('verhuur.overlapping_grenzen_toelaten'));
+                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, null, $admin || Environment::getSetting('verhuur.overlapping_grenzen_toelaten'));
             }
             if (count($reservaties) > 0) {
                 $errors[] = 'Er ligt al een reservatie vast in deze periode.';
@@ -569,6 +577,7 @@ class Reservatie extends Model
         $groep = self::getDb()->escape_string($this->groep);
         $ligt_vast = self::getDb()->escape_string((int) $this->ligt_vast);
         $leidingsweekend = self::getDb()->escape_string((int) $this->leidingsweekend);
+        $contract_oke = self::getDb()->escape_string((int) $this->contract_oke);
 
         if (!isset($this->id)) {
             $this->aanvraag_datum = new \DateTime();
@@ -580,11 +589,12 @@ class Reservatie extends Model
             $door_leiding = 1;
             $ligt_vast = 1;
             $leidingsweekend = 0;
+            $contract_oke = 1;
 
             if (!isset($this->id)) {
                 $query = "INSERT INTO
-                    verhuur (`startdatum`,  `einddatum`, `door_leiding`, `groep`, `ligt_vast`, `aanvraag_datum`, `leidingsweekend`)
-                    VALUES ('$startdatum', '$einddatum', '$door_leiding', '$groep', '$ligt_vast', '$aanvraag_datum', '$leidingsweekend')";
+                    verhuur (`startdatum`,  `einddatum`, `door_leiding`, `groep`, `ligt_vast`, `aanvraag_datum`, `leidingsweekend`, `contract_oke`)
+                    VALUES ('$startdatum', '$einddatum', '$door_leiding', '$groep', '$ligt_vast', '$aanvraag_datum', '$leidingsweekend', '$contract_oke')";
             } else {
                 $id = self::getDb()->escape_string($this->id);
                 $query = "UPDATE verhuur
@@ -594,7 +604,8 @@ class Reservatie extends Model
                      `door_leiding` = '$door_leiding',
                      `groep` = '$groep',
                      `ligt_vast` = '$ligt_vast',
-                     `leidingsweekend` = '$leidingsweekend'
+                     `leidingsweekend` = '$leidingsweekend',
+                     `contract_oke` = '$contract_oke'
                      where id = '$id'
                 ";
             }
@@ -637,9 +648,9 @@ class Reservatie extends Model
             if (empty($this->id)) {
 
                 $query = "INSERT INTO
-                    verhuur (`contract_nummer`, `door_leiding`, `startdatum`,`einddatum`,`personen`,`personen_tenten`,`groep`,`contact_naam`,`contact_email`,`contact_gsm`,`contact_adres`,`contact_gemeente`,`contact_postcode`,`contact_land`,`info`,`opmerkingen`,`waarborg`,`huur`,`ligt_vast`, `waarborg_betaald`, `huur_betaald`, `aanvraag_datum`, `leidingsweekend`)
+                    verhuur (`contract_nummer`, `door_leiding`, `startdatum`,`einddatum`,`personen`,`personen_tenten`,`groep`,`contact_naam`,`contact_email`,`contact_gsm`,`contact_adres`,`contact_gemeente`,`contact_postcode`,`contact_land`,`info`,`opmerkingen`,`waarborg`,`huur`,`ligt_vast`, `waarborg_betaald`, `huur_betaald`, `aanvraag_datum`, `leidingsweekend`, `contract_oke`)
 
-                    VALUES ($contract_nummer, NULL, '$startdatum','$einddatum','$personen','$personen_tenten','$groep','$contact_naam','$contact_email','$contact_gsm','$contact_adres','$contact_gemeente','$contact_postcode','$contact_land','$info','$opmerkingen', '$waarborg', '$huur', '$ligt_vast', '$waarborg_betaald', '$huur_betaald', '$aanvraag_datum', '$leidingsweekend')";
+                    VALUES ($contract_nummer, NULL, '$startdatum','$einddatum','$personen','$personen_tenten','$groep','$contact_naam','$contact_email','$contact_gsm','$contact_adres','$contact_gemeente','$contact_postcode','$contact_land','$info','$opmerkingen', '$waarborg', '$huur', '$ligt_vast', '$waarborg_betaald', '$huur_betaald', '$aanvraag_datum', '$leidingsweekend', '$contract_oke')";
             } else {
                 $id = self::getDb()->escape_string($this->id);
 
@@ -666,7 +677,8 @@ class Reservatie extends Model
                         `ligt_vast` = '$ligt_vast',
                         `waarborg_betaald` = '$waarborg_betaald',
                         `huur_betaald` = '$huur_betaald',
-                        `leidingsweekend` = '$leidingsweekend'
+                        `leidingsweekend` = '$leidingsweekend',
+                        `contract_oke` = '$contract_oke'
                      where id = '$id'
                 ";
             }
@@ -747,6 +759,10 @@ class Reservatie extends Model
 
         if ($this->door_leiding) {
             return "Vrijgehouden voor scouts. " . $extra;
+        }
+
+        if (!$this->contract_oke) {
+            return "Contract niet in orde. " . $extra;
         }
         if (!$this->waarborg_betaald && !$this->huur_betaald) {
             return "Huur + waarborg niet betaald. " . $extra;

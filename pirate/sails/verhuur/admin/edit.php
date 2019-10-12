@@ -55,6 +55,7 @@ class Edit extends Page
             'huur_betaald' => false,
             'door_leiding' => false,
             'leidingsweekend' => false,
+            'contract_oke' => false,
         );
 
         if (isset($_GET['scouts'])) {
@@ -93,6 +94,7 @@ class Edit extends Page
                     'waarborg_betaald' => $reservatie->waarborg_betaald,
                     'huur_betaald' => $reservatie->huur_betaald,
                     'leidingsweekend' => $reservatie->leidingsweekend,
+                    'contract_oke' => $reservatie->contract_oke,
                     'door_leiding' => (isset($reservatie->door_leiding) && $reservatie->door_leiding === true),
                 );
 
