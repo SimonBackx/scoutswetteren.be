@@ -221,22 +221,29 @@ class Reservatie extends Model
 
     // Beide grensen inclusief
     // startdate en enddate in y-m-d formaat
-    public static function getReservaties($startdate, $enddate, $ligt_vast = null, $not_include = null)
+    public static function getReservaties($startdate, $enddate, $ligt_vast = null, $not_include_id = null, $exclude_border = false)
     {
         $ligt_vast_str = '';
         if (!is_null($ligt_vast)) {
             $ligt_vast_str = ' AND ligt_vast = "' . self::getDb()->escape_string($ligt_vast) . '"';
         }
         $not_include_str = '';
-        if (!is_null($not_include)) {
-            $not_include_str = ' AND id <> "' . self::getDb()->escape_string($not_include) . '"';
+        if (!is_null($not_include_id)) {
+            $not_include_str = ' AND id <> "' . self::getDb()->escape_string($not_include_id) . '"';
         }
 
         $startdate = self::getDb()->escape_string($startdate);
         $enddate = self::getDb()->escape_string($enddate);
 
+        $st = '<=';
+        $gt = '>=';
+        if ($exclude_border) {
+            $st = '<';
+            $gt = '>';
+        }
+
         $reservaties = array();
-        $query = 'SELECT * FROM verhuur WHERE ((startdatum >= "' . $startdate . '" AND startdatum <= "' . $enddate . '") OR (einddatum >= "' . $startdate . '" AND einddatum <= "' . $enddate . '") OR (startdatum <= "' . $startdate . '" AND einddatum >= "' . $enddate . '"))' . $ligt_vast_str . $not_include_str . ' ORDER BY startdatum';
+        $query = "SELECT * FROM verhuur WHERE ((startdatum >= '$startdate' AND startdatum $st '$enddate') OR (einddatum $gt '$startdate' AND einddatum <= '$enddate') OR (startdatum <= '$startdate' AND einddatum >= '$enddate'))$ligt_vast_str$not_include_str ORDER BY startdatum";
 
         if ($result = self::getDb()->query($query)) {
             if ($result->num_rows > 0) {
@@ -422,9 +429,9 @@ class Reservatie extends Model
         // Als nieuw: controleren of er al niet vaststaande verhuren zijn op deze datums
         if ((empty($this->id) || $this->ligt_vast) && $startdatum !== false && $einddatum !== false) {
             if (!empty($this->id)) {
-                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, $this->id);
+                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, $this->id, Environment::getSetting('verhuur.overlapping_grenzen_toelaten'));
             } else {
-                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1);
+                $reservaties = self::getReservaties($startdatum->format('Y-m-d'), $einddatum->format('Y-m-d'), 1, null, Environment::getSetting('verhuur.overlapping_grenzen_toelaten'));
             }
             if (count($reservaties) > 0) {
                 $errors[] = 'Er ligt al een reservatie vast in deze periode.';
@@ -739,16 +746,16 @@ class Reservatie extends Model
         }
 
         if ($this->door_leiding) {
-            return "Vrijgehouden voor scouts. ".$extra;
+            return "Vrijgehouden voor scouts. " . $extra;
         }
         if (!$this->waarborg_betaald && !$this->huur_betaald) {
-            return "Huur + waarborg niet betaald. ".$extra;
+            return "Huur + waarborg niet betaald. " . $extra;
         }
         if (!$this->huur_betaald) {
-            return "Huur niet betaald. ".$extra;
+            return "Huur niet betaald. " . $extra;
         }
         if (!$this->waarborg_betaald) {
-            return "Waarborg niet betaald. ".$extra;
+            return "Waarborg niet betaald. " . $extra;
         }
         return $extra;
     }

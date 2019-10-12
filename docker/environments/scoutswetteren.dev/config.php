@@ -151,6 +151,8 @@ $config = [
 
         // Minimaal aantal overnachtingen waarbij tenten toegestaan izjn
         'tenten_min_nachten' => 3,
+
+        'overlapping_grenzen_toelaten' => false,
     ],
 
     'contacts' => [
