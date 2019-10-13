@@ -1,0 +1,97 @@
+<form method="post">
+    <div class="text">
+        <header>
+            {% if environment.theme == "sint-jan" %}
+                <div class="h1-prefix">Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</div>
+            {% endif %}
+
+            {% if order.isRegistration() %}
+                <h1>Inschrijving van {{ order.user.firstname }} {{ order.user.lastname }}</h1>
+            {% else %}
+                <h1>Bestelling van {{ order.user.firstname }} {{ order.user.lastname }}</h1>
+            {% endif %}
+
+            {% if environment.theme != "sint-jan" %}
+                <h2>Geplaatst op {{ order.created_at | date ('d/m/Y') }} om {{ order.created_at | date ('H:i') }} door {{ order.user.firstname }} {{ order.user.lastname }}</h2>
+            {% endif %}
+        </header>
+
+        <h2>Contact</h2>
+        <table class="details">
+            <tr>
+                <td>Naam</td>
+                <td>{{ order.user.firstname }} {{ order.user.lastname }}</td>
+            </tr>
+            <tr>
+                <td>E-mailadres</td>
+                <td>{{ order.user.mail }}</td>
+            </tr>
+
+            <tr>
+                <td>GSM-nummer</td>
+                <td>{{ order.user.phone }}</td>
+            </tr>
+        </table>
+            
+
+        {% if order.payment_method == 'transfer' %}
+            <h2>Overschrijven</h2>
+            {% include 'pages/webshop/transfer.html' with {'payment': order.payment} %}
+        {% endif %}
+
+        <h2>Overzicht</h2>
+        <div class="list-bundle">
+            {% for item in order.items %}
+                <article class="list">
+                    <div class="medium merlot column">
+                            {{ item.product.name }}
+                    </div>
+                    <div class="max column">
+                        <p>
+                            {% if item.product.type == 'unit' %}
+                                <strong>Aantal:</strong> {{ item.amount }}<br>
+                            {% endif %}
+
+                            {% if item.product.type == 'name' %}
+                                <strong>Naam:</strong> {{ item.person_name }}<br>
+                            {% endif %}
+
+                            {% if item.product.type == 'person' %}
+                                <strong>Aantal personen:</strong> {{ item.amount }}<br>
+                            {% endif %}
+
+                            <strong>{{ item.product.price_name }}:</strong> {{ item.product_price.name }}<br>
+
+                            {% for option in item.options %}
+                                <strong>{{ option.optionset.name }}:</strong> {{ option.name }}<br>
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="last column right">
+                        {{ item.getPrice() }}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        <footer>
+            {% if not order.isPaid() %}
+                <button name="paid" class="button fill main">Markeer als betaald</button>
+            {% endif %}
+            <a href="/admin/orders/{{ order.id }}/delete" class="button main">Verwijderen</a>
+            <a href="/admin/order-sheets/{{ order.order_sheet_id }}/orders" class="button main">Annuleren</a>
+
+            <div class="price-floater">
+                <div>
+                    Totaal
+                    {% if not order.isPaid() %}
+                        <span>Nog niet betaald ({{ order.payment.getName() }})</span>
+                    {% else %}
+                        <span>Betaald via {{ order.payment.getName() }}</span>
+                    {% endif%}
+                </div>
+                <div>{{ order.getPrice() }}</div>
+            </div>
+        </footer>
+    </div>
+</form>

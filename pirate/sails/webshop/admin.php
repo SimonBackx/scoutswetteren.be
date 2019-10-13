@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Sails\Webshop;
 
+use Pirate\Sails\Webshop\Models\Order;
 use Pirate\Sails\Webshop\Models\OrderSheet;
 use Pirate\Sails\Webshop\Models\Product;
 use Pirate\Wheel\AdminRoute;
@@ -88,6 +89,24 @@ class WebshopAdminRouter extends AdminRoute
                 return false;
             }
             $this->setPage(new Admin\EditProduct($product));
+            return true;
+        }
+
+        if ($result = $this->match($parts, '/orders/@id', ['id' => 'string'])) {
+            $order = Order::getById($result->params->id);
+            if (!isset($order)) {
+                return false;
+            }
+            $this->setPage(new Admin\Order($order));
+            return true;
+        }
+
+        if ($result = $this->match($parts, '/orders/@id/delete', ['id' => 'string'])) {
+            $order = Order::getById($result->params->id);
+            if (!isset($order)) {
+                return false;
+            }
+            $this->setPage(new Admin\OrderDelete($order));
             return true;
         }
     }

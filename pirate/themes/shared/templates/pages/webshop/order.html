@@ -13,9 +13,16 @@
                         <h1>Betaling is mislukt</h1>
                     </header>
 
-                    <ul class="error">
-                        <li>De betaling werd geannuleerd of geweigerd door de bank. Kijk het saldo op uw bankkaart na en probeer het opnieuw.</li>
-                    </ul>
+                    {% if order.payment_method == 'transfer' %}
+                        <ul class="error">
+                            <li>De overschrijving is niet ontvangen of de inschrijving werd geannuleerd.</li>
+                        </ul>
+                    {% else %}
+                        <ul class="error">
+                            <li>De betaling werd geannuleerd of geweigerd door de bank. Kijk het saldo op uw bankkaart na en probeer het opnieuw.</li>
+                        </ul>
+                    {% endif %}
+                    
 
                     {% if order.order_sheet is defined %}
                     <footer>
@@ -29,11 +36,12 @@
                             <header>
                                 <h1>Betalen via overschrijven</h1>
                             </header>
-                            {% include 'pages/webshop/transfer.html' with {'payment': order.payment} %}
 
                             <ul class="warning">
-                                <li>Gelieve het bovenstaande bedrag over te schrijven en de inschrijving daarna te bevestigen.</li>
+                                <li>Gelieve de inschrijving te bevestigen met de onderstaande knop.</li>
                             </ul>
+
+                            {% include 'pages/webshop/transfer.html' with {'payment': order.payment} %}
 
                             <footer>
                                 <a href="{{ order.payment.getConfirmUrl() }}" class="button fill main">Inschrijving bevestigen</a>
@@ -115,6 +123,7 @@
                                 </div>
                                 <div>{{ order.getPrice() }}</div>
                             </div>
+                            <div style="clear: both;"></div>
                         </footer>
                     {% endif %}
                 {% endif %}

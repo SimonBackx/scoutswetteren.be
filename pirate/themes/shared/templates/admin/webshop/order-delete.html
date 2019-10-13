@@ -1,0 +1,18 @@
+<form method="post">
+    <div class="text">
+        <header>
+            {% if order.isRegistration() %}
+                <h1>Ben je zeker dat je de inschrijving van {{ order.user.firstname }} {{ order.user.lastname }} wilt verwijderen?</h1>
+            {% else %}
+                <h1>Ben je zeker dat je de bestelling van {{ order.user.firstname }} {{ order.user.lastname }} wilt verwijderen?</h1>
+            {% endif %}
+
+            <p>Je kan dit niet ongedaan maken.</p>
+        </header>
+    
+        <footer>
+            <button name="confirm" class="button fill main">Verwijderen</button>
+            <a href="/admin/orders/{{ order.id }}" class="button main">Annuleren</a>
+        </footer>
+    </div>
+</form>

@@ -3,7 +3,7 @@ namespace Pirate\Sails\Webshop\Pages;
 
 use Pirate\Wheel\Page;
 
-class ConfirmTransfer extends Page
+class CancelTransfer extends Page
 {
     private $payment;
 
@@ -20,7 +20,7 @@ class ConfirmTransfer extends Page
     public function getContent()
     {
         if ($this->payment->status == 'pending') {
-            $this->payment->confirm();
+            $this->payment->cancel();
         }
         $url = $this->payment->order->getUrl();
         header("Location: $url");

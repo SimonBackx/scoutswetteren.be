@@ -64,6 +64,20 @@ class TransferPayment extends Payment
         $this->save();
     }
 
+    public function paid()
+    {
+        $this->status = 'paid';
+        $this->order->markAsPaid();
+        $this->save();
+    }
+
+    public function cancel()
+    {
+        $this->status = 'canceled';
+        $this->order->markAsFailed();
+        $this->save();
+    }
+
     public function getNextUrl()
     {
         // Todo: seperate transfer page!

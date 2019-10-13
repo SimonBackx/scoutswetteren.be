@@ -10,15 +10,31 @@
     {% for order in orders %}
         <article class="list">
             <div class="medium merlot column">
-                {{ order.user.firstname }} {{ order.user.lastname }}<br>
-                {{ order.user.phone }}<br>
-                {{ order.user.mail }}
+                {{ order.user.firstname }} {{ order.user.lastname }}<br>
+                {{ order.getPrice() }}
+                
+                {% if not order.isPaid() %}
+                    <strong>(Niet betaald)</strong>
+                {% endif %}
+
+                {% if order.getSummary().persons | length == 1 %}
+                    <br>Eén persoon
+                {% endif %}
+                {% if order.getSummary().persons | length > 1 %}
+                    <br>{{ order.getSummary().persons | length }} personen
+                {% endif %}
             </div>
             <div class="max column">
+                {{ order.created_at | date('d/m/Y') }} om {{ order.created_at | date('H:i') }}
+
+                {% if order.payment_method == 'transfer' and order.payment.reference is not empty %}
+                    <br> Mededeling: {{ order.payment.reference }}
+                {% endif %}
+
                 
             </div>
             <div class="last column right">
-                <a href="{{ order.getUrl() }}" class="icon-button">
+                <a href="/admin/orders/{{ order.id }}" class="icon-button">
                     Bekijken
                 </a>
             </div>

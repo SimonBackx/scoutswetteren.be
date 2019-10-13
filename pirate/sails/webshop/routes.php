@@ -54,6 +54,15 @@ class WebshopRouter extends Route
             return true;
         }
 
+        if ($result = $this->match($parts, '/transfer-payment/@id/cancel', ['id' => 'string'])) {
+            $payment = TransferPayment::getById($result->params->id);
+            if (!isset($payment)) {
+                return false;
+            }
+            $this->setPage(new Pages\CancelTransfer($payment));
+            return true;
+        }
+
         return false;
     }
 }
