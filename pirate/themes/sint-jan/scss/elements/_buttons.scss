@@ -9,10 +9,10 @@ a.go {
 a > article {
     opacity: 1;
     transition: opacity 0.2s;
+}
 
-    &:hover {
-        opacity: 0.5;
-    }
+a:hover > article {
+    opacity: 0.5;
 }
 
 button.more {

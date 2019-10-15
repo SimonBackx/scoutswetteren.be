@@ -21,10 +21,12 @@
             {% if blog|length > 1 %}
                 <div class="article-snippets">
                     {% for article in blog %}
-                        <article>
-                            <div class="h1-prefix">Geplaatst op {{ article.date }}</div>
-                            <h1>{{ article.title }} <a href="{{ article.url }}" class="go">Lezen</a></h1>
-                        </article>
+                        <a href="{{ article.url }}">
+                            <article>
+                                <div class="h1-prefix">Geplaatst op {{ article.date }}</div>
+                                <h1>{{ article.title }}</h1>
+                            </article>
+                        </a>
                     {% endfor %}
                 </div>
             {% endif %}

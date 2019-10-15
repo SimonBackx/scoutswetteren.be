@@ -21,7 +21,8 @@
         position: sticky;
         top: $menu-height + 20px;
 
-        &> article {
+        &> a {
+            display: block;
             margin-bottom: 15px;
             background: $color-main-shade;
             border-radius: $border-radius;
@@ -45,7 +46,7 @@
         .article-snippets {
             width: 40%;
 
-            &> article {
+            &> a {
                 padding: 20px 20px;
     
                 .h1-prefix {
@@ -73,7 +74,7 @@
             padding-left: 0;
             position: static;
 
-            &> article {
+            &> a {
                 padding: 20px 15px;
                 margin-bottom: 10px;
             }
@@ -81,7 +82,7 @@
     }
 
     @media (max-width: 500px) {
-        .article-snippets > article {
+        .article-snippets > a {
             margin-bottom: 5px;
             padding: 15px 15px;
         }
