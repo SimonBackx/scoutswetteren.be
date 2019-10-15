@@ -46,7 +46,7 @@ $config = [
     ],
     'development_mail' => [
         'name' => null,
-        'mail' => 'simon.backx@scoutswetteren.be',
+        'mail' => 'website@scoutswetteren.be',
     ],
 
     'groepsadmin' => [
