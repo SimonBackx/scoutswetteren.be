@@ -214,7 +214,7 @@ $config = [
     'contacts' => [
         'groepsleiding' => array(
             'name' => 'Groepsleiding',
-            'mail' => 'groepsleiding@scoutswetteren.be',
+            'mail' => 'groepsleiding@scoutssintjan.be',
         ),
         'kapoenen' => array(
             'name' => 'Kapoenen leiding',
@@ -254,13 +254,35 @@ $config = [
             'name' => 'Verhuur verantwoordelijke',
             'mail' => 'verhuur@scoutssintjan.be',
         ),
-        'oudercomite' => array(
-            'name' => 'Oudercomité',
-            'permission' => 'contactpersoon_oudercomite',
+
+        'inschrijving' => array(
+            'name' => 'Inschrijvingen',
+            'mail' => 'inschrijving@scoutssintjan.be',
         ),
+
+        'verhuur' => array(
+            'name' => 'Verhuur verantwoordelijke',
+            'mail' => 'verhuur@scoutssintjan.be',
+        ),
+
+        'verhuur' => array(
+            'name' => 'Verhuur verantwoordelijke',
+            'mail' => 'verhuur@scoutssintjan.be',
+        ),
+
         'vzw' => array(
             'name' => 'VZW',
             'permission' => 'contactpersoon_vzw',
+        ),
+
+        'verhuur' => array(
+            'name' => 'Verhuur verantwoordelijke',
+            'mail' => 'verhuur@scoutssintjan.be',
+        ),
+
+        'evenementen' => array(
+            'name' => 'Evenementen',
+            'mail' => 'evenementen@scoutssintjan.be',
         ),
     ],
 ];
