@@ -27,6 +27,7 @@ $config = [
     'router' => [
         'redirects' => [
             'lokaalverhuur' => '/verhuur',
+            'eetfestijn' => '/inschrijvingen/1/inschrijven-voor-eetfestijn',
         ],
     ],
 
