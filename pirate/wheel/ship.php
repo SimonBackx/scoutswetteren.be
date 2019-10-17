@@ -84,6 +84,7 @@ class Ship
             } else {
                 echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster als dit probleem zich blijft voordoen.</p><pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
             }
+            echo '<pre>' . $e->getTraceAsString() . '</pre>';
 
             if (class_exists('Sentry')) {
                 Sentry::shared()->logFatalError($e);

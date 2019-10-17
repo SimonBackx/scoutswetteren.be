@@ -21,6 +21,13 @@ class OrderSheetExcel extends Page
 
     public function getPreviousLetter($letter)
     {
+        if (strlen($letter) == 2) {
+            $last = substr($letter, -1);
+            if ($last == 'A') {
+                return 'Z';
+            }
+            return 'A' . $this->getPreviousLetter(substr($letter, -1));
+        }
         return chr(ord($letter) - 1);
     }
 
@@ -99,7 +106,14 @@ class OrderSheetExcel extends Page
         $startIndex = 1;
 
         foreach ($filters as $filter_index => $filter) {
-            $letter++;
+            if (substr($letter, -1) == 'Z') {
+                $letter = 'A' . substr($letter, 0, strlen($letter) - 1) . 'A';
+            } else {
+                $last = substr($letter, -1);
+                $last++;
+                $letter = substr($letter, 0, strlen($letter) - 1) . $last;
+            }
+
             $index = 1;
             $sheet->getColumnDimension($letter)->setWidth(15);
             $sheet->setCellValue($letter . $index, $filter->product->name);
