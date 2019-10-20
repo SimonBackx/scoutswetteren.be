@@ -6,7 +6,7 @@ use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Wheel\Database;
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Mailjet\Classes\Mail;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 

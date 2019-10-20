@@ -5,7 +5,7 @@ use Pirate\Sails\Validating\Classes\DatabaseError;
 use Pirate\Sails\Validating\Classes\ValidationError;
 use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 use Pirate\Sails\Validating\Classes\ValidationErrors;
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Mailjet\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class Order extends Model implements \JsonSerializable

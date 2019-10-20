@@ -3,7 +3,7 @@ namespace Pirate\Sails\Users\Pages;
 
 use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Users\Models\User;
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Mailjet\Classes\Mail;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 

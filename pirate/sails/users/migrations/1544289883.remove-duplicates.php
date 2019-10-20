@@ -4,7 +4,7 @@ namespace Pirate\Sails\Users\Migrations;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Migrations\Classes\Migration;
 use Pirate\Sails\Users\Models\User;
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Mailjet\Classes\Mail;
 
 class RemoveDuplicates1544289883 extends Migration
 {

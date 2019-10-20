@@ -39,6 +39,10 @@ $config = [
         ],
     ],
 
+    'mailjet' => [
+        // key defined in private
+    ],
+
     'sendgrid' => [
         // key defined in private
     ],
@@ -55,8 +59,8 @@ $config = [
         'mail' => 'website@scoutswetteren.be',
     ],
     'development_mail' => [
-        'name' => null,
-        'mail' => 'website@scoutswetteren.be',
+        'name' => 'Simon Backx',
+        'mail' => 'simon.backx@outlook.com',
     ],
 
     'bank' => [

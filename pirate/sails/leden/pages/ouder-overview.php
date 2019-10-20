@@ -2,7 +2,7 @@
 namespace Pirate\Sails\Leden\Pages;
 
 use Pirate\Sails\Environment\Classes\Environment;
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Mailjet\Classes\Mail;
 use Pirate\Sails\Leden\Models\Afrekening;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;

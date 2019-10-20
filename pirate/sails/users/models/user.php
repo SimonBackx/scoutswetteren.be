@@ -7,7 +7,7 @@ use Pirate\Sails\Sentry\Classes\Sentry;
 use Pirate\Sails\Validating\Models\Validator;
 
 // Should remove these dependencies:
-use Pirate\Wheel\Mail;
+use Pirate\Sails\Mailjet\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class User extends Model
