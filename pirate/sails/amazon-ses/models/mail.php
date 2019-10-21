@@ -268,6 +268,11 @@ class Mail extends Model
         set_time_limit(count($this->recipients) / 5 + 60);
 
         foreach ($this->recipients as $index => $recipient) {
+            if ($index % 5 == 4) {
+                // Comply with rate limit of 14 per second
+                sleep(0.5);
+            }
+
             try {
                 echo "Mail to " . $recipient->email->email . "\n";
                 $mail->addAddress($recipient->email->email, $recipient->email->name);
@@ -300,10 +305,6 @@ class Mail extends Model
             //Clear all addresses for the next iteration
             $mail->clearAllRecipients();
 
-            if ($index % 5 == 4) {
-                // Comply with rate limit of 14 per second
-                sleep(0.5);
-            }
         }
 
         error_log("Mail succeeded");

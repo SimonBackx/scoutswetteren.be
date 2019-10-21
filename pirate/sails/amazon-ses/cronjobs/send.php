@@ -10,7 +10,6 @@ class Send extends Cronjob
     public function needsRunning()
     {
         $synced = CacheHelper::get("isSendingMails");
-        return true;
         return !isset($synced) || !$synced;
     }
 
