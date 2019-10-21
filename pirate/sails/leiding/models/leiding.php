@@ -7,7 +7,7 @@ use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Settings\Models\Setting;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Sails\Mailjet\Classes\Mail;
+use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class Leiding extends Model

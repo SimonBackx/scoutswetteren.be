@@ -5,6 +5,7 @@
         "sentry/sentry": "^1.10",
         "stripe/stripe-php": "^6.28",
         "phpoffice/phpspreadsheet": "^1.6",
-        "mailjet/mailjet-apiv3-php": "^1.4"
+        "mailjet/mailjet-apiv3-php": "^1.4",
+        "phpmailer/phpmailer": "^6.1"
     }
 }

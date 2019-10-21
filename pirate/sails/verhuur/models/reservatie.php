@@ -5,7 +5,7 @@ use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Adres;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Sails\Mailjet\Classes\Mail;
+use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class Reservatie extends Model

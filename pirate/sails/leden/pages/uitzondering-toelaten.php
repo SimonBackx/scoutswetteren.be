@@ -7,7 +7,7 @@ use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Wheel\Database;
-use Pirate\Sails\Mailjet\Classes\Mail;
+use Pirate\Sails\AmazonSes\Classes\Mail;
 
 // Deze pagina mag enkel getoond worden als de ouder (tijdelijk) ingelogd is
 class UitzonderingToelaten extends Page {
