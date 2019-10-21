@@ -1,11 +1,11 @@
 <?php
 namespace Pirate\Sails\Webshop\Models;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Validating\Classes\DatabaseError;
 use Pirate\Sails\Validating\Classes\ValidationError;
 use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
 use Pirate\Sails\Validating\Classes\ValidationErrors;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class Order extends Model implements \JsonSerializable
@@ -345,7 +345,7 @@ class Order extends Model implements \JsonSerializable
 
         $this->fetchOrderSheet();
 
-        $mail = new Mail(
+        $mail = Mail::create(
             isset($this->order_sheet) ? $this->order_sheet->name : ($this->isRegistration() ? 'Jouw inschrijving' : 'Jouw bestelling'),
             $template,
             array(
@@ -362,7 +362,7 @@ class Order extends Model implements \JsonSerializable
             $this->user->firstname . ' ' . $this->user->lastname
         );
 
-        $mail->send();
+        $mail->sendOrDelay();
 
     }
 

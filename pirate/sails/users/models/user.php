@@ -1,13 +1,13 @@
 <?php
 namespace Pirate\Sails\Users\Models;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Sails\Sentry\Classes\Sentry;
-use Pirate\Sails\Validating\Models\Validator;
 
 // Should remove these dependencies:
-use Pirate\Sails\AmazonSes\Classes\Mail;
+use Pirate\Sails\Validating\Models\Validator;
 use Pirate\Wheel\Model;
 
 class User extends Model
@@ -716,13 +716,13 @@ class User extends Model
 
     public function sendPasswordEmail()
     {
-        $mail = new Mail('Account scoutswebsite', 'user-new', array('user' => $this));
+        $mail = Mail::create('Account scoutswebsite', 'user-new', array('user' => $this));
         $mail->addTo(
             $this->mail,
             array(),
             $this->firstname . ' ' . $this->lastname
         );
-        return $mail->send();
+        return $mail->sendOrDelay();
     }
 
     public function save()

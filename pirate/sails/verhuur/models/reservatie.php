@@ -1,11 +1,11 @@
 <?php
 namespace Pirate\Sails\Verhuur\Models;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Adres;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class Reservatie extends Model
@@ -692,7 +692,7 @@ class Reservatie extends Model
                 if (!isset($this->door_leiding) && !$this->no_mail) {
 
                     // Mail voor verantwoordelijke(n)
-                    $mail = new Mail('Huur aanvraag van ' . $this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
+                    $mail = Mail::create('Huur aanvraag van ' . $this->groep, 'verhuurder-aanvraag', array('reservatie' => $this));
                     $verhuurder = null;
 
                     foreach (Leiding::getContactEmails('verhuur') as $contact) {
@@ -707,10 +707,10 @@ class Reservatie extends Model
                         );
                     }
 
-                    $mail->send();
+                    $mail->sendOrDelay();
 
                     // Andere (mail voor huurder zelf)
-                    $mail = new Mail('Verhuur aanvraag', 'huurder-aanvraag', array('reservatie' => $this));
+                    $mail = Mail::create('Verhuur aanvraag', 'huurder-aanvraag', array('reservatie' => $this));
 
                     $mail->addTo(
                         $this->contact_email,
@@ -720,7 +720,7 @@ class Reservatie extends Model
 
                     $mail->setReplyTo($verhuurder);
 
-                    $mail->send();
+                    $mail->sendOrDelay();
 
                 }
 

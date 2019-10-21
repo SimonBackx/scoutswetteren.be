@@ -1,12 +1,12 @@
 <?php
 namespace Pirate\Sails\Leden\Admin;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Files\Models\File;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Sails\Users\Models\User;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 
@@ -141,7 +141,7 @@ class MailPage extends Page
                     $errors[] = 'Er zijn geen ouders die aan de criteria voldoen.';
                 } else {
 
-                    $mail = new Mail(
+                    $mail = Mail::create(
                         $data['subject'],
                         'mail',
                         array(
@@ -194,10 +194,10 @@ class MailPage extends Page
                             )
                         );
 
-                        $success = $mail->send();
+                        $success = $mail->sendOrDelay();
 
                         if (!$success) {
-                            $errors[] = 'Er ging iets mis bij het versturen van de e-mails. Probeer het later opnieuw. (' . $mail->getErrorMessage() . ')';
+                            $errors[] = 'Er ging iets mis bij het versturen van de e-mails. Probeer het later opnieuw.';
                         }
                     }
                 }

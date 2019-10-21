@@ -1,8 +1,8 @@
 <?php
 namespace Pirate\Sails\Leden\Pages;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Environment\Classes\Environment;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Sails\Leden\Models\Afrekening;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
@@ -102,7 +102,7 @@ class OuderOverview extends Page
             $afrekening = Afrekening::createForInschrijvingen($inschrijvingen_afrekenen);
             if (!is_null($afrekening)) {
 
-                $mail = new Mail('Afrekening lidgeld', 'afrekening', array('leden' => $leden_waarvoor_afgerekend));
+                $mail = Mail::create('Afrekening lidgeld', 'afrekening', array('leden' => $leden_waarvoor_afgerekend));
 
                 $ouder = Ouder::getUser();
                 $mail->addTo(
@@ -111,7 +111,7 @@ class OuderOverview extends Page
                     $ouder->user->firstname . ' ' . $ouder->user->lastname
                 );
 
-                $mail->send();
+                $mail->sendOrDelay();
 
                 $this->redirect = "ouders/afrekening/" . $afrekening->id . '/?klaar';
                 return 302;

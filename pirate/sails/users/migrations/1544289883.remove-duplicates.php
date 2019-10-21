@@ -1,10 +1,10 @@
 <?php
 namespace Pirate\Sails\Users\Migrations;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Migrations\Classes\Migration;
 use Pirate\Sails\Users\Models\User;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 
 class RemoveDuplicates1544289883 extends Migration
 {
@@ -180,13 +180,13 @@ class RemoveDuplicates1544289883 extends Migration
                     }
 
                     User::createMagicTokensFor([$kept]);
-                    $mail = new Mail('BELANGRIJK: Dubbel e-mailadres niet langer toegestaan', 'user-duplicate-email', array('user' => $kept, 'cleared' => $cleared));
+                    $mail = Mail::create('BELANGRIJK: Dubbel e-mailadres niet langer toegestaan', 'user-duplicate-email', array('user' => $kept, 'cleared' => $cleared));
                     $mail->addTo(
                         $kept->mail,
                         array(),
                         $kept->firstname . ' ' . $kept->lastname
                     );
-                    $mail->send();
+                    $mail->sendOrDelay();
 
                 } else {
                     $linking[strtolower($user->mail)] = $user;

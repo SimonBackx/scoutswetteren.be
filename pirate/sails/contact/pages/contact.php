@@ -1,7 +1,7 @@
 <?php
 namespace Pirate\Sails\Contact\Pages;
 
-use Pirate\Sails\AmazonSes\Classes\Mail;
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Leden\Models\Ouder;
@@ -83,7 +83,7 @@ class Contact extends Page
             }
             if (count($errors) == 0) {
                 $success = true;
-                $mail = new Mail('Webformulier: ' . $data['subject'], 'contact', array('data' => $data, 'naam' => $contactpersoon_naam));
+                $mail = Mail::create('Webformulier: ' . $data['subject'], 'contact', array('data' => $data, 'naam' => $contactpersoon_naam));
 
                 $mail->setReplyTo($data['email']);
                 $mail->addTo(
@@ -92,7 +92,7 @@ class Contact extends Page
                     $contactpersoon_naam
                 );
 
-                if (!$mail->send()) {
+                if (!$mail->sendOrDelay()) {
                     $errors[] = 'Er ging iets mis bij het versturen van de e-mail. Contacteer de gekozen contactpersoon via ' . $contactpersoon_email . '.';
                 } else {
                     $success = true;

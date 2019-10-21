@@ -1,13 +1,13 @@
 <?php
 namespace Pirate\Sails\Leiding\Models;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Files\Models\Image;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Settings\Models\Setting;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Sails\Validating\Models\Validator;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class Leiding extends Model
@@ -545,13 +545,13 @@ class Leiding extends Model
 
     public function sendPasswordEmail()
     {
-        $mail = new Mail('Account scoutswebsite', 'user-new-leiding', array('user' => $this->user));
+        $mail = Mail::create('Account scoutswebsite', 'user-new-leiding', array('user' => $this->user));
         $mail->addTo(
             $this->user->mail,
             array(),
             $this->user->firstname . ' ' . $this->user->lastname
         );
-        return $mail->send();
+        return $mail->sendOrDelay();
     }
 
     public function save()
@@ -684,7 +684,7 @@ class Leiding extends Model
     {
         $webmasters = static::getLeiding('webmaster');
 
-        $mail = new Mail(
+        $mail = Mail::create(
             $subject,
             'error-log',
             array(
@@ -701,6 +701,6 @@ class Leiding extends Model
             );
         }
 
-        return $mail->send();
+        return $mail->sendOrDelay();
     }
 }

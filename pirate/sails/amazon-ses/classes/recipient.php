@@ -1,7 +1,7 @@
 <?php
 namespace Pirate\Sails\AmazonSes\Classes;
 
-class Recipient
+class Recipient implements \JsonSerializable
 {
     public $email;
     public $substitutions = [];
@@ -12,6 +12,19 @@ class Recipient
     {
         $this->email = $email;
         $this->substitutions = $substitutions;
+    }
+
+    public static function fromJson($obj)
+    {
+        return new Recipient(Email::fromJson($obj->email), (array) $obj->substitutions);
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'email' => $this->email,
+            'substitutions' => $this->substitutions,
+        ];
     }
 
     public function addBcc(Email $email)

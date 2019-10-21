@@ -1,11 +1,11 @@
 <?php
 namespace Pirate\Sails\Leden\Models;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Leden\Models\Gezin;
 use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Users\Models\User;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Model;
 
 class Ouder extends Model
@@ -505,13 +505,13 @@ class Ouder extends Model
 
     public function sendCreatedMail(User $created_by)
     {
-        $mail = new Mail('Account scoutswebsite', 'user-new-gezin', array('user' => $this->user, 'creator' => $created_by));
+        $mail = Mail::create('Account scoutswebsite', 'user-new-gezin', array('user' => $this->user, 'creator' => $created_by));
         $mail->addTo(
             $this->user->mail,
             array(),
             $this->user->firstname . ' ' . $this->user->lastname
         );
-        return $mail->send();
+        return $mail->sendOrDelay();
     }
 
     /// Return true when users are probably the same

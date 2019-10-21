@@ -1,9 +1,9 @@
 <?php
 namespace Pirate\Sails\Users\Pages;
 
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Users\Models\User;
-use Pirate\Sails\AmazonSes\Classes\Mail;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 
@@ -30,7 +30,7 @@ class WachtwoordVergeten extends Page
                 if ($user->generatePasswordRecoveryKey()) {
                     // Mail versturen enzo
                     // TODO
-                    $mail = new Mail(
+                    $mail = Mail::create(
                         'Wachtwoord opnieuw instellen - ' . Environment::getSetting('name'),
                         'wachtwoord-vergeten',
                         array('url' => $user->getSetPasswordUrl(), 'naam' => $user->firstname)
@@ -42,7 +42,7 @@ class WachtwoordVergeten extends Page
                         $user->firstname . ' ' . $user->lastname
                     );
 
-                    if ($mail->send()) {
+                    if ($mail->sendOrDelay()) {
                         $success = true;
                     } else {
                         $errors[] = "Er ging iets mis bij het versturen van de e-mail. Neem contact met ons op als dit zich blijft voordoen.";

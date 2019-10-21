@@ -1,1 +1,1 @@
-docker exec -it "pirate-php-container" php /var/www/scoutswetteren.dev/pirate/run/cronjobs.php
+docker exec -it "scoutswetteren-php-container" php /var/www/scoutswetteren.dev/pirate/run/cronjobs.php

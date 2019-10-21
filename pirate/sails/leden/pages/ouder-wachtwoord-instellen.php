@@ -1,7 +1,7 @@
 <?php
 namespace Pirate\Sails\Leden\Pages;
 
-use Pirate\Sails\AmazonSes\Classes\Mail;
+use Pirate\Sails\AmazonSes\Models\Mail;
 use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Wheel\Page;
