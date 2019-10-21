@@ -239,8 +239,10 @@ class Mail extends Model
         //Passing `true` enables PHPMailer exceptions
 
         $mail = new PHPMailer(true);
-        //Server settings
-        //$mail->SMTPDebug = SMTP::DEBUG_SERVER; // Enable verbose debug output
+
+        // Disable debug headers
+        $mail->SMTPDebug = false;
+
         $mail->isSMTP(); // Send using SMTP
 
         $mail->Host = Environment::getSetting('smtp.host'); // Set the SMTP server to send through
