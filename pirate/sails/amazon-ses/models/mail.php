@@ -296,10 +296,6 @@ class Mail extends Model
                 $mail->send();
             } catch (\Exception $e) {
                 error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-                $this->error_message = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-
-                die("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-                return false;
             }
 
             //Clear all addresses for the next iteration
