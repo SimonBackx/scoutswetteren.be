@@ -69,7 +69,7 @@ class Mail extends Model
 
     public function sendOrDelay()
     {
-        if (count($this->recipients) > 0) {
+        if (count($this->recipients) > 2) {
             $this->save();
             // Cronjob
             return true;
