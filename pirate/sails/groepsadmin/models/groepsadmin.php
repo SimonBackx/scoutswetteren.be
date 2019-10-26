@@ -117,6 +117,10 @@ class Groepsadmin
 
             $leden = array();
             foreach ($response['leden'] as $lid_data) {
+                if (!isset($lid_data['be.vvksm.groepsadmin.model.column.AchternaamColumn'], $lid_data['be.vvksm.groepsadmin.model.column.VoornaamColumn'], $lid_data['be.vvksm.groepsadmin.model.column.GeboorteDatumColumn'], $lid_data['be.vvksm.groepsadmin.model.column.LidNummerColumn'])) {
+                    // Something broke down
+                    return null;
+                }
                 $lid = new GroepsadminLid($lid_data);
                 $leden[] = $lid;
             }
