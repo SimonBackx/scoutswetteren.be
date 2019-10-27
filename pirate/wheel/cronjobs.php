@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Wheel;
 
+use Pirate\Sails\Cache\Classes\CacheHelper;
 use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Migrations\Models\Migration;
 
