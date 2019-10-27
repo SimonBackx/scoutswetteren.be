@@ -910,6 +910,7 @@ class Album extends Model
                 // Prevent deletion of file by setting that it doesn't have a object storage file
                 $file->saved_on_server = true;
                 $file->object_storage_date = null;
+                $file->object_storage_path = null;
                 $file->object_storage_host = null;
                 $file->upload_date = $upd;
 
