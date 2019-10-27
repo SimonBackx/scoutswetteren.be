@@ -73,6 +73,7 @@ class Groepsadmin
                 'groepen' => [Environment::getSetting('groepsadmin.groep')],
                 'functies' => ["d5f75b320b812440010b812554790354", "d5f75b320b812440010b812555de03a2", "d5f75b320b812440010b8125567703cb", "d5f75b320b812440010b812555db03a1", "d5f75b320b812440010b812555d603a0", "d5f75b320b812440010b812555c7039d", "d5f75b320b812440010b8125565203c1", "d5f75b320b812440010b812555380380", "d5f75b320b812440010b812555c1039b"],
                 'oudleden' => false,
+                'groepseigen' => [],
             ],
             'kolommen' => $columns,
             'sortering' => [$columns[0]],
@@ -91,6 +92,7 @@ class Groepsadmin
                 'groepen' => [Environment::getSetting('groepsadmin.groep')],
                 'functies' => ["d5f75b320b812440010b812554790354", "d5f75b320b812440010b812555de03a2", "d5f75b320b812440010b8125567703cb", "d5f75b320b812440010b812555db03a1", "d5f75b320b812440010b812555d603a0", "d5f75b320b812440010b812555c7039d", "d5f75b320b812440010b8125565203c1", "d5f75b320b812440010b812555380380", "d5f75b320b812440010b812555c1039b"],
                 'oudleden' => true,
+                'groepseigen' => [],
             ],
             'kolommen' => $columns,
             'sortering' => [$columns[0]],
@@ -117,7 +119,7 @@ class Groepsadmin
 
             $leden = array();
             foreach ($response['leden'] as $lid_data) {
-                if (!isset($lid_data['be.vvksm.groepsadmin.model.column.AchternaamColumn'], $lid_data['be.vvksm.groepsadmin.model.column.VoornaamColumn'], $lid_data['be.vvksm.groepsadmin.model.column.GeboorteDatumColumn'], $lid_data['be.vvksm.groepsadmin.model.column.LidNummerColumn'])) {
+                if (!isset($lid_data['waarden']['be.vvksm.groepsadmin.model.column.AchternaamColumn'], $lid_data['waarden']['be.vvksm.groepsadmin.model.column.VoornaamColumn'], $lid_data['waarden']['be.vvksm.groepsadmin.model.column.GeboorteDatumColumn'], $lid_data['waarden']['be.vvksm.groepsadmin.model.column.LidNummerColumn'])) {
                     // Something broke down
                     return null;
                 }
