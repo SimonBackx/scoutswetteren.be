@@ -20,6 +20,17 @@ class Ship
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);*/
 
+        // Catch all errors
+        error_reporting(E_ALL);
+        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
+            // error was suppressed with the @-operator
+            if (0 === error_reporting()) {
+                return false;
+            }
+
+            throw new \ErrorException($errstr, 0, $errno, $errfile, $errline);
+        });
+
         date_default_timezone_set('Europe/Brussels');
         setlocale(LC_MONETARY, 'nl_BE');
 
