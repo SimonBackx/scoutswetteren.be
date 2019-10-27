@@ -274,7 +274,6 @@ class Mail extends Model
             }
 
             try {
-                echo "Mail to " . $recipient->email->email . "\n";
                 $mail->addAddress($recipient->email->email, $recipient->email->name);
 
                 foreach ($recipient->bcc as $bcc) {
@@ -284,12 +283,10 @@ class Mail extends Model
                 // Content
                 $mail->Subject = $recipient->replace($this->subject);
                 if (!empty($this->html)) {
-                    echo "Did send HTML\n";
                     $mail->isHTML(true); // Set email format to HTML
                     $mail->Body = $recipient->replace($this->html, true);
                     $mail->AltBody = $recipient->replace($this->text);
                 } else {
-                    echo "Did send text\n";
                     $mail->Body = $recipient->replace($this->text);
                 }
 
