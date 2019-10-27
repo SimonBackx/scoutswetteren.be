@@ -23,21 +23,36 @@ class Cronjobs
             return false;
         }
 
-        foreach ($cronjobs as $module => $crons) {
-            $ucfirst_module = ucfirst($module);
-
-            foreach ($crons as $name => $interval) {
-                $classname = "\\Pirate\\Sails\\$ucfirst_module\\Cronjobs\\" . Self::dashesToCamelCase($name, true);
-
-                $cron = new $classname();
-
-                if ($cron->needsRunning()) {
-                    $cron->run();
-                }
-            }
-
+        $running = CacheHelper::get("cronjobs_running");
+        if (isset($running) && $running === true) {
+            echo "Cronjobs are already running\n";
+            return false;
         }
 
+        /// Pause cronjobs for 30 minutes until finished
+        CacheHelper::set("cronjobs_running", true, 60 * 30);
+
+        try {
+            foreach ($cronjobs as $module => $crons) {
+                $ucfirst_module = ucfirst($module);
+
+                foreach ($crons as $name => $interval) {
+                    $classname = "\\Pirate\\Sails\\$ucfirst_module\\Cronjobs\\" . Self::dashesToCamelCase($name, true);
+
+                    $cron = new $classname();
+
+                    if ($cron->needsRunning()) {
+                        $cron->run();
+                    }
+                }
+
+            }
+
+        } catch (\Throwable $ex) {
+            CacheHelper::set("cronjobs_running", false, 0);
+            throw $ex;
+        }
+        CacheHelper::set("cronjobs_running", false, 0);
         echo "Cronjobs finished\n";
 
     }

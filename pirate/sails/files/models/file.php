@@ -261,6 +261,21 @@ class File extends Model
         return $files;
     }
 
+    /// All missing files: not on server and not in object storage
+    public static function getMissingFiles()
+    {
+        $query = 'SELECT * FROM files WHERE file_object_storage_host IS NULL AND file_saved_on_server = 0';
+        $files = array();
+
+        if ($result = self::getDb()->query($query)) {
+            while ($row = $result->fetch_assoc()) {
+                $files[] = new File($row);
+            }
+        }
+
+        return $files;
+    }
+
     public static function getRemoveableFiles($limit = 200)
     {
         $limit = intval($limit);
@@ -359,6 +374,52 @@ class File extends Model
         // todo
         $errors[] = 'Not yet implemented.';
         return false;
+    }
+
+    private function doesUrlExists($url)
+    {
+        try {
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_NOBODY, true);
+            curl_exec($ch);
+            $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+            if ($code == 200) {
+                $status = true;
+            } else {
+                $status = false;
+            }
+            curl_close($ch);
+            return $status;
+        } catch (\Throwable $ex) {
+            if (isset($ch)) {
+                curl_close($ch);
+            }
+            return false;
+        }
+    }
+
+    /// Because of an unknown bug, some files are not stored in object storage, but also not stored on the server
+    /// Howerver, if we check it, they are in fact stored in space...
+    public function recoverFromSpace()
+    {
+        if (isset($this->object_storage_host)) {
+            return false;
+        }
+        $space = Space::getDefault();
+        $space_location = $this->generateObjectStoragePath();
+        $potential_path = "https://" . $space->getHost() . "/" . $space_location;
+
+        if ($this->doesUrlExists($potential_path)) {
+            // We can recover!
+            $this->object_storage_host = $space->getHost();
+            $this->object_storage_path = $space_location;
+            $this->object_storage_date = new \DateTime();
+            return $this->save();
+        }
+
+        return false;
+
     }
 
     public function downloadFromSpace(&$errors)
@@ -751,19 +812,19 @@ class File extends Model
 
             $query = "UPDATE files
                 SET
-                 file_name = '$name',
-                 file_extension = '$extension',
-                 file_location = '$location',
-                 file_size = '$size',
-                 file_upload_date = '$upload_date',
-                 file_author = $author,
-                 file_object_storage_host = $object_storage_host,
-                 file_object_storage_path = $object_storage_path,
-                 file_saved_on_server = '$saved_on_server',
-                 file_object_storage_date = $object_storage_date,
-                 file_should_be_saved_on_server = '$should_be_saved_on_server',
-                 file_should_be_saved_in_object_storage = '$should_be_saved_in_object_storage'
-                 where file_id = '$id'
+                 `file_name` = '$name',
+                 `file_extension` = '$extension',
+                 `file_location` = '$location',
+                 `file_size` = '$size',
+                 `file_upload_date` = '$upload_date',
+                 `file_author` = $author,
+                 `file_object_storage_host` = $object_storage_host,
+                 `file_object_storage_path` = $object_storage_path,
+                 `file_saved_on_server` = '$saved_on_server',
+                 `file_object_storage_date` = $object_storage_date,
+                 `file_should_be_saved_on_server` = '$should_be_saved_on_server',
+                 `file_should_be_saved_in_object_storage` = '$should_be_saved_in_object_storage'
+                 where `file_id` = '$id'
             ";
         } else {
             $query = "INSERT INTO
