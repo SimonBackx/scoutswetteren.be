@@ -60,7 +60,7 @@ $config = [
     ],
     'development_mail' => [
         'name' => 'Simon Backx',
-        'mail' => 'simon.backx@scoutswetteren.be',
+        'mail' => 'hi@simonbackx.com',
     ],
 
     'bank' => [
