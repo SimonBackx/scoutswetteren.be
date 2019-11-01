@@ -682,7 +682,6 @@ class Leiding extends Model
 
     public static function sendErrorMail($subject, $message, $log)
     {
-        $webmasters = static::getLeiding('webmaster');
 
         $mail = Mail::create(
             $subject,
@@ -693,13 +692,11 @@ class Leiding extends Model
             )
         );
 
-        foreach ($webmasters as $webmaster) {
-            $mail->addTo(
-                $webmaster->user->mail,
-                array(),
-                $webmaster->user->firstname . ' ' . $webmaster->user->lastname
-            );
-        }
+        $mail->addTo(
+            Environment::getSetting('development_mail.mail'),
+            array(),
+            Environment::getSetting('development_mail.name')
+        );
 
         return $mail->sendOrDelay();
     }

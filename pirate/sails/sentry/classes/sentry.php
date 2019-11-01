@@ -41,9 +41,6 @@ class Sentry
         }
 
         S\init(['dsn' => Environment::getSetting('sentry.url')]);
-        S\configureScope(function (S\State\Scope $scope) use ($name) {
-            $scope->setExtra(['environment' => $name]);
-        });
 
     }
 }
