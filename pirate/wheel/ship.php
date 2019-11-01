@@ -90,7 +90,7 @@ class Ship
         } catch (\Exception $e) {
             http_response_code(500);
 
-            if (class_exists('Environment')) {
+            if (class_exists('Pirate\Sails\Environment\Classes\Environment')) {
                 echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p>';
             } else {
                 echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster als dit probleem zich blijft voordoen.</p>';
@@ -101,7 +101,7 @@ class Ship
                 echo '<pre>' . $e->getTraceAsString() . '</pre>';
             }
 
-            if (class_exists('Sentry')) {
+            if (class_exists('Pirate\Sails\Sentry\Classes\Sentry')) {
                 Sentry::shared()->logFatalError($e);
             }
             //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
@@ -110,7 +110,7 @@ class Ship
         } catch (\Error $e) {
             http_response_code(500);
 
-            if (class_exists('Environment')) {
+            if (class_exists('Pirate\Sails\Environment\Classes\Environment')) {
                 echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster (' . Environment::getSetting('development_mail.mail') . ') als dit probleem zich blijft voordoen.</p>';
             } else {
                 echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster als dit probleem zich blijft voordoen.</p>';
@@ -121,7 +121,7 @@ class Ship
                 echo '<pre>' . $e->getTraceAsString() . '</pre>';
             }
 
-            if (class_exists('Sentry')) {
+            if (class_exists('Pirate\Sails\Sentry\Classes\Sentry')) {
                 Sentry::shared()->logFatalError($e);
             }
             //Leiding::sendErrorMail("Fatal error", "Fatal error: \n".$e->getFile().' line '.$e->getLine(), $e->getMessage());
@@ -138,7 +138,7 @@ class Ship
             $this->prepare();
         } catch (\Error $e) {
             echo "Cronjobs failed: \n" . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . "\n";
-            if (class_exists('Sentry')) {
+            if (class_exists('Pirate\Sails\Sentry\Classes\Sentry')) {
                 Sentry::shared()->logFatalError($e);
             }
             Leiding::sendErrorMail("Cronjobs failed", "Cronjobs failed \n" . $e->getFile() . ' line ' . $e->getLine(), $e->getMessage());
@@ -154,7 +154,7 @@ class Ship
 
         } catch (\Error $e) {
             echo "Cronjobs fatal error \n" . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . "\n";
-            if (class_exists('Sentry')) {
+            if (class_exists('Pirate\Sails\Sentry\Classes\Sentry')) {
                 Sentry::shared()->logFatalError($e);
             }
             Leiding::sendErrorMail("Fatal error in cronjobs", "Cronjobs fatal error \n" . $e->getFile() . ' line ' . $e->getLine(), $e->getMessage());
