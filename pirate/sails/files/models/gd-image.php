@@ -1,9 +1,11 @@
 <?php
 namespace Pirate\Sails\Files\Models;
-use Pirate\Wheel\Model;
-use Imagick;
 
-class GDImage extends Model {
+use Imagick;
+use Pirate\Wheel\Model;
+
+class GDImage extends Model
+{
     public $extension = '';
     public $image = null;
     protected $width;
@@ -11,20 +13,22 @@ class GDImage extends Model {
 
     public $quality = 60;
 
-    static function createFromGDImage(GDImage $image, $quality = null) {
+    public static function createFromGDImage(GDImage $image, $quality = null)
+    {
         $gd = new GDImage(clone $image->image, $image->extension, $image->width, $image->height);
         if (isset($quality)) {
             $gd->quality = $quality;
             /*if ($gd->extension == 'jpg' || $gd->extension == 'jpeg') {
-                $gd->image->setImageCompression(Imagick::COMPRESSION_JPEG); 
-                $gd->image->setImageCompressionQuality($gd->quality);
-            }*/
+        $gd->image->setImageCompression(Imagick::COMPRESSION_JPEG);
+        $gd->image->setImageCompressionQuality($gd->quality);
+        }*/
         }
         return $gd;
     }
 
-    static function createFromFile($path) {
-        ini_set('memory_limit','200M');
+    public static function createFromFile($path)
+    {
+        ini_set('memory_limit', '200M');
 
         $data = getimagesize($path);
 
@@ -32,66 +36,69 @@ class GDImage extends Model {
             return null;
         }
 
-        Imagick::setResourceLimit(imagick::RESOURCETYPE_MEMORY, 50*1000*1000); // Maximum ±50 megabyte
+        Imagick::setResourceLimit(Imagick::RESOURCETYPE_MEMORY, 50 * 1000 * 1000); // Maximum ±50 megabyte
         $image = new Imagick($path);
 
         $width = $data[0];
         $height = $data[1];
-        $ext = strtolower(substr(strrchr(basename($path),'.'),1));
+        $ext = strtolower(substr(strrchr(basename($path), '.'), 1));
 
         $gd = new GDImage($image, $ext, $width, $height);
 
         /*if ($ext == 'jpg' || $ext == 'jpeg') {
-            $image->setImageCompression(Imagick::COMPRESSION_JPEG); 
-            $image->setImageCompressionQuality($gd->quality);
+        $image->setImageCompression(Imagick::COMPRESSION_JPEG);
+        $image->setImageCompressionQuality($gd->quality);
         }*/
 
-        $orientation = $image->getImageOrientation(); 
-        if ($orientation != imagick::ORIENTATION_TOPLEFT && $orientation != imagick::ORIENTATION_UNDEFINED){
+        $orientation = $image->getImageOrientation();
+        if ($orientation != Imagick::ORIENTATION_TOPLEFT && $orientation != Imagick::ORIENTATION_UNDEFINED) {
             $gd->correct($orientation);
         }
-        
+
         return $gd;
     }
 
-    function trim() {
+    public function trim()
+    {
         $this->image->trimImage(0);
-        $this->image->setImagePage(0, 0, 0, 0); 
+        $this->image->setImagePage(0, 0, 0, 0);
         $this->width = $this->image->getImageWidth();
         $this->height = $this->image->getImageHeight();
     }
 
-    function blackAndWhite() {
-        if ($this->image->getImagePixelColor(0,0)->getHSL()['luminosity'] < 0.1) {
+    public function blackAndWhite()
+    {
+        if ($this->image->getImagePixelColor(0, 0)->getHSL()['luminosity'] < 0.1) {
             $this->image->negateImage(false);
         }
         //$this->image->modulateImage(100,0,100);
         //$this->image = $this->image->fxImage('intensity');
     }
 
-    function level() {
+    public function level()
+    {
         $this->extension = 'png';
         $this->image->setImageFormat("png");
 
-        $pixel = $this->image->getImagePixelColor(0,0);
+        $pixel = $this->image->getImagePixelColor(0, 0);
         $alpha = $pixel->getColor(true)['a'];
         $background = (1 - $pixel->getHSL()['luminosity']) * $alpha;
         $darkest = $background;
 
         $iterator = $this->image->getPixelIterator();
-        foreach ($iterator as $row=>$pixels) {
-          foreach ( $pixels as $col=>$pixel ){
-            $alpha = $pixel->getColor(true)['a'];
+        foreach ($iterator as $row => $pixels) {
+            foreach ($pixels as $col => $pixel) {
+                $alpha = $pixel->getColor(true)['a'];
 
-            // 1 = zwart (doorzichtig)
-            // 0 = wit (ondoorzichtig)
-            $lum = (1 - $pixel->getHSL()['luminosity']) * $alpha;
+                // 1 = zwart (doorzichtig)
+                // 0 = wit (ondoorzichtig)
+                $lum = (1 - $pixel->getHSL()['luminosity']) * $alpha;
 
-            if ($lum > $darkest) {
-                $darkest = $lum;
-             }
-          }
-          $iterator->syncIterator();
+                if ($lum > $darkest) {
+                    $darkest = $lum;
+                }
+            }
+            $iterator->syncIterator();
         }
 
         // Darkest > background normaal gezien
@@ -103,49 +110,55 @@ class GDImage extends Model {
         }
 
         $iterator = $this->image->getPixelIterator();
-        foreach ($iterator as $row=>$pixels) {
-          foreach ( $pixels as $col=>$pixel ){
-            $alpha = $pixel->getColor(true)['a'];
-            $lum = ( 1 - $pixel->getHSL()['luminosity']) * ($alpha);
-            $lum = 1 - ($lum - $darkest) / $width;
-            if ($lum < 0) {
-                $lum = -$lum;
-            }
-            // Nu nog bijstellen naar background (maxium 0.96)
-            //$lum *= 0.98;
+        foreach ($iterator as $row => $pixels) {
+            foreach ($pixels as $col => $pixel) {
+                $alpha = $pixel->getColor(true)['a'];
+                $lum = (1 - $pixel->getHSL()['luminosity']) * ($alpha);
+                $lum = 1 - ($lum - $darkest) / $width;
+                if ($lum < 0) {
+                    $lum = -$lum;
+                }
+                // Nu nog bijstellen naar background (maxium 0.96)
+                //$lum *= 0.98;
 
-            $pixel->setColor('rgba(0%, 0%, 0%, '. $lum .')');
-            //$pixel->setHSL(0, 0, 1-$lum);
-          }
-          $iterator->syncIterator();
+                $pixel->setColor('rgba(0%, 0%, 0%, ' . $lum . ')');
+                //$pixel->setHSL(0, 0, 1-$lum);
+            }
+            $iterator->syncIterator();
         }
     }
 
-    function getWidth() {
+    public function getWidth()
+    {
         return $this->width;
     }
 
-    function getHeight() {
+    public function getHeight()
+    {
         return $this->height;
     }
 
-    function getSize() {
+    public function getSize()
+    {
         return array('width' => $this->width, 'height' => $this->height);
     }
 
-    function getExtension() {
+    public function getExtension()
+    {
         return $this->extension;
     }
 
-    private function __construct($image, $ext, $width, $height) {
+    private function __construct($image, $ext, $width, $height)
+    {
         $this->image = $image;
         $this->extension = $ext;
         $this->width = $width;
         $this->height = $height;
     }
 
-    private function correct($orientation) {
-        switch($orientation){
+    private function correct($orientation)
+    {
+        switch ($orientation) {
             case imagick::ORIENTATION_TOPRIGHT:
                 $this->mirrorH();
                 return;
@@ -171,19 +184,22 @@ class GDImage extends Model {
                 return;
         }
 
-        $this->image->setImageOrientation(imagick::ORIENTATION_TOPLEFT); 
+        $this->image->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
     }
 
-    function mirrorH() {
+    public function mirrorH()
+    {
         $this->image->flopImage();
     }
 
-    function mirrorV() {
+    public function mirrorV()
+    {
         $this->image->flipImage();
     }
 
     // tegen de klok draaien
-    function rotate($dir = 90){
+    public function rotate($dir = 90)
+    {
 
         if (floor($dir / 180) != $dir / 180) {
             $new_width = $this->height;
@@ -193,9 +209,10 @@ class GDImage extends Model {
         $this->image->rotateimage("#000", -$dir);
     }
 
-    function crop($size) {
-        $x = floor( ( $this->width - $size['width'] ) / 2 );
-        $y = floor( ( $this->height - $size['height'] ) / 2 );
+    public function crop($size)
+    {
+        $x = floor(($this->width - $size['width']) / 2);
+        $y = floor(($this->height - $size['height']) / 2);
 
         $this->image->cropImage($size['width'], $size['height'], $x, $y);
 
@@ -203,7 +220,8 @@ class GDImage extends Model {
         $this->height = $size['height'];
     }
 
-    static function getExpectedSize($original, $size, $allow_crop = false) {
+    public static function getExpectedSize($original, $size, $allow_crop = false)
+    {
 
         if (isset($size['width']) && $original->width < $size['width']) {
             $size['width'] = $original->width;
@@ -228,12 +246,12 @@ class GDImage extends Model {
             $new_width = $size['width'];
 
             if (isset($size['height']) && $new_height < $size['height']) {
-                $new_width = round($original->width/$original->height*$size['height']);
+                $new_width = round($original->width / $original->height * $size['height']);
                 $new_height = $size['height'];
             }
         } else {
             if (isset($size['height']) && $original->height > $size['height']) {
-                $new_width = round($original->width/$original->height*$size['height']);
+                $new_width = round($original->width / $original->height * $size['height']);
                 $new_height = $size['height'];
             }
         }
@@ -242,7 +260,8 @@ class GDImage extends Model {
     }
 
     // scale + crop
-    function fit($size) {
+    public function fit($size)
+    {
         $this->image->cropThumbnailImage($size['width'], $size['height']);
 
         $this->width = $size['width'];
@@ -250,7 +269,8 @@ class GDImage extends Model {
     }
 
     // scale with aspect ratio
-    function scale($size) {
+    public function scale($size)
+    {
         $new_width = $size['width'];
         $new_height = $size['height'];
 
@@ -261,22 +281,22 @@ class GDImage extends Model {
 
     }
 
-    function save($path, &$errors) {
+    public function save($path, &$errors)
+    {
         global $FILES_DIRECTORY;
-        $path = $FILES_DIRECTORY.'/'.$path;
+        $path = $FILES_DIRECTORY . '/' . $path;
 
         $error_reporting = error_reporting();
         error_reporting(0);
 
-        
         $old = umask(0);
         $dir = dirname($path);
 
         $try = 0;
         $failed = true;
-        while($try < 2) {
+        while ($try < 2) {
             $try++;
-            
+
             if (is_dir($dir) || mkdir($dir, 0777, true)) {
                 $failed = false;
                 break;
@@ -300,7 +320,8 @@ class GDImage extends Model {
         return $result;
     }
 
-    function destroy() {
+    public function destroy()
+    {
         $this->image->clear();
     }
 
