@@ -692,7 +692,7 @@
 
                                 for (var index = 0; index < this.cart.items[product_id].length; index++) {
                                     var item = this.cart.items[product_id][index];
-                                    if (item.product.type == 'name' && item.person_name.length < 3) {
+                                    if (item.product.type == 'name' && item.person_name.length < 2) {
                                         if (showErrors) {
                                             this.errors.step1 = [
                                                 {
