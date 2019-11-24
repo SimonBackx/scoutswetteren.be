@@ -1,6 +1,8 @@
 <?php
 namespace Pirate\Sails\Files\Models;
 
+use \Pirate\Sails\Environment\Classes\Environment;
+
 class Space
 {
     public $name;
@@ -21,7 +23,7 @@ class Space
 
     public static function getDefault()
     {
-        return new Space('scouts', 'ams3', 'digitaloceanspaces.com', 'TAG2ST7BTCVHZT7MT7QM', 'V3tNuv6wAOwAacXd553aD+XjAIMt66gEDmBl228T2is');
+        return new Space('scouts', 'ams3', 'digitaloceanspaces.com', Environment::getSetting('space.key'), Environment::getSetting('space.secret'));
     }
 
     public function getURL()
