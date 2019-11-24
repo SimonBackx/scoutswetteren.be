@@ -25,9 +25,6 @@ $config = [
     ],
 
     'space' => [
-        'name' => 'scouts',
-        'region' => 'ams3',
-        'server' => 'digitaloceanspaces.com',
         // key + secret in private config
     ],
 

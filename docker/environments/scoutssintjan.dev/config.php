@@ -24,6 +24,10 @@ $config = [
         "country" => 'BE',
     ],
 
+    'space' => [
+        // key + secret in private config
+    ],
+
     'router' => [
         'redirects' => [
             'lokaalverhuur' => '/verhuur',
