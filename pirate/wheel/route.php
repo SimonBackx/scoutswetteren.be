@@ -34,6 +34,14 @@ class Route
                         }
                     }
 
+                    if ($params[$key] == 'integer') {
+                        if (strlen($part) > 0 && intval($part) . '' === $part) {
+                            // matched
+                            $matched->params->$key = intval($part);
+                            continue;
+                        }
+                    }
+
                     // invalid type
 
                     return false;

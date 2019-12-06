@@ -1,0 +1,68 @@
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/warning"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter"></script>
+
+
+<form method="post">
+    <div class="text">
+
+        <h1>
+        {{ article.title }}
+        </h1>
+
+        <div id="editor">
+            <h1>Your title</h1>
+        </div>
+        
+        <div>
+            <a href="/admin/articles" class="main fill button">Terug</a>
+            <a href="/admin/articles/delete/{{ article.id }}" class="main button">Verwijderen</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    const editor = new EditorJS({
+        /**
+        * Id of Element that should contain Editor instance
+        */
+        holderId: 'editor',
+        autofocus: true,
+
+        tools: {
+            header: {
+                class: Header, 
+                inlineToolbar: true,
+            }, 
+            list: { 
+                class: List, 
+                inlineToolbar: true 
+            },
+            paragraph: {
+                class: Paragraph,
+                inlineToolbar: true,
+            },
+            marker: {
+                class: Marker,
+                inlineToolbar: true,
+            },
+            warning: {
+                class: Warning,
+                inlineToolbar: true,
+            },
+            quote: {
+                class: Quote,
+                inlineToolbar: true,
+            },
+            delimiter: Delimiter,
+        }
+        
+    });
+
+</script>

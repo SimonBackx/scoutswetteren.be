@@ -42,6 +42,22 @@ class Article extends Model
         return '/blog/' . datetimeToUrl($this->published) . '/' . $this->slug;
     }
 
+    public static function get($id)
+    {
+        $id = self::getDb()->escape_string($id);
+
+        $query = "SELECT * from articles where `id` = '$id'";
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows == 1) {
+                if ($row = $result->fetch_assoc()) {
+                    return new Article($row);
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static function getArticle($date, $slug)
     {
         $date = self::getDb()->escape_string($date);

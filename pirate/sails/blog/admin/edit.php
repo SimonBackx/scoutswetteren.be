@@ -5,8 +5,14 @@ use Pirate\Sails\Blog\Models\Article;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
 
-class Overview extends Page
+class Edit extends Page
 {
+    public $article;
+    public function __construct($article = null)
+    {
+        $this->article = $article;
+    }
+
     public function getStatusCode()
     {
         return 200;
@@ -14,11 +20,8 @@ class Overview extends Page
 
     public function getContent()
     {
-
-        $articles = Article::getArticles(1, 200);
-
-        return Template::render('admin/blog/overview', array(
-            'articles' => $articles,
+        return Template::render('admin/blog/edit', array(
+            'article' => $this->article,
         ));
     }
 }

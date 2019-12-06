@@ -1,0 +1,29 @@
+<div class="text">
+
+    <h1>
+       Artikels
+    </h1>
+
+    <div>
+        <a href="/admin/articles/new" class="main fill button">Nieuw</a>
+    </div>
+
+    <div class="list-bundle">
+    {% for article in articles %}
+    
+        <article class="list">
+            <div class="small column">{{ article.published | date("d/m/Y") }}</div>
+
+            <div class="max merlot column">{{ article.title }}</div>
+            <div class="last column">
+                <a href="/admin/articles/{{ article.id }}" class="button noborder">Bewerken</a>
+            </div>
+        </article>
+
+    {% else %}
+    </div>
+        <p>Nog geen artikels geschreven</p>
+        <div>
+    {% endfor %}
+    </div>
+</div>
