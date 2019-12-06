@@ -140,7 +140,7 @@ $config = [
         'max_gebouw' => 35,
         'max_tenten' => 20,
 
-        'prijzen' => array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102, 2020 => 105, 2021 => 110),
+        'prijzen' => array(2016 => 95, 2017 => 98, 2018 => 100, 2019 => 102, 2020 => 105, 2021 => 110, 2022 => 120),
         'prijs_extra_persoon_gebouw' => 4,
         'prijs_inbegrepen_personen' => 35,
 
