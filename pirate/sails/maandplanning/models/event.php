@@ -229,7 +229,6 @@ class Event extends Model
         $tak = self::getDb()->escape_string($tak);
 
         $first_day_month = date('Y-m') . '-01 00:00:00';
-        echo $first_day_month;
 
         $events = array();
         $query = 'SELECT e.*, o.*, b.* FROM events e
