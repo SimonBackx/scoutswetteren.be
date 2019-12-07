@@ -23,6 +23,11 @@ class Page
         return 'getContent method not implemented';
     }
 
+    public function getContentType()
+    {
+        return 'text/html';
+    }
+
     public function hasOwnLayout()
     {
         return false;
@@ -32,6 +37,7 @@ class Page
     {
         if (!$this->customHeaders()) {
             http_response_code($this->getStatusCode());
+            header('Content-Type: ' . $this->getContentType());
         }
         echo $this->getContent();
     }

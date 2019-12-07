@@ -1,28 +1,33 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/header"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/list"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script><!-- Image -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script><!-- List -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script><!-- Link -->
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
 
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/warning"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote"></script>
-<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
 
-
-<form method="post">
+<form method="post" id="form">
     <div class="text">
+        {% if errors|length > 0 %}
+            <ul class="error" style="max-width: 650px;margin: 0 auto;">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-        <h1>
-        {{ article.title }}
-        </h1>
-
-        <div id="editor">
-            <h1>Your title</h1>
-        </div>
+        <div id="editor"></div>
         
-        <div>
-            <a href="/admin/articles" class="main fill button">Terug</a>
-            <a href="/admin/articles/delete/{{ article.id }}" class="main button">Verwijderen</a>
+        <input type="hidden" name="json" id="json-field">
+        <div style="max-width: 650px;margin: 0 auto;">
+            <button id="submitButton" class="main fill button" type="button">Opslaan</button>
+            <a href="/admin/articles" class="main button">Annuleren</a>
+
+            {% if not new %}
+                <a href="/admin/articles/delete/{{ article.id }}" class="main button">Verwijderen</a>
+            {% endif %}
         </div>
     </div>
 </form>
@@ -36,33 +41,55 @@
         autofocus: true,
 
         tools: {
+            /**
+            * Each Tool is a Plugin. Pass them via 'class' option with necessary settings {@link docs/tools.md}
+            */
             header: {
-                class: Header, 
-                inlineToolbar: true,
-            }, 
-            list: { 
-                class: List, 
-                inlineToolbar: true 
+                class: Header,
+                inlineToolbar: ['link'],
+                config: {
+                    placeholder: 'Header'
+                },
+                shortcut: 'CMD+SHIFT+H'
             },
-            paragraph: {
-                class: Paragraph,
-                inlineToolbar: true,
+            /**
+            * Or pass class directly without any configuration
+            */
+            image: {
+                class: ImageTool,
+                config: {
+                    endpoints: {
+                        byFile: '/api/blog/upload-file', // Your backend file uploader endpoint
+                        byUrl: '/api/blog/upload-url', // Your endpoint that provides uploading by Url
+                    }
+                }
             },
-            marker: {
-                class: Marker,
+            list: {
+                class: List,
                 inlineToolbar: true,
+                shortcut: 'CMD+SHIFT+L'
             },
-            warning: {
-                class: Warning,
-                inlineToolbar: true,
+            warning: Warning,
+                marker: {
+                class:  Marker,
+                shortcut: 'CMD+SHIFT+M',
+                config: {
+                    titlePlaceholder: 'Titel',
+                    messagePlaceholder: 'Bericht',
+                },
             },
-            quote: {
-                class: Quote,
-                inlineToolbar: true,
-            },
-            delimiter: Delimiter,
-        }
-        
+            delimiter: Delimiter
+        },
+        data: {{ data.json |raw }}
     });
+
+    document.getElementById('submitButton').addEventListener('click', function() {
+        editor.save().then((outputData) => {
+            document.getElementById('json-field').value = JSON.stringify(outputData);
+            document.getElementById('form').submit();
+        }).catch((error) => {
+            console.error('Saving failed: ', error)
+        });
+    })
 
 </script>

@@ -248,11 +248,15 @@ hr {
 ol {
     list-style: none;
     counter-reset: ol-counter;
+    padding-left: 0px;
 
     li {
         counter-increment: ol-counter;
+        padding: 0;
+        margin: 20px 0;
         padding-left: 30px;
         position: relative;
+        line-height: inherit;
 
         @media screen and (max-width: 480px), print {
             padding-left: 20px;

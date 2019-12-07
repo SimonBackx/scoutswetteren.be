@@ -1,31 +1,33 @@
 <?php
 
 namespace Pirate\Sails\Blog;
-use Pirate\Wheel\Page;
+
+use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Wheel\Route;
 
-class BlogApiRouter extends Route {
-    function doMatch($url, $parts) {
+class BlogApiRouter extends Route
+{
+    public function doMatch($url, $parts)
+    {
+        if ($result = $this->match($parts, '/get-page/@page', ['page' => 'integer'])) {
+            $this->setPage(new Api\GetPage(max(1, $result->params->page)));
+            return true;
+        }
 
-        if ($parts[0] == 'get-page') {
-            // Formaat nog verifieren!!
+        if ($this->match($parts, '/search')) {
+            $this->setPage(new Api\Search($_GET['q']));
             return true;
         }
-        if ($parts[0] == 'search') {
-            // Formaat nog verifieren!!
+
+        if (!Leiding::hasPermission('redacteur')) {
+            return false;
+        }
+
+        if ($this->match($parts, '/upload-file')) {
+            $this->setPage(new Api\UploadFile());
             return true;
         }
+
         return false;
-    }
-
-    function getPage($url, $parts) {
-
-        if ($parts[0] == 'search') {
-            require(__DIR__.'/api/search.php');
-            return new Api\Search($_GET['q']);
-        }
-
-        require(__DIR__.'/api/get-page.php');
-        return new Api\GetPage(max(1,intval($parts[1])));
     }
 }

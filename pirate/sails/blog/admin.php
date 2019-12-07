@@ -39,6 +39,16 @@ class BlogAdminRouter extends AdminRoute
             return true;
         }
 
+        if ($result = $this->match($parts, '/articles/delete/@id', ['id' => 'integer'])) {
+            $article = Article::get($result->params->id);
+
+            if (empty($article)) {
+                return false;
+            }
+            $this->setPage(new Admin\Delete($article));
+            return true;
+        }
+
         if ($result = $this->match($parts, '/articles', [])) {
             $this->setPage(new Admin\Overview());
             return true;
