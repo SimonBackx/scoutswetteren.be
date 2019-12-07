@@ -1,38 +1,59 @@
 <?php
 namespace Pirate\Sails\Blog;
-use Pirate\Wheel\Page;
+
+use Pirate\Sails\Blog\Models\Article;
+use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Wheel\AdminRoute;
 
-class BlogAdminRouter extends AdminRoute {
+class BlogAdminRouter extends AdminRoute
+{
     private $id;
 
-    static function getAvailablePages() {
-        return [];
+    public static function getAvailablePages()
+    {
+        return [
+            'redacteur' => [
+                array('priority' => 200, 'name' => 'Artikels', 'url' => 'articles'),
+            ],
+        ];
     }
 
-    function doMatch($url, $parts) {
-        if (isset($parts[0]) && $parts[0] == 'blog') {
-            if (count($parts) == 1) {
-                return true;
-            } elseif ($parts[1] == 'article' && count($parts) == 3) {
-                if (!is_numeric($parts[2])) {
-                    return false;
-                }
-                $this->id = intval($parts[2]);
-                return true;
+    public function doMatch($url, $parts)
+    {
+        if (!Leiding::hasPermission('redacteur')) {
+            return false;
+        }
+
+        if ($result = $this->match($parts, '/articles/new')) {
+            $this->setPage(new Admin\Edit());
+            return true;
+        }
+
+        if ($result = $this->match($parts, '/articles/@id', ['id' => 'integer'])) {
+            $article = Article::get($result->params->id);
+
+            if (empty($article)) {
+                return false;
             }
+            $this->setPage(new Admin\Edit($article));
+            return true;
+        }
+
+        if ($result = $this->match($parts, '/articles/delete/@id', ['id' => 'integer'])) {
+            $article = Article::get($result->params->id);
+
+            if (empty($article)) {
+                return false;
+            }
+            $this->setPage(new Admin\Delete($article));
+            return true;
+        }
+
+        if ($result = $this->match($parts, '/articles', [])) {
+            $this->setPage(new Admin\Overview());
+            return true;
         }
 
         return false;
-    }
-
-    function getPage($url, $parts) {
-        if (count($parts) == 1) {
-            require(__DIR__.'/admin/overview.php');
-            return new Admin\Overview();
-        }
-
-        require(__DIR__.'/admin/lid.php');
-        return new Admin\Article($this->id);
     }
 }

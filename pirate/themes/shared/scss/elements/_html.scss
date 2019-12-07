@@ -28,3 +28,48 @@ body, html {
 noscript .ie-only {
     display: block;
 }
+
+mark {
+    background: rgba($color-warning, 0.2);
+}
+
+.image-container {
+    margin: 15px 0;
+
+    img {
+        border-radius: 5px;
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
+
+    &.with-background {
+        padding: 15px;
+        background: $color-background-shade;
+        border-radius: 5px;
+        overflow: hidden;
+
+        img {
+            border-radius: 5px;
+            display: block;
+            max-width: 60%;
+            height: auto;
+            margin: 0 auto;
+        }
+    }
+    &.with-border {
+        border: $border-width solid $color-border;
+    }
+    
+}
+
+#editor .ce-delimiter {
+    &::before {
+        margin: 15px 0;
+        display: block;
+        border-radius: $border-width/2;
+        background: $color-border;
+        height: $border-width;
+        content: '';
+    }
+}
