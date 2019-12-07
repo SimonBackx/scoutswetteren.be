@@ -14,8 +14,8 @@ class Article extends Model
     public $published;
     public $edited = null;
     public $html;
-    private $text;
-    private $json;
+    public $text;
+    public $json;
 
     public $slug;
 

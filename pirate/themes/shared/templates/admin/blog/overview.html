@@ -16,7 +16,9 @@
 
             <div class="max merlot column">{{ article.title }}</div>
             <div class="last column">
-                <a href="/admin/articles/{{ article.id }}" class="button noborder">Bewerken</a>
+                {% if article.json %}
+                    <a href="/admin/articles/{{ article.id }}" class="button noborder">Bewerken</a>
+                {% endif %}
             </div>
         </article>
 

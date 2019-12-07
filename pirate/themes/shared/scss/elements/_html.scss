@@ -34,9 +34,10 @@ mark {
 }
 
 .image-container {
-    
+    margin: 15px 0;
+
     img {
-        border-radius: $border-radius;
+        border-radius: 5px;
         display: block;
         max-width: 100%;
         height: auto;
@@ -45,11 +46,11 @@ mark {
     &.with-background {
         padding: 15px;
         background: $color-background-shade;
-        border-radius: $border-radius;
+        border-radius: 5px;
         overflow: hidden;
 
         img {
-            border-radius: $border-radius;
+            border-radius: 5px;
             display: block;
             max-width: 60%;
             height: auto;
