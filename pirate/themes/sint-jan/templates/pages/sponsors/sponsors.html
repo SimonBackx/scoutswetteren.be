@@ -1,0 +1,24 @@
+{% set title = 'Sponsors' %}
+{% set description = 'Dit zijn onze sponsors.' %}
+{% extends "base.html" %}
+
+{% block main %}
+    <main>
+        <section class="block white">
+            <div class="h1-prefix">Bedankt voor jullie steun en vertrouwen!</div>
+            <h1>Onze sponsors</h1>
+
+            <p>Elk jaar proberen we onze vraagprijzen voor het lidgeld, weekends, kampen etc. zo laag mogelijk te houden, zodat onze scouts toegankelijk is voor iedereen. Naast een jaarlijkse subsidie van onze gemeente, zorgen we er vooral zelf voor dat er geld in het laatje komt, door o.a. een jaarlijks eetfestijn en fuif op poten te zetten en door pannenkoeken te verkopen in de Wetterse straten.</p>
+
+            <p>De opbrengsten van deze financiële activiteiten worden vooral gebruikt voor de afbetaling en het onderhoud van onze lokalen, maar ook voor de aankoop van nieuw groepsmateriaal etc. Hierbij krijgen we steevast de steun van onze sponsors, die een belangrijke rol spelen in het garanderen van onze werking. </p>
+
+            <p>Via deze weg willen we dan ook onze sponsors van het werkjaar 2019-2020 nog eens bedanken voor hun steun! Dikke merci!</p>
+
+            <p>Ook interesse om onze scouts te sponsoren op een of andere manier? Neem zeker eens contact met ons op via <a href="mailto:evenementen@scoutssintjan.be">evenementen@scoutssintjan.be</a>!</p>
+        </section>
+
+        <section class="block white">
+            <div id="sponsors">{% for sponsor in sponsors %}{% if sponsor.url is defined %}<a href="{{ sponsor.url }}" rel="nofollow" title="{{sponsor.name}}" target="_blank">{% else %}<div>{%endif%}<img src="{{sponsor.src}}">{% if sponsor.url is defined%}</a>{% else %}</div>{%endif%}{% endfor %}</section>
+        </section>
+    </main>
+{% endblock %}

@@ -1,5 +1,5 @@
 <?php
-namespace Pirate\Sails\Homepage\Pages;
+namespace Pirate\Sails\Sponsors\Pages;
 
 use Pirate\Sails\Sponsors\Models\Sponsor;
 use Pirate\Wheel\Page;
@@ -33,13 +33,8 @@ class Sponsors extends Page
 
         shuffle($sponsors_data);
 
-        return Template::render('pages/homepage/sponsors', array(
+        return Template::render('pages/sponsors/sponsors', array(
             'sponsors' => $sponsors_data,
-            'call_to_action' => array(
-                'title' => 'Volg je kapoen',
-                'subtitle' => 'Doorheen het jaar en tijdens weekends en kampen posten we geregeld foto\'s en updates op onze facebook pagina.',
-                'button' => array('text' => 'Like onze pagina', 'url' => 'https://www.facebook.com/scoutsprinsboudewijn/'),
-            ),
         ));
     }
 }

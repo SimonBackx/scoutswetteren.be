@@ -197,7 +197,7 @@ class Image extends Model
         }
 
         $source->location = $path . 'sources/';
-        if (!$source->upload($form_name, $errors, array('jpeg', 'jpg', 'png', 'gif', 'bmp'), $this->id)) {
+        if (!$source->upload($form_name, $errors, array('jpeg', 'jpg', 'png', 'gif', 'bmp', 'tiff'), $this->id)) {
             self::getDb()->rollback();
             self::getDb()->autocommit(true);
 
