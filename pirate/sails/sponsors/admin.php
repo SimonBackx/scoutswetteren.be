@@ -26,7 +26,7 @@ class SponsorsAdminRouter extends AdminRoute
 
     public function doMatch($url, $parts)
     {
-        if (!Leiding::hasPermission('redacteur') || !Leiding::hasPermission('groepsleiding') || !Leiding::hasPermission('oudercomite')) {
+        if (!Leiding::hasPermission('redacteur') && !Leiding::hasPermission('groepsleiding') && !Leiding::hasPermission('oudercomite')) {
             return false;
         }
 
