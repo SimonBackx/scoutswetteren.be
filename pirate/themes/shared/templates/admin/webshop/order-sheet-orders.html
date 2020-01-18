@@ -14,7 +14,12 @@
                 {{ order.getPrice() }}
                 
                 {% if not order.isPaid() %}
-                    <strong>(Niet betaald)</strong>
+                    {% if order.payment_method == 'cash' %}
+                        <br>{{ order.getPaymentName() }}
+                    {% else %}
+                    <br>{{ order.getPaymentName() }}
+                        <strong>(Niet betaald)</strong>
+                    {% endif %}
                 {% endif %}
 
                 {% if order.getSummary().persons | length == 1 %}
