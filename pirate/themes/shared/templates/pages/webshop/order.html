@@ -97,8 +97,10 @@
                                                 <strong>Aantal personen:</strong> {{ item.amount }}<br>
                                             {% endif %}
         
-                                            <strong>{{ item.product.price_name }}:</strong> {{ item.product_price.name }}<br>
-        
+                                            {% if item.product_price.name %}
+                                                <strong>{{ item.product.price_name }}:</strong> {{ item.product_price.name }}<br>
+                                            {% endif %}
+
                                             {% for option in item.options %}
                                                 <strong>{{ option.optionset.name }}:</strong> {{ option.name }}<br>
                                             {% endfor %}
