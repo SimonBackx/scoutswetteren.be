@@ -20,7 +20,9 @@ class Order extends Page
 
     public function getContent()
     {
-        $this->order->payment->updateStatus();
+        if (isset($this->order->payment)) {
+            $this->order->payment->updateStatus();
+        }
         return Template::render('pages/webshop/order', array(
             'order' => $this->order,
         ));

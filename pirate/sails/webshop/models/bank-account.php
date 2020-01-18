@@ -9,6 +9,7 @@ class BankAccount extends Model
     public $name;
     public $iban;
     public $stripe_public;
+    public $allow_cash;
 
     public function __construct($row = null)
     {
@@ -21,6 +22,8 @@ class BankAccount extends Model
         $this->iban = $row['account_iban'];
         $this->stripe_public = $row['account_stripe_public'];
         $this->stripe_secret = $row['account_stripe_secret'];
+        $this->allow_cash = $row['account_allow_cash'] ? true : false;
+
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid
@@ -31,11 +34,19 @@ class BankAccount extends Model
 
     public function getPaymentMethods()
     {
+        $d = [];
+
+        if ($this->allow_cash) {
+            $d[] = 'cash';
+        }
+
         /// Currently only stripe supported
         if (empty($this->stripe_public)) {
-            return ['transfer'];
+            $d[] = 'transfer';
+        } else {
+            $d[] = 'stripe';
         }
-        return ['stripe'];
+        return $d;
     }
 
     public static function getAll()
@@ -96,6 +107,8 @@ class BankAccount extends Model
             $stripe_secret = "'" . self::getDb()->escape_string($this->stripe_secret) . "'";
         }
 
+        $allow_cash = self::getDb()->escape_string($this->allow_cash ? 1 : 0);
+
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
 
@@ -104,14 +117,16 @@ class BankAccount extends Model
                 account_name = '$name',
                 account_iban = $iban,
                 account_stripe_public = $stripe_public,
-                account_stripe_secret = $stripe_secret
+                account_stripe_secret = $stripe_secret,
+                account_allow_cash = '$allow_cash'
+
                  where `account_id` = '$id'
             ";
         } else {
 
             $query = "INSERT INTO
-                bank_accounts (`account_name`, `account_iban`, `account_stripe_public`, `account_stripe_secret`)
-                VALUES ('$name', $iban, $stripe_public, $stripe_secret)";
+                bank_accounts (`account_name`, `account_iban`, `account_stripe_public`, `account_stripe_secret`, `account_allow_cash`)
+                VALUES ('$name', $iban, $stripe_public, $stripe_secret, '$allow_cash')";
         }
 
         $result = self::getDb()->query($query);

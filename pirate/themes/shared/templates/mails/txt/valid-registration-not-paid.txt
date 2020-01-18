@@ -1,6 +1,6 @@
 Dag %firstname%,
 
-We hebben jouw inschrijving ontvangen en hebben deze genoteerd. Vergeet niet om de betaling ook af te ronden (informatie hierover vind je terug op de link hieronder).
+We hebben jouw inschrijving ontvangen en hebben deze genoteerd. {% if order.payment_method == 'cash' %}Vergeet niet dat je nog moet betalen bij het binnenkomen.{% else %}Vergeet niet om de betaling ook af te ronden (informatie hierover vind je terug op de link hieronder).{% endif %}
 
 Je kan alle details van de inschrijving nakijken via onderstaande link:
 

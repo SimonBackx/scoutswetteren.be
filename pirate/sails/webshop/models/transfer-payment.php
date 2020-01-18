@@ -44,6 +44,10 @@ class TransferPayment extends Payment
         $this->reference = $this->order->isRegistration() ? "Inschrijving {$this->order->id}" : "Bestelling {$this->order->id}";
         $this->bank_account = $bank_account;
         $this->status = 'pending';
+
+        // Always valid unless canceled later on
+        $this->order->markAsValid();
+
         $this->updateStatus();
     }
 

@@ -1,3 +1,14 @@
+footer.floater {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    &> .price-floater {
+        float: none;
+    }
+}
+
 .price-floater {
     float: right;
     display: flex;

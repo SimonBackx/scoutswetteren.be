@@ -15,6 +15,7 @@ class Ship
     public function prepare()
     {
         global $FILES_DIRECTORY;
+        $_ENV['DEBUG'] = 1;
 
         /*ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);

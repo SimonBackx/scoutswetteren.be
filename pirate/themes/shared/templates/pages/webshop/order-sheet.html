@@ -80,7 +80,13 @@
                 </div>
 
                 <footer>
-                    <button type="button" class="icon-button plus" v-on:click="nextStep(0);">Nog personen inschrijven</button>
+                    <button type="button" class="icon-button plus" v-on:click="nextStep(0);">
+                        {% if order_sheet.type == 'registrations' %}
+                            Nog personen inschrijven
+                        {% else %}
+                            Nog een bestelling plaatsen
+                        {% endif %}
+                    </button>
                 </footer>
             </form>
         </section>
@@ -114,9 +120,9 @@
                             <div v-if="product.type == 'unit'"><label>Aantal</label></div>
                             <div v-if="product.type == 'person'"><label>Aantal personen</label></div>
 
-                            <div v-if="product.type != 'name'"><label>Totaal</label></div>
+                            <div v-if="product.type != 'name' && (order_sheet.products.length > 1 || cart.items[product.id].length > 1)"><label>Totaal</label></div>
 
-                            <div><label></label></div>
+                            <div v-if="cart.items[product.id].length > 1 || isPersonalizeableProduct(product)"><label></label></div>
                         </header>
             
                         <div v-for="(cartitem, index) in cart.items[product.id]">    
@@ -158,17 +164,17 @@
                                 <input type="text" v-model.number="cartitem.amount" placeholder="Aantal personen">
                             </div>
 
-                            <div v-if="product.type != 'name'" data-title="Totaal">
+                            <div class="smallest"  v-if="product.type != 'name' && (order_sheet.products.length > 1 || cart.items[product.id].length > 1)" data-title="Totaal">
                                 <span>[[ getItemPriceString(cartitem, true) ]]</span>
                             </div>
                             
-                            <div class="smallest">
+                            <div class="smallest" v-if="cart.items[product.id].length > 1 || isPersonalizeableProduct(product)">
                                 <button type="button" class="button" v-on:click="deleteCartItem(product, index);">Verwijderen</button>
                             </div>
                         </div>
                     </div>
 
-                    <button type="button" class="icon-button plus" v-on:click="addItemForProduct(product);">
+                    <button type="button" class="icon-button plus" v-on:click="addItemForProduct(product);" v-if="cart.items[product.id].length == 0 || isPersonalizeableProduct(product)">
                         [[ product.type == 'unit' ? 'Toevoegen' : 'Persoon toevoegen' ]]
                     </button>
                 </template>
@@ -177,7 +183,8 @@
                     <li v-for="error in errors.step1">[[ error.message ]]</li>
                 </ul>
 
-                <footer>
+                <footer class="floater">
+                    <button type="button" class="button main" :class="{'fill': isValid(1)}" v-on:click="nextStep(1);">Volgende</button>
                     <div class="price-floater">
                         <div>
                             Totaal
@@ -185,7 +192,6 @@
                         </div>
                         <div>[[ getTotalString() ]]</div>
                     </div>
-                    <button type="button" class="button main" :class="{'fill': isValid(1)}" v-on:click="nextStep(1);">Volgende</button>
                 </footer>
 
             </form>
@@ -375,6 +381,14 @@
                 });
             {% endif %}
 
+            {% if 'cash' in order_sheet.bank_account.getPaymentMethods() %}
+                payment_methods.push({
+                    type: "cash",
+                    data: {},
+                    name: {% if order_sheet.type == 'registrations' %}"Betalen bij binnenkomen"{% else %}"Betalen bij afhalen"{% endif %}
+                });
+            {% endif %}
+
             function formatPrice(price) {
                 if (isNaN(price)) {
                     return "€ -";
@@ -446,6 +460,18 @@
                     this.loadFromLocalstorage();
                 },
                 methods: {
+                    isPersonalizeableProduct: function(product) {
+                        if (product.type == 'name') {
+                            return true;
+                        }
+                        if (product.prices.length > 1) {
+                            return true;
+                        }
+                        if (product.optionsets.length > 0) {
+                            return true;
+                        }
+                        return false;
+                    },
                     addItemForProduct: function(product) {
                         var item = {
                             amount: 1,
@@ -567,7 +593,13 @@
                         } catch (exception) {
                             // Invald: don't load
                         }
-                        
+
+                        // Add default items for non personlizeable items
+                        this.order_sheet.products.forEach(function(product) {
+                            if (!this.isPersonalizeableProduct(product) && this.cart.items[product.id].length == 0) {
+                                this.addItemForProduct(product);
+                            }
+                        }.bind(this));
 
                     },
 

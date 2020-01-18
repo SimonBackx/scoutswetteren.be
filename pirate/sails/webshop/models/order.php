@@ -236,6 +236,7 @@ class Order extends Model implements \JsonSerializable
             try {
                 if ($type === 'stripe') {
                 } elseif ($type === 'transfer') {
+                } elseif ($type === 'cash') {
                 } else {
                     throw new ValidationError("Ongeldige betaalmethode geselecteerd", "payment_method");
                 }
@@ -263,17 +264,28 @@ class Order extends Model implements \JsonSerializable
             $type = $data['payment_method']['type'];
 
             try {
-                if ($type === 'stripe') {
-                    $this->payment = new StripePayment();
-                } elseif ($type === 'transfer') {
-                    $this->payment = new TransferPayment();
-
-                } else {
+                if (!in_array($type, $bank_account->getPaymentMethods())) {
                     throw new ValidationError("Ongeldige betaalmethode geselecteerd", "payment_method");
                 }
-                $this->payment->setProperties($bank_account, $data['payment_method']['data'], $this);
-                $this->payment->save();
+
+                if ($type === 'cash') {
+                    $this->payment = null;
+                    $this->markAsValid();
+                } else {
+                    if ($type === 'stripe') {
+                        $this->payment = new StripePayment();
+                    } elseif ($type === 'transfer') {
+                        $this->payment = new TransferPayment();
+
+                    } else {
+                        throw new ValidationError("Ongeldige betaalmethode geselecteerd", "payment_method");
+                    }
+                    $this->payment->setProperties($bank_account, $data['payment_method']['data'], $this);
+                    $this->payment->save();
+                }
+
                 $this->payment_method = $type;
+
             } catch (ValidationErrorBundle $bundle) {
                 $errors->extend(...$bundle->getErrors());
             }
@@ -351,6 +363,7 @@ class Order extends Model implements \JsonSerializable
             array(
                 'url' => $this->getUrl(),
                 'order_sheet' => isset($this->order_sheet) ? $this->order_sheet : null,
+                'order' => $this,
             )
         );
 
@@ -470,6 +483,17 @@ class Order extends Model implements \JsonSerializable
         // Linked tables will get deleted automatically + restricted when orders exist with this product
 
         return self::getDb()->query($query);
+    }
+
+    public function getPaymentName() {
+        if ($this->payment_method == 'cash') {
+            if ($this->isRegistration()) {
+                return "Betalen bij binnenkomen";
+            } else {
+                return "Betalen bij afhalen";
+            }
+        }
+        return $this->payment->getName();
     }
 
     public function jsonSerialize()

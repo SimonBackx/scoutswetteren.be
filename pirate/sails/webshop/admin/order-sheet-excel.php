@@ -90,7 +90,7 @@ class OrderSheetExcel extends Page
             foreach ($product->prices as $price) {
                 $add($product, $price);
             }
-            if (count($product->prices) > 0) {
+            if (count($product->prices) > 1) {
                 $add($product, null);
             }
         }
@@ -178,7 +178,7 @@ class OrderSheetExcel extends Page
 
         foreach ($orders as $index => $order) {
             $letter = 'A';
-            $sheet->setCellValue($letter . ($index + $startIndex), $order->user->firstname . ' ' . $order->user->lastname . "\n" . $order->user->phone . "\n" . $order->user->mail);
+            $sheet->setCellValue($letter . ($index + $startIndex), $order->user->firstname . ' ' . $order->user->lastname . "\n" . $order->user->phone . "\n" . $order->user->mail . "\n" . $order->getPaymentName() . ($order->isPaid() ? '' : " ! Niet betaald !"));
             $sheet->getStyle($letter . ($index + $startIndex))->getAlignment()->setWrapText(true);
 
             foreach ($filters as $filter) {

@@ -116,9 +116,9 @@
                                 <div>
                                     Totaal
                                     {% if not order.isPaid() %}
-                                        <span>Nog niet betaald ({{ order.payment.getName() }})</span>
+                                        <span>Nog niet betaald ({{ order.getPaymentName() }})</span>
                                     {% else %}
-                                        <span>Betaald via {{ order.payment.getName() }}</span>
+                                        <span>Betaald via {{ order.getPaymentName() }}</span>
                                     {% endif%}
                                 </div>
                                 <div>{{ order.getPrice() }}</div>
