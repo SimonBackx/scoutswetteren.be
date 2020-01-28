@@ -289,6 +289,11 @@ $config = [
             'name' => 'Evenementen',
             'mail' => 'evenementen@scoutssintjan.be',
         ),
+
+        'pannenkoeken@scoutssintjan.be' => array (
+            'name' => 'Pannenkoeken',
+            'mail' => 'pannenkoeken@scoutssintjan.be'
+        )
     ],
 ];
 
