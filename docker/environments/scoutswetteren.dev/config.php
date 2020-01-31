@@ -32,7 +32,7 @@ $config = [
 
     'router' => [
         'redirects' => [
-            'winterfeest' => '/inschrijvingen/1/inschrijven-voor-winterfeest',
+            'winterfeest' => '/inschrijvingen/2/inschrijven-voor-winterfeest-75-jaar',
         ],
     ],
 

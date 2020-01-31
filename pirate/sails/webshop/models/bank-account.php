@@ -45,6 +45,7 @@ class BankAccount extends Model
             $d[] = 'transfer';
         } else {
             $d[] = 'stripe';
+            $d[] = 'transfer';
         }
         return $d;
     }

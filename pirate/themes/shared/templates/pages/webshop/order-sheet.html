@@ -91,7 +91,7 @@
             </form>
         </section>
         <section class="white block" v-if="step == 1">
-            <form>
+            <form class="text">
                 <header>
                     <button v-if="orders.length > 0" type="button" class="button main noborder arrow-left" v-on:click="step = 0;">Terug</button>
 
@@ -337,7 +337,7 @@
 
             
             {% if 'stripe' in order_sheet.bank_account.getPaymentMethods() %}
-                <script src="https://js.stripe.com/v3/"></script>
+                </script><script src="https://js.stripe.com/v3/"></script><script>
 
                 var stripe = Stripe('{{ order_sheet.bank_account.stripe_public }}');
                 var stripe_elements = stripe.elements();
