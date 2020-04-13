@@ -704,7 +704,7 @@
                         if (!order_sheet.delivery) {
                             return 0;
                         }
-                        if (!user.zipcode) {
+                        if (!user.zipcode || user.zipcode.length != 4) {
                             return 0;
                         }
                         if (parseInt(user.zipcode) < 9000) {
