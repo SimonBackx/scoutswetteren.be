@@ -13,9 +13,12 @@ RUN apt-get install -y php7.3 php7.3-fpm php7.3-zip php7.3-mysql php7.3-curl php
 RUN apt-get install -y nginx
 
 RUN mkdir -p /var/run/php/
-ADD php/conf.d/99-scouts.ini /etc/php/7.3/fpm/pool.d/99-scouts.ini
+ADD php/conf.d/99-scouts.ini /etc/php/7.3/fpm/conf.d/99-scouts.ini
+ADD php/pool.d/www-scouts.conf /etc/php/7.3/fpm/pool.d/www_scouts.conf
 
 RUN touch /var/log/php_errors.log
+RUN ls /etc/php/7.3/fpm/pool.d/ && cat /etc/php/7.3/fpm/pool.d/www.conf
+
 
 ENV DEBUG 1
-cmd DEBUG=1 php-fpm7.3 -D; nginx -g 'daemon off;'
+cmd DEBUG=1 php-fpm7.3 -D; nginx; echo "Ready."; tail -f /var/log/nginx/error.log

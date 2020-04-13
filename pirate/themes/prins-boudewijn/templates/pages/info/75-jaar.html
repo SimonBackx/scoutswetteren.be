@@ -1,0 +1,202 @@
+{% set title = '75 jaar Prins Boudewijn' %}
+{% set description = 'Onze scouts bestaat 75 jaar, en dat mag gevierd worden! Dat alles vieren we met een feestweekend op ons eigen terrein, dat gaat door van 18 tot 20 september 2020.' %}
+{% extends "base.html" %}
+
+{% block head %}
+    <style type="text/css">
+        #terrein-image {
+            background-image: url(/prins-boudewijn/images/part/terrein.jpg);
+        }
+        #kamp-image {
+            background-image: url(/prins-boudewijn/images/part/kamp.jpg);
+        }
+        #lid-worden-image {
+            background-image: url(/prins-boudewijn/images/part/lid-worden.jpg);
+        }
+        #price {
+            font-size: 28pt;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+    <main>
+        
+        <article class="white block" id="veel-gestelde-vragen">
+            <div class="splitted">
+                <div class="part text">
+                    <header>
+                        <h1>75 jaar Scouts Prins Boudewijn</h1>
+                    </header>
+            
+                    <p>75 jaar geleden ontstond de eerste jeugdbeweging in Wetteren, en daar mogen we fier op zijn! Al die jaren heeft onze
+                    scouts kunnen rekenen op de inzet van leiding, ouders, materiaalmeesters, oudleiding, sponsors en nog zovele andere
+                    vrijwilligers. Bedankt! Dat allemaal om onze leden een leuke zondagnamiddag, weekend of kamp te bezorgen.</p>
+            
+        
+                    <footer>
+                        <a href="https://www.facebook.com/events/2278441632453336/" class="icon-button">Ga naar Facebook evenement</a>
+                    </footer>
+                </div>
+                <div class="part subtext">
+                    <h2>Wanneer vieren we?</h2>
+                    <p>Dat alles vieren we met een feestweekend op ons eigen terrein, dat gaat door van 18 tot 20 september 2020. We vieren de
+                    voorbije 75 jaar en kijken vooruit naar nog eens minstens hetzelfde erbij! Dit weekend wil je niet missen!</p>
+
+                </div>
+            </div>
+        </article>
+
+        <h1>Planning feestweekend</h1>
+
+        VRIJDAG 18 SEPTEMBER
+        ★ TABULA RASA ULTIEM ★
+        De beste scoutsfuif van Wetteren en omstreken krijgt een upgrade! We ruilen de gemeentelijke feestzaal in voor een grote
+        feesttent op ons eigen terrein. Dans jij mee de tent de lucht in? Afspraak op 18/09, het belooft een vet feestje te
+        worden!
+        (link facebookevenement toevoegen: https://www.facebook.com/events/2278441632453336/ )
+        -------------------------------------------------------------------------------------------
+        ZATERDAG 19 SEPTEMBER
+        ★ KINDERDORP (vanaf 14u) ★
+        Op zaterdagnamiddag ondergaat ons terrein een nooit geziene transformatie. Zelf gesjorde speeltuinen, springkastelen,
+        oude volksspelen, … het is er allemaal (gratis!) te vinden. Ook Studio Flamingo (maken dat mensen dit kunnen
+        aanklikken?) van oudleidster Ruth zal aanwezig zijn met een supergekke knutselworkshop. Er zijn eetkraampjes te vinden
+        en drankjes kunnen verkregen worden in onze feesttent. Komt dat zien!
+        ★ GESCHIEDENISWANDELING (starten van 14u tot 17u) ★
+        Heb jij interesse in de 75-jarige geschiedenis van onze scouts? Wandel je graag? Dan is onze geschiedeniswandeling iets
+        voor jou! Wandel doorheen de mooie Wetterse natuur en ontdek de geschiedenis van onze scouts. De kinderen? Die kunnen
+        zich ondertussen amuseren op de kindernamiddag (onder toezicht van leiding)! Nadien zin in een natje en een droogje?
+        Welkom in de feesttent op ons terrein en op onze streekbieravond!
+        Inschrijven verplicht (later inschrijvingsknop toevoegen!)
+        ★ STREEKBIERAVOND STAM EDITION (18u) ★
+        Naast de lekkerste streekbieren, zal op deze avond veel Wetters talent ons podium inpalmen. Verschillende bands uit de
+        streek zorgen voor het nodige streepje muziek en ambiance. Maar ook gezellig bijpraten kan aan onze toog of gezellige
+        tafeltjes. We nodigen dan ook elke oudleid(st)er, oudlid, … uit om nog eens de scoutsverhalen van vroeger uit de doeken
+        te doen! In de feesttent of buiten rond het kampvuur een streekbiertje drinken? Het wordt gezellig! Er zijn ook enkele
+        foodtrucks aanwezig om de hongerige maagjes te spijzen!
+        De eerste band start om 19u. We zingen allemaal samen het Avondlied om 23u stipt, mis dat magische moment niet!
+        (Kinderen kunnen nog op enkele kinderattracties spelen (springkasteel, speeltuin, …)
+        ______________________________________________________
+        
+        ZONDAG 20 SEPTEMBER
+        ★ EETFESTIJN BBQ ★
+        Bestaat er een mooiere manier om een feestweekend af te sluiten dan met een goed stukje vlees of vegetarisch
+        alternatief? Kom het proeven op onze BBQ! De voetjes onder tafel steken kan van 12u tot 14u.
+        (Inschrijven verplicht!) (later knop maken om in te schrijven)
+        
+        ★ SLOTSHOW (14u30) ★
+        Om het feestweekend in schoonheid af te sluiten, verwachten we oude en nieuwe leden voor een heuse slotshow! Een
+        interactief toneel door de leidingsploeg met spelletjes en leuke uitdagingen. Kom ook te weten wie je leiding wordt dit
+        jaar! Meer info volgt later.
+        We nemen ook afscheid van leiding en leden van de VZW.
+
+
+         <article class="white block" id="takverdeling">
+             <div class="part text">
+                <header>
+                    <h1>Wanneer vieren we?</h1>
+                    <h2>Leden worden opgedeeld in leeftijdsgroepen op basis van geboortedatum.</h2>
+                </header>
+                <div class="splitted questions">
+                    <div class="part column first">
+                        <h2>Kapoenen <span>{{ takkenverdeling.kapoenen }}</span></h2>
+                        <p>De Kapoenen is de tak voor de allerkleinsten. Het leven van een kapoen (6-8) is er één vol spel, fantasie, creativiteit en expressie. </p>
+                        <a href="/info/kapoenen" class="icon-button">Meer</a>
+
+                        <h2>Wouters <span>{{ takkenverdeling.wouters }}</span></h2>
+                        <p>Wouters krijgen ruimte en kansen om dingen uit te proberen en van elkaar te leren. Ze verleggen hun grenzen, halen kattenkwaad uit en kunnen vooral onbezorgd spelen.</p>
+                        <a href="/info/wouters" class="icon-button">Meer</a>
+
+                        <h2>Jonggivers <span>{{ takkenverdeling.jonggivers }}</span></h2>
+                        <p>Jonggivers krijgen een waaier van mogelijkheden om mee te beslissen, zelf de handen uit de mouwen te steken en allerlei vaardigheden onder de knie te krijgen. </p>
+                        <a href="/info/jonggivers" class="icon-button">Meer</a>
+                    </div>
+                    
+                    <div class="part column last">
+                        <h2>Givers <span>{{ takkenverdeling.givers }}</span></h2>
+                        <p>Givers trekken samen op, hun vrienden zijn heilig. Ze hechten heel veel belang aan de groepssfeer. Van hun leiding krijgen ze alle mogelijkheden, ervaringen, spanning en enthousiasme die ze alleen binnen scouting kunnen vinden. </p>
+                        <a href="/info/givers" class="icon-button">Meer</a>
+
+                        <h2>Jin <span>{{ takkenverdeling.jin }}</span></h2>
+                        <p> Jin, Jij en Ik een Noodzaak. Als jin sta je op een grens: die tussen lid en leiding. In hun eigen 'jonge' stijl werken ze gekke activiteiten, projecten en zelfs hun kamp uit. </p>
+                        <a href="/info/jin" class="icon-button">Meer</a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="white block" id="lid-worden">
+            <div class="splitted">
+                <figure class="part image" id="lid-worden-image">
+                    <figcaption>Kapoenen</figcaption>
+                </figure>
+
+                <div class="part text">
+                    <header>
+                        <h1>Lid worden</h1>
+                    </header>
+
+                    <p>Hoewel het scoutsjaar officieel start in september kunnen we nieuwe leden doorheen het volledige jaar inschrijven. Nieuwe leden kunnen gratis twee keer proberen voor ze zich moeten inschrijven. Daarna kunnen ze zich via deze website online inschrijven.</p>
+
+                    <p>Bij de eerste inschrijving ontvangt het lid zijn eerste scoutsdas gratis. Het uniform moet je zelf aankopen. Meer info over het uniform vind je verder op deze pagina.   We vragen bestaande leden om ook elk jaar hun contactgegevens (adres, telefoonnummer, e-mail, ...) en medische gegevens na te kijken zodat deze correct blijven.</p>
+
+                    <footer>
+                        <a href="/inschrijven" class="button fill main">Inschrijven</a>
+                    </footer>
+
+                </div>
+
+            </div>
+        </article>
+
+        <article class="white block" id="kamp">
+            <div class="splitted">
+                <div class="part text">
+                    <header>
+                        <h1>Zomerkamp</h1>
+                    </header>
+
+                    <p>In de zomer gaan we op kamp. Dit is een mooie afsluiter van een ongetwijfeld leuk scoutsjaar. De kapoenen en wouters gaan op ‘klein kamp’. Ze verblijven in lokalen waar sanitaire voorzieningen en een keuken aanwezig zijn. De jonggivers en givers gaan op ‘groot kamp’. Dit is een tentenkamp in de Ardennen. Voor beide kampen komen we in juni en juli bij iedereen langs om wat uitleg te geven over het verloop van de kampen en om in te schrijven.</p>
+
+                    <h2>Kampdata 2019</h2>
+                    <p>Kapoenen: 1 augustus tot 5 augustus 2019</p>
+                    <p>Wouters:  5 augustus tot 11 augustus 2019</p>
+                    <p>Jonggivers / givers:  1 augustus tot 11 augustus 2019<p>
+
+                </div>
+
+                <figure class="part image" id="kamp-image">
+                    <figcaption>Groot kamp 2019</figcaption>
+                </figure>
+
+            </div>
+        </article>
+
+        <article class="white block" id="oudercomite">
+            <div class="splitted">
+                <figure class="part image" id="terrein-image">
+                    <figcaption>Lokalen en terrein</figcaption>
+                </figure>
+                
+                 <div class="part text">
+                    <header>
+                        <h1>Het oudercomité</h1>
+                    </header>
+
+                    <p>Ouders schrijven hun kroost in, omdat ze zelf ooit bij de scouts waren, omdat ze het belangrijk vinden dat hun kinderen met anderen spelen, omdat de kinderen er sociale vaardigheden leren. Ze schenken hun vertrouwen aan een groep jonge leiders en leidsters, die telkens weer paraat staan om de kinderen een mooie zondagnamiddag te bezorgen.</p>
+
+                    <p>Achter onze leidingsploeg staat het oudercomité en de materiaalmeesters : een groep geëngageerde ouders en oud-leiding die de werking ondersteunen en een vzw vormen.</p>
+
+                    <p>Ze staan actief in voor tal van praktische zaken: het verhuur van het lokaal, kleine en grotere herstellingswerken, gras maaien, onderhoud van het bos, naar het containerpark rijden, pannenkoeken bakken op de startdag… Elk jaar organiseren we het eetfestijn op een zondagmiddag dat we afsluiten met een toneeltje/show van de scoutsleden. </p>
+
+                    <p>Het verhuur van de lokalen en het terrein wordt door het oudercomité geregeld, en is bovendien hun belangrijkste bron van inkomsten.</p>
+
+                </div>
+
+            </div>
+        </article>
+
+
+    </main>
+{% endblock %}

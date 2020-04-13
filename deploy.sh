@@ -15,10 +15,10 @@ ssh root@scoutswetteren.be "
     mkdir -p $UPLOAD_DIRECTORY/public
 "
 
-rsync -az --info=progress2 --delete "pirate/" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate"
-rsync -az --info=progress2 "$PIRATE_CONFIG_LOCATION/config.php" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate/config.php"
-rsync -az --info=progress2 "$PIRATE_CONFIG_LOCATION/config.private.php" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate/config.private.php"
-rsync -az --info=progress2 --delete "public/" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/public"
+rsync -zr --no-perms --info=progress2 --delete "pirate/" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate"
+rsync -zr --no-perms --info=progress2 "$PIRATE_CONFIG_LOCATION/config.php" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate/config.php"
+rsync -zr --no-perms --info=progress2 "$PIRATE_CONFIG_LOCATION/config.private.php" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate/config.private.php"
+rsync -zr --no-perms --info=progress2 --delete "public/" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/public"
 
 
 echo "Fixing permissions..."

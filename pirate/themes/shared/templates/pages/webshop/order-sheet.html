@@ -214,18 +214,40 @@
                     <input type="text" v-model="user.lastname" placeholder="Vul je achternaam hier in" autocomplete="family-name">
                 
                     <label>E-mailadres</label>
-                    <input type="text" v-model="user.mail" placeholder="Vul je e-mailadres hier in" autocomplete="email">
+                    <input type="email" v-model="user.mail" placeholder="Vul je e-mailadres hier in" autocomplete="email">
 
                     <label>GSM-nummer</label>
                     <input type="text" v-model="user.phone" placeholder="Typ je GSM-nummer in" autocomplete="tel">
                 </template>
 
+                <template v-if="order_sheet.delivery">
+                    <h2>Adres</h2>
+                    <label>Straat en huisnummer</label>
+                    <input type="text" v-model="user.address" placeholder="Straat en huisnummer" autocomplete="street-address">
+
+                    <label>Postcode</label>
+                    <input type="text" pattern="[0-9]*" v-model="user.zipcode" placeholder="Postcode" autocomplete="zipcode postal-code">
+
+                    <label>Gemeente</label>
+                    <input type="text" v-model="user.city" placeholder="Gemeente" autocomplete="city">
+
+                    <p>Leveringskost van € 2 voor leveringen buiten Oost-Vlaanderen.</p>
+                </template>
+                
+
                 <ul class="error" v-if="errors.step2.length > 0">
                     <li v-for="error in errors.step2">[[ error.message ]]</li>
                 </ul>                    
 
-                <footer>
+                <footer class="floater">
                     <button type="button" class="button main" :class="{'fill': isValid(2)}" v-on:click="nextStep(2);">Volgende</button>
+                    <div class="price-floater">
+                        <div>
+                            Totaal
+                            <span>[[ getTotalDescription() ]]</span>
+                        </div>
+                        <div>[[ getTotalString() ]]</div>
+                    </div>
                 </footer>
 
             </form>
@@ -331,6 +353,11 @@
                     phone: ""
                 };
             {% endif %}
+
+            user.address = "";
+            user.city = "";
+            user.zipcode = "";
+            user.country = "BE";
 
             // Payment methods:
             var payment_methods = [];
@@ -588,6 +615,10 @@
                                 this.user.lastname = data.user.lastname;
                                 this.user.mail = data.user.mail;
                                 this.user.phone = data.user.phone;
+
+                                this.user.address = data.user.address;
+                                this.user.zipcode = data.user.zipcode;
+                                this.user.city = data.user.city;
                             }
 
                         } catch (exception) {
@@ -664,7 +695,22 @@
                             }
                         }
 
+                        price += this.getDeliveryCost();
+
                         return price;
+                    },
+
+                    getDeliveryCost: function() {
+                        if (!order_sheet.delivery) {
+                            return 0;
+                        }
+                        if (!user.zipcode) {
+                            return 0;
+                        }
+                        if (parseInt(user.zipcode) < 9000) {
+                            return 200;
+                        }
+                        return 0;
                     },
 
                     getTotalDescription: function() {
@@ -693,11 +739,17 @@
                             }
                         }
 
+                        var delivery = this.getDeliveryCost();
+                        var extra = "";
+                        if (delivery > 0) {
+                            extra = " + leveringskost";
+                        }
+
                         if (persons > 0) {
                             if (persons == 1) {
-                                return "Voor één persoon";
+                                return "Voor één persoon"+extra;
                             }
-                            return "Voor "+persons+" personen";
+                            return "Voor "+persons+" personen" + extra;
                         }
 
                         if (amount == 0) {
@@ -705,10 +757,10 @@
                         }
 
                         if (amount == 1) {
-                            return "Voor één item";
+                            return "Voor één item" + extra;
                         }
 
-                        return "Voor "+amount+" items";
+                        return "Voor "+amount+" items" + extra;
                     },
 
                     getTotalString: function() {
@@ -818,6 +870,45 @@
                                 }
                                 return false;
                             }
+
+                            if(this.order_sheet.delivery) {
+                                if (user.address.length < 3 || user.address.split(" ").length <= 1) {
+                                    if (showErrors) {
+                                        this.errors.step2 = [
+                                            {
+                                                message: "Je hebt een ongeldige straat of huisnummer ingevuld",
+                                            }
+                                        ];
+                                        this.step = 2;
+                                    }
+                                    return false;
+                                }
+
+                                if (user.zipcode.length != 4) {
+                                    if (showErrors) {
+                                        this.errors.step2 = [
+                                            {
+                                                message: "Je hebt een ongeldige postcode ingevuld",
+                                            }
+                                        ];
+                                        this.step = 2;
+                                    }
+                                    return false;
+                                }
+
+                                if (user.city.length < 3) {
+                                    if (showErrors) {
+                                        this.errors.step2 = [
+                                            {
+                                                message: "Je hebt een ongeldige gemeente ingevuld",
+                                            }
+                                        ];
+                                        this.step = 2;
+                                    }
+                                    return false;
+                                }
+                            }
+                            
                         }
 
                         if (showErrors) {

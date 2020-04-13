@@ -3,8 +3,7 @@ namespace Pirate\Sails\Webshop\Models;
 use Pirate\Wheel\Model;
 use Pirate\Sails\Validating\Models\Validator;
 use Pirate\Sails\Users\Models\User;
-
-
+use Pirate\Sails\Leden\Models\Adres;
 use Pirate\Sails\Validating\Classes\ValidationError;
 use Pirate\Sails\Validating\Classes\ValidationErrors;
 use Pirate\Sails\Validating\Classes\ValidationErrorBundle;
@@ -17,6 +16,10 @@ class OrderUser extends Model implements \JsonSerializable {
     public $mail;
     public $phone;
 
+    public $address;
+    public $zipcode;
+    public $city;
+
     function __construct($row = null) {
         if (is_null($row)) {
             return;
@@ -27,6 +30,10 @@ class OrderUser extends Model implements \JsonSerializable {
         $this->lastname = $row['order_user_lastname'];
         $this->mail = $row['order_user_mail'];
         $this->phone = $row['order_user_phone'];
+
+        $this->address = $row['order_user_address'];
+        $this->zipcode = $row['order_user_zipcode'];
+        $this->city = $row['order_user_city'];
     }
 
     function jsonSerialize() {
@@ -36,11 +43,14 @@ class OrderUser extends Model implements \JsonSerializable {
             'lastname' => $this->lastname,
             'mail' => $this->mail,
             'phone' => $this->phone,
+            'address' => $this->address,
+            'zipcode' => $this->zipcode,
+            'city' => $this->city,
         ];
     }
 
     /// Set the properties of this model. Throws an error if the data is not valid
-    function setProperties(&$data) {
+    function setProperties(&$data, $delivery = false) {
         $errors = new ValidationErrors();
         $list_errors = [];
 
@@ -97,6 +107,31 @@ class OrderUser extends Model implements \JsonSerializable {
             }
         }
 
+        if ($delivery) {
+            if (isset($data['address'])) {
+                if (Validator::isValidAddress($data['address'])) {
+                    $this->address = trim($data['address']);
+                    $data['address'] = $this->address;
+                } else {
+                    $errors->extend(new ValidationError('Ongeldige straat of huisnummer', 'address'));
+                }
+            } else {
+                $errors->extend(new ValidationError('Geen straat of huisnummer opgegeven', 'address'));
+            }
+
+            if (isset($data['zipcode'], $data['city'])) {
+                // Valideer gemeente
+                $cityErrors = [];
+                if (!Adres::validateGemeente($data['city'], $data['zipcode'], $cityErrors)) {
+                    $errors->extend(new ValidationError(implode(', ', $cityErrors), 'zipcode'));
+                } else {
+                    $this->zipcode = $data['zipcode'];
+                    $this->city = $data['city'];
+                }
+            } else {
+                $errors->extend(new ValidationError('Geen postcode en/of gemeente opgegeven', 'zipcode'));
+            }
+        }
 
         foreach ($list_errors as $message) {
             $errors->extend(new ValidationError($message));
@@ -129,6 +164,23 @@ class OrderUser extends Model implements \JsonSerializable {
             $user = "'".self::getDb()->escape_string($this->user->id)."'";
         }
 
+        if (!isset($this->address)) {
+            $address = 'NULL';
+        } else {
+            $address = "'".self::getDb()->escape_string($this->address)."'";
+        }
+        if (!isset($this->city)) {
+            $city = 'NULL';
+        } else {
+            $city = "'".self::getDb()->escape_string($this->city)."'";
+        }
+
+        if (!isset($this->zipcode)) {
+            $zipcode = 'NULL';
+        } else {
+            $zipcode = "'".self::getDb()->escape_string($this->zipcode)."'";
+        }
+
         // Permissions
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
@@ -139,13 +191,16 @@ class OrderUser extends Model implements \JsonSerializable {
                 order_user_lastname = '$lastname',
                 order_user_mail = $mail,
                 order_user_phone = $phone,
-                order_user_user = $user
+                order_user_user = $user,
+                order_user_address = $address,
+                order_user_city = $city,
+                order_user_zipcode = $zipcode
                  where `order_user_id` = '$id' 
             ";
         } else {
             $query = "INSERT INTO 
-                order_users (`order_user_firstname`, `order_user_lastname`, `order_user_mail`, `order_user_phone`, `order_user_user`)
-                VALUES ('$firstname', '$lastname', $mail, $phone,  $user)";
+                order_users (`order_user_firstname`, `order_user_lastname`, `order_user_mail`, `order_user_phone`, `order_user_user`, `order_user_address`, `order_user_city`, `order_user_zipcode`)
+                VALUES ('$firstname', '$lastname', $mail, $phone,  $user, $address, $city, $zipcode)";
         }
 
         $result = self::getDb()->query($query);

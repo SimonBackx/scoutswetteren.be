@@ -2,8 +2,6 @@ version: '3.5'
 
 services:
     php:
-        external_links:
-         - "scouts-mysql:db"
         build: ./../../
         ports:
           - "80:80"

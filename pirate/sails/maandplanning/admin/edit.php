@@ -45,6 +45,7 @@ class Edit extends Page {
             'order_sheet_description' => '',
             'order_sheet_mail' => '',
             'order_sheet_phone' => '',
+            'order_sheet_delivery' => false,
         );
 
         if (!empty(Leiding::getUser()->tak)) {
@@ -88,6 +89,7 @@ class Edit extends Page {
                     'order_sheet_description' => '',
                     'order_sheet_mail' => '',
                     'order_sheet_phone' => '',
+                    'order_sheet_delivery' => false,
                 );
 
                 $data['id'] = $event->id;
@@ -107,6 +109,7 @@ class Edit extends Page {
                     $data['order_sheet_type'] = $event->order_sheet->type;
                     $data['order_sheet_mail'] = $event->order_sheet->mail;
                     $data['order_sheet_phone'] = $event->order_sheet->phone;
+                    $data['order_sheet_delivery'] = $event->order_sheet->delivery;
 
                 }
 

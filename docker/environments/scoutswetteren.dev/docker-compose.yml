@@ -1,10 +1,11 @@
-version: '2'
+version: '3.5'
 
 services:
     php:
-        external_links:
-         - scouts-mysql:db
         build: ./../../
+        ports:
+          - "80:80"
+          - "443:443"
         container_name: scoutswetteren-php-container
         volumes:
          - ../../../files:/var/www/scoutswetteren.dev/files
@@ -12,28 +13,10 @@ services:
          - ../../../public:/var/www/scoutswetteren.dev/public
          - ./config.php:/var/www/scoutswetteren.dev/pirate/config.php
          - ./config.private.php:/var/www/scoutswetteren.dev/pirate/config.private.php
-         - ../../../config/php.ini:/usr/local/etc/php/conf.d/custom.ini
+         - ./nginx.conf:/etc/nginx/conf.d/site.conf
+         - ./certs:/etc/nginx/certs/scoutswetteren.dev
         environment:
          - DEBUG=1
         security_opt:
          - seccomp:unconfined
         privileged: true
-
-    nginx:
-        image: nginx:latest
-        ports:
-             - "80:80"
-             - "443:443"
-        volumes:
-             - ../../../files:/var/www/scoutswetteren.dev/files
-             - ../../../pirate:/var/www/scoutswetteren.dev/pirate
-             - ../../../public:/var/www/scoutswetteren.dev/public
-             - ./nginx.conf:/etc/nginx/conf.d/site.conf
-             - ./certs:/etc/nginx/certs/scoutswetteren.dev
-        depends_on:
-             - php
-        restart: always
-networks:
-    default:
-          external: 
-               name: scouts

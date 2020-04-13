@@ -88,12 +88,22 @@
                                 {% endfor %}
                             </select>
                         </label>
-
+                        
                         <label>Beschrijving</label>
                         <textarea placeholder="Uitleg bovenaan het formulier zichtbaar" name="order_sheet_description">{{ event.order_sheet_description }}</textarea>
 
                         <label>Beschikbaar tot en met (optioneel)</label>
                         <input type="text" class="datepicker" name="order_sheet_due_date" value="{{ event.order_sheet_due_date }}" placeholder="Tot dag voor begin activiteit">
+
+
+                        <input id="order_sheet_delivery" type="checkbox" name="order_sheet_delivery" value="1"
+                            {% if event.order_sheet_delivery %} checked{% endif %}>
+                        <label for="order_sheet_delivery">Leveringen</label>
+                        <div class="checkbox-controllable">
+                            <div class="visible-when-checked">
+                                <p>Leveringskost van 2 euro buiten Oost-Vlaanderen.</p>
+                            </div>
+                        </div>
                        
                     </div>
                     <div class="part column last">
@@ -114,7 +124,6 @@
 
                         <label>E-mailadres (optioneel)</label>
                         <input type="email" name="order_sheet_mail" value="{{ event.order_sheet_mail }}" placeholder="E-mailadres voor meer info">
-                        
                     </div>
                 </div>
             </div>

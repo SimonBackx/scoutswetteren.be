@@ -178,7 +178,7 @@ class OrderSheetExcel extends Page
 
         foreach ($orders as $index => $order) {
             $letter = 'A';
-            $sheet->setCellValue($letter . ($index + $startIndex), $order->user->firstname . ' ' . $order->user->lastname . "\n" . $order->user->phone . "\n" . $order->user->mail . "\n" . $order->getPaymentName() . ($order->isPaid() ? '' : " ! Niet betaald !"));
+            $sheet->setCellValue($letter . ($index + $startIndex), $order->user->firstname . ' ' . $order->user->lastname . "\n" . $order->user->phone . "\n" . $order->user->mail . "\n". (!empty($order->user->address) ? ( $order->user->address.', '.$order->user->zipcode.' '.$order->user->city. "\n") : '') . $order->getPaymentName() . ($order->isPaid() ? '' : " ! Niet betaald !"));
             $sheet->getStyle($letter . ($index + $startIndex))->getAlignment()->setWrapText(true);
 
             foreach ($filters as $filter) {

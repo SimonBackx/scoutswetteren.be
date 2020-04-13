@@ -10,6 +10,9 @@ class InfoRouter extends Route {
         if ($url == 'info') {
             return true;
         }
+        if ($url == '75-jaar') {
+            return true;
+        }
         if (!isset($parts[0]) || $parts[0] != 'info') {
             return false;
         }
@@ -36,6 +39,10 @@ class InfoRouter extends Route {
     }
 
     function getPage($url, $parts) {
+        if ($url == '75-jaar') {
+            return new Pages\Jaar75();
+        }
+
         if ($url == 'info') {
             require(__DIR__.'/pages/info.php');
             return new Pages\Info();

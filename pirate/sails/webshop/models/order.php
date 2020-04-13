@@ -190,7 +190,7 @@ class Order extends Model implements \JsonSerializable
         if (isset($data['user']) && is_array($data['user'])) {
             try {
                 $this->user = new OrderUser();
-                $this->user->setProperties($data['user']);
+                $this->user->setProperties($data['user'], $this->order_sheet->delivery);
             } catch (ValidationErrorBundle $bundle) {
                 $errors->extend(...$bundle->getErrors());
             }
@@ -215,6 +215,14 @@ class Order extends Model implements \JsonSerializable
                 }
             }
 
+            if ($this->order_sheet->delivery) {
+                if ($this->user->zipcode) {
+                    if (intval($this->user->zipcode) < 9000) {
+                        $this->price += 200;
+                    }
+                }
+            }
+
             if (count($this->items) == 0) {
                 $errors->extend(new ValidationError("items should not be empty", "items"));
             }
@@ -224,7 +232,9 @@ class Order extends Model implements \JsonSerializable
 
         if (isset($data['price'])) {
             if (intval($data['price']) != $this->price) {
-                $errors->extend(new ValidationError("Price does not match server side calculated price", "price"));
+                if (count($errors->getErrors()) == 0) {
+                    $errors->extend(new ValidationError("Price does not match server side calculated price", "price"));
+                }
             }
         } else {
             $errors->extend(new ValidationError("Price is missing", "price"));

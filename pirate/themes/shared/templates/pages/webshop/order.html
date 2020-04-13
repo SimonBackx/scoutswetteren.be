@@ -74,9 +74,15 @@
                             <h2>Overschrijven</h2>
                             {% include 'pages/webshop/transfer.html' with {'payment': order.payment} %}
 
-                            <h2>Overzicht</h2>
+                            
                         {% endif %}
 
+                        {% if order.user.address %}
+                            <h2>Leveringsadres</h2>
+                            <p>{{ order.user.address }}, {{ order.user.zipcode }} {{ order.user.city }}</p>
+                        {% endif %}
+
+                        <h2>Overzicht</h2>
                         <div class="list-bundle">
                             {% for item in order.items %}
                                 <article class="list">

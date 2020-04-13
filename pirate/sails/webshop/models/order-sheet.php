@@ -14,6 +14,7 @@ class OrderSheet extends Model implements \JsonSerializable
     public $description;
     public $due_date;
     public $type;
+    public $delivery = false;
     public $bank_account; // object
 
     // Not always filled
@@ -40,6 +41,7 @@ class OrderSheet extends Model implements \JsonSerializable
         $this->subtitle = $row['sheet_subtitle'];
         $this->description = $row['sheet_description'];
         $this->type = $row['sheet_type'];
+        $this->delivery = $row['sheet_delivery'] ? true : false;
 
         $this->due_date = isset($row['sheet_due_date']) ? new \DateTime($row['sheet_due_date']) : null;
 
@@ -61,6 +63,7 @@ class OrderSheet extends Model implements \JsonSerializable
             'type' => $this->type,
             'due_date' => empty($this->due_date) ? null : $this->due_date->format('Y-m-d'),
             'products' => $this->products,
+            'delivery' => $this->delivery,
         ];
     }
 
@@ -157,6 +160,12 @@ class OrderSheet extends Model implements \JsonSerializable
             $this->phone = null;
         }
 
+        if (isset($data['order_sheet_delivery'])) {
+            $this->delivery = true;
+        } else {
+            $this->delivery = false;
+        }
+
         if (count($errors->getErrors()) > 0) {
             throw $errors;
         }
@@ -228,6 +237,8 @@ class OrderSheet extends Model implements \JsonSerializable
             $mail = "'" . self::getDb()->escape_string($this->mail) . "'";
         }
 
+        $delivery = $this->delivery ? "true" : "false";
+
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
 
@@ -240,14 +251,15 @@ class OrderSheet extends Model implements \JsonSerializable
                 sheet_bank_account = '$bank_account',
                 sheet_due_date = $due_date,
                 sheet_phone = $phone,
-                sheet_mail = $mail
+                sheet_mail = $mail,
+                sheet_delivery = $delivery
                  where `sheet_id` = '$id'
             ";
         } else {
 
             $query = "INSERT INTO
-                order_sheets (`sheet_name`, `sheet_type`, `sheet_subtitle`, `sheet_description`, `sheet_bank_account`, `sheet_due_date`, `sheet_phone`, `sheet_mail`)
-                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $phone, $mail)";
+                order_sheets (`sheet_name`, `sheet_type`, `sheet_subtitle`, `sheet_description`, `sheet_bank_account`, `sheet_due_date`, `sheet_phone`, `sheet_mail`, `sheet_delivery`)
+                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $phone, $mail, $delivery)";
         }
 
         $result = self::getDb()->query($query);

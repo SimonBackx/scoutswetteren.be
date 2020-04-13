@@ -32,6 +32,11 @@
                 <td>{{ order.user.phone }}</td>
             </tr>
         </table>
+
+        {% if order.user.address %}
+            <h2>Leveringsadres</h2>
+            <p>{{ order.user.address }}, {{ order.user.zipcode }} {{ order.user.city }}</p>
+        {% endif %}
             
 
         {% if order.payment_method == 'transfer' %}

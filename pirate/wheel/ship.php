@@ -15,7 +15,7 @@ class Ship
     public function prepare()
     {
         global $FILES_DIRECTORY;
-        //$_ENV['DEBUG'] = 1;
+        $_ENV['DEBUG'] = 1;
 
         /*ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
@@ -96,6 +96,8 @@ class Ship
             } else {
                 echo '<p>Oeps! Er ging iets mis op de website. Neem contact op met onze webmaster als dit probleem zich blijft voordoen.</p>';
             }
+
+            var_dump($_ENV);
 
             if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
                 echo '<pre>' . $e->getFile() . ' line ' . $e->getLine() . ' ' . $e->getMessage() . '</pre>';
