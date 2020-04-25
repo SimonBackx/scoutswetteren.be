@@ -126,6 +126,8 @@ class Edit extends Page {
                 continue;
             if ($key == 'order_sheet')
                 continue;
+            if ($key == 'order_sheet_delivery')
+                continue;
 
             if (!isset($_POST[$key])) {
                 if ($key == 'group')
@@ -149,6 +151,12 @@ class Edit extends Page {
                 $data['order_sheet'] = true;
             } else {
                 $data['order_sheet'] = false;
+            }
+
+            if (isset($_POST['order_sheet_delivery'])) {
+                $data['order_sheet_delivery'] = true;
+            } else {
+                $data['order_sheet_delivery'] = false;
             }
 
             // Nu één voor één controleren
