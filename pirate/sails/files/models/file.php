@@ -186,12 +186,20 @@ class File extends Model
             }
         }
 
-        $stats->availability_server = round(($stats->size_server - $stats->size_removing_from_server) / $stats->size * 100, 2);
-        $stats->availability_working_server = round(($stats->size_downloading_from_object_storage + $stats->size_removing_from_server) / $stats->size * 100, 2);
+        if ($stats->size === 0) {
+            $stats->availability_server = 0;
+            $stats->availability_working_server = 0;
 
-        $stats->availability_object_storage = round($stats->size_object_storage / $stats->size * 100, 2);
-        $stats->availability_working_object_storage = round($stats->size_uploading_to_object_storage / $stats->size * 100, 2);
+            $stats->availability_object_storage = 0;
+            $stats->availability_working_object_storage = 0;
+        } else {
+            $stats->availability_server = round(($stats->size_server - $stats->size_removing_from_server) / $stats->size * 100, 2);
+            $stats->availability_working_server = round(($stats->size_downloading_from_object_storage + $stats->size_removing_from_server) / $stats->size * 100, 2);
 
+            $stats->availability_object_storage = round($stats->size_object_storage / $stats->size * 100, 2);
+            $stats->availability_working_object_storage = round($stats->size_uploading_to_object_storage / $stats->size * 100, 2);
+        }
+        
         $stats->size = Self::convertSizeToString($stats->size);
         $stats->size_server = Self::convertSizeToString($stats->size_server);
         $stats->size_object_storage = Self::convertSizeToString($stats->size_object_storage);
