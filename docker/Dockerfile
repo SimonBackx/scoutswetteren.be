@@ -21,4 +21,4 @@ RUN ls /etc/php/7.3/fpm/pool.d/ && cat /etc/php/7.3/fpm/pool.d/www.conf
 
 
 ENV DEBUG 1
-cmd DEBUG=1 php-fpm7.3 -D; nginx; echo "Ready."; tail -f /var/log/nginx/error.log
+cmd export DEBUG=1 && php-fpm7.3 -D; nginx; echo "Ready."; tail -f /var/log/nginx/error.log

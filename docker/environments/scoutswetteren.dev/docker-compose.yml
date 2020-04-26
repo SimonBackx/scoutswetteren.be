@@ -20,3 +20,8 @@ services:
         security_opt:
          - seccomp:unconfined
         privileged: true
+
+networks:
+    default:
+          external: 
+               name: scouts
