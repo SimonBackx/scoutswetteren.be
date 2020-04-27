@@ -29,6 +29,8 @@ class Materiaal extends Page
 
             $file = new File();
             $file->location = $location;
+            $file->should_be_saved_on_server = true;
+            $file->should_be_saved_in_object_storage = false;
 
             if ($file->upload($form_name, $errors, array($extension), $file_name, true)) {
                 $succes = true;
