@@ -245,6 +245,10 @@ $config = [
             'name' => 'Gidsen leiding',
             'mail' => 'gidsen@scoutssintjan.be',
         ),
+        'verkenners' => array(
+            'name' => 'Verkenners leiding',
+            'mail' => 'verkenners@scoutssintjan.be',
+        ),
         'akabe' => array(
             'name' => 'Akabeleiding',
             'mail' => 'akabe@scoutssintjan.be',

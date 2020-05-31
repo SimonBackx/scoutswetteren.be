@@ -267,7 +267,7 @@ class Adres extends Model {
 
         if (!isset($straatnamen) || !is_array($straatnamen)) {
             // Todo: straatnamen per gemeente cachen, pas clearen als er geen antwoord gevonden wordt + recente cache is oud
-            $response = Curl::request(Method::GET, 'https://basisregisters.vlaanderen.be/api/v1.0/straatnamen?Gemeentenaam='.urlencode($gemeente).'&Limit=1000');
+            $response = Curl::request(Method::GET, 'https://api.basisregisters.vlaanderen.be/v1/straatnamen?Gemeentenaam='.urlencode($gemeente).'&Limit=1000');
             if (!isset($response)) {
                 return null;
             }
@@ -380,8 +380,6 @@ class Adres extends Model {
             return false;
         }
 
-        
-
         // Stap 1: straatnaam corrigeren
         $straatnaam = Adres::fixStreetname($this->straatnaam, $this->postcode);
 
@@ -391,13 +389,12 @@ class Adres extends Model {
             return false;
         }
 
-        $this->straatnaam = $straatnaam;
 
         $needle = static::cleanHuisnummer($this->huisnummer.(isset($this->busnummer) ? ' '.$this->busnummer : ''));
         $adressen = CacheHelper::get('adressen_'.clean_special_chars($this->postcode).'_'.clean_special_chars($this->straatnaam));
 
         if (!isset($adressen) || !is_array($adressen)) {
-            $response = Curl::request(Method::GET, 'https://basisregisters.vlaanderen.be/api/v1.0/adressen?Postcode='.urlencode($this->postcode).'&Straatnaam='.urlencode($this->straatnaam).'&limit=1000');
+            $response = Curl::request(Method::GET, 'https://api.basisregisters.vlaanderen.be/v1/adressen?Postcode='.urlencode($this->postcode).'&Straatnaam='.urlencode($this->straatnaam).'&limit=1000');
             if (!isset($response) || !isset($response['adressen'])) {
                 return false;
             }
