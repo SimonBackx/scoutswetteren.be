@@ -209,6 +209,10 @@ $config = [
             'name' => 'Oudercomité',
             'permission' => 'contactpersoon_oudercomite',
         ),
+        'oudercomite' => array(
+            'name' => 'Oudercomité',
+            'mail' => 'oudercomite@scoutswetteren.be',
+        ),
     ],
 ];
 

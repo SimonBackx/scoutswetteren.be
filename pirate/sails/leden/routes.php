@@ -130,22 +130,6 @@ class LedenRouter extends Route
             }
 
             if (count($parts) == 2) {
-                // Broer zus toevoegen of verlengen enkel in inschrijvingsperiode:
-                if (!Inschrijving::isInschrijvingsPeriode()) {
-                    require __DIR__ . '/pages/buiten-inschrijvingen-periode.php';
-                    return new Pages\BuitenInschrijvingenPeriode();
-                }
-
-                if ($parts[1] == 'broer-zus-toevoegen') {
-                    require __DIR__ . '/pages/broer-zus-toevoegen.php';
-                    return new Pages\BroerZusToevoegen();
-                }
-
-                if ($parts[1] == 'verleng-inschrijving') {
-                    require __DIR__ . '/pages/verleng-inschrijving.php';
-                    return new Pages\VerlengInschrijving();
-                }
-
                 if ($parts[1] == 'gezin-nakijken') {
                     require __DIR__ . '/pages/gezin-nakijken.php';
                     return new Pages\GezinNakijken();
@@ -160,6 +144,23 @@ class LedenRouter extends Route
                     require __DIR__ . '/pages/ouder-attesten.php';
                     return new Pages\OuderAttesten();
                 }
+
+                 // Broer zus toevoegen of verlengen enkel in inschrijvingsperiode:
+                  if (!Inschrijving::isInschrijvingsPeriode()) {
+                    require __DIR__ . '/pages/buiten-inschrijvingen-periode.php';
+                    return new Pages\BuitenInschrijvingenPeriode();
+                }
+
+                if ($parts[1] == 'broer-zus-toevoegen') {
+                    require __DIR__ . '/pages/broer-zus-toevoegen.php';
+                    return new Pages\BroerZusToevoegen();
+                }
+
+                if ($parts[1] == 'verleng-inschrijving') {
+                    require __DIR__ . '/pages/verleng-inschrijving.php';
+                    return new Pages\VerlengInschrijving();
+                }
+
             }
 
             // Beveiligde sectie: reeds authenticatie gedaan
