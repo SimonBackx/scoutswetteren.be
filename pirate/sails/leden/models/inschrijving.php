@@ -72,7 +72,7 @@ class Inschrijving extends Model
             ],
             "kabouters" => [
                 "naam" => "Kabouters",
-                "functie" => "d5f75b320b812440010b812555db03a1",
+                "functie" => "d5f75b320b812440010b8125567703cb",
             ],
             "jongverkenners" => [
                 "naam" => "Jong verkenners",
@@ -80,11 +80,11 @@ class Inschrijving extends Model
             ],
             "jonggidsen" => [
                 "naam" => "Jong gidsen",
-                "functie" => "d5f75b320b812440010b812555c7039d",
+                "functie" => "d5f75b320b812440010b812555d603a0",
             ],
             "gidsen" => [
                 "naam" => "Gidsen",
-                "functie" => "d5f75b320b812440010b812555380380",
+                "functie" => "d5f75b320b812440010b8125565203c1",
             ],
             "verkenners" => [
                 "naam" => "Verkenners",
@@ -122,15 +122,15 @@ class Inschrijving extends Model
             $mapping = array_merge($mapping, [
                 "wouters" => [
                     "naam" => "Kabouters",
-                    "functie" => "d5f75b320b812440010b812555db03a1",
+                    "functie" => "d5f75b320b812440010b8125567703cb",
                 ],
                 "jonggivers" => [
                     "naam" => "Jong gidsen",
-                    "functie" => "d5f75b320b812440010b812555c7039d",
+                    "functie" => "d5f75b320b812440010b812555d603a0",
                 ],
                 "givers" => [
                     "naam" => "Gidsen",
-                    "functie" => "d5f75b320b812440010b812555380380",
+                    "functie" => "d5f75b320b812440010b8125565203c1",
                 ],
             ]);
         }
