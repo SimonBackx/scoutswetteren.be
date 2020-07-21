@@ -6,6 +6,7 @@
         "phpoffice/phpspreadsheet": "^1.6",
         "mailjet/mailjet-apiv3-php": "^1.4",
         "phpmailer/phpmailer": "^6.1",
-        "sentry/sdk": "2.0.3"
+        "sentry/sdk": "^2.0.3",
+        "php-http/curl-client": "^2.1"
     }
 }
