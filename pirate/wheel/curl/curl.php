@@ -75,7 +75,7 @@ class Curl
                 // Er ging iets mis
             }
             return null;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return null;
         }
     }

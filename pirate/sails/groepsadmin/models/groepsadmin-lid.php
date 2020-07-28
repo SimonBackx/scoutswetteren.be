@@ -335,7 +335,7 @@ class GroepsadminLid
                 "postcode" => $ouder->adres->postcode,
                 "gemeente" => $ouder->adres->gemeente,
                 "straat" => $ouder->adres->straatnaam,
-                "giscode" => $ouder->adres->giscode,
+                //"giscode" => $ouder->adres->giscode,
                 "nummer" => $ouder->adres->huisnummer,
                 "bus" => isset($ouder->adres->busnummer) ? $ouder->adres->busnummer : "",
                 "telefoon" => str_replace(' ', ' ', $ouder->adres->telefoon),

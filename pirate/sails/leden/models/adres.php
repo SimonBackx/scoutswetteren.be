@@ -17,7 +17,7 @@ class Adres extends Model {
 
     // Giscode is optioneel (nullable) en wordt enkel gebruikt
     // om de koppeling met de groepsadministratie mogelijk te maken
-    public $giscode;
+    public $giscode; // deprecated
     
     public $gemeente;
     public $postcode;
@@ -215,11 +215,13 @@ class Adres extends Model {
     }
 
     static function getGisCode($straat, $postcode): string {
+        // No longer in use
+        return null;
+
         // https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest/gis/code?postcode=9230&term=Markt
 
         $response = Curl::request(Method::GET, 'https://groepsadmin.scoutsengidsenvlaanderen.be/groepsadmin/rest/gis/code?postcode='.$postcode.'&term='.urlencode($straat).'&Limit=1000');
         if (!isset($response)) {
-            echo "no response\n";
             return null;
         }
 
