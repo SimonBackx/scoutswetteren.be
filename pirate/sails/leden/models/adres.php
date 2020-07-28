@@ -214,7 +214,7 @@ class Adres extends Model {
 
     }
 
-    static function getGisCode($straat, $postcode): string {
+    static function getGisCode($straat, $postcode) {
         // No longer in use
         return null;
 

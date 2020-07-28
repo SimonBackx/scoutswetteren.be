@@ -12,7 +12,7 @@ class Database
     {
         try {
             if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
-                self::$mysqli = new mysqli('host.docker.internal', Environment::getSetting('mysql.username'), Environment::getSetting('mysql.password'), Environment::getSetting('mysql.database'));
+                self::$mysqli = new mysqli('host.docker.internal', Environment::getSetting('mysql.username'), '', Environment::getSetting('mysql.database'));
             } else {
                 self::$mysqli = new mysqli('127.0.0.1', Environment::getSetting('mysql.username'), Environment::getSetting('mysql.password'), Environment::getSetting('mysql.database'));
             }
@@ -22,7 +22,7 @@ class Database
                 die();
             }
             self::$mysqli->set_charset("utf8mb4");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             header('Location: /oops/database.html');
             die();
         }
