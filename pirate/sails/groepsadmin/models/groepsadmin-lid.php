@@ -456,7 +456,9 @@ class GroepsadminLid
             // Nu alle andere functies wissen (we staan dit niet toe bij gewone leden)
             foreach ($fetchedData['functies'] as $f) {
                 if ($f['functie'] != $functie) {
-                    $f['einde'] = date('Y-m-d') . 'T' . date('H:i:s') . '.000+02:00';
+                    if (empty($f["einde"])) {
+                        $f['einde'] = date('Y-m-d') . 'T' . date('H:i:s') . '.000+02:00';
+                    }
                     unset($f['links']);
                     $data['functies'][] = $f;
                 }

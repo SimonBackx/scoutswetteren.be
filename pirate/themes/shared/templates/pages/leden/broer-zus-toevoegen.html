@@ -20,6 +20,11 @@
                             {% if limits_ignored %}
                                 <ul class="warning"><li>Je hebt van de leiding toegang gekregen om leden in te schrijven die jonger of ouder zijn dan normaal toegelaten.</li></ul>
                             {% endif %}
+                            {% if new and is_voorinschrijven %}
+                                <ul class="error">
+                                    <li>Opgelet: nieuwe leden kunnen zich pas inschrijven vanaf {{ voorinschrijven_date }}!</li>
+                                </ul>
+                            {% endif %}
                         </header>
 
                         {% if fail %}

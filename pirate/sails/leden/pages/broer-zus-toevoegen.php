@@ -148,6 +148,8 @@ class BroerZusToevoegen extends Page
             'alle_takken' => Lid::getTakInfo(),
             'limits_ignored' => Lid::areLimitsIgnored(),
             'is_ingeschreven' => !$new && $this->lid->isIngeschreven(),
+            'is_voorinschrijven' => Inschrijving::isVoorinschrijven(),
+            'voorinschrijven_date' => Inschrijving::getVoorinschrijvenDate(),
         ));
     }
 }

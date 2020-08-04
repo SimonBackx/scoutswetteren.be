@@ -33,6 +33,11 @@
                     {% else %}
                         <h2>Inschrijven mogelijk na inloggen</h2>
                         <p>Ouders kunnen inloggen met hun account of een nieuw account aanmaken om leden in te schrijven of inschrijvingen te beheren.</p>
+                        {% if is_voorinschrijven %}
+                        <ul class="warning">
+                            <li>Opgelet: nieuwe leden kunnen zich pas inschrijven vanaf {{ voorinschrijven_date }}!</li>
+                        </ul>
+                        {% endif %}
                         
                         <div>
                             <a href="/gebruikers/login" rel="nofollow" class="fill button main">Inloggen</a>

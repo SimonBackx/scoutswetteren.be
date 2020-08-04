@@ -68,6 +68,10 @@ $config = [
 
     'scouts' => [
         'inschrijvings_start_maand' => 8,
+
+        'voorinschrijven_einde_maand' => 9,
+        'voorinschrijven_einde_dag' => 13,
+
         'inschrijvings_einde_maand' => 6,
         'inschrijvings_halfjaar_maand' => 3,
         'lidgeld_verminderd' => 1 / 3,

@@ -3,9 +3,9 @@ namespace Pirate\Sails\Leden\Models;
 
 use Pirate\Sails\Environment\Classes\Environment;
 use Pirate\Sails\Leden\Models\Afrekening;
-use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Wheel\Model;
+use Pirate\Sails\Environment\Classes\Localization;
 
 class Inschrijving extends Model
 {
@@ -192,6 +192,35 @@ class Inschrijving extends Model
             return false;
         }
         return true;
+    }
+
+     // Inschrijvingen vanaf juli verbieden
+     public static function isVoorinschrijven()
+     {
+        if (is_null(Environment::getSetting('scouts.voorinschrijven_einde_maand', null) )) {
+            return false;
+        }
+
+        $maand = intval(date('n'));
+        $day = intval(date('j'));
+        if ($maand >= Environment::getSetting('scouts.inschrijvings_start_maand') && (
+                $maand < Environment::getSetting('scouts.voorinschrijven_einde_maand')
+                || ($maand == Environment::getSetting('scouts.voorinschrijven_einde_maand') && $day < Environment::getSetting('scouts.voorinschrijven_einde_dag'))
+            )
+        ) {
+            return true;
+        }
+        return false;
+     }
+
+    // Inschrijvingen vanaf juli verbieden
+    public static function getVoorinschrijvenDate()
+    {
+        if (is_null(Environment::getSetting('scouts.voorinschrijven_einde_maand', null) )) {
+            return "";
+        }
+
+        return  Environment::getSetting('scouts.voorinschrijven_einde_dag')." ".Localization::getMonth(Environment::getSetting('scouts.voorinschrijven_einde_maand'));
     }
 
     public static function isHalfjaarlijksLidgeld()

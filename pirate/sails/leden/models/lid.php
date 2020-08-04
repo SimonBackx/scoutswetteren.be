@@ -534,6 +534,10 @@ class Lid extends Model
     {
         $errors = array();
 
+        if (!isset($this->id) && Inschrijving::isVoorinschrijven()) {
+            $errors[] = 'Het is nog niet mogelijk om nieuwe leden in te schrijven. Dit is pas mogelijk vanaf '.Inschrijving::getVoorinschrijvenDate();
+        }
+
         if (Validator::isValidFirstname($data['voornaam'])) {
             $this->voornaam = ucwords(mb_strtolower(trim($data['voornaam'])));
             $data['voornaam'] = $this->voornaam;

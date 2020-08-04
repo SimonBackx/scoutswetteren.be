@@ -67,6 +67,10 @@ $config = [
 
     'scouts' => [
         'inschrijvings_start_maand' => 9,
+
+        'voorinschrijven_einde_maand' => null,
+        'voorinschrijven_einde_dag' => null,
+
         'inschrijvings_einde_maand' => 7,
         'inschrijvings_halfjaar_maand' => 3,
 
