@@ -453,12 +453,15 @@ class GroepsadminLid
                 // Functie staat nog in de groepsadministratie
             }
 
-            // Nu alle andere functies wissen (we staan dit niet toe bij gewone leden)
+            // Nu alle andere functies beindigen (we staan dit niet toe bij gewone leden)
             foreach ($fetchedData['functies'] as $f) {
                 if ($f['functie'] != $functie) {
                     if (empty($f["einde"])) {
                         $f['einde'] = date('Y-m-d') . 'T' . date('H:i:s') . '.000+02:00';
                     }
+                    unset($f['links']);
+                    $data['functies'][] = $f;
+                } else {
                     unset($f['links']);
                     $data['functies'][] = $f;
                 }
