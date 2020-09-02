@@ -66,6 +66,7 @@ $config = [
     ],
 
     'scouts' => [
+        'override_url' => 'https://inschrijven.scoutswetteren.be',
         'inschrijvings_start_maand' => 9,
 
         'voorinschrijven_einde_maand' => null,

@@ -161,9 +161,7 @@ class OrderSheet extends Model implements \JsonSerializable
         }
 
         if (isset($data['order_sheet_delivery'])) {
-            $this->delivery = true;
-        } else {
-            $this->delivery = false;
+            $this->delivery = $data['order_sheet_delivery'];
         }
 
         if (count($errors->getErrors()) > 0) {
@@ -237,7 +235,7 @@ class OrderSheet extends Model implements \JsonSerializable
             $mail = "'" . self::getDb()->escape_string($this->mail) . "'";
         }
 
-        $delivery = $this->delivery ? "true" : "false";
+        $delivery = $this->delivery ? "1" : "0";
 
         if (isset($this->id)) {
             $id = self::getDb()->escape_string($this->id);
@@ -252,14 +250,14 @@ class OrderSheet extends Model implements \JsonSerializable
                 sheet_due_date = $due_date,
                 sheet_phone = $phone,
                 sheet_mail = $mail,
-                sheet_delivery = $delivery
+                sheet_delivery = '$delivery'
                  where `sheet_id` = '$id'
             ";
         } else {
 
             $query = "INSERT INTO
                 order_sheets (`sheet_name`, `sheet_type`, `sheet_subtitle`, `sheet_description`, `sheet_bank_account`, `sheet_due_date`, `sheet_phone`, `sheet_mail`, `sheet_delivery`)
-                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $phone, $mail, $delivery)";
+                VALUES ('$name', '$type', $subtitle, $description, '$bank_account', $due_date, $phone, $mail, '$delivery')";
         }
 
         $result = self::getDb()->query($query);

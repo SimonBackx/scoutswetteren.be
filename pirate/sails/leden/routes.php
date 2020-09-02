@@ -8,6 +8,7 @@ use Pirate\Sails\Leden\Models\Ouder;
 use Pirate\Sails\Users\Models\User;
 use Pirate\Sails\Users\Pages\Login;
 use Pirate\Wheel\Route;
+use Pirate\Sails\Environment\Classes\Environment;
 
 class LedenRouter extends Route
 {
@@ -116,6 +117,11 @@ class LedenRouter extends Route
 
     public function getPage($url, $parts)
     {
+        if (Environment::getSetting('scouts.override_url')) {
+            // always go to new inschrijven
+            return new Pages\Redirect();
+        }
+        
         if ($url == 'inschrijven') {
             require __DIR__ . '/pages/overview.php';
             return new Pages\Overview();
