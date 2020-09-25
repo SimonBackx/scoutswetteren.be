@@ -248,7 +248,7 @@ class Adres extends Model {
 
     static function getHoofdgemeente($postcode) {
         $postcodeEscaped = self::getDb()->escape_string($postcode);
-        $query = "select * from gemeenten where postcode_hoofdgemeente = '$postcodeEscaped'";
+        $query = "select * from gemeenten where postcode = '$postcodeEscaped'";
         if ($result = self::getDb()->query($query)) {
             if ($result->num_rows > 0){
                 $row = $result->fetch_assoc();
