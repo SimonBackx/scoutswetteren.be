@@ -7,6 +7,7 @@ use Pirate\Sails\Leden\Models\Inschrijving;
 use Pirate\Sails\Leden\Models\Lid;
 use Pirate\Sails\Leiding\Models\Leiding;
 use Pirate\Wheel\AdminRoute;
+use Pirate\Sails\Environment\Classes\Environment;
 
 class LedenAdminRouter extends AdminRoute
 {
@@ -19,6 +20,9 @@ class LedenAdminRouter extends AdminRoute
 
     public static function getAvailablePages()
     {
+        if (Environment::getSetting('stamhoofd', false)) {
+            return [];
+        }
         return [
             'leiding' => array(
                 array('priority' => 100, 'name' => 'Leden', 'url' => 'inschrijvingen'),

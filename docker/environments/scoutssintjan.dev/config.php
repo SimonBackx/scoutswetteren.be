@@ -36,6 +36,7 @@ $config = [
     ],
 
     'drive' => null,
+    'stamhoofd' => false,
 
     'sendgrid' => [
         // key defined in private

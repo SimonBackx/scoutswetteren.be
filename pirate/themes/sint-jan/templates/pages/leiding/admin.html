@@ -13,6 +13,10 @@
                     <a href="/admin/{{ button.url }}" class="{% if button.url == admin.selected %}selected{% endif %}">{{ button.name }}</a>
                 {% endfor %}
 
+                {% if environment.stamhoofd %}
+                    <a href="https://stamhoofd.app" target="_blank">Stamhoofd</a>
+                {% endif %}
+
                 {% if environment.drive is not empty %}
                     <a href="{{ environment.drive }}" target="_blank">Drive</a>
                 {% endif %}

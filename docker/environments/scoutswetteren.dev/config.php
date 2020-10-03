@@ -29,6 +29,7 @@ $config = [
     ],
 
     'drive' => 'https://drive.google.com/drive/u/0/folders/0AFl43ABWaD2OUk9PVA',
+    'stamhoofd' => true,
 
     'router' => [
         'redirects' => [

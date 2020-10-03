@@ -53,6 +53,7 @@ class Template
             'theme' => Environment::getSetting('theme'),
             'development_mail' => Environment::getSetting('development_mail'),
             'drive' => Environment::getSetting('drive'),
+            'stamhoofd' => Environment::getSetting('stamhoofd'),
         ];
 
         $url = isset($_SERVER["REQUEST_URI"]) ? strtok($_SERVER["REQUEST_URI"], '?') : '/';
