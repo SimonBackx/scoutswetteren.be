@@ -324,7 +324,7 @@ class Album extends Model
         return null;
     }
 
-    public static function getAlbums($group = null, $page = 1, $with_cover = false, $limit = null)
+    public static function getAlbums($group = null, $page = 1, $with_cover = false, $limit = null, $date_taken_sort = false)
     {
         $page = intval($page);
 
@@ -354,7 +354,7 @@ class Album extends Model
                     left join images c on c.image_id = a.album_cover
                     ' . $where . '
                     group by a.album_id, c.image_id
-                    order by a.album_date desc ' . $limit;
+                    order by '.($date_taken_sort ? 'a.album_date_taken' : 'a.album_date').' desc ' . $limit;
 
             if ($result = self::getDb()->query($query)) {
                 if ($result->num_rows > 0) {

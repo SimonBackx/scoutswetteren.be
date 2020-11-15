@@ -74,8 +74,14 @@ class Overview extends Page
             }
         }
 
+        $all = isset($_GET['all']);
+
         // TODO: aanpassen zodat evenementen uit de huidige week, VOOR vandaag ook worden meegegeven
-        $events = Event::getEventsForTak($tak);
+        if ($all) {
+            $events = Event::getEventsOverview();
+        } else {
+            $events = Event::getEventsForTak($tak);
+        }
 
         // Sowieso eerste 2 maand tonen voor leiding
         if ($leiding) {

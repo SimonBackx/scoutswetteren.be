@@ -246,6 +246,26 @@ class Event extends Model
         return $events;
     }
 
+    public static function getEventsOverview()
+    {
+        $first_day_month = date('Y-m') . '-01 00:00:00';
+
+        $events = array();
+        $query = 'SELECT e.*, o.*, b.* FROM events e
+        left join order_sheets o on e.order_sheet_id = o.sheet_id
+        left join bank_accounts b on b.account_id = o.sheet_bank_account
+        WHERE startdate >= "' . $first_day_month . '" ORDER BY startdate LIMIT 100';
+
+        if ($result = self::getDb()->query($query)) {
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $events[] = new Event($row);
+                }
+            }
+        }
+        return $events;
+    }
+
     public static function getDefaultEndHour()
     {
         $defaultEndHour = static::getDefaultEndHourList();

@@ -79,7 +79,7 @@ class Homepage extends Page
 
     public function getAlbums()
     {
-        $albums = Album::getAlbums(null, 1, false, 4);
+        $albums = Album::getAlbums(null, 1, false, 1, true);
         $album_images = [];
 
         foreach ($albums as $album) {
