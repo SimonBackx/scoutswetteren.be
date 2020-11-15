@@ -32,12 +32,14 @@ class Edit extends Page {
         $data = array(
             'album_name' => $this->album->name,
             'group' => $this->album->group,
-            'id' => $this->album->id
+            'id' => $this->album->id,
+            'date_taken' => $this->album->date_taken->format('d-m-Y')
         );
 
-        if (isset($_POST['group'], $_POST['album_name'])) {
+        if (isset($_POST['group'], $_POST['album_name'], $_POST['date_taken'])) {
             $data['album_name'] = $_POST['album_name'];
             $data['group'] = $_POST['group'];
+            $data['date_taken'] = $_POST['date_taken'];
 
             $success = false;
             if ($this->album->setProperties($data, $errors)) {

@@ -596,6 +596,17 @@ class Album extends Model
             }
         }
 
+        // Startdatum
+        if (isset($data['date_taken'])) {
+            $date_taken = \DateTime::createFromFormat('d-m-Y', $data['date_taken']);
+            if ($date_taken !== false) {
+                $this->date_taken = clone $date_taken;
+                $data['date_taken'] = $date_taken->format('d-m-Y');
+            } else {
+                $errors[] = 'Ongeldige datum';
+            }
+        }
+
         return true;
     }
 

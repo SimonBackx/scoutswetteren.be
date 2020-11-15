@@ -43,10 +43,12 @@
             </label>
 
             {% if not new %}
+                <label>Datum waarop foto's zijn genomen</label>
+                <input type="text" class="datepicker" name="date_taken" value="{{ data.date_taken }}" placeholder="Datum waarop foto's zijn genomen">
+
                 <label>Foto's</label>
                 <div id="photos" class="preview"></div>
                 <div style="clear: both;"></div>
-
             {% endif %}
 
             <footer>
