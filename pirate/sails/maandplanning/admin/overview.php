@@ -129,6 +129,7 @@ class Overview extends Page
 
         return Template::render('admin/maandplanning/overview', array(
             'months' => $this->data,
+            'all' => $all
         ));
     }
 }
