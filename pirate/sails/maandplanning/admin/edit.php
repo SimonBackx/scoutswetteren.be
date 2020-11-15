@@ -37,6 +37,8 @@ class Edit extends Page {
             'group' => '',
             'starttime' => '',
             'endtime' => '',
+            'button_url' => null,
+            'button_title' => null,
 
             'order_sheet' => false,
             'order_sheet_account' => null,
@@ -81,6 +83,9 @@ class Edit extends Page {
                     'group' => $event->group,
                     'starttime' => $event->startdate->format('H:i'),
                     'endtime' => $event->enddate->format('H:i'),
+
+                    'button_url' => $event->button_url,
+                    'button_title' => $event->button_title,
 
                     'order_sheet' => false,
                     'order_sheet_type' => null,
@@ -128,6 +133,10 @@ class Edit extends Page {
                 continue;
             if ($key == 'order_sheet_delivery')
                 continue;
+            if ($key == 'button_url')
+                continue;
+            if ($key == 'button_title')
+                continue;
 
             if (!isset($_POST[$key])) {
                 if ($key == 'group')
@@ -145,6 +154,14 @@ class Edit extends Page {
         if ($allset) {
             if (isset($_POST['overnachting'])) {
                 $data['overnachting'] = true;
+            }
+
+            if (isset($_POST['use_button'])) {
+                $data['button_url'] = $_POST['button_url'];
+                $data['button_title'] = $_POST['button_title'];
+            } else {
+                $data['button_url'] = null;
+                $data['button_title'] = null;
             }
 
             if (isset($_POST['order_sheet'])) {

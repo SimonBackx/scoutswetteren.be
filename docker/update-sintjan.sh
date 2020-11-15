@@ -1,1 +1,1 @@
-docker exec -it "scoutssintjan-php-container" php /var/www/scoutssintjan.dev/pirate/run/update.php
+docker exec -it "scoutssintjan-php-container" /bin/bash -c "export DEBUG='1' && php /var/www/scoutssintjan.dev/pirate/run/update.php"

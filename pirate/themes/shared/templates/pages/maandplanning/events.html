@@ -41,10 +41,16 @@
                     <h1>{{ activity.description }}</h1>
                 </header>
 
-                {% if activity.event.order_sheet_id is not null %}
+                {% if activity.event.button_title is not null %}
                     <div class="buttons column">
-                        <a href="{{ activity.event.order_sheet.getUrl() }}" class="small main button noborder">{{ activity.event.order_sheet.getButtonName() }}</a>
+                        <a href="{{ activity.event.button_url }}" class="small main button noborder">{{ activity.event.button_title }}</a>
                     </div>
+                {% else %}
+                    {% if activity.event.order_sheet_id is not null %}
+                        <div class="buttons column">
+                            <a href="{{ activity.event.order_sheet.getUrl() }}" class="small main button noborder">{{ activity.event.order_sheet.getButtonName() }}</a>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </article>
         {% endfor %}

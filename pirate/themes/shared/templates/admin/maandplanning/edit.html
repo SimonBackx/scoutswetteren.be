@@ -69,6 +69,19 @@
 
         </div>
 
+        <input id="order_sheet" type="checkbox" name="use_button" value="1" {% if event.button_url %} checked{% endif %}>
+        <label for="order_sheet">Knop toevoegen</label>
+
+        <div class="checkbox-controllable">
+            <div class="visible-when-checked">
+                <label>Knop tekst</label>
+                <input type="text" name="button_title" value="{{ event.button_title }}" placeholder="bv. Inschrijven">
+
+                <label>Link</label>
+                <input type="text" name="button_url" value="{{ event.button_url }}" placeholder="bv. https://google.com">
+            </div>
+        </div>
+
         <input id="order_sheet" type="checkbox" name="order_sheet" value="1" {% if event.order_sheet %} checked{% endif %}>
         <label for="order_sheet">Formulier toevoegen</label>
 

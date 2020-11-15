@@ -1,4 +1,7 @@
 <?php
+if (isset($_SERVER['DEBUG']) && !isset($_ENV['DEBUG'])) {
+    $_ENV['DEBUG'] = $_SERVER['DEBUG'];
+}
 
 $config = include __DIR__ . '/../config.php';
 $_SERVER['HTTPS'] = true;

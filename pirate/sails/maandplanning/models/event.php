@@ -20,6 +20,9 @@ class Event extends Model
     public $group_order;
     public $in_past = false;
 
+    public $button_title;
+    public $button_url;
+
     public $order_sheet_id;
 
     /// Only filled if requesting by id$
@@ -160,6 +163,8 @@ class Event extends Model
             $this->in_past = $row['in_past'];
         }
 
+        $this->button_url = $row['button_url'];
+        $this->button_title = $row['button_title'];
     }
 
     // Maximaal 30 events! Rest wordt weg geknipt
@@ -404,6 +409,9 @@ class Event extends Model
             }
         }
 
+        $this->button_title = $data["button_title"] ?? null;
+        $this->button_url = $data["button_url"] ?? null;
+
         return $errors;
     }
 
@@ -439,10 +447,23 @@ class Event extends Model
         $group_order = self::getDb()->escape_string($this->group_order);
         $leiding_id = self::getDb()->escape_string(Leiding::getUser()->id);
 
+        
+        if (is_null($this->button_title)) {
+            $button_title = "NULL";
+        } else {
+            $button_title = "'" . self::getDb()->escape_string($this->button_title) . "'";
+        }
+
+        if (is_null($this->button_url)) {
+            $button_url = "NULL";
+        } else {
+            $button_url = "'" . self::getDb()->escape_string($this->button_url) . "'";
+        }
+
         if (empty($this->id)) {
             $query = "INSERT INTO
-                events (`name`,  `startdate`, `enddate`, `location`, `endlocation`, `group`, `group_order`, `leiding_id`, `order_sheet_id`)
-                VALUES ('$name', '$startdate', '$enddate', $location, $endlocation, '$group', '$group_order', '$leiding_id', $order_sheet)";
+                events (`name`,  `startdate`, `enddate`, `location`, `endlocation`, `group`, `group_order`, `leiding_id`, `order_sheet_id`, `button_url`, `button_title`)
+                VALUES ('$name', '$startdate', '$enddate', $location, $endlocation, '$group', '$group_order', '$leiding_id', $order_sheet, $button_url, $button_title)";
         } else {
             $id = self::getDb()->escape_string($this->id);
             $query = "UPDATE events
@@ -454,7 +475,9 @@ class Event extends Model
                  `endlocation` = $endlocation,
                  `group` = '$group',
                  `group_order` = '$group_order',
-                 `order_sheet_id` = $order_sheet
+                 `order_sheet_id` = $order_sheet,
+                 `button_url` = $button_url,
+                 `button_title` = $button_title
                  where id = '$id'
             ";
         }
