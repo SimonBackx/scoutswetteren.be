@@ -16,7 +16,7 @@
 {% if general.logged_in_leiding %}
     <div class="box">
         {% for button in admin.buttons %}
-            <a href="/admin/{{ button.url }}">{{ button.name }}</a>
+            <a href="{{ button.url }}">{{ button.name }}</a>
         {% endfor %}
 
         {% if environment.stamhoofd %}

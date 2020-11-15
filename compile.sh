@@ -1,0 +1,2 @@
+sass pirate/themes/prins-boudewijn/scss/main.scss:public/css/prins-boudewijn.css pirate/themes/sint-jan/scss/main.scss:public/css/sint-jan.css pirate/themes/sint-jan/scss/print/print.scss:public/css/sint-jan.print.css pirate/themes/prins-boudewijn/scss/print/print.scss:public/css/prins-boudewijn.print.css pirate/themes/sint-jan/scss/letter/letter.scss:public/css/sint-jan.letter.css pirate/themes/prins-boudewijn/scss/letter/letter.scss:public/css/prins-boudewijn.letter.css --no-source-map --style=compressed
+npx postcss public/css/*.css --use autoprefixer --no-map --replace

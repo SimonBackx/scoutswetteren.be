@@ -260,65 +260,6 @@ class User extends Model
         self::$didCheckLogin = true;
     }
 
-    public static function getAdminMenu()
-    {
-        if (isset(self::$adminMenu)) {
-            return self::$adminMenu;
-        }
-
-        include __DIR__ . '/../../_bindings/admin.php';
-
-        $allButtons = [];
-        $urls = [];
-        $ignoreButtons = [];
-
-        foreach ($admin_pages as $permission => $buttons) {
-            if ($permission == '' || self::hasPermission($permission)) {
-                foreach ($buttons as $button) {
-                    $priority = isset($button['priority']) ? $button['priority'] : 0;
-                    $button['priority'] = $priority;
-
-                    if (isset($urls[$button['url']])) {
-                        $o = $urls[$button['url']];
-                        if ($priority <= $o->priority) {
-                            continue;
-                        }
-
-                        // Remove old button
-                        array_splice($allButtons[$o->priority], $o->index, 1);
-
-                        // Nu alle oude priority indexen updaten
-                        foreach ($urls as $key => $value) {
-                            if ($value->priority == $o->priority && $value->index >= $o->index) {
-                                $value->index--;
-                            }
-                        }
-                    }
-
-                    if (!isset($allButtons[$priority])) {
-                        $allButtons[$priority] = [];
-                    }
-
-                    $urls[$button['url']] = (object) [
-                        'priority' => $priority,
-                        'index' => count($allButtons[$priority]),
-                    ];
-
-                    $allButtons[$priority][] = $button;
-                }
-            }
-        }
-        ksort($allButtons);
-
-        $sortedButtons = [];
-
-        foreach ($allButtons as $priority => $buttons) {
-            $sortedButtons = array_merge($buttons, $sortedButtons);
-        }
-
-        return $sortedButtons;
-    }
-
     // Maakt nieuwe token voor huidige ingelogde gebruiker en slaat deze op in de cookies
     // Indien al token op huidige sessie, dan verwijdert hij die eerst
     private static function createToken()

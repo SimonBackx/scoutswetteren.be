@@ -11,7 +11,7 @@ class OuderAttesten extends Page
         global $FILES_DIRECTORY;
         clearstatcache();
         $folder = $FILES_DIRECTORY . "/attesten";
-        $dirs = glob($folder . '/*');
+        $dirs = array_reverse(glob($folder . '/*'));
 
         $attesten = [];
 
@@ -26,6 +26,8 @@ class OuderAttesten extends Page
             $files = glob($dir . '/*');
             $regex = '/^(.*)\\((.*?)\\)$/';
 
+            $jaarRegex = '/(20\d{2})$/';
+
             foreach ($files as $file) {
                 $filename = basename($file);
                 $ext = substr($filename, -3);
@@ -38,6 +40,11 @@ class OuderAttesten extends Page
                     $ziekenfonds = trim($matches[2]);
                 } else {
                     $name = trim($withoutExt);
+                }
+
+                $matches = [];
+                if (preg_match($jaarRegex, $name, $matches) === 1) {
+                    //$ziekenfonds = trim($matches[1]);
                 }
 
                 $url = "attesten/" . rawurlencode($dirname) . "/" . rawurlencode($filename);

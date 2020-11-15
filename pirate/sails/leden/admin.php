@@ -26,6 +26,7 @@ class LedenAdminRouter extends AdminRoute
         return [
             'leiding' => array(
                 array('priority' => 100, 'name' => 'Leden', 'url' => 'inschrijvingen'),
+                array('name' => 'Attesten', 'url' => '/ouders/attesten'),
             ),
             'financieel' => array(
                 array('priority' => 2, 'name' => 'Rekeningen', 'url' => 'afrekeningen'),

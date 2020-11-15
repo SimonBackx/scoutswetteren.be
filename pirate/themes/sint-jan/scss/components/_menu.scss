@@ -49,6 +49,38 @@ main {
     @media (max-height: 300px) {
         position: absolute;
     }
+
+    .facebook {
+        background: url(../sint-jan/images/facebook.svg) no-repeat center center;
+        height: $menu-height;
+        width: 30px;
+
+        opacity: 1;
+        transition: opacity 0.2s;
+        -webkit-tap-highlight-color: transparent;
+
+        &:hover, &:active {
+            opacity: 0.6;
+        }
+    }
+
+    .instagram {
+        background: url(../sint-jan/icons/white/instagram.svg) no-repeat center center;
+        height: $menu-height;
+        width: 30px;
+
+        opacity: 1;
+        transition: opacity 0.2s;
+        -webkit-tap-highlight-color: transparent;
+
+        &:hover, &:active {
+            opacity: 0.6;
+        }
+    }
+
+    .group {
+        display: flex;
+    }
 }
 
 
@@ -211,6 +243,7 @@ main {
         }
     }
 }
+
 
 #smartphone-menu-items {
     a, button {

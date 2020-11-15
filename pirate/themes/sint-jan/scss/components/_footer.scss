@@ -36,6 +36,7 @@
         &> div {
             &:last-child {
                 padding-left: 20px;
+                flex-shrink: 0;
             }
         }
 
@@ -48,8 +49,35 @@
         background: url(../sint-jan/images/facebook.svg) no-repeat left center;
         margin: -15px 0;
         display: inline-block;
+        margin-right: 20px;
+        &:last-child {
+            margin-right: 0;
+        }
 
-        @media (max-width: 400px) {
+        @media (max-width: 600px) {
+            padding: 0;
+            margin: 0;
+            height: 30px;
+            width: 30px;
+            background-position: right center;
+            color: transparent;
+            overflow: hidden;
+
+        }
+    }
+
+    .instagram {
+        text-transform: uppercase;
+        padding: 15px 0 15px 35px;
+        background: url(../sint-jan/icons/white/instagram.svg) no-repeat left center;
+        margin: -15px 0;
+        display: inline-block;
+        margin-right: 20px;
+        &:last-child {
+            margin-right: 0;
+        }
+
+        @media (max-width: 600px) {
             padding: 0;
             margin: 0;
             height: 30px;

@@ -385,6 +385,13 @@ class Leiding extends Model
             $sortedButtons = array_merge($buttons, $sortedButtons);
         }
 
+        foreach ($sortedButtons as $index => $button) {
+            if (substr($sortedButtons[$index]['url'], 0, 1) != '/') {
+                $sortedButtons[$index]['url'] = '/admin/' . $sortedButtons[$index]['url'];
+            }
+        }
+
+
         return $sortedButtons;
     }
 
