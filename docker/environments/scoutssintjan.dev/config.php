@@ -35,7 +35,7 @@ $config = [
         ],
     ],
 
-    'drive' => null,
+    'drive' => 'https://drive.google.com/drive/u/6/folders/0AIujUUpM-XqAUk9PVA',
     'stamhoofd' => false,
 
     'sendgrid' => [
