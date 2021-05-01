@@ -81,8 +81,6 @@ class Template
                 $data['admin'] = array();
             }
             $data['admin']['buttons'] = Leiding::getAdminMenu();
-
-            $data['admin']['buttons'] = Leiding::getAdminMenu();
             $data['admin']['name'] = Leiding::getUser()->user->firstname . ' ' . Leiding::getUser()->user->lastname;
         }
 

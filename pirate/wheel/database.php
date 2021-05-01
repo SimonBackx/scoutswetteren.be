@@ -1,6 +1,7 @@
 <?php
 namespace Pirate\Wheel;
 
+use Exception;
 use mysqli;
 use Pirate\Sails\Environment\Classes\Environment;
 
@@ -12,7 +13,7 @@ class Database
     {
         try {
             if (isset($_ENV["DEBUG"]) && $_ENV["DEBUG"] == 1) {
-                self::$mysqli = new mysqli('host.docker.internal', Environment::getSetting('mysql.username'), '', Environment::getSetting('mysql.database'));
+                self::$mysqli = new mysqli('host.docker.internal', Environment::getSetting('mysql.username'), Environment::getSetting('mysql.password'), Environment::getSetting('mysql.database'));
             } else {
                 self::$mysqli = new mysqli('127.0.0.1', Environment::getSetting('mysql.username'), Environment::getSetting('mysql.password'), Environment::getSetting('mysql.database'));
             }

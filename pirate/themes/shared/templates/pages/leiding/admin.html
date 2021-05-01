@@ -9,7 +9,7 @@
     <main>
         <nav class="buttons">
             {% for button in admin.buttons %}
-                <a href="/admin/{{ button.url }}" class="{% if button.url == admin.selected %}selected {% endif %}button">{{ button.name }}</a>
+                <a href="{{ button.url }}" class="{% if button.url == admin.selected %}selected {% endif %}button">{{ button.name }}</a>
             {% endfor %}
 
             {% if environment.stamhoofd %}

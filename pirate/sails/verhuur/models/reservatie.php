@@ -278,10 +278,10 @@ class Reservatie extends Model
         return $reservaties;
     }
 
-    public static function getAantalInWeek($week)
+    public static function getAantalInWeek($prefix)
     {
-        $week = self::getDb()->escape_string($week);
-        $query = 'SELECT * FROM verhuur WHERE week(startdatum, 3) = "' . $week . '" and contract_nummer is not null';
+        $prefix = self::getDb()->escape_string($prefix);
+        $query = 'SELECT * FROM verhuur WHERE contract_nummer is not null AND contract_nummer LIKE \''.$prefix.'%\'';
 
         if ($result = self::getDb()->query($query)) {
             return $result->num_rows;
@@ -635,8 +635,9 @@ class Reservatie extends Model
             $huur_betaald = self::getDb()->escape_string((int) $this->huur_betaald);
 
             if (!isset($this->contract_nummer)) {
-                $aantal = self::getAantalInWeek($this->startdatum->format('W')) + 1;
-                $this->contract_nummer = substr($this->startdatum->format('o'), 2) . $this->startdatum->format('W') . '-' . $aantal;
+                $prefix = substr($this->startdatum->format('o'), 2) . $this->startdatum->format('W');
+                $aantal = self::getAantalInWeek($prefix) + 1;
+                $this->contract_nummer = $prefix . '-' . $aantal;
             }
 
             if (!isset($this->contract_nummer)) {
