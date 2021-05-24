@@ -28,7 +28,7 @@ class Sync extends Cronjob
 
         if (!Environment::getSetting('groepsadmin.enabled', false)) {
             // Not allowed to make changes
-            Leiding::sendErrorMail("Groepsadministratie sync is uitgeschakeld", "groepsadmin.enabled staat op false", "");
+            // Leiding::sendErrorMail("Groepsadministratie sync is uitgeschakeld", "groepsadmin.enabled staat op false", "");
             return;
         }
 

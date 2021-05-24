@@ -36,7 +36,8 @@ $config = [
     ],
 
     'drive' => 'https://drive.google.com/drive/u/6/folders/0AIujUUpM-XqAUk9PVA',
-    'stamhoofd' => false,
+    'stamhoofd' => true,
+    'keep_old_leden' => true,
 
     'sendgrid' => [
         // key defined in private
@@ -68,6 +69,7 @@ $config = [
     ],
 
     'scouts' => [
+        'override_url' => 'https://inschrijven.scoutssintjan.be',
         'inschrijvings_start_maand' => 8,
 
         'voorinschrijven_einde_maand' => 9,

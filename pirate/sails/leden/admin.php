@@ -20,7 +20,7 @@ class LedenAdminRouter extends AdminRoute
 
     public static function getAvailablePages()
     {
-        if (Environment::getSetting('stamhoofd', false)) {
+        if (Environment::getSetting('stamhoofd', false) && !Environment::getSetting('keep_old_leden', false)) {
             return [];
         }
         return [

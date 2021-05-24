@@ -43,6 +43,23 @@
        
     }
 
+    .login {
+        text-transform: uppercase;
+        padding: 15px 0 15px 0px;
+        margin: -15px 0;
+        display: inline-block;
+        margin-right: 20px;
+        &:last-child {
+            margin-right: 0;
+        }
+
+        @media (max-width: 600px) {
+            padding: 0;
+            margin: 0;
+            display: block;
+        }
+    }
+
     .facebook {
         text-transform: uppercase;
         padding: 15px 0 15px 35px;

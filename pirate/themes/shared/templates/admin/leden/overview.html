@@ -9,6 +9,15 @@
         </div>
                 
         <h1>Inschrijvingen</h1>
+
+        {% if environment.stamhoofd %}
+            <ul class="warning">
+                <li>
+                   Opgelet! Deze gegevens zijn verouderd en worden binnenkort verwijderd. Ouders moeten de inschrijvingen beheren via de nieuwe inschrijvingspagina van Stamhoofd, dat kan gewoon via de 'Aanmelden' knop op de website. Leiding kan de gegevens van leden bekijken en bewerken via Stamhoofd zelf.
+                </li>
+            </ul>
+        {% endif %}
+
         <form>
             <input id="info_tonen" type="checkbox" value="1">
             <label for="info_tonen">Toon meer info</label>
