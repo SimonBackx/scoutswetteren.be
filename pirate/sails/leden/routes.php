@@ -31,6 +31,10 @@ class LedenRouter extends Route
             return true;
         }
 
+        if (count($parts) == 1 && $parts[0] == 'attesten') {
+            return true;
+        }
+
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
             // Onbeveiligde sectie
 
@@ -44,13 +48,6 @@ class LedenRouter extends Route
 
                 if (count($parts) == 3 && $parts[1] == 'afrekening') {
                     return true;
-                }
-
-                if (count($parts) == 2 && $parts[1] == 'attesten' && User::isLoggedIn()) {
-                    // allow nog logged in
-
-                } else {
-                    return false;
                 }
             }
 
@@ -117,6 +114,11 @@ class LedenRouter extends Route
 
     public function getPage($url, $parts)
     {
+        if (count($parts) == 1 && $parts[0] == 'attesten') {
+            require __DIR__ . '/pages/ouder-attesten.php';
+            return new Pages\OuderAttesten();
+        }
+
         if (Environment::getSetting('scouts.override_url')) {
             // always go to new inschrijven
             return new Pages\Redirect();
@@ -126,6 +128,7 @@ class LedenRouter extends Route
             require __DIR__ . '/pages/overview.php';
             return new Pages\Overview();
         }
+
 
         if (count($parts) >= 1 && $parts[0] == 'ouders') {
 
