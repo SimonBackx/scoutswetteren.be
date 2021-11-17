@@ -207,15 +207,15 @@ $config = [
         'max_gebouw' => 60,
         'max_tenten' => 60,
 
-        'prijzen' => array(2019 => 120, 2020 => 120, 2021 => 120, 2022 => 120, 2023 => 120),
-        'prijs_extra_persoon_gebouw' => 4,
+        'prijzen' => array(2019 => 120, 2020 => 120, 2021 => 120, 2022 => 140, 2023 => 140, 2024 => 140),
+        'prijs_extra_persoon_gebouw' => 5,
         'prijs_inbegrepen_personen' => 25,
 
         'waarborg_weekend' => 400,
         'waarborg_kamp' => 400,
 
         'prijs_tent_nacht' => 0,
-        'prijs_tent_persoon' => 2,
+        'prijs_tent_persoon' => 2.5,
 
         // Minimaal aantal overnachtingen waarbij tenten toegestaan izjn
         'tenten_min_nachten' => 0,
