@@ -1,0 +1,42 @@
+{% set title = 'Leiding' %}
+{% set description = 'Wie geeft er leiding aan jouw lieve spruit? Dat ontdek je op deze pagina.' %}
+{% extends "base.html" %}
+
+{% block head %}
+    
+{% endblock %}
+
+{% block main %}
+    <main>
+        {% for tak in takken %}
+            <article class="white block">
+                <div class="part text">
+                <header>
+                    <h1>{{ tak.name | capitalize }}</h1>
+                </header>
+                <p>{{ tak.data.description }}</p>
+
+                {% if not leiding_verborgen or general.logged_in_leiding %}
+                    <div class="splitted blocked auto questions">
+                        {% for leider in tak.leiding %}
+                            <article class="person">
+                                {% if leider.getPhoto %}
+                                    <figure style="background-image: url({{ leider.getPhoto.getBestFit(200, 200).file.getPublicPath }})"></figure>
+                                {% else %}
+                                    <figure class="placeholder"></figure>
+                                {% endif %}
+                                <div>
+                                    <h2>{% if leider.roepnaam is not empty %}{{ leider.roepnaam }}{% else %}{{ leider.user.firstname }} {{ leider.user.lastname }}{% endif %}</h2>
+                                    <p>{{ leider.totem }}</p>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <ul class="warning"><li>De leiding is nog niet bekend</li></ul>
+                {% endif %}
+            </div>
+        </article>
+       {% endfor %}
+    </main>
+{% endblock %}

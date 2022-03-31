@@ -1,0 +1,36 @@
+@import "../../../shared/scss/layout/splitted";
+
+.splitted.auto {
+    columns: 300px 2;
+    column-gap: 20px;
+    display: block;
+
+    article {
+        break-inside: avoid-column;
+    }
+}
+.splitted .splitted.auto {
+    columns: 200px 2;
+}
+
+.splitted.blocked {
+    &> .part > article, &.auto > article, &.auto > a > article{
+        padding: 7px 0;
+
+        @media (max-width: 600px), print {
+            margin: 7px 0;
+        }
+    } 
+}
+
+.splitted.blocked.auto {
+    margin-top: 15px;
+
+    @media (max-width: 600px), print {
+        margin-top: 7px;
+    }
+
+    &> article:first-child, &> a:first-child > article {
+        margin-top: 0;
+    }
+}

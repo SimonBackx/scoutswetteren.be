@@ -13,7 +13,7 @@ $theme: 'prins-boudewijn';
 
 @import "../../shared/scss/layout/container";
 @import "../../shared/scss/layout/blocks";
-@import "../../shared/scss/layout/splitted";
+@import "layout/splitted";
 
 
 @import "../../shared/scss/components/buttons-bar";
@@ -27,6 +27,7 @@ $theme: 'prins-boudewijn';
 @import "../../shared/scss/components/details-table";
 @import "../../shared/scss/components/sponsors";
 @import "../../shared/scss/components/questions";
+@import "components/person";
 
 @import "components/footer";
 
