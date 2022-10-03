@@ -154,7 +154,7 @@ $config = [
         'waarborg_kamp' => 750,
 
         'prijs_tent_nacht' => 20,
-        'prijs_tent_persoon' => 2,
+        'prijs_tent_persoon' => 3,
 
         // Minimaal aantal overnachtingen waarbij tenten toegestaan izjn
         'tenten_min_nachten' => 3,

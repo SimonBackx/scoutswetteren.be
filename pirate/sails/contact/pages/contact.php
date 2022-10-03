@@ -10,6 +10,8 @@ use Pirate\Sails\Settings\Models\Setting;
 use Pirate\Sails\Validating\Models\Validator;
 use Pirate\Wheel\Page;
 use Pirate\Wheel\Template;
+use Pirate\Sails\Leiding\Models\Leiding as LeidingModel;
+use Pirate\Sails\Environment\Classes\Environment;
 
 class Contact extends Page
 {
@@ -121,30 +123,32 @@ class Contact extends Page
             }
         }
 
+        // Phone only here
         $leiding_data = array();
-        $zichtbaar = Leiding::isLeidingZichtbaar();
-
-        if ($zichtbaar && (Leiding::isLoggedIn() || Ouder::isLoggedIn())) {
-            $leiding = Leiding::getLeiding('leiding');
-            foreach ($leiding as $value) {
-                if (!isset($value->tak)) {
-                    continue;
-                }
-                if (!isset($leiding_data[$value->tak])) {
-                    $leiding_data[$value->tak] = array();
-                }
-                $leiding_data[$value->tak][] = $value;
-            }
-
-            foreach ($leiding_data as $key => $value) {
-                shuffle($leiding_data[$key]);
-            }
-        }
 
         // Groepsleiding toeveogen
         $leiding_data['groepsleiding'] = Leiding::getLeiding('groepsleiding');
         shuffle($leiding_data['groepsleiding']);
         $groepsleiding_gsm_zichtbaar = Setting::getSetting('groepsleiding_gsm_zichtbaar', false);
+
+        // Leiding
+        $leiding = LeidingModel::getLeiding();
+        $takken = Environment::getSetting('scouts.takken');
+        $grouped_data = [];
+
+        foreach ($takken as $tak => $data) {
+            $filtered = [];
+            foreach ($leiding as $lid) {
+                if ($lid->tak == $tak) {
+                    $filtered[] = $lid;
+                }
+            }
+            $grouped_data[]= [
+                'name' => $tak,
+                'data' => $data,
+                'leiding' => $filtered,
+            ];
+        }
 
         return Template::render('pages/contact/contact', array(
             'data' => $data,
@@ -155,8 +159,9 @@ class Contact extends Page
             'leiding' => $leiding_data,
             'logged_in' => Leiding::isLoggedIn() || Ouder::isLoggedIn(),
             'groepsleiding_gsm_zichtbaar' => $groepsleiding_gsm_zichtbaar->value,
-            'leiding_zichtbaar' => $zichtbaar,
             'contacts' => Leiding::getContacts(),
+            'leiding_verborgen' => !LeidingModel::isLeidingZichtbaar(),
+            'takken' => $grouped_data,
         )
         );
     }

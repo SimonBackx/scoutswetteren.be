@@ -126,38 +126,13 @@
          <article class="white block" id="takverdeling">
             <div class="splitted">
 
-                {% if not logged_in %}
-                    <div class="part text">
-                        <header>
-                            <h1>Contactgegevens</h1>
-                            <h2>Voor dringende communicatie</h2>
-                        </header>
-                        <p>We tonen de telefoonnummers van leiding enkel aan ingeschreven leden om de privacy van de leidingsploeg te beschermen. Login om de telefoonnummers zichtbaar te maken.</p>
-                        <p>De telefoonnummers van de verhuurverantwoordelijken worden altijd meegedeeld bij aanvang van het verhuur.</p>
-
-                        <footer>
-                            <a href="/gebruikers/login" class="merlot button">Inloggen als ouder</a>
-                        </footer>
-                    </div>
-                {% else %}
-                    {% if leiding_zichtbaar %}
-                        <div class="part text">
-                            <header>
-                                <h1>Contactgegevens</h1>
-                                <h2>Voor dringende communicatie</h2>
-                            </header>
-                            <p>Rechts vind je alle telefoonnummers van onze leiding. Gelieve deze enkel te gebruiken voor dringendere gevallen en ons anders te contacteren via het formulier hierboven.</p>
-                        </div>
-                    {% else %}
-                        <div class="part text">
-                            <header>
-                                <h1>Contactgegevens</h1>
-                                <h2>Voor dringende communicatie</h2>
-                            </header>
-                            <p>Tot de bekendmaking is de leidingsverdeling nog een groot geheim. We maken tot dan ook geen contactgegevens van de leiding bekend. Gebruik het bovenstaande formulier om toch contact op te nemen met de leiding.</p>
-                        </div>
-                    {% endif %}
-                {% endif %}
+                <div class="part text">
+                    <header>
+                        <h1>Contactgegevens</h1>
+                        <h2>Voor dringende communicatie</h2>
+                    </header>
+                    <p>De telefoonnummers van de verhuurverantwoordelijken worden altijd meegedeeld bij aanvang van het verhuur.</p>
+                </div>
 
                 <div class="part text">
                     <div class="splitted questions">
@@ -207,5 +182,36 @@
                 </div>
             </div>
         </article>
+
+        {% for tak in takken %}
+            <article class="white block">
+                <div class="part text">
+                    <header>
+                        <h1>{{ tak.name | capitalize }}</h1>
+                    </header>
+                    <p>{{ tak.data.description }}</p>
+
+                    {% if not leiding_verborgen or general.logged_in_leiding %}
+                        <div class="splitted blocked auto questions">
+                            {% for leider in tak.leiding %}
+                                <article class="person">
+                                    {% if leider.getPhoto %}
+                                        <figure style="background-image: url({{ leider.getPhoto.getBestFit(200, 200).file.getPublicPath }})"></figure>
+                                    {% else %}
+                                        <figure class="placeholder"></figure>
+                                    {% endif %}
+                                    <div>
+                                        <h2>{% if leider.roepnaam is not empty %}{{ leider.roepnaam }}{% else %}{{ leider.user.firstname }} {{ leider.user.lastname }}{% endif %}</h2>
+                                        <p>{{ leider.totem }}</p>
+                                    </div>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <ul class="warning"><li>De leiding is nog niet bekend</li></ul>
+                    {% endif %}
+                </div>
+            </article>
+       {% endfor %}
     </main>
 {% endblock %}
