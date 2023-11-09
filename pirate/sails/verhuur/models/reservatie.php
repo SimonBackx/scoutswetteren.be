@@ -159,6 +159,9 @@ class Reservatie extends Model
         $days = $difference->d;
 
         if ($days <= 2) {
+            if ($this->leidingsweekend) {
+                return Environment::getSetting('verhuur.waarborg_weekend_leiding', Environment::getSetting('verhuur.waarborg_weekend', 0));
+            }
             return Environment::getSetting('verhuur.waarborg_weekend', 0);
         }
         return Environment::getSetting('verhuur.waarborg_kamp', 0);

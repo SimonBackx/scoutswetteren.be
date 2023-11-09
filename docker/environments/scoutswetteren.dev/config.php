@@ -151,6 +151,7 @@ $config = [
         'prijs_inbegrepen_personen' => 35,
 
         'waarborg_weekend' => 400,
+        'waarborg_weekend_leiding' => 750,
         'waarborg_kamp' => 750,
 
         'prijs_tent_nacht' => 20,

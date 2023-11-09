@@ -1,0 +1,108 @@
+{% set title = 'Reservatie aanvragen' %}
+{% extends "base.html" %}
+
+{% block head %}
+    <style type="text/css">
+        #terrein-image {
+            background-image: url(/prins-boudewijn/images/part/terrein.jpg);
+        }
+        #accomodatie-image {
+            background-image: url(/prins-boudewijn/images/part/accomodatie.jpg);
+        }
+        #price {
+            font-size: 28pt;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block main %}
+    <main>
+        <article class="white block">
+            <form method="post">
+                <div class="part text">
+                    <header>
+                        <h1>Reservatie aanvragen</h1>
+                    <h2>Van {{ data.startdatum }} tot {{ data.einddatum }} voor {{ data.personen + data.personen_tenten }} personen.</h2>
+                    </header>
+
+                    {% if errors|length > 0 %}
+                        <ul class="error">
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <input type="hidden" name="startdatum" value="{{ data.startdatum | e('html_attr') }}">
+                    <input type="hidden" name="einddatum" value="{{ data.einddatum | e('html_attr') }}">
+                    <input type="hidden" name="personen" value="{{ data.personen | e('html_attr') }}">
+                    <input type="hidden" name="personen_tenten" value="{{ data.personen_tenten | e('html_attr') }}">
+
+                    <div class="splitted">
+                        <div class="part column first">
+                            <label>Groepsnaam</label>
+                            <input type="text" name="groep" value="{{ data.groep | e('html_attr') }}" placeholder="Naam van de jeugdbeweging / organisatie">
+
+                            <label>Naam verantwoordelijke</label>
+                            <input type="text" name="contact_naam" value="{{ data.contact_naam | e('html_attr') }}" placeholder="Uw naam">
+
+                            <label>GSM verantwoordelijke</label>
+                            <input type="text" name="contact_gsm" value="{{ data.contact_gsm | e('html_attr') }}" placeholder="Uw gsm-nummer">
+
+                            <label>E-mailadres verantwoordelijke</label>
+                            <input type="email" name="contact_email" value="{{ data.contact_email | e('html_attr') }}" placeholder="Uw e-mailadres">
+
+                            <label>Info</label>
+                            <textarea placeholder="Wie zijn jullie en waarvoor huren jullie ons lokaal?" name="info">{{ data.info }}</textarea>
+
+                            <label>Opmerkingen</label>
+                            <textarea placeholder="Eventuele vragen of opmerkingen" name="opmerkingen">{{ data.opmerkingen }}</textarea>
+
+                        </div>
+                        <div class="part column last">
+                            <label>Adres verantwoordelijke</label>
+                            <input type="text" name="contact_adres" value="{{ data.contact_adres | e('html_attr') }}" placeholder="Straat + huisnummer">
+
+                            <label>Gemeente</label>
+                            <input type="text" name="contact_gemeente" value="{{ data.contact_gemeente | e('html_attr') }}" placeholder="Gemeente">
+
+                            <label>Postcode</label>
+                            <input type="text" name="contact_postcode" value="{{ data.contact_postcode | e('html_attr') }}" placeholder="Postcode">
+
+                            <label>Land</label>
+                            <input type="text" class="dropdown" name="contact_land" value="{{ data.contact_land | e('html_attr') }}" placeholder="Land">
+                            <div class="dropdown-list">
+                                <div class="option">België</div>
+                                <div class="option">Nederland</div>
+                            </div>
+                           
+                        </div>
+                    </div>
+
+                    <input id="leidingsweekend" type="checkbox" name="leidingsweekend" value="1" {% if data.leidingsweekend %} checked{% endif %}>
+                    <label for="leidingsweekend">Huren voor leidingsweekend of groep zonder leden</label>
+
+                    <div class="checkbox-controllable">
+                        <div class="visible-when-checked">
+                            <ul class="warning">
+                                <li>- Enkel leidingsploegen van jeugdbewegingen die hun lokaal ook verhuren aan leidingsploegen, worden toegelaten.<br>
+                                    - De verantwoordelijke van de huurder is aanwezig bij aankomst én bij vertrek om de verhuurverantwoordelijke van Scouts Prins Boudewijn te woord te staan<br>
+                                    - Er worden enkel leidingploegen toegelaten met max. 30 personen<br>
+                                    - Er wordt geld afgehouden van de waarborg bij overlast voor buren<br>
+                                    - Voor leidingsweekends hanteren wij ook een hogere waarborg: 750 euro/weekend</li>
+                            </ul>
+                        </div>
+                    </div>
+            
+
+                    <p>Na goedkeuring ontvang je een e-mail met het huurcontract.</p>
+                  
+                    <footer>
+                        <input type="submit" name="submit" value="Indienen" class="fill main">
+                        <a href="/verhuur" class="button main">Annuleren</a>
+                    </footer>
+                </div>
+            </form>
+        </article>
+    </main>
+{% endblock %}
