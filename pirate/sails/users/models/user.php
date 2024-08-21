@@ -598,16 +598,7 @@ class User extends Model
         if (strlen($data['phone']) > 0 || !$admin) {
 
             if (Validator::validatePhone($data['phone'], $this->phone, $errors)) {
-                if (static::existsWithPhone($this->phone, $this->id)) {
-                    $this->phone = null;
-
-                    if (static::isLoggedIn()) {
-                        $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet voor een ander account gebruikt en pas het daar eerst aan.';
-
-                    } else {
-                        $errors[] = 'Dit gsm-nummer is al bekend in ons systeem. Kijk na of je niet al een ander account hebt! Gebruik de \'wachtwoord vergeten\' functie om je wachtwoord te vinden als je het vergeten bent.';
-                    }
-                }
+                // ok
             }
 
         } else {

@@ -37,7 +37,7 @@ $config = [
 
     'drive' => 'https://drive.google.com/drive/u/6/folders/0AIujUUpM-XqAUk9PVA',
     'stamhoofd' => true,
-    'keep_old_leden' => true,
+    'keep_old_leden' => false,
 
     'sendgrid' => [
         // key defined in private
@@ -207,8 +207,8 @@ $config = [
         'max_gebouw' => 60,
         'max_tenten' => 60,
 
-        'prijzen' => array(2019 => 120, 2020 => 120, 2021 => 120, 2022 => 140, 2023 => 140, 2024 => 140),
-        'prijs_extra_persoon_gebouw' => 5,
+        'prijzen' => array(2019 => 120, 2020 => 120, 2021 => 120, 2022 => 140, 2023 => 140, 2024 => 175, 2025 => 175, 2026 => 200, 2027 => 200),
+        'prijs_extra_persoon_gebouw' => 7,
         'prijs_inbegrepen_personen' => 25,
 
         'waarborg_weekend' => 400,
@@ -216,7 +216,7 @@ $config = [
         'waarborg_kamp' => 400,
 
         'prijs_tent_nacht' => 0,
-        'prijs_tent_persoon' => 2.5,
+        'prijs_tent_persoon' => 3.5,
 
         // Minimaal aantal overnachtingen waarbij tenten toegestaan izjn
         'tenten_min_nachten' => 0,
