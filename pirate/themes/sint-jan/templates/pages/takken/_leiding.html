@@ -27,12 +27,6 @@
                     </article>
                 {% endfor %}
             </div>
-
-            {% if not general.logged_in_leiding and not general.logged_in_ouders %}
-                <footer>
-                    <a href="/gebruikers/login" class="button fill main">Inloggen</a><span>Log in om de contactgegevens van de leiding te bekijken.</span>
-                </footer>
-            {% endif %}
         </article>
     {% else %}
         <ul class="warning"><li>De leiding is nog niet bekend</li></ul>
