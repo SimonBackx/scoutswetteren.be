@@ -14,16 +14,16 @@ ssh root@scoutswetteren.be "
     mkdir -p $UPLOAD_DIRECTORY/pirate
     mkdir -p $UPLOAD_DIRECTORY/public
 "
+# Files
+rsync -zr --no-perms --info=progress2 "files/scoutssintjan.be/" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/files"
 
+# Other
 rsync -zr --no-perms --info=progress2 --delete "pirate/" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate"
 rsync -zr --no-perms --info=progress2 "$PIRATE_CONFIG_LOCATION/config.php" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate/config.php"
 rsync -zr --no-perms --info=progress2 "$PIRATE_CONFIG_LOCATION/config.private.php" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/pirate/config.private.php"
 rsync -zr --no-perms --info=progress2 --delete "public/" root@scoutswetteren.be:"$UPLOAD_DIRECTORY/public"
 
-
 echo "Fixing permissions..."
-
-
 
 ssh root@scoutswetteren.be "
     chown -R :www-data $UPLOAD_DIRECTORY
@@ -37,31 +37,4 @@ ssh root@scoutswetteren.be "
     sudo ufw --force enable
 "
 
-
 echo "Done.";
-
-#     run("chown -R www-data:www-data "+uploading_directory+"/files")
-#     run("chown -R www-data:www-data "+uploading_directory+"/pirate/tmp")
-#     run("chown -R www-data:www-data "+uploading_directory+"/pirate/sails/cache/tmp")
-#     run("rm -rf "+uploading_directory+"/pirate/sails/cache/tmp/*")
-
-
-
-# print("[UPLOAD] Uploading app files...")
-#     uploading_directory = "/var/www/"+config["folder"]
-#     run("mkdir -p "+uploading_directory)
-#     run("mkdir -p "+uploading_directory+"/pirate")
-#     run("mkdir -p "+uploading_directory+"/public")
-#     
-#     with settings(hide('warnings', 'running', 'stdout')):
-#         rsync_project(remote_dir= uploading_directory+"/pirate", local_dir= "pirate/", delete= True)
-#         rsync_project(remote_dir= uploading_directory+"/pirate/config.php", local_dir= config["pirate-config-location"]+"/config.php", delete= False)
-#         rsync_project(remote_dir= uploading_directory+"/pirate/config.private.php", local_dir= config["pirate-config-location"]+"/config.private.php", delete= False)
-#         rsync_project(remote_dir= uploading_directory+"/public", local_dir= "public/", delete= True)
-#     
-#     run("chown -R :www-data "+uploading_directory)
-#     run("chown -R www-data:www-data "+uploading_directory+"/files")
-#     run("chown -R www-data:www-data "+uploading_directory+"/pirate/tmp")
-#     run("chown -R www-data:www-data "+uploading_directory+"/pirate/sails/cache/tmp")
-#     run("rm -rf "+uploading_directory+"/pirate/sails/cache/tmp/*")
-#     print("[UPLOAD] Done.")
